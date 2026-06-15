@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>城主の館 ― アプリ一覧</title>
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --ai:#5b8fb0; --matsu:#7faa78; --beni:#c17b7b; --murasaki:#9d8ec4; --line:#2a3547;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi);
+    font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  }
+  .wrap{max-width:680px; margin:0 auto; padding:0 16px 40px;}
+
+  header{padding:32px 8px 22px; position:relative; text-align:center;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .crest{font-size:30px; margin-bottom:8px; opacity:.9;}
+  .eyebrow{font-size:10px; letter-spacing:6px; color:var(--kin); margin-bottom:8px;}
+  h1{margin:0; font-size:28px; font-weight:700; letter-spacing:4px;
+    background:linear-gradient(180deg,var(--kinLite),var(--kin));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  .subtitle{margin:10px 0 0; font-size:12px; color:var(--washiSub); letter-spacing:1px; line-height:1.7;}
+
+  .count{text-align:center; font-size:11px; color:var(--washiSub); margin:18px 0 24px;
+    padding-bottom:14px; border-bottom:1px solid var(--line);}
+  .count b{color:var(--kinLite); font-size:15px; font-weight:700;}
+
+  .grid{display:grid; gap:14px;}
+  .app{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--konjo); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; position:relative; overflow:hidden;
+    transition:transform .15s, border-color .15s, box-shadow .15s;
+  }
+  .app:hover{transform:translateY(-2px); border-color:rgba(201,164,76,0.5);
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+  .app .accent{position:absolute; left:0; top:0; bottom:0; width:4px;}
+  .app .cat{display:inline-block; font-size:10px; letter-spacing:1px; padding:3px 10px;
+    border-radius:12px; margin-bottom:10px; background:var(--konjoLite); color:var(--washiSub);}
+  .app .name{font-size:18px; font-weight:700; color:var(--kinLite); letter-spacing:1px; margin-bottom:6px;}
+  .app .desc{font-size:12px; color:var(--washiSub); line-height:1.7;}
+  .app .arrow{position:absolute; right:18px; top:50%; transform:translateY(-50%);
+    font-size:18px; color:var(--ishi);}
+
+  .empty{padding:30px; text-align:center; border:1px dashed var(--line);
+    border-radius:12px; color:var(--ishi); font-size:13px;}
+
+  footer{margin-top:32px; text-align:center; font-size:10px; color:var(--ishi); line-height:1.8;}
+  .seal{margin-top:20px; text-align:center; font-size:11px; color:var(--washiSub); letter-spacing:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="goldline"></div>
+    <div class="crest">🏯</div>
+    <div class="eyebrow">城 主 の 館</div>
+    <h1>アプリ一覧</h1>
+    <p class="subtitle">これまでに築いた道具を、ここに収める。<br>触れてみたいものを、選ばれよ。</p>
+  </header>
+
+  <div class="count">所蔵 <b id="count">0</b> 点</div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="seal">― 以上 ―</div>
+
+  <footer>
+    築：城主 ／ すべて自作のWeb道具<br>
+    各アプリは概算・参考用です。
+  </footer>
+
+</div>
+
+<script>
+/* ───────────────────────────────────────────────
+   アプリを増やすときは、この APPS の中に
+   { } を1つ足すだけ。下にコピー用の見本あり。
+   ─────────────────────────────────────────────── */
+var T = {
+  ai:"#5b8fb0", matsu:"#7faa78", beni:"#c17b7b",
+  murasaki:"#9d8ec4", kin:"#c9a44c"
+};
+
+var APPS = [
+  {
+    name:  "城主の資産要塞",
+    cat:   "家計・資産",
+    desc:  "毎月の家計簿から、生涯の資産推移を試算する。月の変動・円グラフ・年代記を備えた、未来を見通すための道具。",
+    url:   "shisan/",          // apps/ の中の部屋名。別リポジトリなら https:// から書く
+    color: T.kin
+  }
+
+  /* ↓ 新しいアプリを足すときは、上の } の後ろにカンマを付けて、これをコピペ：
+
+  ,{
+    name:  "アプリの名前",
+    cat:   "種類（家計・占い・ツール等）",
+    desc:  "アプリの説明を一文で。",
+    url:   "部屋名/",
+    color: T.matsu
+  }
+
+  */
+];
+
+/* ─── 以下は触らなくてOK（自動で一覧を作る部分）─── */
+var grid = document.getElementById('grid');
+var count = document.getElementById('count');
+count.textContent = APPS.length;
+
+if(APPS.length === 0){
+  grid.innerHTML = '<div class="empty">まだアプリがありません。</div>';
+}else{
+  grid.innerHTML = APPS.map(function(a){
+    return '<a class="app" href="'+a.url+'">'+
+      '<span class="accent" style="background:'+a.color+'"></span>'+
+      '<span class="cat">'+a.cat+'</span>'+
+      '<div class="name">'+a.name+'</div>'+
+      '<div class="desc">'+a.desc+'</div>'+
+      '<span class="arrow">›</span>'+
+      '</a>';
+  }).join('');
+}
+</script>
+</body>
+</html>
