@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>城主の資産要塞</title>
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --ai:#5b8fb0; --matsu:#7faa78; --beni:#c17b7b; --murasaki:#9d8ec4; --line:#2a3547;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi);
+    font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  }
+  .wrap{max-width:680px; margin:0 auto;}
+  header{padding:22px 22px 16px; position:relative; overflow:hidden;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .eyebrow{font-size:10px; letter-spacing:6px; color:var(--kin); margin-bottom:6px;}
+  h1{margin:0; font-size:26px; font-weight:700; letter-spacing:3px;
+    background:linear-gradient(180deg,var(--kinLite),var(--kin));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  .subtitle{margin:6px 0 0; font-size:11px; color:var(--washiSub); letter-spacing:1px;}
+
+  .summary{display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px;
+    background:var(--line); margin:0 14px; border-radius:8px; overflow:hidden; border:1px solid var(--ishi);}
+  .summary>div{background:var(--konjo); padding:12px 6px; text-align:center;}
+  .summary .lbl{font-size:9.5px; color:var(--washiSub); margin-bottom:3px;}
+  .summary .val{font-size:18px; font-weight:700;}
+  .summary .val span{font-size:9px; color:var(--washiSub);}
+
+  .miles{display:flex; gap:6px; padding:12px 14px 0; overflow-x:auto;}
+  .mile{flex-shrink:0; padding:6px 12px; border-radius:20px; background:var(--konjo);
+    border:1px solid rgba(201,164,76,0.27); font-size:11px; white-space:nowrap;}
+  .mile b{color:var(--kinLite); font-weight:700;}
+  .mile span{color:var(--washiSub);}
+
+  nav{display:flex; gap:4px; padding:16px 14px 0; overflow-x:auto;}
+  nav button{flex-shrink:0; padding:9px 15px; font-size:13px; cursor:pointer; border:none;
+    border-radius:8px 8px 0 0; letter-spacing:1px; font-family:inherit; background:transparent;
+    color:var(--washiSub); border-bottom:2px solid transparent;}
+  nav button.active{background:var(--konjo); color:var(--kinLite); font-weight:700; border-bottom:2px solid var(--kin);}
+
+  main{padding:0 14px 28px;}
+  .panel{background:var(--konjo); border-radius:0 10px 10px 10px; border:1px solid var(--line);
+    padding:18px 16px; box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+
+  .sectitle{display:flex; align-items:baseline; justify-content:space-between;
+    padding-bottom:6px; margin-bottom:4px;}
+  .sectitle .l{font-size:14px; font-weight:700; letter-spacing:2px;}
+  .sectitle .s{font-size:10px; color:var(--washiSub); margin-left:8px;}
+  .sectitle .tot{font-size:14px; font-weight:700;}
+
+  .row{display:grid; grid-template-columns:26px 1fr auto; align-items:center; gap:10px;
+    padding:10px 4px; border-bottom:1px solid var(--line);}
+  .row .ic{font-size:15px; text-align:center; opacity:.9;}
+  .row .lb{font-size:13px; color:var(--washi); letter-spacing:.5px;}
+  .stepper{display:flex; align-items:center; gap:6px;}
+  .stepper button{width:24px; height:24px; border-radius:4px; border:1px solid var(--ishi);
+    background:var(--konjoLite); color:var(--washi); font-size:14px; cursor:pointer; line-height:1;
+    display:flex; align-items:center; justify-content:center; padding:0;}
+  .stepper input{width:62px; background:var(--sumi); border-radius:4px; font-size:15px; font-weight:700;
+    padding:5px 6px; text-align:right; outline:none; font-family:'Hiragino Mincho ProN',serif;}
+  .stepper .u{font-size:10px; color:var(--washiSub); width:18px;}
+
+  .card{background:var(--sumi); border-radius:10px; padding:18px; border:1px solid rgba(201,164,76,0.27); margin-bottom:18px;}
+  .totlabel{font-size:11px; color:var(--washiSub); letter-spacing:1px; text-align:center;}
+  .totval{font-size:30px; font-weight:700; color:var(--kinLite); margin:2px 0 6px; text-align:center;}
+  .totval span{font-size:14px; color:var(--washi);}
+
+  .toggle{display:flex; justify-content:center; gap:4px; margin:10px 0 6px;}
+  .toggle button{padding:5px 14px; font-size:11px; cursor:pointer; font-family:inherit;
+    border:1px solid var(--ishi); border-radius:16px; background:transparent; color:var(--washiSub); letter-spacing:1px;}
+  .toggle button.on{border-color:var(--kin); background:rgba(201,164,76,0.13); color:var(--kinLite);}
+
+  .legend3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:12px;}
+  .legend3>div{text-align:center; padding:8px 4px; background:var(--konjo); border-radius:6px;}
+  .legend3 .nm{font-size:10px; margin-bottom:2px;}
+  .legend3 .am{font-size:14px; color:var(--washi); font-weight:700;}
+  .legend3 .am span{font-size:9px; color:var(--washiSub);}
+  .legend3 .pc{font-size:10px; color:var(--washiSub);}
+
+  .note{margin-top:12px; padding:10px 12px; background:var(--sumi); border-radius:8px;
+    border:1px solid var(--line); font-size:11px; color:var(--washiSub); line-height:1.6;}
+  .note b{color:var(--kinLite);}
+
+  .balbox{margin-top:16px; padding:16px; border-radius:8px; background:var(--sumi);}
+  .balrow{display:flex; justify-content:space-between; align-items:baseline;}
+  .balrow .t{font-size:13px; color:var(--washi);}
+  .balrow .v{font-size:24px; font-weight:700;}
+  .balrow .v span{font-size:12px;}
+  .balsub{font-size:11px; color:var(--washiSub); text-align:right; margin-top:4px;}
+
+  .special{display:grid; grid-template-columns:64px 1fr 74px 28px; gap:8px; align-items:center;
+    padding:8px 0; border-bottom:1px solid var(--line);}
+  .special select,.special input{background:var(--sumi); border:1px solid var(--ishi); border-radius:4px;
+    font-size:12px; padding:6px 6px; font-family:inherit; outline:none; width:100%;}
+  .special select{color:var(--kinLite);}
+  .special .lbi{color:var(--washi);}
+  .special .ami{color:var(--kinLite); font-weight:700; text-align:right; font-family:serif; border-color:rgba(201,164,76,0.33);}
+  .special .del{width:26px; height:26px; border-radius:4px; border:1px solid rgba(193,123,123,0.27);
+    background:transparent; color:var(--beni); font-size:14px; cursor:pointer; padding:0;}
+  .addbtn{margin-top:14px; width:100%; padding:11px; background:rgba(201,164,76,0.09);
+    border:1px solid rgba(201,164,76,0.33); border-radius:8px; color:var(--kinLite);
+    font-size:13px; cursor:pointer; font-family:inherit; letter-spacing:1px;}
+
+  table{width:100%; border-collapse:collapse; font-size:12px;}
+  thead tr{border-bottom:2px solid rgba(201,164,76,0.33);}
+  th{padding:8px; color:var(--kinLite); text-align:right; font-weight:600; font-size:11px;}
+  td{padding:6px 8px; text-align:right;}
+  tbody tr{border-bottom:1px solid var(--line);}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;}
+  .stat{background:var(--sumi); border:1px solid var(--line); border-radius:8px; padding:12px 13px;}
+  .stat .l{font-size:10px; color:var(--washiSub);}
+  .stat .v{font-size:18px; font-weight:700; margin:3px 0; font-family:serif;}
+  .stat .s{font-size:9px; color:var(--ishi);}
+
+  .resetbtn{margin-top:18px; width:100%; padding:11px; background:transparent;
+    border:1px solid var(--ishi); border-radius:8px; color:var(--washiSub);
+    font-size:12px; cursor:pointer; font-family:inherit; letter-spacing:1px;}
+  .foot{font-size:10px; color:var(--ishi); text-align:center; margin-top:14px; line-height:1.6;}
+
+  /* SVG tooltip */
+  #tip{position:fixed; pointer-events:none; background:var(--sumi); border:1px solid rgba(201,164,76,0.33);
+    border-radius:6px; font-size:12px; color:var(--washi); padding:6px 10px; opacity:0; transition:opacity .1s;
+    z-index:50; white-space:nowrap;}
+  .scroll{overflow-x:auto;}
+  input[type=number]{-moz-appearance:textfield;}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="goldline"></div>
+    <div class="eyebrow">財 政 要 塞</div>
+    <h1>城主の資産要塞</h1>
+    <p class="subtitle">月々の変動を見据え、生涯の財を築く</p>
+  </header>
+
+  <div class="summary" id="summary"></div>
+  <div class="miles" id="miles"></div>
+  <nav id="nav"></nav>
+
+  <main><div class="panel" id="panel"></div>
+    <p class="foot">概算試算です。税・インフレ・相場変動は含みません。<br>臨時出費は年額として将来試算に反映されます。退職後は給与・賞与を除きます。</p>
+  </main>
+</div>
+<div id="tip"></div>
+
+<script>
+/* ─────────────── 状態 ─────────────── */
+var T = {
+  sumi:"#13161c", konjo:"#1b2433", konjoLite:"#243047", ishi:"#2d3a4f",
+  kin:"#c9a44c", kinLite:"#e3c574", washi:"#ece4d3", washiSub:"#9aa3b2",
+  ai:"#5b8fb0", matsu:"#7faa78", beni:"#c17b7b", murasaki:"#9d8ec4", line:"#2a3547"
+};
+var MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+var INCOME_CATS = [
+  {key:"salary",  label:"給与（手取り）", icon:"🏯", def:26.8},
+  {key:"bonus",   label:"賞与（月割）",   icon:"🎁", def:10},
+  {key:"pension", label:"障害年金",       icon:"🛡️", def:7.1},
+  {key:"side",    label:"副収入・事業",   icon:"🌱", def:0}
+];
+var EXPENSE_CATS = [
+  {key:"housing", label:"住宅ローン",     icon:"🏠", def:8},
+  {key:"food",    label:"食費",           icon:"🍚", def:4},
+  {key:"utility", label:"水道光熱・通信", icon:"💡", def:2},
+  {key:"daily",   label:"日用・雑費",     icon:"🧺", def:1.5},
+  {key:"insure",  label:"保険・医療",     icon:"⚕️", def:1},
+  {key:"leisure", label:"趣味・交際",     icon:"🍶", def:1},
+  {key:"other",   label:"その他",         icon:"—",  def:0}
+];
+function defaults(){
+  var inc={},exp={};
+  INCOME_CATS.forEach(function(c){inc[c.key]=c.def;});
+  EXPENSE_CATS.forEach(function(c){exp[c.key]=c.def;});
+  return {
+    currentAge:33, retireAge:60, initCash:200, initNisa:250, initIdeco:50,
+    income:inc, expense:exp,
+    specials:[
+      {id:1, month:6,  label:"車検・自動車税", amount:12},
+      {id:2, month:8,  label:"夏の帰省・旅行", amount:8},
+      {id:3, month:12, label:"年末・冬の灯油", amount:6}
+    ],
+    nisoMonthly:5, nisoSwitchAge1:36, nisoMonthly2:10,
+    nisoSwitchAge2:40, nisoMonthly3:15, iDecoMonthly:2, returnRate:5
+  };
+}
+var p = defaults();
+var tab = "ledger";
+var assetView = "pie";
+var nextId = 100;
+
+/* ─────────────── 計算 ─────────────── */
+function fmt(v){
+  if(v>=10000){var o=v/10000; return (o%1===0?o:o.toFixed(1))+"億";}
+  return v+"万";
+}
+function sum(obj){var s=0; for(var k in obj){s+=obj[k];} return s;}
+
+function compute(){
+  var incomeTotal=sum(p.income);
+  var baseExpense=sum(p.expense);
+  var investMonthly=p.nisoMonthly+p.iDecoMonthly;
+  var totalNow=p.initCash+p.initNisa+p.initIdeco;
+  var specialYearTotal=p.specials.reduce(function(a,s){return a+s.amount;},0);
+  var expenseYearTotal=baseExpense*12+specialYearTotal;
+  var expenseMonthAvg=expenseYearTotal/12;
+  var monthlyBalanceAvg=incomeTotal-expenseMonthAvg-investMonthly;
+
+  var monthlyExpense=MONTHS.map(function(_,i){
+    var m=i+1;
+    var sp=p.specials.filter(function(s){return s.month===m;}).reduce(function(a,s){return a+s.amount;},0);
+    return {month:MONTHS[i], base:baseExpense, special:sp, total:baseExpense+sp};
+  });
+
+  var rows=[]; var cash=p.initCash, nisa=p.initNisa, ideco=p.initIdeco;
+  var rate=p.returnRate/100; var incY=incomeTotal*12; var expY=expenseYearTotal;
+  for(var age=p.currentAge; age<=72; age++){
+    var year=2026+(age-p.currentAge);
+    var nisoM = age>=p.nisoSwitchAge2 ? p.nisoMonthly3 : age>=p.nisoSwitchAge1 ? p.nisoMonthly2 : p.nisoMonthly;
+    var incThis = age<p.retireAge ? incY : (p.income.pension+p.income.side)*12;
+    var nisoY=nisoM*12, idecoY=p.iDecoMonthly*12;
+    nisa=(nisa+nisoY)*(1+rate);
+    ideco=(ideco+idecoY)*(1+rate);
+    cash += incThis - expY - nisoY - idecoY;
+    rows.push({age:age, year:year, total:Math.round(cash+nisa+ideco),
+      cash:Math.round(cash), nisa:Math.round(nisa), ideco:Math.round(ideco), ret:Math.round(nisa*rate)});
+  }
+  var peak=Math.max.apply(null, rows.map(function(r){return r.total;}));
+  var mTargets=[]; for(var v=1000; v<=peak; v+=1000){mTargets.push(v);}
+  var milestones=mTargets.map(function(v){
+    for(var i=0;i<rows.length;i++){
+      if(rows[i].total>=v && (i===0||rows[i-1].total<v)) return {v:v, age:rows[i].age};
+    } return null;
+  }).filter(Boolean);
+
+  return {incomeTotal:incomeTotal, baseExpense:baseExpense, investMonthly:investMonthly,
+    totalNow:totalNow, specialYearTotal:specialYearTotal, expenseYearTotal:expenseYearTotal,
+    expenseMonthAvg:expenseMonthAvg, monthlyBalanceAvg:monthlyBalanceAvg,
+    monthlyExpense:monthlyExpense, rows:rows, mTargets:mTargets, milestones:milestones,
+    retire: rows.filter(function(r){return r.age===p.retireAge;})[0] || rows[rows.length-1]};
+}
+
+/* ─────────────── SVG描画 ─────────────── */
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+// ドーナツ円グラフ
+function donutSVG(segs, total){
+  var size=200, cx=size/2, cy=size/2, rO=82, rI=52;
+  var ang=-90; var paths="";
+  segs.forEach(function(s){
+    if(s.value<=0) return;
+    var frac=total>0?s.value/total:0;
+    var a0=ang, a1=ang+frac*360; ang=a1;
+    // 隙間
+    var gap=1.2; a0+=gap; a1-=gap;
+    var large=(a1-a0)>180?1:0;
+    var r0=a0*Math.PI/180, r1=a1*Math.PI/180;
+    var x0o=cx+rO*Math.cos(r0), y0o=cy+rO*Math.sin(r0);
+    var x1o=cx+rO*Math.cos(r1), y1o=cy+rO*Math.sin(r1);
+    var x0i=cx+rI*Math.cos(r1), y0i=cy+rI*Math.sin(r1);
+    var x1i=cx+rI*Math.cos(r0), y1i=cy+rI*Math.sin(r0);
+    var pct=Math.round(frac*100);
+    paths += '<path d="M'+x0o+' '+y0o+' A'+rO+' '+rO+' 0 '+large+' 1 '+x1o+' '+y1o+
+      ' L'+x0i+' '+y0i+' A'+rI+' '+rI+' 0 '+large+' 0 '+x1i+' '+y1i+' Z" fill="'+s.color+
+      '" stroke="'+T.sumi+'" stroke-width="2" class="seg" '+
+      'data-tip="'+esc(s.name)+' '+s.value+'万円（'+pct+'%）"></path>';
+  });
+  return '<svg viewBox="0 0 '+size+' '+size+'" width="100%" height="200" style="display:block">'+paths+'</svg>'+
+    '<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none">'+
+    '<div style="font-size:9px; color:'+T.washiSub+'">三資産の</div>'+
+    '<div style="font-size:13px; color:'+T.kinLite+'; font-weight:700">内訳</div></div>';
+}
+
+// 横バー
+function hbarSVG(segs, total){
+  var html='<div style="display:flex; height:28px; border-radius:6px; overflow:hidden; gap:2px">';
+  segs.forEach(function(s){
+    if(s.value<=0) return;
+    var pct=total>0?Math.round(s.value/total*100):0;
+    var show=total>0 && (s.value/total)>0.08;
+    html+='<div class="seg" data-tip="'+esc(s.name)+' '+s.value+'万円（'+pct+'%）" '+
+      'style="flex:'+Math.max(s.value,0.01)+'; background:'+s.color+'; border-radius:4px; '+
+      'display:flex; align-items:center; justify-content:center">'+
+      (show?'<span style="font-size:11px; color:'+T.sumi+'; font-weight:700">'+pct+'%</span>':'')+'</div>';
+  });
+  return html+'</div>';
+}
+
+// 月別出費 棒グラフ
+function monthBarSVG(data){
+  var W=560, H=170, pad=28, bw=W/12;
+  var max=Math.max.apply(null, data.map(function(d){return d.total;}))||1;
+  var bars="", labels="";
+  data.forEach(function(d,i){
+    var x=i*bw+bw*0.2, w=bw*0.6;
+    var bh=(d.base/max)*(H-pad-10);
+    var sh=(d.special/max)*(H-pad-10);
+    var yBase=H-pad-bh;
+    var ySp=yBase-sh;
+    bars+='<rect x="'+x+'" y="'+yBase+'" width="'+w+'" height="'+bh+'" fill="'+T.beni+'" class="seg" data-tip="'+d.month+' 基本 '+d.base.toFixed(1)+'万"></rect>';
+    if(d.special>0) bars+='<rect x="'+x+'" y="'+ySp+'" width="'+w+'" height="'+sh+'" fill="'+T.kin+'" rx="2" class="seg" data-tip="'+d.month+' 臨時 '+d.special.toFixed(1)+'万"></rect>';
+    labels+='<text x="'+(x+w/2)+'" y="'+(H-pad+14)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="middle">'+(i+1)+'</text>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="170" style="display:block">'+bars+labels+'</svg>';
+}
+
+// 折れ線（資産推移）
+function lineSVG(rows, mTargets){
+  var W=560, H=290, padL=46, padB=24, padT=10, padR=10;
+  var iw=W-padL-padR, ih=H-padT-padB;
+  var maxV=Math.max.apply(null, rows.map(function(r){return r.total;}))||1;
+  var ages=rows.map(function(r){return r.age;});
+  var minA=ages[0], maxA=ages[ages.length-1];
+  function X(a){return padL+(a-minA)/(maxA-minA)*iw;}
+  function Y(v){return padT+(1-v/maxV)*ih;}
+  // 参照線
+  var refs="";
+  mTargets.filter(function(v){return v%2000===0||v===1000;}).forEach(function(v){
+    var y=Y(v);
+    refs+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="'+T.ishi+'" stroke-dasharray="3 3" stroke-width="1"></line>'+
+      '<text x="'+(W-padR)+'" y="'+(y-2)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="end">'+fmt(v)+'</text>';
+  });
+  // 退職ライン
+  var rx=X(p.retireAge);
+  refs+='<line x1="'+rx+'" y1="'+padT+'" x2="'+rx+'" y2="'+(H-padB)+'" stroke="'+T.beni+'" stroke-dasharray="4 2" stroke-width="1"></line>'+
+    '<text x="'+rx+'" y="'+(padT+10)+'" fill="'+T.beni+'" font-size="11" text-anchor="middle">退</text>';
+  // 各系列
+  function poly(key,color,w,fill){
+    var pts=rows.map(function(r){return X(r.age)+","+Y(r[key]);}).join(" ");
+    var s='<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="'+w+'"></polyline>';
+    if(fill){
+      var area=padL+","+(H-padB)+" "+pts+" "+(W-padR)+","+(H-padB);
+      s='<polygon points="'+area+'" fill="'+color+'" opacity="0.12"></polygon>'+s;
+    }
+    return s;
+  }
+  // 軸ラベル(年齢)
+  var xl="";
+  for(var a=minA; a<=maxA; a+=6){
+    xl+='<text x="'+X(a)+'" y="'+(H-padB+14)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="middle">'+a+'</text>';
+  }
+  // ホバー用の縦帯（年齢ごと）
+  var hot="";
+  rows.forEach(function(r){
+    hot+='<rect x="'+(X(r.age)-iw/(maxA-minA)/2)+'" y="'+padT+'" width="'+(iw/(maxA-minA))+'" height="'+ih+'" fill="transparent" class="seg" data-tip="'+r.age+'歳　総資産'+fmt(r.total)+' / NISA'+fmt(r.nisa)+' / 現金'+fmt(r.cash)+'"></rect>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="290" style="display:block">'+
+    refs+
+    poly("cash",T.ai,1.5,false)+poly("nisa",T.matsu,1.5,false)+poly("total",T.kin,2.5,true)+
+    xl+hot+'</svg>';
+}
+
+/* ─────────────── レンダリング ─────────────── */
+function el(html){var d=document.createElement('div'); d.innerHTML=html; return d.firstElementChild;}
+
+function render(){
+  var c=compute();
+
+  // サマリー
+  var sums=[
+    {lbl:"月の実入り", val:c.incomeTotal, col:T.matsu},
+    {lbl:"月の出費（平均）", val:c.expenseMonthAvg+c.investMonthly, col:T.beni},
+    {lbl:"月の余剰（平均）", val:c.monthlyBalanceAvg, col:c.monthlyBalanceAvg>=0?T.kin:T.beni}
+  ];
+  document.getElementById('summary').innerHTML = sums.map(function(s){
+    return '<div><div class="lbl">'+s.lbl+'</div><div class="val" style="color:'+s.col+'">'+
+      (s.val>=0?"":"▲")+Math.abs(s.val).toFixed(1)+'<span>万</span></div></div>';
+  }).join('');
+
+  // マイルストーン
+  document.getElementById('miles').innerHTML = c.milestones.map(function(m){
+    return '<div class="mile"><b>'+fmt(m.v)+'</b><span> ─ '+m.age+'歳</span></div>';
+  }).join('');
+
+  // タブ
+  var tabs=[["ledger","家計簿"],["monthly","月の変動"],["assets","現有資産"],["invest","投資の計"],["chart","資産の推移"],["table","年代記"]];
+  document.getElementById('nav').innerHTML = tabs.map(function(t){
+    return '<button class="'+(tab===t[0]?'active':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>';
+  }).join('');
+
+  // パネル
+  document.getElementById('panel').innerHTML = renderPanel(c);
+
+  bindEvents(c);
+}
+
+function ledgerRow(icon,label,val,key,kind,accent,step){
+  step=step||0.5;
+  return '<div class="row"><span class="ic">'+icon+'</span><span class="lb">'+label+'</span>'+
+    '<div class="stepper">'+
+    '<button data-act="dec" data-key="'+key+'" data-kind="'+kind+'" data-step="'+step+'">−</button>'+
+    '<input type="number" step="'+step+'" min="0" value="'+val+'" data-input="'+key+'" data-kind="'+kind+'" style="border:1px solid '+accent+'88; color:'+accent+'">'+
+    '<span class="u">'+(kind==="age"?"":"万")+'</span>'+
+    '<button data-act="inc" data-key="'+key+'" data-kind="'+kind+'" data-step="'+step+'">＋</button>'+
+    '</div></div>';
+}
+
+function sectitle(label,sub,color,total){
+  return '<div class="sectitle" style="border-bottom:1px solid '+color+'44">'+
+    '<div><span class="l" style="color:'+color+'">'+label+'</span><span class="s">'+sub+'</span></div>'+
+    (total!==undefined?'<span class="tot" style="color:'+color+'">計 '+total.toFixed(1)+'万</span>':'')+'</div>';
+}
+
+function renderPanel(c){
+  if(tab==="ledger"){
+    var h=sectitle("実入りの巻","毎月の収入",T.matsu,c.incomeTotal);
+    INCOME_CATS.forEach(function(ct){h+=ledgerRow(ct.icon,ct.label,p.income[ct.key],ct.key,"income",T.matsu);});
+    h+='<div style="height:20px"></div>';
+    h+=sectitle("出費の巻","毎月かかる基本額",T.beni,c.baseExpense);
+    EXPENSE_CATS.forEach(function(ct){h+=ledgerRow(ct.icon,ct.label,p.expense[ct.key],ct.key,"expense",T.beni);});
+    h+='<div class="note">ここは「毎月かならず出ていく額」です。車検や帰省など<b>月によって変わる出費</b>は、上の「月の変動」タブで月ごとに足せます。</div>';
+    var bc=c.monthlyBalanceAvg>=0?T.kinLite:T.beni;
+    h+='<div class="balbox" style="border:1px solid '+(c.monthlyBalanceAvg>=0?T.kin:T.beni)+'88">'+
+      '<div class="balrow"><span class="t">月の余剰（平均・貯蓄へ）</span>'+
+      '<span class="v" style="color:'+bc+'">'+(c.monthlyBalanceAvg>=0?"":"▲")+Math.abs(c.monthlyBalanceAvg).toFixed(1)+'<span>万/月</span></span></div>'+
+      '<div class="balsub">臨時出費 年'+c.specialYearTotal+'万を含めた平均 ／ 年間 '+(c.monthlyBalanceAvg*12).toFixed(0)+'万の蓄え</div></div>';
+    h+='<button class="resetbtn" data-reset="1">初期値に戻す</button>';
+    return h;
+  }
+  if(tab==="monthly"){
+    var h=sectitle("月変わりの巻","月ごとの臨時出費",T.kin);
+    var minM=Math.min.apply(null,c.monthlyExpense.map(function(m){return m.total;}));
+    var maxM=Math.max.apply(null,c.monthlyExpense.map(function(m){return m.total;}));
+    h+='<div style="background:'+T.sumi+'; border-radius:8px; padding:14px 8px 8px; margin-bottom:16px; border:1px solid '+T.line+'">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'; margin-bottom:8px; padding-left:6px">月別の出費（基本＋臨時）</div>'+
+      '<div style="position:relative">'+monthBarSVG(c.monthlyExpense)+'</div>'+
+      '<div style="display:flex; justify-content:space-between; font-size:10px; color:'+T.washiSub+'; padding:4px 8px 0">'+
+      '<span>最も軽い月 '+minM.toFixed(1)+'万</span><span style="color:'+T.kinLite+'">最も重い月 '+maxM.toFixed(1)+'万</span></div></div>';
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin-bottom:8px">臨時の出費（月・項目・金額）</div>';
+    if(p.specials.length===0){
+      h+='<div style="padding:16px; text-align:center; font-size:12px; color:'+T.ishi+'; border:1px dashed '+T.line+'; border-radius:8px">まだ登録がありません。下の「＋ 臨時出費を足す」から追加できます。</div>';
+    }
+    p.specials.slice().sort(function(a,b){return a.month-b.month;}).forEach(function(s){
+      var opts=MONTHS.map(function(m,i){return '<option value="'+(i+1)+'" '+(s.month===i+1?'selected':'')+'>'+m+'</option>';}).join('');
+      h+='<div class="special">'+
+        '<select data-sp="month" data-id="'+s.id+'">'+opts+'</select>'+
+        '<input class="lbi" type="text" value="'+esc(s.label)+'" data-sp="label" data-id="'+s.id+'">'+
+        '<input class="ami" type="number" min="0" step="0.5" value="'+s.amount+'" data-sp="amount" data-id="'+s.id+'">'+
+        '<button class="del" data-delsp="'+s.id+'">×</button></div>';
+    });
+    h+='<button class="addbtn" data-addsp="1">＋ 臨時出費を足す</button>';
+    h+='<div style="margin-top:16px; padding:14px; background:'+T.sumi+'; border-radius:8px; border:1px solid '+T.line+'">'+
+      '<div style="display:flex; justify-content:space-between; font-size:12px; color:'+T.washi+'; margin-bottom:6px"><span>年間の臨時出費 合計</span><span style="color:'+T.kinLite+'; font-weight:700">'+c.specialYearTotal+'万</span></div>'+
+      '<div style="display:flex; justify-content:space-between; font-size:12px; color:'+T.washi+'"><span>年間の出費 総額（基本＋臨時）</span><span style="color:'+T.beni+'; font-weight:700">'+c.expenseYearTotal.toFixed(0)+'万</span></div></div>';
+    h+='<button class="resetbtn" data-reset="1">初期値に戻す</button>';
+    return h;
+  }
+  if(tab==="assets"){
+    var segs=[
+      {name:"現金・預金", value:p.initCash, color:T.ai},
+      {name:"NISA", value:p.initNisa, color:T.matsu},
+      {name:"iDeCo", value:p.initIdeco, color:T.murasaki}
+    ];
+    var chart = assetView==="pie"
+      ? '<div style="position:relative; width:100%; height:200px">'+donutSVG(segs,c.totalNow)+'</div>'
+      : '<div style="padding:20px 0 8px">'+hbarSVG(segs,c.totalNow)+'</div>';
+    var legend = '<div class="legend3">'+segs.map(function(d){
+      var pc=c.totalNow>0?Math.round(d.value/c.totalNow*100):0;
+      return '<div style="border:1px solid '+d.color+'33"><div class="nm" style="color:'+d.color+'">● '+d.name+'</div>'+
+        '<div class="am">'+d.value+'<span>万</span></div><div class="pc">'+pc+'%</div></div>';
+    }).join('')+'</div>';
+    var h='<div class="card"><div class="totlabel">現在の総資産</div>'+
+      '<div class="totval">'+c.totalNow.toLocaleString()+'<span> 万円</span></div>'+
+      '<div class="toggle"><button class="'+(assetView==="pie"?"on":"")+'" data-view="pie">円グラフ</button>'+
+      '<button class="'+(assetView==="bar"?"on":"")+'" data-view="bar">横バー</button></div>'+
+      chart+legend+'</div>';
+    h+=ledgerRow("💰","現金・預金",p.initCash,"initCash","field",T.ai,10);
+    h+=ledgerRow("📊","NISA残高",p.initNisa,"initNisa","field",T.matsu,10);
+    h+=ledgerRow("🏛️","iDeCo残高",p.initIdeco,"initIdeco","field",T.murasaki,5);
+    h+='<div style="height:16px"></div>';
+    h+=sectitle("齢の設定","年齢",T.kin);
+    h+=ledgerRow("🎂","現在の年齢",p.currentAge,"currentAge","age",T.washi,1);
+    h+=ledgerRow("🏯","退き際の年齢",p.retireAge,"retireAge","age",T.washi,1);
+    h+='<button class="resetbtn" data-reset="1">初期値に戻す</button>';
+    return h;
+  }
+  if(tab==="invest"){
+    var h=sectitle("積立の計","NISA・iDeCo",T.matsu);
+    h+=ledgerRow("①","NISA積立（現在）",p.nisoMonthly,"nisoMonthly","field",T.matsu);
+    h+=ledgerRow("⤴","増額①の年齢",p.nisoSwitchAge1,"nisoSwitchAge1","age",T.washi,1);
+    h+=ledgerRow("②","NISA積立（増額後）",p.nisoMonthly2,"nisoMonthly2","field",T.matsu);
+    h+=ledgerRow("⤴","増額②の年齢",p.nisoSwitchAge2,"nisoSwitchAge2","age",T.washi,1);
+    h+=ledgerRow("③","NISA積立（最終）",p.nisoMonthly3,"nisoMonthly3","field",T.matsu);
+    h+=ledgerRow("🏛️","iDeCo積立",p.iDecoMonthly,"iDecoMonthly","field",T.murasaki,0.1);
+    h+=ledgerRow("📈","年利（期待）",p.returnRate,"returnRate","field",T.kin,0.5);
+    h+='<button class="resetbtn" data-reset="1">初期値に戻す</button>';
+    return h;
+  }
+  if(tab==="chart"){
+    var h='<div style="position:relative">'+lineSVG(c.rows,c.mTargets)+'</div>';
+    h+='<div style="display:flex; gap:14px; justify-content:center; font-size:11px; margin:4px 0 14px">'+
+      '<span style="color:'+T.kin+'">━ 総資産</span><span style="color:'+T.matsu+'">━ NISA</span><span style="color:'+T.ai+'">━ 現金</span></div>';
+    var stats=[
+      {l:"現在の総資産", v:c.totalNow.toLocaleString()+"万", col:T.washi, s:"三資産の合計"},
+      {l:"月の貯蓄力（平均）", v:c.monthlyBalanceAvg.toFixed(1)+"万/月", col:c.monthlyBalanceAvg>=0?T.matsu:T.beni, s:"年"+(c.monthlyBalanceAvg*12).toFixed(0)+"万"},
+      {l:"退き際（"+p.retireAge+"歳）", v:c.retire.total.toLocaleString()+"万", col:T.kinLite, s:"NISA"+c.retire.nisa.toLocaleString()+"万含む"},
+      {l:"4%取崩し", v:Math.round(c.retire.total*0.04/12)+"万/月", col:T.kin, s:"生涯の月収"}
+    ];
+    h+='<div class="grid2">'+stats.map(function(it){
+      return '<div class="stat"><div class="l">'+it.l+'</div><div class="v" style="color:'+it.col+'">'+it.v+'</div><div class="s">'+it.s+'</div></div>';
+    }).join('')+'</div>';
+    return h;
+  }
+  if(tab==="table"){
+    var h='<div class="scroll"><table><thead><tr>'+
+      ["齢","総資産","NISA","現金","iDeCo"].map(function(x){return '<th>'+x+'</th>';}).join('')+
+      '</tr></thead><tbody>';
+    c.rows.forEach(function(r,i){
+      var mile=c.mTargets.some(function(v){return r.total>=v && (i===0||c.rows[i-1].total<v);});
+      var isR=r.age===p.retireAge;
+      var bg=mile?"rgba(201,164,76,0.08)":(isR?"rgba(193,123,123,0.07)":"transparent");
+      h+='<tr style="background:'+bg+'">'+
+        '<td style="color:'+(isR?T.beni:T.washi)+'; font-weight:'+(isR||mile?700:400)+'">'+r.age+(mile?" ⬥":"")+'</td>'+
+        '<td style="color:'+T.kinLite+'; font-weight:700; font-family:serif">'+r.total.toLocaleString()+'</td>'+
+        '<td style="color:'+T.matsu+'">'+r.nisa.toLocaleString()+'</td>'+
+        '<td style="color:'+T.ai+'">'+r.cash.toLocaleString()+'</td>'+
+        '<td style="color:'+T.murasaki+'">'+r.ideco.toLocaleString()+'</td></tr>';
+    });
+    h+='</tbody></table><div style="margin-top:8px; font-size:10px; color:'+T.ishi+'; text-align:right">単位：万円　⬥ 大台到達　紅行 = 退き際</div></div>';
+    return h;
+  }
+  return "";
+}
+
+/* ─────────────── イベント ─────────────── */
+function clamp(v){return v<0?0:v;}
+
+function bindEvents(c){
+  // タブ
+  document.querySelectorAll('#nav button').forEach(function(b){
+    b.onclick=function(){tab=b.getAttribute('data-tab'); render();};
+  });
+  var panel=document.getElementById('panel');
+
+  // ステッパー＋／−
+  panel.querySelectorAll('[data-act]').forEach(function(b){
+    b.onclick=function(){
+      var key=b.getAttribute('data-key'), kind=b.getAttribute('data-kind');
+      var step=parseFloat(b.getAttribute('data-step'));
+      var d=b.getAttribute('data-act')==='inc'?step:-step;
+      applyVal(kind,key,function(old){return clamp(+(old+d).toFixed(1));});
+      render();
+    };
+  });
+  // 数値入力
+  panel.querySelectorAll('[data-input]').forEach(function(inp){
+    inp.onchange=function(){
+      var key=inp.getAttribute('data-input'), kind=inp.getAttribute('data-kind');
+      applyVal(kind,key,function(){return clamp(Number(inp.value));});
+      render();
+    };
+  });
+  // トグル
+  panel.querySelectorAll('[data-view]').forEach(function(b){
+    b.onclick=function(){assetView=b.getAttribute('data-view'); render();};
+  });
+  // 臨時出費
+  panel.querySelectorAll('[data-sp]').forEach(function(inp){
+    inp.onchange=function(){
+      var id=Number(inp.getAttribute('data-id')), field=inp.getAttribute('data-sp');
+      var val = field==="label" ? inp.value : (field==="month"?Number(inp.value):clamp(Number(inp.value)));
+      p.specials=p.specials.map(function(s){if(s.id===id){s[field]=val;} return s;});
+      render();
+    };
+  });
+  var addb=panel.querySelector('[data-addsp]');
+  if(addb) addb.onclick=function(){p.specials.push({id:nextId++, month:1, label:"臨時の出費", amount:5}); render();};
+  panel.querySelectorAll('[data-delsp]').forEach(function(b){
+    b.onclick=function(){var id=Number(b.getAttribute('data-delsp')); p.specials=p.specials.filter(function(s){return s.id!==id;}); render();};
+  });
+  // リセット
+  var rb=panel.querySelector('[data-reset]');
+  if(rb) rb.onclick=function(){p=defaults(); nextId=100; render();};
+
+  // SVGツールチップ
+  var tip=document.getElementById('tip');
+  panel.querySelectorAll('.seg').forEach(function(s){
+    s.style.cursor="pointer";
+    function show(e){
+      var t=s.getAttribute('data-tip'); if(!t) return;
+      tip.textContent=t; tip.style.opacity=1;
+      var x=(e.touches?e.touches[0].clientX:e.clientX);
+      var y=(e.touches?e.touches[0].clientY:e.clientY);
+      tip.style.left=Math.min(x+12, window.innerWidth-tip.offsetWidth-8)+"px";
+      tip.style.top=(y-40)+"px";
+    }
+    function hide(){tip.style.opacity=0;}
+    s.addEventListener('mousemove',show);
+    s.addEventListener('mouseleave',hide);
+    s.addEventListener('touchstart',show,{passive:true});
+    s.addEventListener('touchend',function(){setTimeout(hide,1200);});
+  });
+}
+
+function applyVal(kind,key,fn){
+  if(kind==="income") p.income[key]=fn(p.income[key]);
+  else if(kind==="expense") p.expense[key]=fn(p.expense[key]);
+  else p[key]=fn(p[key]);
+}
+
+render();
+</script>
+</body>
+</html>
