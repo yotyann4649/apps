@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三星鑑 人間分析システム（自動計算・複数人管理版・全15回）</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #3730a3; border-radius: 20px; }
+  .toast-enter { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .toast-exit  { transform: translateY(2rem); opacity: 0; pointer-events: none; }
+  .ep-badge { font-size:.65rem; min-width:2rem; text-align:center; padding:1px 5px; border-radius:4px; font-variant-numeric:tabular-nums; flex-shrink:0; }
+  .auto-field { background-color:#1e1b4b !important; border-color:#4f46e5 !important; }
+</style>
+</head>
+<body class="h-screen bg-slate-900 text-slate-200 font-sans flex flex-col overflow-hidden">
+
+<header class="flex-shrink-0 bg-slate-950 border-b border-indigo-900/50 p-4 shadow-md flex items-center justify-between flex-wrap gap-2">
+  <div class="flex items-center gap-3">
+    <div class="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-900/50">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+    </div>
+    <div>
+      <h1 class="text-xl font-bold tracking-tight text-white">三星鑑 人間分析システム</h1>
+      <p class="text-xs text-indigo-400">数秘術 自動計算 / 複数人管理 / JSON入出力 / 全15回</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 flex-wrap">
+    <select id="person-select" class="bg-slate-800 text-slate-200 text-sm rounded-md px-3 py-2 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 max-w-[160px]">
+      <option value="">― 対象者を選択 ―</option>
+    </select>
+    <button id="open-input" class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      新規/編集
+    </button>
+    <button id="open-manual" title="使い方を見る" class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold bg-slate-700 hover:bg-slate-600 text-slate-200 transition-all">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      使い方
+    </button>
+    <button id="export-btn" title="全データをJSON書き出し" class="px-3 py-2 rounded-md text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+    <button id="import-btn" title="JSONを読み込み" class="px-3 py-2 rounded-md text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></button>
+    <input id="import-file" type="file" accept="application/json" class="hidden">
+  </div>
+</header>
+
+<div class="flex-1 flex flex-col md:flex-row min-h-0">
+  <aside class="w-full md:w-1/3 lg:w-1/4 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col flex-1 md:flex-none min-h-0">
+    <div class="flex-shrink-0 p-3 bg-indigo-900/20 border-b border-indigo-900/30 text-xs flex items-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <p id="status-text" class="text-slate-300">「新規/編集」から対象者を登録すると、数秘術が自動計算され15回分の台本が完成します。</p>
+    </div>
+    <div class="md:hidden flex-shrink-0 p-2 border-b border-slate-800">
+      <select id="episode-select" class="w-full bg-slate-800 text-slate-200 text-sm rounded-md px-3 py-2 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"></select>
+    </div>
+    <div id="episode-list" class="hidden md:block flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar min-h-0"></div>
+  </aside>
+
+  <main class="flex-1 flex flex-col bg-slate-950 p-4 md:p-6 min-h-0">
+    <div class="flex-shrink-0 flex items-center justify-between mb-2">
+      <h2 class="text-lg font-semibold text-slate-100 flex items-center gap-2 flex-wrap">
+        <span>解析プロンプト・プレビュー</span>
+        <span id="subject-tag" class="text-xs font-normal px-2 py-1 bg-indigo-900/40 text-indigo-300 rounded border border-indigo-700/50">対象者：未選択</span>
+      </h2>
+      <button id="copy-btn" class="flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold transition-all duration-300 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg active:scale-95">
+        <svg id="icon-copy" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <svg id="icon-check" class="hidden text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="copy-text">一撃コピー</span>
+      </button>
+    </div>
+    <div class="flex-shrink-0 flex items-center gap-3 mb-3">
+      <span id="progress-label" class="text-xs text-indigo-400 font-mono whitespace-nowrap"></span>
+      <div class="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-indigo-600 rounded-full transition-all duration-300"></div></div>
+      <span id="char-count" class="text-xs text-slate-500 font-mono whitespace-nowrap"></span>
+    </div>
+    <div class="flex-1 relative bg-slate-900 rounded-lg border border-slate-800 overflow-hidden shadow-inner min-h-0">
+      <textarea id="prompt-viewer" readonly class="absolute inset-0 w-full h-full p-6 bg-transparent text-slate-300 font-mono text-sm leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500/50 custom-scrollbar" spellcheck="false"></textarea>
+    </div>
+  </main>
+</div>
+
+<!-- マニュアルモーダル -->
+<div id="manual-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-indigo-800/50 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="flex-shrink-0 p-5 border-b border-slate-800 flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-bold text-white">使い方ガイド</h3>
+        <p class="text-xs text-indigo-400 mt-0.5">三星鑑 人間分析システム（全15回）</p>
+      </div>
+      <button id="close-manual" class="text-slate-400 hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar text-sm text-slate-300 leading-relaxed">
+
+      <!-- 全体像 -->
+      <div>
+        <h4 class="text-base font-bold text-white mb-3">このツールは何をするものか</h4>
+        <div class="bg-slate-800/60 rounded-lg p-4 space-y-2">
+          <p>このツールは、<span class="text-indigo-300 font-semibold">対象者の生年月日・名前・出生地</span>を入力すると、全15回分の<span class="text-indigo-300 font-semibold">人間分析の台本（プロンプト）</span>を自動生成します。</p>
+          <p>生成された台本を<span class="text-indigo-300 font-semibold">NotebookLM</span>（Googleの無料AIツール）に貼り付けると、男女2人のホストによる<span class="text-indigo-300 font-semibold">音声解説番組</span>が完成します。</p>
+        </div>
+        <!-- フロー図 -->
+        <div class="mt-4 flex items-center gap-1 flex-wrap justify-center text-xs">
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">①データ入力</div>
+            <div class="text-slate-400 mt-0.5">生年月日・名前・出生地</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600 flex-shrink-0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">②台本生成</div>
+            <div class="text-slate-400 mt-0.5">全15回分を自動作成</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600 flex-shrink-0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">③コピー</div>
+            <div class="text-slate-400 mt-0.5">1回ずつコピー</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600 flex-shrink-0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">④NotebookLM</div>
+            <div class="text-slate-400 mt-0.5">音声番組を生成</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- STEP1 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded">STEP 1</span>
+          <h4 class="font-bold text-white">データを入力する</h4>
+        </div>
+        <ol class="space-y-3 pl-1">
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">1.</span>
+            <div>右上の<span class="bg-indigo-600 text-white text-xs px-1.5 py-0.5 rounded mx-1">新規/編集</span>ボタンを押す。入力フォームが開きます。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">2.</span>
+            <div><span class="text-indigo-300 font-semibold">呼称・氏名（ローマ字）・生年月日（年/月/日を別々に入力）</span>を記入したら、<span class="bg-indigo-700/60 text-indigo-200 text-xs px-1.5 py-0.5 rounded mx-1">数秘術を自動計算する</span>ボタンを押す。LP・DN・SN等の数値が<span class="text-indigo-300">紫色の欄</span>に自動で入ります。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">3.</span>
+            <div><span class="text-indigo-300 font-semibold">占星術・四柱推命の値</span>は手入力です。<br>
+              <span class="text-slate-400 text-xs">
+                占星術：「ホロスコープ 無料 作成」で検索 → 生年月日・出生時刻・出生地を入力 → 各天体の星座と度数を転記<br>
+                四柱推命：「四柱推命 無料 命式」で検索 → 生年月日・出生時刻を入力 → 干支・通変星を転記<br>
+                ※出生時刻が不明でも分かる項目だけで分析できます
+              </span>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">4.</span>
+            <div><span class="bg-indigo-600 text-white text-xs px-1.5 py-0.5 rounded mx-1">保存して台本を生成</span>を押すと、15回分の台本が完成します。</div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- STEP2 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded">STEP 2</span>
+          <h4 class="font-bold text-white">台本をコピーしてNotebookLMに貼る</h4>
+        </div>
+        <ol class="space-y-3 pl-1">
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">5.</span>
+            <div>左側のリストから<span class="text-indigo-300 font-semibold">第1回</span>を選ぶ。右側のプレビュー欄に台本が表示されます。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">6.</span>
+            <div>右上の<span class="bg-indigo-600 text-white text-xs px-1.5 py-0.5 rounded mx-1">一撃コピー</span>ボタンを押す。台本がクリップボードにコピーされます（読み仮名は自動除去されます）。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">7.</span>
+            <div><span class="text-indigo-300 font-semibold">NotebookLM</span>（notebooklm.google.com）を開き、新しいノートブックを作成します。「ソースを追加」→「テキストをコピー」にコピーした台本を貼り付けます。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">8.</span>
+            <div>NotebookLM右上の<span class="text-indigo-300 font-semibold">「音声の概要」→「生成」</span>を押すと、数分で音声番組が完成します。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">9.</span>
+            <div>第2回〜第15回も同様に繰り返します。<span class="text-slate-400 text-xs">（←→キーまたはリストのクリックで回を切り替えられます）</span></div>
+          </li>
+        </ol>
+        <div class="mt-3 bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 text-xs text-amber-300/80">
+          ⚠ NotebookLMは1回ごとに新しいノートブックを作成してください。複数回分を同じノートブックに入れると内容が混ざります。
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- データの安全性 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-emerald-800 text-emerald-200 text-xs font-bold px-2 py-0.5 rounded">🔒 安心</span>
+          <h4 class="font-bold text-white">入力したデータはどこに保存されるのか</h4>
+        </div>
+        <div class="bg-emerald-900/20 border border-emerald-700/30 rounded-lg p-4 space-y-2 text-xs text-slate-300">
+          <p><span class="text-emerald-400 font-semibold">入力したデータは、あなたのブラウザの中だけに保存されます。</span>サーバーには一切送信されません。</p>
+          <p>このツールはHTMLファイル単体で動いており、外部にデータを送る仕組みを持っていません。他の人がアクセスしても、あなたのデータは見えません。他の人が入力したデータも、あなたには見えません。</p>
+          <p class="text-slate-400">※ブラウザのキャッシュをクリアしたり、シークレットモードで開くと、保存済みのデータが消えることがあります。大切なデータは↓アイコンのJSON書き出しでバックアップしておくことをおすすめします。</p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- 複数人管理 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-slate-700 text-slate-200 text-xs font-bold px-2 py-0.5 rounded">機能</span>
+          <h4 class="font-bold text-white">複数人の管理・保存</h4>
+        </div>
+        <ul class="space-y-2 pl-1 text-slate-400 text-xs">
+          <li>・登録した対象者はブラウザに自動保存されます。上部の選択メニューで切り替えられます。</li>
+          <li>・<span class="text-slate-300">↓アイコン</span>：全データをJSONファイルに書き出し（バックアップ用）</li>
+          <li>・<span class="text-slate-300">↑アイコン</span>：JSONファイルを読み込み（別端末への移行・復元用）</li>
+          <li class="text-amber-400/70">⚠ 自動保存はダウンロードしてPCのブラウザで開いた時に正常に動作します。ブラウザ上（Claude等）で開いた場合は保存されないことがあります。その場合はJSONで書き出してバックアップしてください。</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="flex-shrink-0 p-4 border-t border-slate-800 flex justify-end">
+      <button id="close-manual-btn" class="px-6 py-2.5 rounded-md text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 入力モーダル -->
+<div id="input-modal" class="hidden fixed inset-0 z-40 bg-black/60 flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-indigo-800/50 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="flex-shrink-0 p-5 border-b border-slate-800 flex items-center justify-between">
+      <h3 class="text-lg font-bold text-white">対象者データの入力</h3>
+      <button id="close-input" class="text-slate-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5 space-y-5 custom-scrollbar">
+
+      <div class="text-xs text-slate-400 bg-slate-800/50 rounded-lg p-3 leading-relaxed">
+        <span class="text-indigo-300 font-semibold">氏名（ローマ字）と生年月日</span>を入れて「数秘術を自動計算」を押すと、数秘術の各数が自動で埋まります（<span class="text-indigo-300">紫色の欄</span>）。占星術・四柱推命は計算済みの値を手入力してください。空欄は台本内で「（未入力）」と表示されます。
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">基本情報</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">呼称（ひらがな/漢字）<span class="text-red-400">*</span></span><input data-key="NAME" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：山田／やまだ"></label>
+          <label class="block"><span class="text-xs text-slate-400">氏名（ローマ字・数秘計算用）<span class="text-red-400">*</span></span><input data-key="ROMAJI" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：YAMADA HANAKO"></label>
+          <label class="block"><span class="text-xs text-slate-400">生年月日<span class="text-red-400">*</span></span><input data-key="BIRTH" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：2000年4月1日 12時"></label>
+          <label class="block"><span class="text-xs text-slate-400">出生地</span><input data-key="BIRTHPLACE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：東京都"></label>
+        </div>
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">生年（数字のみ）</span><input data-key="Y" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：2000" inputmode="numeric"></label>
+          <label class="block"><span class="text-xs text-slate-400">月（数字のみ）</span><input data-key="M" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：4" inputmode="numeric"></label>
+          <label class="block"><span class="text-xs text-slate-400">日（数字のみ）</span><input data-key="D" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：1" inputmode="numeric"></label>
+        </div>
+        <button id="calc-num" class="mt-3 w-full px-4 py-2.5 rounded-md text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 text-white transition-all flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+          数秘術を自動計算する
+        </button>
+        <p id="calc-msg" class="text-xs mt-2 text-center text-slate-500"></p>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">数秘術 <span class="text-xs text-indigo-400/70 font-normal">（紫＝自動計算・手修正も可）</span></h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">LP</span><input data-key="LP" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">DN</span><input data-key="DN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">SN</span><input data-key="SN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">PN</span><input data-key="PN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">MN</span><input data-key="MN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">BN</span><input data-key="BN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+        <label class="block mt-3"><span class="text-xs text-slate-400">欠落数・過剰数</span><input data-key="NUM_NOTE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="自動計算されます"></label>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">占星術（手入力）</h4>
+        <div class="text-xs text-slate-400 bg-slate-800/50 rounded-lg p-3 mb-3 leading-relaxed">
+          <span class="text-indigo-300 font-semibold">▶ 値の調べ方</span><br>
+          各天体の星座・度数は、無料のホロスコープ作成サイト（「ホロスコープ 無料 作成」で検索）に<span class="text-slate-300">生年月日・出生時刻・出生地</span>を入れると一覧で出てきます。出てきた星座と度数（例：牡羊座10度）をそのまま転記してください。出生時刻が不明な場合はASC・MC・ハウスが出ないことがありますが、分かる項目だけでも分析できます。
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">太陽</span><input data-key="SUN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：牡羊座10度/1H"></label>
+          <label class="block"><span class="text-xs text-slate-400">月</span><input data-key="MOON" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：蟹座5度/4H"></label>
+          <label class="block"><span class="text-xs text-slate-400">水星</span><input data-key="MERCURY" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">金星</span><input data-key="VENUS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">火星</span><input data-key="MARS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">木星</span><input data-key="JUPITER" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">土星</span><input data-key="SATURN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">天王星</span><input data-key="URANUS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">海王星</span><input data-key="NEPTUNE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">冥王星</span><input data-key="PLUTO" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">ASC</span><input data-key="ASC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">MC</span><input data-key="MC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+        <label class="block mt-3"><span class="text-xs text-slate-400">特殊配置（任意）</span><input data-key="ASPECT_NOTE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：グランドトライン 等"></label>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">サビアン（手入力・度数＋シンボル名）</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">太陽サビアン</span><input data-key="SAB_SUN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：牡羊座11度 〇〇"></label>
+          <label class="block"><span class="text-xs text-slate-400">月サビアン</span><input data-key="SAB_MOON" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">ASCサビアン</span><input data-key="SAB_ASC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">MC・その他</span><input data-key="SAB_OTHER" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">四柱推命（手入力）</h4>
+        <div class="text-xs text-slate-400 bg-slate-800/50 rounded-lg p-3 mb-3 leading-relaxed">
+          <span class="text-indigo-300 font-semibold">▶ 値の調べ方</span><br>
+          四柱（年柱・月柱・日柱・時柱）と通変星・十二運星は、無料の四柱推命サイト（「四柱推命 無料 命式」で検索）に<span class="text-slate-300">生年月日・出生時刻</span>を入れると命式表として出てきます。表に出てくる干支（例：丙寅 など）や通変星（例：食神 など）をそのまま転記してください。
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">年柱</span><input data-key="YEAR_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">月柱</span><input data-key="MONTH_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">日柱</span><input data-key="DAY_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">時柱</span><input data-key="HOUR_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+          <label class="block"><span class="text-xs text-slate-400">日干と主な通変星</span><input data-key="TENMV" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：日干〇／食神 等"></label>
+          <label class="block"><span class="text-xs text-slate-400">十二運星・身強身弱</span><input data-key="UNSEI" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：建禄 等／身強・身弱"></label>
+          <label class="block"><span class="text-xs text-slate-400">空亡・現在の大運（任意）</span><input data-key="KUBO" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：空亡〇〇／大運〇〇"></label>
+        </div>
+      </div>
+
+    </div>
+    <div class="flex-shrink-0 p-5 border-t border-slate-800 flex items-center justify-between gap-3 flex-wrap">
+      <button id="delete-btn" class="px-4 py-2 rounded-md text-sm text-red-400 hover:text-white hover:bg-red-900/40 transition-all">この対象者を削除</button>
+      <div class="flex items-center gap-3">
+        <button id="clear-btn" class="px-4 py-2 rounded-md text-sm text-slate-400 hover:text-white hover:bg-slate-800 transition-all">入力クリア</button>
+        <button id="apply-btn" class="px-6 py-2.5 rounded-md text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">保存して台本を生成</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-ok" class="toast-exit fixed bottom-6 right-6 flex items-center gap-3 px-6 py-4 bg-slate-800 border-l-4 border-indigo-500 text-white rounded shadow-2xl transition-all duration-300 z-50">
+  <div class="bg-indigo-500/20 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+  <div><p id="toast-ok-title" class="font-semibold text-sm">クリップボードへ転送完了。</p><p id="toast-ok-sub" class="text-xs text-slate-400 mt-0.5">読み仮名除去済み｜NotebookLMでどうぞ。</p></div>
+</div>
+<div id="toast-err" class="toast-exit fixed bottom-6 right-6 flex items-center gap-3 px-6 py-4 bg-slate-800 border-l-4 border-red-500 text-white rounded shadow-2xl transition-all duration-300 z-50">
+  <div class="bg-red-500/20 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+  <div><p id="toast-err-title" class="font-semibold text-sm">エラーが発生しました。</p><p id="toast-err-sub" class="text-xs text-slate-400 mt-0.5"></p></div>
+</div>
+
+<script>
+const SEP = '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝';
+const STORE_KEY = 'sanshijutsu_people_v1';
+
+// ============================================================
+// 数秘術 自動計算エンジン
+// ============================================================
+const LETTER = {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8};
+const VOWELS = new Set(['A','E','I','O','U']);
+function reduceNum(n, keepMaster=true){
+  while(n>9 && !(keepMaster && (n===11||n===22||n===33))){
+    n = String(n).split('').reduce((a,b)=>a+(+b),0);
+  }
+  return n;
+}
+function calcNumerology(romaji, y, m, d){
+  const letters = (romaji||'').toUpperCase().replace(/[^A-Z]/g,'').split('');
+  let all=0, vowel=0, cons=0;
+  const count={1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  letters.forEach(ch=>{
+    const v=LETTER[ch]||0; all+=v;
+    if(VOWELS.has(ch)) vowel+=v; else cons+=v;
+    if(v) count[v]++;
+  });
+  const lpSum = `${y}${m}${d}`.split('').reduce((a,b)=>a+(+b||0),0);
+  const LP = (y&&m&&d) ? reduceNum(lpSum) : '';
+  const DN = letters.length ? reduceNum(all) : '';
+  const SN = letters.length ? reduceNum(vowel) : '';
+  const PN = letters.length ? reduceNum(cons) : '';
+  const BN = d ? reduceNum(+d, false) : '';
+  const MN = (LP!=='' && DN!=='') ? reduceNum(LP+DN) : '';
+  const missing = Object.keys(count).filter(k=>count[k]===0);
+  const over = Object.keys(count).filter(k=>count[k]>=4);
+  let note = '';
+  if(letters.length){
+    const parts=[];
+    if(missing.length) parts.push('欠落'+missing.join('・'));
+    if(over.length) parts.push('過剰'+over.map(k=>`${k}(${count[k]}個)`).join('・'));
+    note = parts.join('／');
+  }
+  return {LP,DN,SN,PN,MN,BN,NUM_NOTE:note};
+}
+
+// ============================================================
+// テンプレート（{{KEY}} を差し替え）
+// ============================================================
+const template = `【三星鑑 人間分析編：固定ベースプロンプト】
+あなたは全15回の人間分析バラエティラジオ番組「{{NAME}}さん解体新書」のホスト（男女）です。女性ホストは辛口のツッコミ役、男性ホストは面白がりながら深堀りする解説役です。
+対象人物：{{NAME}}さん（生年月日：{{BIRTH}}／出生地：{{BIRTHPLACE}}）。音声解説では必ず「{{NAME}}さん」と敬称付きで呼んでください。
+この番組は占星術・数秘術・四柱推命という三つの分析軸だけを根拠に、{{NAME}}さんという一人の人間を客観的に読み解きます。本人の体験談やエピソードは一切使わず、生年月日・名前・出生地から導かれた分析パラメータのみで分析してください。これにより自己申告のバイアスがない、客観データに基づく純粋な人間分析を行います。
+専門用語は必ずかみ砕いて、初めて聞く人にも分かるように説明してください。
+{{NAME}}さんを過度に持ち上げず、長所も短所も公平に語ってください。適度にユーモアを交え、笑いが出るような瞬間を意識してください。ただし本人を傷つける言い方や決めつけは避け、「この分析システムではこういう傾向が出ている」という形で語ってください。
+診断結果は断定ではなく「こういう傾向がある」「こう動くと力を発揮しやすい」という提案として届けてください。
+提供される指示には [今回] の要素が含まれます。以下の構成を必ず守って語り尽くしてください。
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第1回】{{NAME}}さんを三占術で読み解く（導入）
+[今回] ・番組の開幕宣言：{{NAME}}さん（{{BIRTH}}・{{BIRTHPLACE}}生まれ）を、占星術・数秘術・四柱推命の三つの視点だけで読み解く番組であることを宣言してください。
+・三つの分析軸とは何か：数秘術は「生年月日と名前の数字が持つ統計的な傾向値」で本質を読む。占星術は「生まれた瞬間の天体配置という客観データ」で性格の傾向を読む。四柱推命は「生まれた年月日時の四つの柱という東洋の体系」で設計図を読む。三つは全く違うアプローチだが、合わさると一枚の人間像が浮かび上がる。
+・本日の分析データの全体像をざっと提示：数秘LP{{LP}}、太陽{{SUN}}、日柱{{DAY_P}}など、これから15回かけて読み解く要素を予告してください。
+・本人の体験談を一切使わず生年月日だけで分析することの意味：自己申告のクセや思い込みが混ざらない、純粋な設計図が見えることを語ってください。
+※「自己分析が好きな人にも、初めての人にも楽しめるように！」「生年月日だけでどこまで人間の傾向が見えるのか、お手並み拝見といきましょう！」と軽快に始めてください。
+[次回] 【第2回】{{NAME}}さんの「核」：人生のテーマと本質
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第2回】{{NAME}}さんの「核」：人生のテーマと本質
+[今回] ・三つの分析軸の「核」を統合して語る回。数秘ライフパス{{LP}}（人生の地図・根本テーマ）、太陽星座{{SUN}}（輝きたい方向・本質的な自我）、四柱の日柱{{DAY_P}}・日干と通変星{{TENMV}}（性格の中心）を組み合わせる。
+・三つが共通して指し示す「{{NAME}}さんの核」を一言で表現してください。
+・LP{{LP}}の意味をかみ砕いて解説し、太陽{{SUN}}の星座の本質と重ねる。さらに日柱{{DAY_P}}の東洋的な意味を重ねて、三方向から同じ核に迫る。
+・三分析軸が一致する部分と、微妙に違う角度から照らす部分の両方を語り、立体的な人物像を描いてください。
+※「三つの分析軸が同じ方向を指したら、それはもう本物だよね！」「逆に違う角度から見えてくる部分が、その人の奥行きだったりする！」と語ってください。
+[次回] 【第3回】{{NAME}}さんの恋愛・パートナーシップのパターン
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第3回】{{NAME}}さんの恋愛・パートナーシップのパターン
+[今回] ・恋愛・親密な関係での行動パターンを三つの分析軸を横断して読む回。金星{{VENUS}}（愛の様式・価値観）、月{{MOON}}（感情の動き方・本能的な距離感）、数秘SN{{SN}}（魂が求める繋がり）を統合する。
+・3三つの分析軸が一致して示す「{{NAME}}さんの恋愛の傾向」を導いてください。どんな相手に惹かれやすいか、関係の中でどんなパターンを繰り返しやすいかを、分析データの範囲で語る。
+・金星{{VENUS}}の星座が示す「愛し方・愛されたい形」をかみ砕いて解説。月{{MOON}}が示す「感情がどう動くか」と重ねる。
+・決めつけにならないよう「こういう傾向が出やすい」という形で、優しく語ってください。
+※「恋愛のクセって自分では気づきにくいけど、星と数字で見ると意外なパターンが見えてくるんだよね！」と語ってください。
+[次回] 【第4回】{{NAME}}さんの仕事・組織でのパターン
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第4回】{{NAME}}さんの仕事・組織でのパターン
+[今回] ・仕事・組織の中での行動パターンを三つの分析軸を横断して読む回。火星{{MARS}}（行動力の使い方）、太陽{{SUN}}（社会で輝きたい方向）、四柱の通変星{{TENMV}}（仕事における気質）、MC{{MC}}（社会的な到達点）を統合する。
+・3三つの分析軸が一致して示す「{{NAME}}さんが組織でどう振る舞いやすいか」を導いてください。リーダー型か職人型か、表で目立つか裏で支えるか、プレッシャー下でどう動くかなど。
+・火星{{MARS}}の星座が示す「どう行動するか・何のために燃えるか」をかみ砕いて解説。
+・「どんな働き方が向いているか」を前向きな提案として語ってください。
+※「仕事のスタイルって性格そのものが出るよね。向いてる働き方が分かると人生だいぶ楽になる！」と語ってください。
+[次回] 【第5回】{{NAME}}さんの合う人・合わない人の設計図
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第5回】{{NAME}}さんの合う人・合わない人の設計図
+[今回] ・対人関係の相性を三つの分析軸で読む回。月{{MOON}}（本能的な距離感）、金星{{VENUS}}（価値観の合い方）、数秘SN{{SN}}（魂が求める繋がり）、ASC{{ASC}}（第一印象・関わり方）を統合する。
+・三つの分析軸から「{{NAME}}さんと相性が良い人のタイプ」と「すれ違いやすい人のタイプ」を具体的に導いてください。
+・どんな距離感の相手と心地よくいられるか（近い距離が好きか、適度な距離が必要か）を月{{MOON}}から読む。
+・恋愛・友情・仕事それぞれで合う相手の傾向が違う場合は、その違いも語ってください。決めつけにならないように。
+※「相性って運命じゃなくて『お互いの設計図の噛み合わせ』なんだよね！」と語ってください。
+[次回] 【第6回】{{NAME}}さんが輝く環境：才能が最大出力になる条件
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第6回】{{NAME}}さんが輝く環境：才能が最大出力になる条件
+[今回] ・「どんな環境で力を発揮し、どんな環境で消耗するか」を読む回。火星{{MARS}}（行動の使い方）、土星{{SATURN}}（規律・試練の場所）、四柱の身強身弱{{UNSEI}}（自力型か他力型か）、数秘の傾向{{NUM_NOTE}}を統合する。
+・身弱なら「他者やシステムの力を借りると伸びる」、身強なら「自分主導で動くと伸びる」など、エネルギーの使い方の最適解を語ってください。
+・「最大出力になる環境条件」と「避けるべき消耗する環境」を具体的に対比して語ってください。一人が向くか集団が向くか、静かな環境か刺激のある環境かなど。
+※「同じ才能でも環境次第で開花したり潰れたりする。環境選びは才能と同じくらい大事！」と語ってください。
+[次回] 【第7回】{{NAME}}さんのストレス反応と回復パターン
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第7回】{{NAME}}さんのストレス反応と回復パターン
+[今回] ・「何に傷つき、どう回復するか」を読む回。月{{MOON}}（感情の傷つき方）、海王星{{NEPTUNE}}（繊細さ・境界線）、土星{{SATURN}}（プレッシャーの場所）、四柱の十二運星{{UNSEI}}を統合する。
+・三つの分析軸から「{{NAME}}さんが最もストレスを感じる状況」を導いてください。何が地雷になりやすいか。
+・同じく「最も効果的な回復方法」を導いてください（一人の時間・好きなことへの没頭・人と話す・体を動かすなど、分析データから根拠を持って）。
+・うつや過労に陥りやすいパターンがあれば、優しく注意喚起してください（断定や脅しにならないように）。
+※「自分の心の取扱説明書を持ってる人は強い。先に知っておけば防げることって多いよね！」と語ってください。
+[次回] 【第8回】{{NAME}}さんの意思決定の癖と落とし穴
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第8回】{{NAME}}さんの意思決定の癖と落とし穴
+[今回] ・物事をどう決めるか・どんな失敗を繰り返しやすいかを三つの分析軸で読む回。水星{{MERCURY}}（思考・判断の仕方）、数秘の欠落・過剰{{NUM_NOTE}}、四柱の通変星{{TENMV}}の暴走パターン、占星術の特殊配置{{ASPECT_NOTE}}を統合する。
+・三つの分析軸から「{{NAME}}さんの意思決定の癖」を導いてください。直感型か熟考型か、即決か先延ばしか、感情で動くか論理で動くか。
+・繰り返しやすい「落とし穴」を2〜3個導き、それぞれ「どんな状況で発動しやすいか」と「どう予防できるか」をセットで語ってください。
+・弱点を責めるのではなく「設計上こうなりやすいので、こう対策すると楽になる」という前向きな形で。
+※「弱点って性格の問題じゃなくて設計上の特性。だから対策できるんだよね！」と語ってください。
+[次回] 【第9回】{{NAME}}さんならではの「設計図」の意味
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第9回】{{NAME}}さんならではの「設計図」の意味
+[今回] ・ここまでの分析を踏まえ、「{{NAME}}さんという人間の設計図そのものが何を意味するのか」を統合的に語る回。
+・三つの分析軸（数秘術・占星術・四柱推命）がバラバラのアプローチなのに、同じ方向を指している部分を改めて確認し、「これは偶然ではなく、{{NAME}}さんの本質が複数の角度から証明されている」ことを語ってください。
+・他の誰とも違う「{{NAME}}さんだけの組み合わせ」が持つ意味を語る。同じ星座でも、数秘や四柱との掛け合わせで全く違う人間になる。その唯一性を強調してください。
+・「占術は当てるものではなく、その人の設計図を読み解いて生かすための道具だ」という視点を提示してください。
+※「世界に同じ生年月日・同じ名前の組み合わせはない。だからこそ自分だけの取扱説明書を知る意味があるんだよね！」と語ってください。
+[次回] 【第10回】{{NAME}}さんの才能の正体と、最も力を発揮する形
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第10回】{{NAME}}さんの才能の正体と、最も力を発揮する形
+[今回] ・三占術を横断して「才能の正体」と「最も力を発揮する形（最終出力形態）」を導く回。水星{{MERCURY}}（思考の才能）、木星{{JUPITER}}（拡大・幸運の方向）、四柱の通変星{{TENMV}}（生まれ持った武器）、数秘DN{{DN}}（社会的使命・到達点）を統合する。
+・太陽サビアン{{SAB_SUN}}があれば、その情景を「才能を象徴するキーイメージ」として活用してください。特殊配置{{ASPECT_NOTE}}が強化している才能も。
+・3三つの分析軸が一致して示す「{{NAME}}さんにしかない強み」を一言で表現し、それが「どんな形で発揮されると最大化するか」を具体的に語ってください。
+・「この才能はこういう役割・立ち位置でこそ輝く」という最も力を発揮する形を提案してください。
+※「才能って自分では当たり前すぎて気づかないもの。でも一番輝く形が分かると、人生の主導権を握れるよね！」と語ってください。
+[次回] 【第11回】{{NAME}}さんの弱点と、それを守る「最強の鎧」
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第11回】{{NAME}}さんの弱点と、それを守る「最強の鎧」
+[今回] ・3三つの分析軸が一致して示す「弱点」と、その弱点をカバーする「鎧（対策）」をセットで語る回。
+・数秘の欠落・過剰{{NUM_NOTE}}、占星術の緊張配置{{ASPECT_NOTE}}、四柱の通変星{{TENMV}}の暴走パターンから、三つの分析軸が共通して示す「根本的な弱点」を2〜3個導いてください。
+・重要なのは、それぞれの弱点に対して「どう備えれば弱点が強みに変わるか」という鎧をセットで提示することです。弱点は欠陥ではなく「対策すべき設計上の特性」として扱ってください。
+・たとえば「完璧主義で動けなくなる弱点」には「小さく始める仕組みを持つ」、「感情的になりやすい弱点」には「一呼吸おく習慣を持つ」など、具体的な対策を。
+※「弱点を知って鎧を着れば、それはもう弱点じゃない。むしろ一番の防御になるんだよね！」と語ってください。
+[次回] 【第12回】{{NAME}}さんの3層構造：表の顔・戦い方・本音
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第12回】{{NAME}}さんの3層構造：表の顔・戦い方・本音
+[今回] ・{{NAME}}さんという人間を「3つの層」に分けて立体的に描く回。
+・第1層（表の顔・社会的な姿）：ASC{{ASC}}、MC{{MC}}、太陽{{SUN}}など、外から見える社会的なペルソナ。周囲からどう見られているか。
+・第2層（戦い方・行動の仕方）：火星{{MARS}}、土星{{SATURN}}、水星{{MERCURY}}など、物事にどう取り組み、どう動くか。
+・第3層（本音・隠された自分）：月{{MOON}}、海王星{{NEPTUNE}}、冥王星{{PLUTO}}など、誰にも見せない深層の感情や欲求。
+・この3層が「同じ方向を向いているか・ギャップがあるか」を語ってください。表と本音にギャップがある人ほど、内面が複雑で奥行きがある。そのギャップこそ{{NAME}}さんの人間的な魅力だと語ってください。
+※「人間って一枚岩じゃない。表の顔・戦い方・本音、この3層が分かると『なんであの人ああなんだ』が全部腑に落ちるんだよね！」と語ってください。
+[次回] 【第13回】占いを「道具」として使う：{{NAME}}さんの活かし方
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第13回】占いを「道具」として使う：{{NAME}}さんの活かし方
+[今回] ・この分析システムを「未来を当てるもの」ではなく「自己理解の道具」として使う視点を{{NAME}}さんに当てはめて語る回。
+・ここまで読み解いてきた{{NAME}}さんの設計図を、「どう日常で活かすか」という実用の視点でまとめてください。
+・たとえば「苦手なことは根性で克服するのではなく、設計上の特性として受け入れ、得意な人や仕組みに任せる」「自分が輝く環境を意図的に選ぶ」「弱点が発動する前に対策する」など、分析データを人生の意思決定に使う方法を具体的に語ってください。
+・「占いは答えを与えるものではなく、自分で選ぶための地図だ」という考え方を{{NAME}}さんのケースで示してください。
+※「占いって当ててもらって終わりじゃなくて、自分の取扱説明書として使い倒すものなんだよね。ここからが本番！」と語ってください。
+[次回] 【第14回】{{NAME}}さんの今の運気と、これから進む道
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第14回】{{NAME}}さんの今の運気と、これから進む道
+[今回] ・現在の運気の流れと、これから進むと良い方向を語る回。四柱推命の空亡・大運{{KUBO}}、数秘術の運気の流れを統合する。
+・四柱の{{KUBO}}があれば、今が「守りの時期」か「攻めの時期」かを読み、それに合った過ごし方を提案してください。
+・ノード{{SAB_OTHER}}や木星{{JUPITER}}など「魂が向かうべき方向・成長のテーマ」があれば、{{NAME}}さんがこれから伸ばすと良い領域を語ってください。
+・「今の時期に何をすると流れに乗れるか」を、分析データに基づいて前向きに提案してください。断定ではなく「こう動くと追い風になりやすい」という形で。
+※「運気って当てるものじゃなくて、波に乗るためのサーフィンの天気予報みたいなもの。今が攻め時か守り時か分かるだけで全然違う！」と語ってください。
+[次回] 【第15回】すべてが一致した一枚の絵（最終回）
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第15回】すべてが一致した一枚の絵（最終回）
+[今回] ・全14回を統合し、{{NAME}}さんという人間の「一枚の絵」を完成させる最終回。
+・三つの分析軸（数秘術・占星術・四柱推命）が一致して描いた「{{NAME}}さんの本質」を改めて一言で表現してください。
+・核（第2回）・恋愛（第3回）・仕事（第4回）・対人（第5回）・環境（第6回）・ストレス（第7回）・意思決定（第8回）・設計図の意味（第9回）・才能（第10回）・弱点と鎧（第11回）・3層構造（第12回）・道具としての活かし方（第13回）・運気（第14回）——これら全部が繋がって一人の人間を形作っていることを語ってください。
+・生年月日だけで、ここまで一人の人間が立体的に見えたという驚きを改めて伝えてください。
+・最後のメッセージ：{{NAME}}さんへ、三つの分析軸が示した「自分らしく生きる方向性」を、温かく背中を押す言葉で締めくくってください。生まれ持った設計図は変えられないが、それをどう生かすかは自分で選べる、という希望を込めて。
+※「15回かけて生年月日だけでここまで見えたって、このシステムってすごいよね！」「{{NAME}}さんが自分の設計図を知って、もっと自分らしく生きられますように！」と感動と笑顔で締めてください。
+[次回] 本編終了のため次回予告はなし。
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+`;
+
+const KEYS = ['NAME','ROMAJI','BIRTH','BIRTHPLACE','Y','M','D','LP','DN','SN','PN','MN','BN','NUM_NOTE','SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN','URANUS','NEPTUNE','PLUTO','ASC','MC','ASPECT_NOTE','SAB_SUN','SAB_MOON','SAB_ASC','SAB_OTHER','YEAR_P','MONTH_P','DAY_P','HOUR_P','TENMV','UNSEI','KUBO'];
+// テンプレートに登場するキー（ROMAJI,Y,M,Dは計算専用で本文に出さない）
+const TKEYS = KEYS.filter(k=>!['ROMAJI','Y','M','D'].includes(k));
+
+function emptyData(){ const o={}; KEYS.forEach(k=>o[k]=''); return o; }
+
+function fillTemplate(d){
+  let out = template;
+  TKEYS.forEach(k=>{
+    const val=(d[k]&&String(d[k]).trim())?String(d[k]).trim():'（未入力）';
+    out = out.split('{{'+k+'}}').join(val);
+  });
+  return out;
+}
+function stripYomi(t){ let r=t.replace(/（読み：[^）]+）/g,''); r=r.replace(/（[\u3040-\u309F\u30A0-\u30FF\u30FC・ ]+）/g,''); return r; }
+function parse(full){ const parts=full.split(SEP); return { base: parts[0].trim()+'\n'+SEP, eps: parts.slice(1).map(p=>p.trim()).filter(p=>p.startsWith('【第')) }; }
+
+// ============================================================
+// ストレージ（localStorage 使用・非対応環境はメモリのみ）
+// ============================================================
+let people = {}; // {id: data}
+let storageOK = true;
+function loadPeople(){
+  try{ const raw=localStorage.getItem(STORE_KEY); people = raw?JSON.parse(raw):{}; }
+  catch(e){ storageOK=false; people={}; }
+}
+function savePeople(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(people)); }
+  catch(e){ storageOK=false; }
+}
+
+let currentId = '';
+let data = emptyData();
+let built = parse(fillTemplate(data));
+let basePrompt = built.base, episodes = built.eps;
+let TOTAL = episodes.length, selectedIdx = 0, isCopied = false;
+
+const $=id=>document.getElementById(id);
+const listContainer=$('episode-list'), epSelect=$('episode-select'), promptViewer=$('prompt-viewer');
+const copyBtn=$('copy-btn'), iconCopy=$('icon-copy'), iconCheck=$('icon-check'), copyText=$('copy-text');
+const toastOk=$('toast-ok'), toastErr=$('toast-err'), progressLabel=$('progress-label'), progressBar=$('progress-bar');
+const charCount=$('char-count'), subjectTag=$('subject-tag'), statusText=$('status-text'), modal=$('input-modal');
+const personSelect=$('person-select');
+const manualModal=$('manual-modal');
+
+// マニュアルモーダル
+$('open-manual').onclick=()=>manualModal.classList.remove('hidden');
+$('close-manual').onclick=()=>manualModal.classList.add('hidden');
+$('close-manual-btn').onclick=()=>manualModal.classList.add('hidden');
+manualModal.addEventListener('click',e=>{ if(e.target===manualModal) manualModal.classList.add('hidden'); });
+
+function rebuild(){
+  built=parse(fillTemplate(data)); basePrompt=built.base; episodes=built.eps; TOTAL=episodes.length;
+  if(selectedIdx>=TOTAL) selectedIdx=0;
+  buildEpSelect(); renderList(); updateViewer();
+  const nm=(data.NAME&&data.NAME.trim())?data.NAME.trim()+'さん':'未選択';
+  subjectTag.textContent='対象者：'+nm;
+}
+
+function refreshPersonSelect(){
+  personSelect.innerHTML='<option value="">― 対象者を選択 ―</option>';
+  Object.keys(people).forEach(id=>{
+    const o=document.createElement('option');
+    o.value=id; o.textContent=people[id].NAME?people[id].NAME.trim()+'さん':'(無名)';
+    if(id===currentId)o.selected=true;
+    personSelect.appendChild(o);
+  });
+  const cnt=Object.keys(people).length;
+  statusText.textContent = cnt
+    ? `登録済み${cnt}名。上の選択メニューで切替、「新規/編集」で追加・修正できます。`+(storageOK?'':'（※この環境では自動保存が無効。JSON書き出しで保存してください）')
+    : '「新規/編集」から対象者を登録すると、数秘術が自動計算され15回分の台本が完成します。';
+}
+
+personSelect.onchange=()=>{
+  currentId=personSelect.value;
+  data = currentId&&people[currentId] ? Object.assign(emptyData(), people[currentId]) : emptyData();
+  selectedIdx=0; resetCopy(); rebuild();
+};
+
+function buildEpSelect(){
+  epSelect.innerHTML='';
+  episodes.forEach((ep,idx)=>{ const o=document.createElement('option'); o.value=idx; o.textContent=ep.split('\n')[0]; epSelect.appendChild(o); });
+  epSelect.value=selectedIdx;
+  epSelect.onchange=()=>{selectedIdx=+epSelect.value;resetCopy();renderList();updateViewer();};
+}
+function renderList(){
+  listContainer.innerHTML='';
+  episodes.forEach((ep,idx)=>{
+    const full=ep.split('\n')[0], m=full.match(/【第(\d+)回】/);
+    const num=m?m[1]:String(idx+1), body=m?full.replace(/【第\d+回】/,'').trim():full, act=idx===selectedIdx;
+    const btn=document.createElement('button');
+    btn.className=`w-full text-left px-3 py-2.5 rounded-md transition-all duration-200 flex items-center gap-2 group ${act?'bg-indigo-600 text-white shadow-lg':'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`;
+    btn.innerHTML=`<span class="ep-badge font-mono ${act?'bg-indigo-400/50 text-white':'bg-slate-800 text-slate-500 group-hover:bg-slate-700'}">${num}</span><span class="text-sm font-medium truncate flex-1">${body}</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 transition-opacity ${act?'opacity-100':'opacity-0 group-hover:opacity-40'}"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    btn.onclick=()=>{selectedIdx=idx;epSelect.value=idx;resetCopy();renderList();updateViewer();};
+    listContainer.appendChild(btn);
+  });
+  const ab=listContainer.children[selectedIdx]; if(ab) ab.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function updateViewer(){
+  const text=`${basePrompt}\n${episodes[selectedIdx]}`;
+  promptViewer.value=text;
+  const cur=selectedIdx+1;
+  progressLabel.textContent=`第${cur}回 / 全${TOTAL}回`;
+  progressBar.style.width=`${(cur/TOTAL)*100}%`;
+  charCount.textContent=`${stripYomi(text).length.toLocaleString()} 文字`;
+}
+
+copyBtn.addEventListener('click',async()=>{
+  if(isCopied)return;
+  const t=stripYomi(`${basePrompt}\n${episodes[selectedIdx]}`);
+  const ok=()=>{isCopied=true;iconCopy.classList.add('hidden');iconCheck.classList.remove('hidden');copyText.textContent='コピー完了！';copyBtn.className='flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold transition-all duration-300 bg-emerald-600/20 text-emerald-400 border border-emerald-600/50 cursor-not-allowed';showOk('クリップボードへ転送完了。','読み仮名除去済み｜NotebookLMでどうぞ。');setTimeout(()=>{resetCopy();hide(toastOk);},3000);};
+  const ng=()=>{showErr('コピーに失敗しました。','手動でテキストを選択してください。');setTimeout(()=>hide(toastErr),4000);};
+  if(navigator.clipboard?.writeText){try{await navigator.clipboard.writeText(t);ok();return;}catch(_){}}
+  try{const ta=Object.assign(document.createElement('textarea'),{value:t});ta.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(ta);ta.focus();ta.select();document.execCommand('copy')?ok():ng();document.body.removeChild(ta);}catch(_){ng();}
+});
+function resetCopy(){isCopied=false;iconCopy.classList.remove('hidden');iconCheck.classList.add('hidden');copyText.textContent='一撃コピー';copyBtn.className='flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold transition-all duration-300 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg active:scale-95';}
+function showOk(t,s){$('toast-ok-title').textContent=t;$('toast-ok-sub').textContent=s;toastOk.classList.remove('toast-exit');toastOk.classList.add('toast-enter');}
+function showErr(t,s){$('toast-err-title').textContent=t;$('toast-err-sub').textContent=s;toastErr.classList.remove('toast-exit');toastErr.classList.add('toast-enter');}
+function hide(el){el.classList.remove('toast-enter');el.classList.add('toast-exit');}
+
+document.addEventListener('keydown',e=>{
+  if(document.activeElement===promptViewer)return;
+  if(!modal.classList.contains('hidden'))return;
+  if(e.key==='ArrowDown'){e.preventDefault();if(selectedIdx<TOTAL-1){selectedIdx++;epSelect.value=selectedIdx;resetCopy();renderList();updateViewer();}}
+  else if(e.key==='ArrowUp'){e.preventDefault();if(selectedIdx>0){selectedIdx--;epSelect.value=selectedIdx;resetCopy();renderList();updateViewer();}}
+});
+
+// ---- モーダル ----
+const inps=Array.from(document.querySelectorAll('.inp'));
+const autoKeys=['LP','DN','SN','PN','MN','BN','NUM_NOTE'];
+function markAuto(){ inps.forEach(i=>{ if(autoKeys.includes(i.dataset.key)) i.classList.add('auto-field'); }); }
+function fillForm(d){ inps.forEach(i=>{ i.value=d[i.dataset.key]||''; }); }
+function readForm(){ const d=emptyData(); inps.forEach(i=>{ d[i.dataset.key]=i.value; }); return d; }
+
+$('open-input').onclick=()=>{ fillForm(data); markAuto(); $('calc-msg').textContent=''; modal.classList.remove('hidden'); };
+$('close-input').onclick=()=>modal.classList.add('hidden');
+modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.add('hidden'); });
+
+$('calc-num').onclick=()=>{
+  const romaji=document.querySelector('[data-key="ROMAJI"]').value;
+  const y=document.querySelector('[data-key="Y"]').value.replace(/[^0-9]/g,'');
+  const m=document.querySelector('[data-key="M"]').value.replace(/[^0-9]/g,'');
+  const d=document.querySelector('[data-key="D"]').value.replace(/[^0-9]/g,'');
+  if(!romaji.trim() && !(y&&m&&d)){ $('calc-msg').textContent='ローマ字氏名か生年月日のどちらかを入れてください。'; $('calc-msg').className='text-xs mt-2 text-center text-amber-400'; return; }
+  const r=calcNumerology(romaji,y,m,d);
+  Object.keys(r).forEach(k=>{ const el=document.querySelector(`[data-key="${k}"]`); if(el) el.value=r[k]; });
+  $('calc-msg').textContent=`自動計算完了：LP${r.LP} DN${r.DN} SN${r.SN} PN${r.PN} MN${r.MN} BN${r.BN}　/　${r.NUM_NOTE||'欠落・過剰なし'}`;
+  $('calc-msg').className='text-xs mt-2 text-center text-emerald-400';
+};
+
+$('clear-btn').onclick=()=>{ inps.forEach(i=>i.value=''); $('calc-msg').textContent=''; };
+$('delete-btn').onclick=()=>{
+  if(!currentId||!people[currentId]){ modal.classList.add('hidden'); return; }
+  if(confirm('この対象者を削除しますか？')){
+    delete people[currentId]; savePeople(); currentId=''; data=emptyData();
+    refreshPersonSelect(); rebuild(); modal.classList.add('hidden');
+  }
+};
+$('apply-btn').onclick=()=>{
+  data=readForm();
+  if(!data.NAME||!data.NAME.trim()){ alert('呼称（名前）を入力してください。'); return; }
+  if(!currentId) currentId='p_'+Date.now().toString(36);
+  people[currentId]=Object.assign({},data);
+  savePeople(); selectedIdx=0; resetCopy(); refreshPersonSelect(); rebuild(); modal.classList.add('hidden');
+};
+
+// ---- JSON入出力 ----
+$('export-btn').onclick=()=>{
+  const blob=new Blob([JSON.stringify(people,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='sanshijutsu_people_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  showOk('JSONを書き出しました。',Object.keys(people).length+'名分のデータを保存しました。');
+  setTimeout(()=>hide(toastOk),3000);
+};
+$('import-btn').onclick=()=>$('import-file').click();
+$('import-file').onchange=e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const obj=JSON.parse(reader.result);
+      if(typeof obj!=='object'||Array.isArray(obj)) throw new Error('形式が違います');
+      let added=0;
+      Object.keys(obj).forEach(id=>{ people[id]=Object.assign(emptyData(),obj[id]); added++; });
+      savePeople(); refreshPersonSelect();
+      showOk('JSONを読み込みました。',added+'名分のデータを取り込みました。');
+      setTimeout(()=>hide(toastOk),3000);
+    }catch(err){ showErr('読み込み失敗。','正しいJSONファイルを選んでください。'); setTimeout(()=>hide(toastErr),4000); }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+};
+
+// ---- 初期化 ----
+loadPeople();
+refreshPersonSelect();
+rebuild();
+</script>
+</body>
+</html>
