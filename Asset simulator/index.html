@@ -1,0 +1,340 @@
+import { useState, useMemo } from "react";
+import { Area, AreaChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } from "recharts";
+
+const C = {
+  bg: "#0a0c0f", surface: "#111318", border: "#1e2229",
+  accent: "#c8a96e", gold2: "#e8c98e", green: "#4ade80",
+  blue: "#60a5fa", purple: "#a78bfa", muted: "#4a5260",
+  text: "#e8e0d4", textSub: "#8a8f9a",
+};
+
+const DEFAULTS = {
+  currentAge: 33,
+  retireAge: 60,
+  // ── 現在の資産内訳（個別入力） ──
+  initCash: 200,       // 現金・預金（万円）
+  initNisa: 250,       // NISA残高（万円）
+  initIdeco: 50,       // iDeCo残高（万円）
+  // ── 収入 ──
+  monthlySalary: 26.8,
+  monthlyBonus: 10,
+  disabilityPension: 7.1,
+  // ── 支出 ──
+  monthlyExpenses: 9.5,
+  mortgageMonthly: 8,
+  // ── 投資設定 ──
+  nisoMonthly: 5,
+  nisoSwitchAge1: 36,
+  nisoMonthly2: 10,
+  nisoSwitchAge2: 40,
+  nisoMonthly3: 15,
+  iDecoMonthly: 2,
+  returnRate: 5,
+};
+
+// 数値入力欄（直接タイプ可 + スライダー）
+function ParamRow({ label, unit, value, min, max, step, onChange, color }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 90px 110px", alignItems: "center", gap: 10, padding: "6px 0" }}>
+      <label style={{ fontSize: 12, color: C.textSub }}>{label}</label>
+      <input
+        type="number" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{
+          background: C.bg, border: `1px solid ${color || C.border}`, borderRadius: 6,
+          color: color || C.text, fontSize: 13, fontWeight: 700, padding: "4px 8px",
+          textAlign: "right", width: "100%", outline: "none",
+        }}
+      />
+      <input
+        type="range" min={min} max={max} step={step} value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{ width: "100%", accentColor: color || C.accent }}
+      />
+    </div>
+  );
+}
+
+export default function AssetSimulator() {
+  const [p, setP] = useState(DEFAULTS);
+  const [tab, setTab] = useState("chart");
+
+  const set = (k) => (v) => setP((prev) => ({ ...prev, [k]: v }));
+
+  const data = useMemo(() => {
+    const rows = [];
+    let cash = p.initCash;
+    let nisa = p.initNisa;
+    let ideco = p.initIdeco;
+    const rate = p.returnRate / 100;
+
+    for (let age = p.currentAge; age <= 72; age++) {
+      const year = 2026 + (age - 33);
+      const nisoM =
+        age >= p.nisoSwitchAge2 ? p.nisoMonthly3 :
+        age >= p.nisoSwitchAge1 ? p.nisoMonthly2 : p.nisoMonthly;
+
+      const income = (p.monthlySalary + p.monthlyBonus + p.disabilityPension) * 12;
+      const life = p.monthlyExpenses * 12;
+      const mortgage = age < p.retireAge ? p.mortgageMonthly * 12 : 0;
+      const nisoAnnual = nisoM * 12;
+      const idecoAnnual = p.iDecoMonthly * 12;
+
+      nisa = (nisa + nisoAnnual) * (1 + rate);
+      ideco = (ideco + idecoAnnual) * (1 + rate);
+      const surplus = income - life - mortgage - nisoAnnual - idecoAnnual;
+      cash += Math.max(surplus, 0);
+
+      const total = cash + nisa + ideco;
+      rows.push({
+        age, year,
+        phase: age < 36 ? "Phase 1" : age < 40 ? "Phase 2" : age < p.retireAge ? "Phase 3" : "老後",
+        total: Math.round(total),
+        cash: Math.round(cash),
+        nisa: Math.round(nisa),
+        ideco: Math.round(ideco),
+        nisoMonthly: nisoM,
+        annualReturn: Math.round(nisa * rate),
+        surplus: Math.round(surplus),
+      });
+    }
+    return rows;
+  }, [p]);
+
+  const milestones = useMemo(() => {
+    const checks = [1000, 2000, 3000, 5000, 7500];
+    return checks.map((v) => {
+      const row = data.find((r) => r.total >= v);
+      return row ? { value: v, age: row.age, year: row.year } : null;
+    }).filter(Boolean);
+  }, [data]);
+
+  const fmt = (v) => v >= 10000 ? `${(v / 10000).toFixed(1)}億` : `${v}万`;
+  const now = data[0];
+  const retire = data.find(r => r.age === p.retireAge) || data[data.length - 1];
+
+  return (
+    <div style={{ background: C.bg, minHeight: "100vh", fontFamily: "'Noto Serif JP', Georgia, serif", color: C.text }}>
+
+      {/* ヘッダー */}
+      <div style={{ borderBottom: `1px solid ${C.border}`, padding: "20px 24px 16px", background: C.surface }}>
+        <div style={{ fontSize: 10, letterSpacing: 4, color: C.muted, fontFamily: "monospace" }}>TANAKA FINANCIAL FORTRESS</div>
+        <h1 style={{ margin: "4px 0 0", fontSize: 20, fontWeight: 700, color: C.accent }}>城主の資産シミュレーター</h1>
+        <p style={{ margin: "3px 0 0", fontSize: 11, color: C.textSub }}>将来資産を試算し、経済的自由へのロードマップを可視化する</p>
+      </div>
+
+      {/* マイルストーン */}
+      <div style={{ display: "flex", background: C.border, gap: 1 }}>
+        {milestones.map((m) => (
+          <div key={m.value} style={{ flex: 1, padding: "8px 6px", background: C.surface, textAlign: "center" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: m.value >= 7500 ? C.accent : m.value >= 3000 ? C.gold2 : C.green }}>
+              {m.value >= 10000 ? `${m.value/10000}億` : `${m.value}万`}
+            </div>
+            <div style={{ fontSize: 10, color: C.textSub, marginTop: 1 }}>{m.age}歳（{m.year}）</div>
+          </div>
+        ))}
+      </div>
+
+      {/* タブ */}
+      <div style={{ display: "flex", gap: 1, padding: "14px 20px 0" }}>
+        {[["chart","📈 グラフ"],["params","⚙️ 設定"],["table","📋 年表"]].map(([id, label]) => (
+          <button key={id} onClick={() => setTab(id)} style={{
+            padding: "7px 14px", fontSize: 12, border: "none", cursor: "pointer",
+            background: tab === id ? C.accent : C.surface,
+            color: tab === id ? C.bg : C.textSub,
+            borderRadius: "6px 6px 0 0", fontWeight: tab === id ? 700 : 400,
+          }}>{label}</button>
+        ))}
+      </div>
+
+      <div style={{ padding: "0 20px 24px" }}>
+        <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: "0 8px 8px 8px", padding: 18 }}>
+
+          {/* ── グラフ ── */}
+          {tab === "chart" && (
+            <div>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={data.map(r => ({ age: r.age, 総資産: r.total, NISA: r.nisa, 現金: r.cash, iDeCo: r.ideco }))}
+                  margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="gT" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={C.accent} stopOpacity={0.35}/><stop offset="95%" stopColor={C.accent} stopOpacity={0.02}/>
+                    </linearGradient>
+                    <linearGradient id="gN" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor={C.green} stopOpacity={0.2}/><stop offset="95%" stopColor={C.green} stopOpacity={0.01}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
+                  <XAxis dataKey="age" stroke={C.muted} tick={{ fontSize: 10, fill: C.textSub }} tickFormatter={v => `${v}歳`} />
+                  <YAxis stroke={C.muted} tick={{ fontSize: 10, fill: C.textSub }} tickFormatter={fmt} width={52} />
+                  <Tooltip
+                    contentStyle={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11 }}
+                    labelFormatter={v => `${v}歳`} formatter={(v, n) => [`${v.toLocaleString()}万円`, n]} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  {[1000,2000,3000,7500].map(v => (
+                    <ReferenceLine key={v} y={v} stroke={C.muted} strokeDasharray="4 3"
+                      label={{ value: `${v}万`, position: "insideTopRight", fontSize: 9, fill: C.muted }} />
+                  ))}
+                  <Area type="monotone" dataKey="総資産" stroke={C.accent} strokeWidth={2.5} fill="url(#gT)" />
+                  <Area type="monotone" dataKey="NISA" stroke={C.green} strokeWidth={1.5} fill="url(#gN)" />
+                  <Area type="monotone" dataKey="現金" stroke={C.blue} strokeWidth={1.5} fill="none" />
+                  <Area type="monotone" dataKey="iDeCo" stroke={C.purple} strokeWidth={1.5} fill="none" />
+                </AreaChart>
+              </ResponsiveContainer>
+
+              {/* サマリーカード */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 16 }}>
+                {[
+                  { label: "現在の総資産", value: `${now.total.toLocaleString()}万円`, sub: `内訳 現金${p.initCash}・NISA${p.initNisa}・iDeCo${p.initIdeco}万`, color: C.text },
+                  { label: "今年の運用益（NISA）", value: `${now.annualReturn.toLocaleString()}万円`, sub: `利回り${p.returnRate}%想定`, color: C.green },
+                  { label: `退職時総資産（${p.retireAge}歳）`, value: `${retire.total.toLocaleString()}万円`, sub: `NISA ${retire.nisa.toLocaleString()}万含む`, color: C.accent },
+                  { label: "4%ルール月収", value: `${Math.round(retire.total * 0.04 / 12)}万円/月`, sub: "取り崩し可能額", color: C.gold2 },
+                ].map(item => (
+                  <div key={item.label} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: "12px 14px" }}>
+                    <div style={{ fontSize: 10, color: C.textSub, marginBottom: 3 }}>{item.label}</div>
+                    <div style={{ fontSize: 17, fontWeight: 700, color: item.color }}>{item.value}</div>
+                    <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>{item.sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── パラメーター ── */}
+          {tab === "params" && (
+            <div style={{ display: "grid", gap: 22 }}>
+
+              {/* 現在の資産内訳 */}
+              <div>
+                <div style={{ fontSize: 12, color: C.accent, marginBottom: 10, borderBottom: `1px solid ${C.border}`, paddingBottom: 5, letterSpacing: 1 }}>
+                  💎 現在の資産内訳（スタート地点）
+                </div>
+                <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: "12px 14px", marginBottom: 12 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <span style={{ fontSize: 11, color: C.textSub }}>現在の総資産</span>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: C.accent }}>
+                      {(p.initCash + p.initNisa + p.initIdeco).toLocaleString()} 万円
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: 2, height: 6, borderRadius: 3, overflow: "hidden" }}>
+                    {[
+                      { v: p.initCash, c: C.blue },
+                      { v: p.initNisa, c: C.green },
+                      { v: p.initIdeco, c: C.purple },
+                    ].map(({ v, c }, i) => {
+                      const total = p.initCash + p.initNisa + p.initIdeco || 1;
+                      return <div key={i} style={{ flex: v / total, background: c, opacity: 0.8 }} />;
+                    })}
+                  </div>
+                  <div style={{ display: "flex", gap: 12, marginTop: 5, fontSize: 10, color: C.textSub }}>
+                    <span style={{ color: C.blue }}>■ 現金 {p.initCash}万</span>
+                    <span style={{ color: C.green }}>■ NISA {p.initNisa}万</span>
+                    <span style={{ color: C.purple }}>■ iDeCo {p.initIdeco}万</span>
+                  </div>
+                </div>
+                <ParamRow label="現金・預金（生活口座）" unit="万円" value={p.initCash} min={0} max={2000} step={10} onChange={set("initCash")} color={C.blue} />
+                <ParamRow label="NISA残高" unit="万円" value={p.initNisa} min={0} max={2000} step={10} onChange={set("initNisa")} color={C.green} />
+                <ParamRow label="iDeCo残高" unit="万円" value={p.initIdeco} min={0} max={500} step={5} onChange={set("initIdeco")} color={C.purple} />
+              </div>
+
+              {/* 基本設定 */}
+              <div>
+                <div style={{ fontSize: 12, color: C.accent, marginBottom: 10, borderBottom: `1px solid ${C.border}`, paddingBottom: 5, letterSpacing: 1 }}>
+                  🏰 基本設定
+                </div>
+                <ParamRow label="現在の年齢" unit="歳" value={p.currentAge} min={20} max={60} step={1} onChange={set("currentAge")} />
+                <ParamRow label="退職予定年齢" unit="歳" value={p.retireAge} min={40} max={70} step={1} onChange={set("retireAge")} />
+              </div>
+
+              {/* 収入 */}
+              <div>
+                <div style={{ fontSize: 12, color: C.accent, marginBottom: 10, borderBottom: `1px solid ${C.border}`, paddingBottom: 5, letterSpacing: 1 }}>
+                  💰 収入
+                </div>
+                <ParamRow label="月給（手取り）" unit="万円" value={p.monthlySalary} min={10} max={60} step={0.5} onChange={set("monthlySalary")} />
+                <ParamRow label="ボーナス月換算" unit="万円/月" value={p.monthlyBonus} min={0} max={30} step={0.5} onChange={set("monthlyBonus")} />
+                <ParamRow label="障害年金" unit="万円/月" value={p.disabilityPension} min={0} max={15} step={0.1} onChange={set("disabilityPension")} />
+              </div>
+
+              {/* 支出 */}
+              <div>
+                <div style={{ fontSize: 12, color: C.accent, marginBottom: 10, borderBottom: `1px solid ${C.border}`, paddingBottom: 5, letterSpacing: 1 }}>
+                  💸 支出・ローン
+                </div>
+                <ParamRow label="月間生活費" unit="万円" value={p.monthlyExpenses} min={5} max={30} step={0.5} onChange={set("monthlyExpenses")} />
+                <ParamRow label="住宅ローン月額" unit="万円" value={p.mortgageMonthly} min={0} max={20} step={0.5} onChange={set("mortgageMonthly")} />
+              </div>
+
+              {/* 投資 */}
+              <div>
+                <div style={{ fontSize: 12, color: C.accent, marginBottom: 10, borderBottom: `1px solid ${C.border}`, paddingBottom: 5, letterSpacing: 1 }}>
+                  📈 投資設定
+                </div>
+                <ParamRow label="NISA積立①（現在）" unit="万円/月" value={p.nisoMonthly} min={0} max={15} step={0.5} onChange={set("nisoMonthly")} color={C.green} />
+                <ParamRow label="NISA増額①の開始年齢" unit="歳〜" value={p.nisoSwitchAge1} min={33} max={55} step={1} onChange={set("nisoSwitchAge1")} />
+                <ParamRow label="NISA積立②" unit="万円/月" value={p.nisoMonthly2} min={0} max={15} step={0.5} onChange={set("nisoMonthly2")} color={C.green} />
+                <ParamRow label="NISA増額②の開始年齢" unit="歳〜" value={p.nisoSwitchAge2} min={33} max={60} step={1} onChange={set("nisoSwitchAge2")} />
+                <ParamRow label="NISA積立③" unit="万円/月" value={p.nisoMonthly3} min={0} max={15} step={0.5} onChange={set("nisoMonthly3")} color={C.green} />
+                <ParamRow label="iDeCo積立" unit="万円/月" value={p.iDecoMonthly} min={0} max={5} step={0.1} onChange={set("iDecoMonthly")} color={C.purple} />
+                <ParamRow label="年間期待リターン" unit="%" value={p.returnRate} min={1} max={12} step={0.5} onChange={set("returnRate")} color={C.gold2} />
+              </div>
+
+              <button onClick={() => setP(DEFAULTS)} style={{
+                padding: "10px", background: "transparent", border: `1px solid ${C.border}`,
+                borderRadius: 8, color: C.muted, fontSize: 12, cursor: "pointer",
+              }}>↩ デフォルトに戻す</button>
+            </div>
+          )}
+
+          {/* ── 年表 ── */}
+          {tab === "table" && (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                <thead>
+                  <tr style={{ borderBottom: `2px solid ${C.border}` }}>
+                    {["年齢","年","フェーズ","総資産","NISA","現金","iDeCo","NISA月額","年間運用益"].map(h => (
+                      <th key={h} style={{ padding: "7px 8px", color: C.muted, textAlign: "right", fontWeight: 500, whiteSpace: "nowrap" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((r, i) => {
+                    const isMile = [1000,2000,3000,5000,7500].some(v => r.total >= v && (i === 0 || data[i-1].total < v));
+                    return (
+                      <tr key={r.age} style={{ borderBottom: `1px solid ${C.border}`, background: isMile ? `${C.accent}12` : "transparent" }}>
+                        <td style={{ padding: "6px 8px", color: r.age === p.retireAge ? C.accent : C.text, fontWeight: r.age === p.retireAge ? 700 : 400, textAlign: "right" }}>
+                          {r.age}{isMile ? " 🏆" : ""}
+                        </td>
+                        <td style={{ padding: "6px 8px", color: C.textSub, textAlign: "right" }}>{r.year}</td>
+                        <td style={{ padding: "6px 8px", textAlign: "right" }}>
+                          <span style={{
+                            fontSize: 9, padding: "2px 5px", borderRadius: 3,
+                            background: r.phase==="Phase 1"?"#1e3a2e":r.phase==="Phase 2"?"#1e2e3a":r.phase==="Phase 3"?"#3a1e2e":"#2a2a1e",
+                            color: r.phase==="Phase 1"?C.green:r.phase==="Phase 2"?C.blue:r.phase==="Phase 3"?"#e879f9":C.gold2,
+                          }}>{r.phase}</span>
+                        </td>
+                        <td style={{ padding: "6px 8px", color: C.accent, fontWeight: 700, textAlign: "right" }}>{r.total.toLocaleString()}</td>
+                        <td style={{ padding: "6px 8px", color: C.green, textAlign: "right" }}>{r.nisa.toLocaleString()}</td>
+                        <td style={{ padding: "6px 8px", color: C.blue, textAlign: "right" }}>{r.cash.toLocaleString()}</td>
+                        <td style={{ padding: "6px 8px", color: C.purple, textAlign: "right" }}>{r.ideco.toLocaleString()}</td>
+                        <td style={{ padding: "6px 8px", color: C.textSub, textAlign: "right" }}>{r.nisoMonthly}万</td>
+                        <td style={{ padding: "6px 8px", color: C.gold2, textAlign: "right" }}>{r.annualReturn.toLocaleString()}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div style={{ marginTop: 6, fontSize: 10, color: C.muted, textAlign: "right" }}>※ 単位: 万円　🏆 = マイルストーン達成</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div style={{ padding: "10px 20px", borderTop: `1px solid ${C.border}`, background: C.surface }}>
+        <p style={{ margin: 0, fontSize: 10, color: C.muted, textAlign: "center" }}>
+          ※ 概算シミュレーションです。税金・インフレ・金利変動は考慮していません。投資判断は自己責任で。
+        </p>
+      </div>
+    </div>
+  );
+}
