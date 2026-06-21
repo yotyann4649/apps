@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>城主の出納帳</title>
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --ai:#5b8fb0; --matsu:#7faa78; --beni:#c17b7b; --murasaki:#9d8ec4; --line:#2a3547;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi); font-family:'Hiragino Mincho ProN','Yu Mincho',serif;}
+  .wrap{max-width:680px; margin:0 auto;}
+  header{padding:22px 22px 16px; position:relative; overflow:hidden;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .eyebrow{font-size:10px; letter-spacing:6px; color:var(--kin); margin-bottom:6px;}
+  h1{margin:0; font-size:26px; font-weight:700; letter-spacing:3px;
+    background:linear-gradient(180deg,var(--kinLite),var(--kin));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  .subtitle{margin:6px 0 0; font-size:11px; color:var(--washiSub); letter-spacing:1px;}
+
+  /* 月セレクタ */
+  .monthbar{display:flex; align-items:center; justify-content:center; gap:14px; padding:14px;
+    margin:0 14px; background:var(--konjo); border:1px solid var(--ishi); border-radius:8px;}
+  .monthbar button{width:34px; height:34px; border-radius:8px; border:1px solid var(--ishi);
+    background:var(--konjoLite); color:var(--washi); font-size:18px; cursor:pointer;}
+  .monthbar .cur{font-size:18px; font-weight:700; color:var(--kinLite); min-width:130px; text-align:center;}
+  .monthbar .cur small{display:block; font-size:10px; color:var(--washiSub); font-weight:400; letter-spacing:1px;}
+
+  .summary{display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--line);
+    margin:12px 14px 0; border-radius:8px; overflow:hidden; border:1px solid var(--ishi);}
+  .summary>div{background:var(--konjo); padding:12px 6px; text-align:center;}
+  .summary .lbl{font-size:9.5px; color:var(--washiSub); margin-bottom:3px;}
+  .summary .val{font-size:18px; font-weight:700;}
+  .summary .val span{font-size:9px; color:var(--washiSub);}
+
+  nav{display:flex; gap:4px; padding:16px 14px 0; overflow-x:auto;}
+  nav button{flex-shrink:0; padding:9px 15px; font-size:13px; cursor:pointer; border:none;
+    border-radius:8px 8px 0 0; letter-spacing:1px; font-family:inherit; background:transparent;
+    color:var(--washiSub); border-bottom:2px solid transparent;}
+  nav button.active{background:var(--konjo); color:var(--kinLite); font-weight:700; border-bottom:2px solid var(--kin);}
+
+  main{padding:0 14px 28px;}
+  .panel{background:var(--konjo); border-radius:0 10px 10px 10px; border:1px solid var(--line);
+    padding:18px 16px; box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+
+  .sectitle{display:flex; align-items:baseline; justify-content:space-between;
+    padding-bottom:6px; margin-bottom:4px;}
+  .sectitle .l{font-size:14px; font-weight:700; letter-spacing:2px;}
+  .sectitle .s{font-size:10px; color:var(--washiSub); margin-left:8px;}
+  .sectitle .tot{font-size:14px; font-weight:700;}
+
+  .row{display:grid; grid-template-columns:26px 1fr auto; align-items:center; gap:10px;
+    padding:9px 4px; border-bottom:1px solid var(--line);}
+  .row .ic{font-size:15px; text-align:center; opacity:.9;}
+  .row .lb{font-size:13px; color:var(--washi);}
+  .stepper{display:flex; align-items:center; gap:6px;}
+  .stepper button{width:24px; height:24px; border-radius:4px; border:1px solid var(--ishi);
+    background:var(--konjoLite); color:var(--washi); font-size:14px; cursor:pointer; line-height:1;
+    display:flex; align-items:center; justify-content:center; padding:0;}
+  .stepper input{width:66px; background:var(--sumi); border-radius:4px; font-size:15px; font-weight:700;
+    padding:5px 6px; text-align:right; outline:none; font-family:'Hiragino Mincho ProN',serif; border:1px solid;}
+  .stepper .u{font-size:10px; color:var(--washiSub); width:30px;}
+
+  .balbox{margin-top:16px; padding:16px; border-radius:8px; background:var(--sumi);}
+  .balrow{display:flex; justify-content:space-between; align-items:baseline;}
+  .balrow .t{font-size:13px; color:var(--washi);}
+  .balrow .v{font-size:24px; font-weight:700;}
+  .balrow .v span{font-size:12px;}
+  .balsub{font-size:11px; color:var(--washiSub); text-align:right; margin-top:4px;}
+
+  .donutwrap{position:relative; width:100%; height:200px;}
+  .donutcenter{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    text-align:center; pointer-events:none;}
+  .legend{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:14px;}
+  .legend>div{display:flex; justify-content:space-between; align-items:center;
+    padding:7px 10px; background:var(--sumi); border-radius:6px; font-size:11px;}
+  .legend .nm{color:var(--washi);}
+  .legend .am{color:var(--kinLite); font-weight:700; font-family:serif;}
+
+  table{width:100%; border-collapse:collapse; font-size:12px;}
+  thead tr{border-bottom:2px solid rgba(201,164,76,0.33);}
+  th{padding:8px 6px; color:var(--kinLite); text-align:right; font-weight:600; font-size:11px;}
+  td{padding:7px 6px; text-align:right;}
+  tbody tr{border-bottom:1px solid var(--line);}
+  .taprow{cursor:pointer;}
+  .taprow:active{background:rgba(201,164,76,0.08);}
+
+  .resetbtn{margin-top:18px; width:100%; padding:11px; background:transparent;
+    border:1px solid var(--ishi); border-radius:8px; color:var(--washiSub);
+    font-size:12px; cursor:pointer; font-family:inherit; letter-spacing:1px;}
+  .savedtag{text-align:center; font-size:10px; color:var(--matsu); margin-top:10px; height:14px;}
+  .foot{font-size:10px; color:var(--ishi); text-align:center; margin-top:14px; line-height:1.6;}
+
+  .toolbar{display:flex; gap:8px; padding:0 14px; margin-top:14px;}
+  .toolbar button{flex:1; padding:9px; font-size:11px; font-family:inherit; cursor:pointer;
+    background:var(--konjo); border:1px solid var(--ishi); border-radius:8px; color:var(--washiSub);}
+
+  #tip{position:fixed; pointer-events:none; background:var(--sumi); border:1px solid rgba(201,164,76,0.33);
+    border-radius:6px; font-size:12px; color:var(--washi); padding:6px 10px; opacity:0; transition:opacity .1s;
+    z-index:50; white-space:nowrap;}
+  .scroll{overflow-x:auto;}
+  .empty{padding:24px; text-align:center; font-size:12px; color:var(--ishi);
+    border:1px dashed var(--line); border-radius:8px;}
+  input[type=number]{-moz-appearance:textfield;}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="goldline"></div>
+    <div class="eyebrow">出 納 帳</div>
+    <h1>城主の出納帳</h1>
+    <p class="subtitle">月々の実りと出費を記し、暮らしの移ろいを残す</p>
+  </header>
+
+  <div class="monthbar">
+    <button id="prevM">‹</button>
+    <div class="cur" id="curMonth"><small>　</small></div>
+    <button id="nextM">›</button>
+  </div>
+
+  <div class="summary" id="summary"></div>
+  <nav id="nav"></nav>
+  <main><div class="panel" id="panel"></div>
+    <div class="savedtag" id="savedtag"></div>
+    <div class="toolbar">
+      <button id="exportBtn">記録を書き出す（バックアップ）</button>
+      <button id="importBtn">記録を読み込む</button>
+    </div>
+    <input type="file" id="importFile" accept="application/json" style="display:none">
+    <p class="foot">記録はこの端末のブラウザに自動保存されます。<br>機種変更や履歴削除に備え、ときどき「書き出し」でバックアップを取ってください。</p>
+  </main>
+</div>
+<div id="tip"></div>
+
+<script>
+var T = {sumi:"#13161c",konjo:"#1b2433",konjoLite:"#243047",ishi:"#2d3a4f",
+  kin:"#c9a44c",kinLite:"#e3c574",washi:"#ece4d3",washiSub:"#9aa3b2",
+  ai:"#5b8fb0",matsu:"#7faa78",beni:"#c17b7b",murasaki:"#9d8ec4",line:"#2a3547"};
+
+var INCOME_CATS = [
+  {key:"salary",  label:"給与",       icon:"🏯"},
+  {key:"bonus",   label:"賞与",       icon:"🎁"},
+  {key:"pension", label:"年金",       icon:"🛡️"},
+  {key:"side",    label:"副収入",     icon:"🌱"},
+  {key:"temp",    label:"臨時収入",   icon:"✨"},
+  {key:"other_i", label:"その他収入", icon:"—"}
+];
+var EXPENSE_CATS = [
+  {key:"housing", label:"住居",       icon:"🏠"},
+  {key:"food",    label:"食費",       icon:"🍚"},
+  {key:"utility", label:"水光熱・通信",icon:"💡"},
+  {key:"daily",   label:"日用・雑費", icon:"🧺"},
+  {key:"insure",  label:"保険・医療", icon:"⚕️"},
+  {key:"transit", label:"交通",       icon:"🚃"},
+  {key:"leisure", label:"趣味・交際", icon:"🍶"},
+  {key:"other_e", label:"その他支出", icon:"—"}
+];
+
+var STORAGE_KEY = "shiro_suitocho_v1";
+
+/* ─── データ保存・読込 ─── */
+function loadAll(){
+  try{
+    var raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  }catch(e){ return {}; }
+}
+function saveAll(data){
+  try{
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    flashSaved();
+  }catch(e){
+    var st=document.getElementById('savedtag');
+    if(st){st.style.color=T.beni; st.textContent="保存できませんでした（ブラウザ設定をご確認ください）";}
+  }
+}
+function flashSaved(){
+  var st=document.getElementById('savedtag');
+  if(!st) return;
+  st.style.color=T.matsu; st.textContent="✓ 保存しました";
+  clearTimeout(window._svt);
+  window._svt=setTimeout(function(){st.textContent="";},1500);
+}
+
+/* ─── 状態 ─── */
+var store = loadAll();
+var now = new Date();
+var curKey = now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+var tab = "input";
+
+function blankMonth(){
+  var inc={}, exp={};
+  INCOME_CATS.forEach(function(c){inc[c.key]=0;});
+  EXPENSE_CATS.forEach(function(c){exp[c.key]=0;});
+  return {income:inc, expense:exp, invest:{nisa:0, ideco:0}};
+}
+function getMonth(key){
+  if(!store[key]) store[key]=blankMonth();
+  INCOME_CATS.forEach(function(c){ if(store[key].income[c.key]===undefined) store[key].income[c.key]=0; });
+  EXPENSE_CATS.forEach(function(c){ if(store[key].expense[c.key]===undefined) store[key].expense[c.key]=0; });
+  if(!store[key].invest) store[key].invest={nisa:0, ideco:0};
+  if(store[key].invest.nisa===undefined) store[key].invest.nisa=0;
+  if(store[key].invest.ideco===undefined) store[key].invest.ideco=0;
+  return store[key];
+}
+// 投資設定（年率・記録開始時点の評価額）はアプリ全体で1つ。__settings に格納
+function getSettings(){
+  if(!store.__settings) store.__settings={ returnRate:5, startNisa:0, startIdeco:0 };
+  var s=store.__settings;
+  if(s.returnRate===undefined) s.returnRate=5;
+  if(s.startNisa===undefined) s.startNisa=0;
+  if(s.startIdeco===undefined) s.startIdeco=0;
+  return s;
+}
+// 月キーの一覧（__settingsを除く、記録のある月）
+function recordedKeys(){
+  return Object.keys(store).filter(function(k){
+    if(k==="__settings") return false;
+    var mm=store[k];
+    return sum(mm.income)>0 || sum(mm.expense)>0 || (mm.invest && (mm.invest.nisa>0||mm.invest.ideco>0));
+  }).sort();
+}
+// ある月までの投資評価額を、毎月の積立を年率で複利運用して算出
+function investValuation(upToKey){
+  var s=getSettings();
+  var rate=s.returnRate/100;
+  var mRate=rate/12; // 月利（近似）
+  var keys=Object.keys(store).filter(function(k){return k!=="__settings";}).sort();
+  var nisa=s.startNisa, ideco=s.startIdeco;
+  var firstKey=keys.length?keys[0]:upToKey;
+  // 記録開始月から upToKey まで、毎月：評価額を月利で増やし、その月の積立を足す
+  var cur=firstKey;
+  var guard=0;
+  while(guard++<1200){
+    var mm=store[cur];
+    var addN=(mm&&mm.invest)?mm.invest.nisa:0;
+    var addI=(mm&&mm.invest)?mm.invest.ideco:0;
+    nisa=nisa*(1+mRate)+addN;
+    ideco=ideco*(1+mRate)+addI;
+    if(cur===upToKey) break;
+    cur=shiftMonth(cur,1);
+  }
+  return {nisa:nisa, ideco:ideco, total:nisa+ideco};
+}
+function keyToLabel(key){
+  var p=key.split("-"); return p[0]+"年 "+parseInt(p[1],10)+"月";
+}
+function shiftMonth(key, delta){
+  var p=key.split("-"); var y=parseInt(p[0],10), m=parseInt(p[1],10)-1;
+  var d=new Date(y, m+delta, 1);
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+}
+function sum(obj){var s=0; for(var k in obj){s+=obj[k];} return s;}
+function fmt(v){ return (Math.round(v*10)/10); }
+
+/* ─── SVGドーナツ ─── */
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function donutSVG(segs, total){
+  var size=200, cx=100, cy=100, rO=82, rI=52, ang=-90, paths="";
+  segs.forEach(function(s){
+    if(s.value<=0) return;
+    var frac=total>0?s.value/total:0, a0=ang, a1=ang+frac*360; ang=a1;
+    var g=1.2; a0+=g; a1-=g;
+    var large=(a1-a0)>180?1:0, r0=a0*Math.PI/180, r1=a1*Math.PI/180;
+    var x0o=cx+rO*Math.cos(r0),y0o=cy+rO*Math.sin(r0),x1o=cx+rO*Math.cos(r1),y1o=cy+rO*Math.sin(r1);
+    var x0i=cx+rI*Math.cos(r1),y0i=cy+rI*Math.sin(r1),x1i=cx+rI*Math.cos(r0),y1i=cy+rI*Math.sin(r0);
+    var pct=Math.round(frac*100);
+    paths+='<path d="M'+x0o+' '+y0o+' A'+rO+' '+rO+' 0 '+large+' 1 '+x1o+' '+y1o+
+      ' L'+x0i+' '+y0i+' A'+rI+' '+rI+' 0 '+large+' 0 '+x1i+' '+y1i+' Z" fill="'+s.color+
+      '" stroke="'+T.sumi+'" stroke-width="2" class="seg" data-tip="'+esc(s.name)+' '+fmt(s.value)+'万（'+pct+'%）"></path>';
+  });
+  if(!paths) paths='<circle cx="100" cy="100" r="67" fill="none" stroke="'+T.line+'" stroke-width="30"></circle>';
+  return '<svg viewBox="0 0 200 200" width="100%" height="200" style="display:block">'+paths+'</svg>';
+}
+
+/* ─── 折れ線（月推移） ─── */
+function lineSVG(months){
+  var W=560,H=220,padL=44,padB=40,padT=12,padR=10;
+  var iw=W-padL-padR, ih=H-padT-padB;
+  if(months.length===0) return '';
+  var maxV=1;
+  months.forEach(function(m){ maxV=Math.max(maxV, m.income, m.expense); });
+  function X(i){ return months.length<=1 ? padL+iw/2 : padL+(i/(months.length-1))*iw; }
+  function Y(v){ return padT+(1-v/maxV)*ih; }
+  function poly(key,color){
+    var pts=months.map(function(m,i){return X(i)+","+Y(m[key]);}).join(" ");
+    var dots=months.map(function(m,i){return '<circle cx="'+X(i)+'" cy="'+Y(m[key])+'" r="3" fill="'+color+'"></circle>';}).join("");
+    return '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2"></polyline>'+dots;
+  }
+  var grid="";
+  for(var g=0; g<=2; g++){
+    var v=maxV*g/2, y=Y(v);
+    grid+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="'+T.line+'" stroke-dasharray="2 4"></line>'+
+      '<text x="'+(padL-4)+'" y="'+(y+3)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="end">'+fmt(v)+'</text>';
+  }
+  var xl=months.map(function(m,i){
+    return '<text x="'+X(i)+'" y="'+(H-padB+16)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="middle">'+m.short+'</text>';
+  }).join("");
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="220" style="display:block">'+
+    grid+poly("income",T.matsu)+poly("expense",T.beni)+xl+'</svg>';
+}
+
+/* ─── 単線グラフ（投資評価額の積み重ね・面塗り） ─── */
+function singleLineSVG(months, color){
+  var W=560,H=200,padL=44,padB=36,padT=12,padR=10;
+  var iw=W-padL-padR, ih=H-padT-padB;
+  if(months.length===0) return '';
+  var maxV=1; months.forEach(function(m){ maxV=Math.max(maxV, m.value); });
+  function X(i){ return months.length<=1 ? padL+iw/2 : padL+(i/(months.length-1))*iw; }
+  function Y(v){ return padT+(1-v/maxV)*ih; }
+  var grid="";
+  for(var g=0; g<=2; g++){
+    var v=maxV*g/2, y=Y(v);
+    grid+='<line x1="'+padL+'" y1="'+y+'" x2="'+(W-padR)+'" y2="'+y+'" stroke="'+T.line+'" stroke-dasharray="2 4"></line>'+
+      '<text x="'+(padL-4)+'" y="'+(y+3)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="end">'+fmt(v)+'</text>';
+  }
+  var pts=months.map(function(m,i){return X(i)+","+Y(m.value);}).join(" ");
+  var area=padL+","+(H-padB)+" "+pts+" "+(months.length<=1?X(0):X(months.length-1))+","+(H-padB);
+  var dots=months.map(function(m,i){return '<circle cx="'+X(i)+'" cy="'+Y(m.value)+'" r="3" fill="'+color+'" class="seg" data-tip="'+m.short+' '+fmt(m.value)+'万"></circle>';}).join("");
+  var xl=months.map(function(m,i){return '<text x="'+X(i)+'" y="'+(H-padB+16)+'" fill="'+T.washiSub+'" font-size="9" text-anchor="middle">'+m.short+'</text>';}).join("");
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="200" style="display:block">'+
+    grid+'<polygon points="'+area+'" fill="'+color+'" opacity="0.12"></polygon>'+
+    '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2.5"></polyline>'+dots+xl+'</svg>';
+}
+
+/* ─── レンダリング ─── */
+function render(){
+  var m=getMonth(curKey);
+  var incT=sum(m.income), expT=sum(m.expense), bal=incT-expT;
+
+  document.getElementById('curMonth').innerHTML = keyToLabel(curKey)+'<small>記録する月</small>';
+
+  // サマリー
+  var sums=[
+    {lbl:"今月の収入", val:incT, col:T.matsu},
+    {lbl:"今月の支出", val:expT, col:T.beni},
+    {lbl:"今月の収支", val:bal, col:bal>=0?T.kin:T.beni}
+  ];
+  document.getElementById('summary').innerHTML = sums.map(function(s){
+    return '<div><div class="lbl">'+s.lbl+'</div><div class="val" style="color:'+s.col+'">'+
+      (s.val>=0?"":"▲")+fmt(Math.abs(s.val))+'<span>万</span></div></div>';
+  }).join('');
+
+  // タブ
+  var tabs=[["input","記帳"],["invest","投資"],["pie","内訳"],["trend","推移"],["history","履歴"]];
+  document.getElementById('nav').innerHTML = tabs.map(function(t){
+    return '<button class="'+(tab===t[0]?'active':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>';
+  }).join('');
+
+  document.getElementById('panel').innerHTML = renderPanel(m, incT, expT, bal);
+  bindEvents();
+}
+
+function row(icon,label,val,key,kind,accent,unit,step){
+  unit = unit===undefined ? "万" : unit;
+  step = step===undefined ? "0.5" : step;
+  return '<div class="row"><span class="ic">'+icon+'</span><span class="lb">'+label+'</span>'+
+    '<div class="stepper">'+
+    '<button data-act="dec" data-key="'+key+'" data-kind="'+kind+'" data-step="'+step+'">−</button>'+
+    '<input type="number" step="'+step+'" min="0" value="'+val+'" data-input="'+key+'" data-kind="'+kind+'" style="color:'+accent+'; border-color:'+accent+'88">'+
+    '<span class="u">'+unit+'</span>'+
+    '<button data-act="inc" data-key="'+key+'" data-kind="'+kind+'" data-step="'+step+'">＋</button></div></div>';
+}
+function sectitle(label,sub,color,total){
+  return '<div class="sectitle" style="border-bottom:1px solid '+color+'44">'+
+    '<div><span class="l" style="color:'+color+'">'+label+'</span><span class="s">'+sub+'</span></div>'+
+    (total!==undefined?'<span class="tot" style="color:'+color+'">計 '+fmt(total)+'万</span>':'')+'</div>';
+}
+
+function renderPanel(m, incT, expT, bal){
+  if(tab==="input"){
+    var h=sectitle("実入りの記","今月の収入",T.matsu,incT);
+    INCOME_CATS.forEach(function(c){ h+=row(c.icon,c.label,m.income[c.key],c.key,"income",T.matsu); });
+    h+='<div style="height:20px"></div>';
+    h+=sectitle("出費の記","今月の支出",T.beni,expT);
+    EXPENSE_CATS.forEach(function(c){ h+=row(c.icon,c.label,m.expense[c.key],c.key,"expense",T.beni); });
+    var bc=bal>=0?T.kinLite:T.beni;
+    h+='<div class="balbox" style="border:1px solid '+(bal>=0?T.kin:T.beni)+'88">'+
+      '<div class="balrow"><span class="t">今月の収支</span>'+
+      '<span class="v" style="color:'+bc+'">'+(bal>=0?"":"▲")+fmt(Math.abs(bal))+'<span>万</span></span></div>'+
+      '<div class="balsub">'+(bal>=0?"今月は黒字。蓄えに回せます。":"今月は赤字。要塞の備えを確認しましょう。")+'</div></div>';
+    return h;
+  }
+  if(tab==="invest"){
+    var s=getSettings();
+    var val=investValuation(curKey);
+    // 今月の積立
+    var h=sectitle("今月の積立","この月に積み立てた額",T.matsu);
+    h+=row("📊","NISA 積立",m.invest.nisa,"nisa","invest_m",T.matsu);
+    h+=row("🏛️","iDeCo 積立",m.invest.ideco,"ideco","invest_m",T.murasaki);
+    h+='<div style="font-size:11px;color:'+T.washiSub+';margin:8px 0 0;line-height:1.6">この月に積み立てた額を記録します。毎月積み重ねるほど、下の評価額が育っていきます。</div>';
+
+    // 評価額（積み重ねの結果）
+    h+='<div style="height:22px"></div>';
+    h+=sectitle("育った資産","これまでの積み重ね（評価額）",T.kin);
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.kin+'44; border-radius:10px; padding:18px; margin-top:8px; text-align:center">'+
+      '<div style="font-size:11px;color:'+T.washiSub+'">この月時点の投資評価額</div>'+
+      '<div style="font-size:30px;font-weight:700;color:'+T.kinLite+';font-family:serif;margin:4px 0 12px">'+fmt(val.total)+'<span style="font-size:14px;color:'+T.washi+'"> 万円</span></div>'+
+      '<div style="display:flex;height:10px;border-radius:5px;overflow:hidden;gap:2px">'+
+      '<div style="flex:'+Math.max(val.nisa,0.01)+';background:'+T.matsu+';border-radius:5px"></div>'+
+      '<div style="flex:'+Math.max(val.ideco,0.01)+';background:'+T.murasaki+';border-radius:5px"></div></div>'+
+      '<div style="display:flex;gap:16px;margin-top:10px;font-size:11px;justify-content:center">'+
+      '<span style="color:'+T.matsu+'">● NISA '+fmt(val.nisa)+'万</span>'+
+      '<span style="color:'+T.murasaki+'">● iDeCo '+fmt(val.ideco)+'万</span></div></div>';
+
+    // 投資設定（年率・起点）
+    h+='<div style="height:22px"></div>';
+    h+=sectitle("運用の設定","年率・記録開始時点",T.ai);
+    h+=row("📈","想定年率",s.returnRate,"returnRate","setting",T.kin,"%","0.5");
+    h+=row("💠","開始時のNISA残高",s.startNisa,"startNisa","setting",T.matsu);
+    h+=row("💠","開始時のiDeCo残高",s.startIdeco,"startIdeco","setting",T.murasaki);
+    h+='<div style="font-size:11px;color:'+T.washiSub+';margin-top:8px;line-height:1.6">記録を始める前から持っていた残高があれば、ここに入れると評価額に反映されます。年率は「だいたいこのくらいで増える」想定の概算です（実際の相場では上下します）。</div>';
+    return h;
+  }
+  if(tab==="pie"){
+    var incSegs=INCOME_CATS.map(function(c,i){return {name:c.label,value:m.income[c.key],color:[T.matsu,T.kin,T.ai,T.kinLite,T.murasaki,T.ishi][i]};});
+    var expSegs=EXPENSE_CATS.map(function(c,i){return {name:c.label,value:m.expense[c.key],color:[T.beni,T.kin,T.ai,T.murasaki,T.matsu,T.kinLite,T.washiSub,T.ishi][i]};});
+    function legend(segs,total){
+      return '<div class="legend">'+segs.filter(function(s){return s.value>0;}).map(function(s){
+        var pc=total>0?Math.round(s.value/total*100):0;
+        return '<div><span class="nm"><span style="color:'+s.color+'">●</span> '+s.name+'</span><span class="am">'+fmt(s.value)+'万 '+pc+'%</span></div>';
+      }).join('')+'</div>';
+    }
+    var h='<div style="font-size:12px; color:'+T.matsu+'; text-align:center; margin-bottom:4px">収入の内訳</div>'+
+      '<div class="donutwrap">'+donutSVG(incSegs,incT)+
+      '<div class="donutcenter"><div style="font-size:9px;color:'+T.washiSub+'">収入計</div><div style="font-size:15px;color:'+T.matsu+';font-weight:700">'+fmt(incT)+'万</div></div></div>';
+    h+=(incT>0?legend(incSegs,incT):'<div class="empty">収入の記録がありません</div>');
+    h+='<div style="height:22px"></div>';
+    h+='<div style="font-size:12px; color:'+T.beni+'; text-align:center; margin-bottom:4px">支出の内訳</div>'+
+      '<div class="donutwrap">'+donutSVG(expSegs,expT)+
+      '<div class="donutcenter"><div style="font-size:9px;color:'+T.washiSub+'">支出計</div><div style="font-size:15px;color:'+T.beni+';font-weight:700">'+fmt(expT)+'万</div></div></div>';
+    h+=(expT>0?legend(expSegs,expT):'<div class="empty">支出の記録がありません</div>');
+    return h;
+  }
+  if(tab==="trend"){
+    var keys=recordedKeys();
+    var months=keys.slice(-12).map(function(k){
+      var mm=getMonth(k); var p=k.split("-");
+      return {key:k, short:parseInt(p[1],10)+"月", income:sum(mm.income), expense:sum(mm.expense)};
+    });
+    if(months.length===0) return '<div class="empty">まだ記録がありません。<br>「記帳」タブで今月の収支を入力すると、ここに推移が表示されます。</div>';
+    var h='<div style="font-size:12px; color:'+T.washiSub+'; text-align:center; margin-bottom:8px">月ごとの収入と支出（直近'+months.length+'ヶ月）</div>';
+    h+='<div style="position:relative">'+lineSVG(months)+'</div>';
+    h+='<div style="display:flex; gap:16px; justify-content:center; font-size:11px; margin-top:8px">'+
+      '<span style="color:'+T.matsu+'">━ 収入</span><span style="color:'+T.beni+'">━ 支出</span></div>';
+    // 平均
+    var avgI=months.reduce(function(a,m){return a+m.income;},0)/months.length;
+    var avgE=months.reduce(function(a,m){return a+m.expense;},0)/months.length;
+    h+='<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:16px">'+
+      '<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:8px; padding:12px; text-align:center"><div style="font-size:10px;color:'+T.washiSub+'">平均収入</div><div style="font-size:16px;color:'+T.matsu+';font-weight:700;font-family:serif">'+fmt(avgI)+'万</div></div>'+
+      '<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:8px; padding:12px; text-align:center"><div style="font-size:10px;color:'+T.washiSub+'">平均支出</div><div style="font-size:16px;color:'+T.beni+';font-weight:700;font-family:serif">'+fmt(avgE)+'万</div></div>'+
+      '<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:8px; padding:12px; text-align:center"><div style="font-size:10px;color:'+T.washiSub+'">平均収支</div><div style="font-size:16px;color:'+((avgI-avgE)>=0?T.kinLite:T.beni)+';font-weight:700;font-family:serif">'+(avgI-avgE>=0?"":"▲")+fmt(Math.abs(avgI-avgE))+'万</div></div></div>';
+
+    // ── 投資評価額の積み重ね ──
+    var anyInvest = keys.some(function(k){var mm=store[k]; return mm.invest&&(mm.invest.nisa>0||mm.invest.ideco>0);}) || getSettings().startNisa>0 || getSettings().startIdeco>0;
+    if(anyInvest){
+      var ivMonths=keys.slice(-12).map(function(k){
+        var v=investValuation(k); var p=k.split("-");
+        return {short:parseInt(p[1],10)+"月", value:v.total};
+      });
+      h+='<div style="height:26px"></div>';
+      h+='<div style="font-size:12px; color:'+T.kinLite+'; text-align:center; margin-bottom:8px">積み上げてきた投資資産（評価額の推移）</div>';
+      h+='<div style="position:relative">'+singleLineSVG(ivMonths, T.kin)+'</div>';
+      var latest=investValuation(keys[keys.length-1]);
+      h+='<div style="text-align:center; margin-top:8px; font-size:11px; color:'+T.washiSub+'">最新の評価額　<span style="color:'+T.kinLite+'; font-size:15px; font-weight:700; font-family:serif">'+fmt(latest.total)+'万</span></div>';
+    }
+    return h;
+  }
+  if(tab==="history"){
+    var keys=recordedKeys().reverse();
+    if(keys.length===0) return '<div class="empty">まだ記録がありません。<br>「記帳」タブで今月の収支を入力すると、ここに一覧が残ります。</div>';
+    var h='<div class="scroll"><table><thead><tr><th style="text-align:left">月</th><th>収入</th><th>支出</th><th>収支</th></tr></thead><tbody>';
+    keys.forEach(function(k){
+      var mm=getMonth(k); var i=sum(mm.income), e=sum(mm.expense), b=i-e;
+      var isCur=(k===curKey);
+      h+='<tr class="taprow" data-go="'+k+'" style="'+(isCur?'background:rgba(201,164,76,0.1)':'')+'">'+
+        '<td style="text-align:left; color:'+(isCur?T.kinLite:T.washi)+'; font-weight:'+(isCur?700:400)+'">'+keyToLabel(k)+(isCur?' ◀':'')+'</td>'+
+        '<td style="color:'+T.matsu+'">'+fmt(i)+'</td>'+
+        '<td style="color:'+T.beni+'">'+fmt(e)+'</td>'+
+        '<td style="color:'+(b>=0?T.kinLite:T.beni)+'; font-weight:700">'+(b>=0?"":"▲")+fmt(Math.abs(b))+'</td></tr>';
+    });
+    h+='</tbody></table><div style="margin-top:8px; font-size:10px; color:'+T.ishi+'; text-align:right">単位：万円　行をタップでその月へ　◀＝表示中の月</div></div>';
+    return h;
+  }
+  return "";
+}
+
+/* ─── イベント ─── */
+function clamp(v){return v<0?0:v;}
+function bindEvents(){
+  document.querySelectorAll('#nav button').forEach(function(b){
+    b.onclick=function(){ tab=b.getAttribute('data-tab'); render(); };
+  });
+  var panel=document.getElementById('panel');
+  var m=getMonth(curKey);
+
+  var s=getSettings();
+  // 値の置き場所を返すヘルパー
+  function bagFor(kind){
+    if(kind==="income") return m.income;
+    if(kind==="expense") return m.expense;
+    if(kind==="invest_m") return m.invest;
+    if(kind==="setting") return s;
+    return m.income;
+  }
+
+  panel.querySelectorAll('[data-act]').forEach(function(b){
+    b.onclick=function(){
+      var key=b.getAttribute('data-key'), kind=b.getAttribute('data-kind');
+      var step=parseFloat(b.getAttribute('data-step'))||0.5;
+      var d=b.getAttribute('data-act')==='inc'?step:-step;
+      var bag=bagFor(kind);
+      bag[key]=clamp(Math.round((bag[key]+d)*10)/10);
+      saveAll(store); render();
+    };
+  });
+  panel.querySelectorAll('[data-input]').forEach(function(inp){
+    inp.onchange=function(){
+      var key=inp.getAttribute('data-input'), kind=inp.getAttribute('data-kind');
+      var bag=bagFor(kind);
+      bag[key]=clamp(Number(inp.value)||0);
+      saveAll(store); render();
+    };
+  });
+  panel.querySelectorAll('[data-go]').forEach(function(tr){
+    tr.onclick=function(){ curKey=tr.getAttribute('data-go'); tab="input"; render(); };
+  });
+
+  // ツールチップ
+  var tip=document.getElementById('tip');
+  panel.querySelectorAll('.seg').forEach(function(s){
+    s.style.cursor="pointer";
+    function show(e){
+      var t=s.getAttribute('data-tip'); if(!t) return;
+      tip.textContent=t; tip.style.opacity=1;
+      var x=(e.touches?e.touches[0].clientX:e.clientX), y=(e.touches?e.touches[0].clientY:e.clientY);
+      tip.style.left=Math.min(x+12, window.innerWidth-tip.offsetWidth-8)+"px";
+      tip.style.top=(y-40)+"px";
+    }
+    function hide(){tip.style.opacity=0;}
+    s.addEventListener('mousemove',show); s.addEventListener('mouseleave',hide);
+    s.addEventListener('touchstart',show,{passive:true}); s.addEventListener('touchend',function(){setTimeout(hide,1200);});
+  });
+}
+
+/* ─── 月移動・書出/読込 ─── */
+document.getElementById('prevM').onclick=function(){ curKey=shiftMonth(curKey,-1); render(); };
+document.getElementById('nextM').onclick=function(){ curKey=shiftMonth(curKey, 1); render(); };
+
+document.getElementById('exportBtn').onclick=function(){
+  var blob=new Blob([JSON.stringify(store,null,2)],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download="suitocho_backup_"+curKey+".json"; a.click();
+  URL.revokeObjectURL(url);
+};
+document.getElementById('importBtn').onclick=function(){ document.getElementById('importFile').click(); };
+document.getElementById('importFile').onchange=function(e){
+  var f=e.target.files[0]; if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var data=JSON.parse(rd.result);
+      store=data; saveAll(store); render();
+      var st=document.getElementById('savedtag'); st.style.color=T.matsu; st.textContent="✓ 記録を読み込みました";
+    }catch(err){
+      var st=document.getElementById('savedtag'); st.style.color=T.beni; st.textContent="読み込みに失敗しました（ファイル形式をご確認ください）";
+    }
+  };
+  rd.readAsText(f);
+};
+
+render();
+</script>
+</body>
+</html>
