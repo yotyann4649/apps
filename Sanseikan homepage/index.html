@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三星鑑（さんせいかん）｜性格分析 × 才能診断 × 行動特性 — 統合人間分析</title>
+<meta name="description" content="三星鑑は占いではありません。生年月日という客観データから、あなたの性格・才能・行動特性を読み解く、ひとりの作り手による統合人間分析です。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4efe6; --paper-soft:#faf6ee; --paper-deep:#ece4d4;
+  --ink:#211b14; --ink-2:#574d40; --ink-3:#9a8f7c;
+  --rule:#d9cfbd; --rule-soft:#e6ddcc;
+  --gold:#8a6e2f; --gold-soft:#b29355;
+  --maxw:720px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:16px;line-height:1.95;font-weight:400;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.mincho{font-family:'Shippori Mincho B1',serif}
+.garamond{font-family:'EB Garamond',serif}
+strong{font-weight:700}
+a{color:inherit;text-decoration:none}
+section{scroll-margin-top:88px}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px}
+.eyebrow{font-family:'EB Garamond',serif;font-size:13px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.sec-head{margin-bottom:46px}
+.sec-head .eyebrow{display:block;margin-bottom:18px}
+.sec-title{font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(25px,3.6vw,34px);line-height:1.5;letter-spacing:.02em}
+.sec-lead{margin-top:20px;color:var(--ink-2);font-size:15.5px;line-height:2.05;max-width:600px}
+
+.nav{position:sticky;top:0;z-index:60;background:rgba(244,239,230,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--rule)}
+.nav-in{max-width:1040px;margin:0 auto;padding:15px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.mark{display:flex;align-items:center;gap:12px}
+.seal{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;flex-shrink:0}
+.mark-name{font-family:'Shippori Mincho B1',serif;font-size:19px;font-weight:700;letter-spacing:.14em}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{font-size:13.5px;color:var(--ink-2);position:relative;padding:2px 0}
+.nav-links a:not(.nav-cta)::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--gold);transition:width .3s ease}
+.nav-links a:not(.nav-cta):hover::after{width:100%}
+.nav-links .nav-cta{font-size:13px;color:var(--ink);border:1px solid var(--gold-soft);padding:8px 18px;border-radius:2px;transition:.22s}
+.nav-links .nav-cta:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+@media(max-width:760px){.nav-links a:not(.nav-cta){display:none}}
+
+.hero{position:relative;max-width:1040px;margin:0 auto;padding:clamp(70px,11vw,128px) 26px clamp(56px,8vw,96px)}
+.hero-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:start}
+.hero-vert{writing-mode:vertical-rl;font-family:'Shippori Mincho B1',serif;font-size:14px;letter-spacing:.5em;color:var(--ink-3);font-weight:500;height:max-content;padding-top:6px}
+.hero-vert b{color:var(--gold);font-weight:600}
+.hero-eyebrow{font-family:'EB Garamond',serif;font-size:14px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:26px}
+.hero h1{font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(34px,6.6vw,62px);line-height:1.36;letter-spacing:.015em;margin-bottom:30px}
+.hero h1 .soft{color:var(--ink-2);font-weight:600}
+.hero h1 .em{color:var(--gold)}
+.hero-sub{max-width:540px;color:var(--ink-2);font-size:16px;line-height:2.1;margin-bottom:38px}
+.hero-rule{width:64px;height:2px;background:var(--gold);margin-bottom:38px}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+@media(max-width:680px){.hero-grid{grid-template-columns:1fr}.hero-vert{display:none}}
+
+.btn{display:inline-flex;align-items:center;gap:9px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;font-weight:700;padding:15px 30px;border-radius:2px;cursor:pointer;transition:.24s ease;border:1px solid transparent;letter-spacing:.02em}
+.btn-fill{background:var(--ink);color:var(--paper)}
+.btn-fill:hover{background:#000;transform:translateY(-1px)}
+.btn-line{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn-line:hover{background:var(--ink);color:var(--paper)}
+.btn-arrow{font-family:'EB Garamond',serif;font-size:17px}
+
+.sec{padding:clamp(70px,10vw,118px) 0}
+.sec.tight{padding:clamp(54px,7vw,84px) 0}
+.band{background:var(--paper-deep)}
+
+.thesis .wrap{max-width:780px;text-align:center}
+.thesis-statement{font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(24px,4.2vw,40px);line-height:1.62;letter-spacing:.02em}
+.thesis-statement .strike{color:var(--ink-3);position:relative;white-space:nowrap}
+.thesis-statement .strike::after{content:"";position:absolute;left:-2px;right:-2px;top:54%;height:2px;background:var(--gold)}
+.thesis-statement .keep{color:var(--gold)}
+.thesis-body{margin:34px auto 0;max-width:600px;color:var(--ink-2);font-size:15.5px;line-height:2.15}
+
+.axes{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.axis{padding:38px 26px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+.axis:nth-child(3n){border-right:none}
+.axis-glyph{font-family:'Shippori Mincho B1',serif;font-size:30px;color:var(--gold);font-weight:600;margin-bottom:16px}
+.axis-name{font-family:'Shippori Mincho B1',serif;font-size:19px;font-weight:700;margin-bottom:3px}
+.axis-en{font-family:'EB Garamond',serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin-bottom:15px}
+.axis-desc{font-size:13.5px;color:var(--ink-2);line-height:1.9}
+@media(max-width:680px){.axes{grid-template-columns:1fr}.axis{border-right:none}}
+
+.learn{border-top:1px solid var(--rule)}
+.learn-item{display:grid;grid-template-columns:54px 1fr;gap:24px;padding:30px 4px;border-bottom:1px solid var(--rule);align-items:start}
+.learn-mk{font-family:'EB Garamond',serif;font-style:italic;font-size:30px;color:var(--gold-soft);line-height:1}
+.learn-h{font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;margin-bottom:7px}
+.learn-p{font-size:14.5px;color:var(--ink-2);line-height:1.95}
+
+.diag-wrap{max-width:680px;margin:0 auto;padding:0 26px}
+.diag{border:1px solid var(--gold-soft);background:var(--paper-soft);padding:clamp(34px,5vw,52px);text-align:center}
+.diag .eyebrow{display:block;margin-bottom:16px}
+.diag h3{font-family:'Shippori Mincho B1',serif;font-size:clamp(22px,3.4vw,28px);font-weight:700;margin-bottom:14px;letter-spacing:.02em}
+.diag-sub{color:var(--ink-2);font-size:14px;line-height:1.95;margin-bottom:30px;max-width:460px;margin-left:auto;margin-right:auto}
+.diag-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.diag-row input{font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;padding:13px 16px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:2px}
+.diag-row input:focus{outline:none;border-color:var(--gold-soft)}
+.diag-go{font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;font-weight:700;color:var(--paper);background:var(--ink);border:none;padding:14px 26px;border-radius:2px;cursor:pointer;transition:.22s}
+.diag-go:hover{background:#000}
+.diag-result{margin-top:36px;padding-top:32px;border-top:1px solid var(--rule);display:none}
+.diag-result.show{display:block;animation:rise .6s ease}
+.diag-num{font-family:'EB Garamond',serif;font-size:72px;font-weight:500;color:var(--gold);line-height:1}
+.diag-kw{font-family:'Shippori Mincho B1',serif;font-size:21px;font-weight:700;margin:8px 0 10px}
+.diag-desc{color:var(--ink-2);font-size:14px;line-height:1.95;max-width:480px;margin:0 auto 26px}
+.diag-note{font-size:11.5px;color:var(--ink-3);margin-top:20px;line-height:1.7}
+
+.sample{max-width:680px;margin:0 auto;border:1px solid var(--rule);background:var(--paper-soft)}
+.sample-top{padding:16px 30px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.sample-top .t{font-family:'Shippori Mincho B1',serif;font-size:13px;letter-spacing:.05em}
+.sample-top .s{font-family:'EB Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+.sample-doc{padding:38px 40px 0;position:relative;max-height:280px;overflow:hidden}
+.sample-doc::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,var(--paper-soft))}
+.sample-doc h4{font-family:'Shippori Mincho B1',serif;font-size:19px;font-weight:700;margin-bottom:18px}
+.sample-doc p{font-size:14.5px;color:var(--ink);line-height:2.15;margin-bottom:15px}
+.sample-foot{padding:6px 40px 34px;text-align:center}
+.sample-foot .lbl{font-size:12.5px;color:var(--ink-3);margin-bottom:18px}
+@media(max-width:680px){.sample-doc{padding:28px 24px 0}.sample-foot{padding:6px 24px 28px}}
+
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.tier{padding:34px 26px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);display:flex;flex-direction:column}
+.tier.feat{background:var(--paper-soft)}
+.tier-mark{font-family:'EB Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);height:18px;margin-bottom:10px}
+.tier-name{font-family:'Shippori Mincho B1',serif;font-size:19px;font-weight:700;margin-bottom:14px}
+.tier-price{font-family:'EB Garamond',serif;font-size:38px;font-weight:500;color:var(--ink);margin-bottom:2px;line-height:1}
+.tier-price small{font-size:14px;color:var(--ink-3)}
+.tier-desc{font-size:13px;color:var(--ink-2);line-height:1.9;margin:16px 0 22px;flex:1}
+.tier-link{font-family:'Zen Kaku Gothic New',sans-serif;font-size:13.5px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:7px;border-bottom:1px solid var(--gold-soft);padding-bottom:3px;align-self:flex-start;transition:.2s}
+.tier-link:hover{gap:11px;border-color:var(--gold)}
+.tier-link .ar{font-family:'EB Garamond',serif}
+.price-cap{text-align:center;margin-top:18px;font-size:12px;color:var(--ink-3)}
+@media(max-width:680px){.tiers{grid-template-columns:1fr;border-left:none}.tier{border-right:none}}
+
+.flow{border-top:1px solid var(--rule)}
+.step{display:grid;grid-template-columns:64px 1fr;gap:24px;padding:28px 4px;border-bottom:1px solid var(--rule);align-items:baseline}
+.step-no{font-family:'EB Garamond',serif;font-size:34px;font-weight:500;color:var(--gold-soft);line-height:1}
+.step-h{font-family:'Shippori Mincho B1',serif;font-size:17px;font-weight:700;margin-bottom:6px}
+.step-p{font-size:14px;color:var(--ink-2);line-height:1.9}
+
+.voices{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--rule)}
+.voice{padding:34px 26px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+.voice:nth-child(3n){border-right:none}
+.voice-stars{font-family:'EB Garamond',serif;color:var(--gold);letter-spacing:.1em;font-size:14px;margin-bottom:14px}
+.voice-q{font-family:'Shippori Mincho B1',serif;font-size:14.5px;line-height:1.95;color:var(--ink);margin-bottom:16px}
+.voice-by{font-size:11.5px;color:var(--ink-3)}
+@media(max-width:680px){.voices{grid-template-columns:1fr}.voice{border-right:none}}
+
+.maker{max-width:640px;margin:0 auto;padding:0 26px}
+.maker .eyebrow{display:block;margin-bottom:20px}
+.maker-lead{font-family:'Shippori Mincho B1',serif;font-size:clamp(21px,3vw,27px);font-weight:700;line-height:1.66;letter-spacing:.02em;margin-bottom:30px}
+.maker p{font-size:15.5px;color:var(--ink-2);line-height:2.2;margin-bottom:22px}
+.maker p strong{color:var(--ink)}
+.maker-sign{margin-top:34px;padding-top:22px;border-top:1px solid var(--rule);font-family:'Shippori Mincho B1',serif;font-size:14px;color:var(--ink-2);text-align:right}
+.maker-sign b{color:var(--gold);font-size:17px;margin-left:6px}
+
+.waitlist{background:var(--ink);color:var(--paper)}
+.waitlist .wrap{text-align:center;max-width:660px}
+.wl-seal{width:54px;height:54px;border-radius:50%;border:1.5px solid var(--gold-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;color:var(--gold-soft);font-family:'Shippori Mincho B1',serif;font-size:20px;font-weight:700}
+.wl-eyebrow{font-family:'EB Garamond',serif;font-size:13px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:18px}
+.wl-title{font-family:'Shippori Mincho B1',serif;font-size:clamp(24px,3.6vw,33px);font-weight:700;line-height:1.5;margin-bottom:20px;color:var(--paper)}
+.wl-body{color:#cdc2ac;font-size:15px;line-height:2.1;margin-bottom:34px;max-width:520px;margin-left:auto;margin-right:auto}
+.wl-body strong{color:var(--paper)}
+.btn-gold{background:var(--gold-soft);color:var(--ink)}
+.btn-gold:hover{background:#c9aa6a;transform:translateY(-1px)}
+.wl-perks{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;margin-top:36px;padding-top:30px;border-top:1px solid #3a3226}
+.wl-perk{text-align:center}
+.wl-perk .k{font-family:'EB Garamond',serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-soft);margin-bottom:6px}
+.wl-perk .v{font-size:13px;color:#cdc2ac}
+
+footer{border-top:1px solid var(--rule);padding:46px 26px}
+.foot-in{max-width:var(--maxw);margin:0 auto;text-align:center}
+.foot-mark{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:18px}
+.foot-note{font-size:11.5px;color:var(--ink-3);line-height:2}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s cubic-bezier(.2,.6,.2,1),transform .8s cubic-bezier(.2,.6,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-in">
+    <a href="#top" class="mark"><span class="seal">鑑</span><span class="mark-name">三星鑑</span></a>
+    <nav class="nav-links">
+      <a href="#thesis">三星鑑とは</a>
+      <a href="#sample">サンプル</a>
+      <a href="#menu">メニュー</a>
+      <a href="#maker">作り手</a>
+      <a href="#waitlist" class="nav-cta">先行登録</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">Sanseikan — Integrated Human Analysis</div>
+      <h1>あなたという人を、<br>生まれた日から<span class="em">読み解く</span>。<br><span class="soft">占いではなく、データとして。</span></h1>
+      <div class="hero-rule"></div>
+      <p class="hero-sub">三星鑑（さんせいかん）は、占星術・四柱推命・数秘術という3つの分析軸を統合し、あなたの本質・才能・行動のクセを、できるだけ具体的な言葉に翻訳する ―― ひとりの作り手による、人間分析の取り組みです。</p>
+      <div class="hero-btns">
+        <a href="#diagnose" class="btn btn-fill">無料で1分診断する <span class="btn-arrow">↓</span></a>
+        <a href="#thesis" class="btn btn-line">三星鑑とは</a>
+      </div>
+    </div>
+    <div class="hero-vert">性格分析　才能診断　<b>行動特性</b></div>
+  </div>
+</header>
+
+<section class="sec band thesis" id="thesis">
+  <div class="wrap reveal">
+    <p class="thesis-statement">これは、<span class="strike">占い</span>ではない。<br>あなたという人の、<span class="keep">設計図</span>だ。</p>
+    <p class="thesis-body">性格診断の多くは、あなた自身の「自己申告」に答えを頼ります。だから、その日の気分や「こうありたい自分」でブレてしまう。三星鑑が手がかりにするのは、<strong>生年月日という、一生変わらない客観データ</strong>だけ。だから結果は誰に対しても一貫し、当たる・当たらないではなく、あなたの取扱説明書として、静かに役に立ちます。</p>
+  </div>
+</section>
+
+<section class="sec" id="axes">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Three Axes</span>
+      <h2 class="sec-title">ひとつの物差しでは、<br>人は測りきれない。</h2>
+      <p class="sec-lead">だから三星鑑は、占星術・四柱推命・数秘術を「占い」ではなく、生年月日から導かれる客観的なデータ群として扱い、3つが重なる部分を読み解いて精度を上げます。</p>
+    </div>
+    <div class="axes reveal">
+      <div class="axis"><div class="axis-glyph">星</div><div class="axis-name">占星術</div><div class="axis-en">Astrology</div><div class="axis-desc">10天体の配置から、思考・感情・行動・価値観など「性格の構成要素」を多角的に分解します。</div></div>
+      <div class="axis"><div class="axis-glyph">柱</div><div class="axis-name">四柱推命</div><div class="axis-en">Four Pillars</div><div class="axis-desc">生まれ持った「素材」と五行のバランスから、強みと伸びしろの傾向を読み取ります。</div></div>
+      <div class="axis"><div class="axis-glyph">数</div><div class="axis-name">数秘術</div><div class="axis-en">Numerology</div><div class="axis-desc">生年月日と名前から導く数で、本質・使命・内なる欲求といった指標を捉えます。</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band" id="learn">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">What You Get</span>
+      <h2 class="sec-title">何が、分かるのか。</h2>
+    </div>
+    <div class="learn reveal">
+      <div class="learn-item"><div class="learn-mk">i</div><div><div class="learn-h">才能と、その使い方</div><div class="learn-p">自分では当たり前すぎて気づけない強み。それを「どんな場面でどう活かすか」まで、具体的な言葉にします。</div></div></div>
+      <div class="learn-item"><div class="learn-mk">ii</div><div><div class="learn-h">向いている仕事・働き方</div><div class="learn-p">どんな環境で力を発揮し、どんな役割で輝くか。キャリアの方向を整理するための材料になります。</div></div></div>
+      <div class="learn-item"><div class="learn-mk">iii</div><div><div class="learn-h">行動と人間関係のクセ</div><div class="learn-p">「なぜいつも同じところでつまずくのか」。繰り返してしまうパターンを、客観的に見える化します。</div></div></div>
+      <div class="learn-item"><div class="learn-mk">iv</div><div><div class="learn-h">いま、力を入れるべきテーマ</div><div class="learn-p">人生のリズムから、今年あなたが伸ばしやすい領域・整えるとよいことを示します。</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="diagnose">
+  <div class="diag-wrap">
+    <div class="diag reveal">
+      <span class="eyebrow">Free · One Minute</span>
+      <h3>まずは、無料で1分。</h3>
+      <p class="diag-sub">生年月日を入れるだけ。あなたの「ライフパス（本質の指標）」を、その場で算出します。三星鑑が扱う数十の指標のうち、ほんの入り口の一つです。</p>
+      <div class="diag-row">
+        <input type="date" id="diag-date" value="1992-09-15">
+        <button class="diag-go" onclick="runDiag()">本質の数を見る</button>
+      </div>
+      <div class="diag-result" id="diag-result">
+        <div class="diag-num garamond" id="diag-num">—</div>
+        <div class="diag-kw" id="diag-kw">—</div>
+        <div class="diag-desc" id="diag-desc">—</div>
+        <a href="#waitlist" class="btn btn-line">続きの指標を、先行登録で受け取る <span class="btn-arrow">→</span></a>
+        <div class="diag-note">これは数秘術の1指標のみ。三星鑑の統合分析は、占星術10天体・四柱推命・五行を重ねて立体的に読み解きます。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band" id="sample">
+  <div class="wrap">
+    <div class="sec-head reveal" style="text-align:center;max-width:600px;margin-left:auto;margin-right:auto">
+      <span class="eyebrow" style="display:block;margin-bottom:18px">Sample Excerpt</span>
+      <h2 class="sec-title">レポートの、ほんの一節。</h2>
+      <p class="sec-lead" style="margin-left:auto;margin-right:auto">「結局、私には何が書かれるの?」 ―― その答えの空気感を、実際のレポートの冒頭でお見せします。</p>
+    </div>
+    <div class="sample reveal">
+      <div class="sample-top"><span class="t">統合分析レポート ／ 第一章：全体像</span><span class="s">Sample</span></div>
+      <div class="sample-doc">
+        <h4>あなたを、ひと言で表すと</h4>
+        <p>あなたは「視野の広い完成者」というテーマを生きる人です。物事を細部まで見渡し、全体の調和を整えずにはいられない ―― その丁寧さが、あなたの核にあります。</p>
+        <p>生まれ持った素材は、四柱推命でいう「甲（大きな樹）」。空へ向かって一直線に伸びる大樹のような人です。正義感が強く、曲がったことが苦手。誰よりも真っ直ぐに、自分の信じる方へ向かう凛とした強さを持っています。</p>
+        <p>一方で、その真っ直ぐさは時に「なぜ周りは妥協できるのだろう」という小さな孤独にもなります。けれどそれは弱さではなく、あなたが質を落とせない人だという証拠で……</p>
+      </div>
+      <div class="sample-foot">
+        <div class="lbl">― この続きと、才能・仕事・愛・成長・今年のテーマまで、全5章でお届けします ―</div>
+        <a href="#diagnose" class="btn btn-line">まず無料で、自分の指標を見る <span class="btn-arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="menu">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Analysis Menu</span>
+      <h2 class="sec-title">分析メニュー。</h2>
+      <p class="sec-lead">目的に合わせて選べる3つのコース（リリース時の予定価格）。すべてPDFレポートでお届けします。</p>
+    </div>
+    <div class="tiers reveal">
+      <div class="tier">
+        <div class="tier-mark">Basic</div>
+        <div class="tier-name">ライト</div>
+        <div class="tier-price garamond">¥5,500<small> /回</small></div>
+        <div class="tier-desc">本質・ライフパス・今の時期のテーマを中心にお届けする入門コース。はじめての方に。</div>
+        <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
+      </div>
+      <div class="tier feat">
+        <div class="tier-mark">Standard · 人気</div>
+        <div class="tier-name">スタンダード</div>
+        <div class="tier-price garamond">¥11,000<small> /回</small></div>
+        <div class="tier-desc">才能・向いている仕事・行動特性・深層心理まで全項目を網羅。最もバランスの良い定番です。</div>
+        <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
+      </div>
+      <div class="tier">
+        <div class="tier-mark">Premium</div>
+        <div class="tier-name">プレミアム</div>
+        <div class="tier-price garamond">¥22,000<small> /回</small></div>
+        <div class="tier-desc">全項目に加え、人生後半の展望・総合的な戦略のまとめまで含む完全版。じっくり向き合いたい方へ。</div>
+        <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
+      </div>
+    </div>
+    <div class="price-cap reveal">先行登録された方には、優先・特別価格でご案内します。</div>
+  </div>
+</section>
+
+<section class="sec band tight" id="flow">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">How It Works</span>
+      <h2 class="sec-title">分析の流れ。</h2>
+    </div>
+    <div class="flow reveal">
+      <div class="step"><div class="step-no garamond">01</div><div><div class="step-h">お申し込み・情報のご提供</div><div class="step-p">お名前・生年月日・出生時間・出生地を。今のお悩みも添えていただくと、より具体的な分析になります。</div></div></div>
+      <div class="step"><div class="step-no garamond">02</div><div><div class="step-h">3軸の統合プロファイリング</div><div class="step-p">占星術・四柱推命・数秘術の3つのデータを統合し、あなただけの設計図を構築します。</div></div></div>
+      <div class="step"><div class="step-no garamond">03</div><div><div class="step-h">分析レポートの納品</div><div class="step-p">お申し込みから5〜7営業日以内に、PDFレポートをご登録のメールアドレスへお届けします。</div></div></div>
+      <div class="step"><div class="step-no garamond">04</div><div><div class="step-h">アフターフォロー（任意）</div><div class="step-p">納品後7日以内であれば、ご不明点を1往復メールにてサポートいたします。</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec tight" id="voices">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Voices</span><h2 class="sec-title">お客様の声。</h2></div>
+    <div class="voices reveal">
+      <div class="voice"><div class="voice-stars">★★★★★</div><div class="voice-q">気づいていなかった「強みの使い方」が言語化されて、目の前が開けた感覚でした。転職のタイミングまで具体的で、背中を押してもらえました。</div><div class="voice-by">30代 会社員 M.K. 様</div></div>
+      <div class="voice"><div class="voice-stars">★★★★★</div><div class="voice-q">ふわっとした言葉ではなく、論理的に「なぜそうなるか」まで解説してくださるので、すんなり腑に落ちました。何度も読み返しています。</div><div class="voice-by">40代 フリーランス T.S. 様</div></div>
+      <div class="voice"><div class="voice-stars">★★★★★</div><div class="voice-q">人間関係のクセを指摘していただき、「だからうまくいかなかったんだ」と長年の謎が解けた気がしました。本当に良かったです。</div><div class="voice-by">20代 会社員 A.Y. 様</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec band" id="maker">
+  <div class="maker reveal">
+    <span class="eyebrow">From the Maker</span>
+    <p class="maker-lead">正直に書きます。私は一度、自分の夢をあきらめた人間です。</p>
+    <p>学生の頃、起業したいという夢がありました。でも「自分の中にあるものを、具体的な形にできない」―― その感覚に行き詰まって、一度あきらめました。</p>
+    <p>それから年月が経って、あらためて思ったんです。人が悩むのは、能力が足りないからではなく、<strong>自分の取扱説明書を持っていないから</strong>じゃないか、と。自分がどんな素材でできていて、何が得意で、どこでつまずきやすいのか。それが言葉になっているだけで、人生はずいぶん歩きやすくなる。</p>
+    <p>三星鑑は、占いではありません。生年月日という動かないデータを手がかりに、その人の設計図を、できるだけ具体的な言葉に翻訳する試みです。かつて「形にできなかった」私が、今度こそ形にしたかったもの。それが、このツールです。</p>
+    <p>まだ準備の途中ですが、一人ひとりに丁寧に向き合うつもりで作っています。よかったら、その過程からのぞいてみてください。</p>
+    <div class="maker-sign">三星鑑　制作者<b>ヨシタカ</b></div>
+  </div>
+</section>
+
+<section class="sec waitlist" id="waitlist">
+  <div class="wrap reveal">
+    <div class="wl-seal">鑑</div>
+    <div class="wl-eyebrow">Priority List</div>
+    <h2 class="wl-title">先行登録 ―― リリースを、<br>いちばん先にお知らせします。</h2>
+    <p class="wl-body">三星鑑は、一人ひとりに丁寧に向き合うため、いまは少人数で準備を進めています。先行登録された方には、リリース時の<strong>優先案内</strong>・<strong>先行特典</strong>、そして登録者向けの<strong>無料の分析コンテンツ</strong>を、順次お届けします。</p>
+    <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener" class="btn btn-gold">noteで先行登録する（フォロー）</a>
+    <div class="wl-perks">
+      <div class="wl-perk"><div class="k">Priority</div><div class="v">登録順に優先ご案内</div></div>
+      <div class="wl-perk"><div class="k">Special</div><div class="v">先行登録者だけの特別価格</div></div>
+      <div class="wl-perk"><div class="k">Free</div><div class="v">登録者向けの無料コンテンツ</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="foot-mark"><span class="seal" style="width:30px;height:30px;font-size:14px">鑑</span><span class="mark-name" style="font-size:16px">三星鑑</span></div>
+    <p class="foot-note">© 2026 三星鑑（さんせいかん）— 性格分析 × 才能診断 × 行動特性 統合分析。<br>占星術・四柱推命・数秘術を、占いではなく客観データ分析の手法として用いています。</p>
+  </div>
+</footer>
+
+<script>
+const LP_KB={
+  1:['先駆者','自分で道を切り拓く、独立心とリーダーシップの人。0から1を生み出す力を持ちます。'],
+  2:['調停者','人と人をつなぎ、場を和ませる繊細な協調の人。支える側として大きな力を発揮します。'],
+  3:['表現者','明るく創造的で、人を楽しませる表現の人。アイデアと言葉で周囲を照らします。'],
+  4:['構築者','地道に積み上げ、信頼の土台を作る堅実の人。継続と誠実さがあなたの武器です。'],
+  5:['冒険者','変化と自由を愛し、好奇心で世界を広げる人。フットワークの軽さが強みです。'],
+  6:['擁護者','面倒見がよく、人を育て支える愛情の人。責任感と思いやりで信頼を集めます。'],
+  7:['探究者','物事の本質を深く掘り下げる知性と洞察の人。一人で考える時間が力になります。'],
+  8:['実現者','現実を動かし、成果を形にする実行力の人。目標達成への強い意志を持ちます。'],
+  9:['博愛者','広い視野と深い共感で、全体を見渡す人。人の役に立つことに喜びを感じます。'],
+  11:['啓発者','鋭い直感と感受性で人に気づきを与える人。理想を掲げ周囲を導きます。'],
+  22:['実現する理想家','大きな構想を現実の形にする、スケールの大きな人。ビジョンと実行力を併せ持ちます。'],
+  33:['無償の奉仕者','深い愛で多くの人を包む、稀有なスケールの人。与えることそのものが力になります。']
+};
+function reduceLP(n){ while(n>9 && n!==11 && n!==22 && n!==33){ n=String(n).split('').reduce((a,b)=>a+(+b),0); } return n; }
+function runDiag(){
+  const v=document.getElementById('diag-date').value;
+  if(!v) return;
+  const digits=v.replace(/\D/g,'').split('').map(Number);
+  const lp=reduceLP(digits.reduce((a,b)=>a+b,0));
+  const kb=LP_KB[lp]||['—','—'];
+  document.getElementById('diag-num').textContent=lp;
+  document.getElementById('diag-kw').textContent='ライフパス '+lp+'：'+kb[0];
+  document.getElementById('diag-desc').textContent=kb[1];
+  document.getElementById('diag-result').classList.add('show');
+}
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
