@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三星鑑｜生年月日で読む、あなたの性格と才能</title>
+<meta property="og:title" content="三星鑑｜生年月日で読む、あなたの性格と才能">
+<meta property="og:description" content="占星術・数秘術・四柱推命の三つの分析軸が、あなたの本質を一枚のカードに映し出します。">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+:root{
+  --paper:#f6efe1;--paper2:#fdfaf3;--panel:#fbf6ea;
+  --ink:#241c12;--ink2:#5d5141;--ink3:#8e7f66;
+  --gold:#9a7b2e;--gold2:#b8923a;--gold-soft:#cbab74;--line:#e4d9c0;--line2:#efe6d2;
+  --seal:#8a3b2e;--teal:#2f6157;
+  --shadow:0 1px 3px rgba(90,70,30,.07),0 10px 30px -18px rgba(90,70,30,.22);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Sans JP',system-ui,sans-serif;line-height:1.85;font-size:15px;-webkit-font-smoothing:antialiased}
+b,strong{font-weight:700;color:var(--ink)}
+a{color:var(--gold);text-decoration:none}
+
+header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr{max-width:680px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-mark{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700}
+.logo-name{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;letter-spacing:.12em;color:var(--ink)}
+.logo-sub{font-size:9px;letter-spacing:.16em;color:var(--ink3)}
+.hdr-tag{font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--gold);border:1px solid var(--gold-soft);border-radius:14px;padding:4px 12px}
+
+.hero{max-width:680px;margin:0 auto;padding:48px 22px 10px;text-align:center}
+.hero-eyebrow{font-size:11px;letter-spacing:.28em;color:var(--gold);font-weight:600;margin-bottom:18px}
+.hero-title{font-family:'Noto Serif JP',serif;font-size:clamp(24px,5vw,33px);font-weight:700;line-height:1.5;letter-spacing:.03em;margin-bottom:16px}
+.hero-title span{color:var(--gold)}
+.hero-desc{font-size:14px;color:var(--ink2);line-height:1.95;max-width:560px;margin:0 auto 30px}
+
+.input-card{background:var(--paper2);border:1px solid var(--line);border-radius:16px;padding:28px 26px;box-shadow:var(--shadow);text-align:left}
+.ic-label{font-size:11px;letter-spacing:.04em;color:var(--ink3);font-weight:700;margin-bottom:10px;text-align:center}
+.date-input{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-size:16px;color:var(--ink);font-family:'Noto Sans JP',sans-serif;text-align:center}
+.date-input:focus{outline:none;border-color:var(--gold-soft);box-shadow:0 0 0 3px rgba(154,123,46,.1)}
+.pillar-override{margin-top:16px;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px}
+.po-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:9px}
+.po-title{font-size:11px;color:var(--ink2);font-weight:600}
+.po-auto{font-size:11px;color:var(--ink3)}
+.po-auto span{font-family:'Noto Serif JP',serif;color:var(--gold);font-weight:700;font-size:14px}
+.po-input{width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13px;color:var(--ink)}
+.po-note{font-size:10px;color:var(--ink3);line-height:1.6;margin-top:8px}
+.run-btn{width:100%;margin-top:18px;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#fff;font-size:15px;font-weight:700;letter-spacing:.04em;cursor:pointer;font-family:'Noto Serif JP',serif;box-shadow:0 8px 20px -9px rgba(154,123,46,.6)}
+.run-btn:hover{filter:brightness(1.06)}.run-btn:disabled{opacity:.6;cursor:default}
+.ic-note{font-size:10.5px;color:var(--ink3);text-align:center;margin-top:12px}
+
+.loading-overlay{display:none;flex-direction:column;align-items:center;gap:16px;padding:50px 0}
+.loading-overlay.show{display:flex}
+.loading-orb{width:46px;height:46px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--gold);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--ink3);letter-spacing:.04em}
+
+.result-area{display:none;max-width:680px;margin:0 auto;padding:8px 22px 0}
+.result-area.show{display:block;animation:fade .6s ease}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.id-card{background:linear-gradient(160deg,#fdfaf2,#f0e6cf);border:1px solid var(--gold-soft);border-radius:18px;padding:34px 28px;text-align:center;margin:24px 0 18px;position:relative;overflow:hidden}
+.id-card::before{content:"";position:absolute;inset:9px;border:1px solid var(--line);border-radius:12px;pointer-events:none}
+.id-eyebrow{font-size:11px;letter-spacing:.28em;color:var(--gold);font-weight:600;margin-bottom:14px}
+.id-title{font-family:'Noto Serif JP',serif;font-size:27px;font-weight:700;color:var(--ink);letter-spacing:.03em;line-height:1.4;margin-bottom:8px}
+.id-sub{font-size:13px;color:var(--ink2);margin-bottom:18px}
+.id-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
+.id-badge{font-size:12px;font-weight:600;color:var(--ink);background:var(--paper2);border:1px solid var(--gold-soft);border-radius:16px;padding:6px 14px}
+.id-copy{font-size:13px;color:var(--ink2);line-height:1.85;font-style:italic;max-width:480px;margin:0 auto}
+
+.type-card{border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:18px;box-shadow:var(--shadow);background:var(--paper2)}
+.type-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.type-icon-wrap{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;background:#fff;border:1px solid var(--line)}
+.type-label{font-size:10.5px;letter-spacing:.14em;color:var(--ink3);font-weight:700;margin-bottom:4px}
+.type-name{font-family:'Noto Serif JP',serif;font-size:21px;font-weight:700;color:var(--ink)}
+.type-tagline{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.type-meter{margin-bottom:13px}
+.type-meter-label{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:5px}
+.type-meter-track{height:8px;background:var(--line2);border-radius:5px;overflow:hidden}
+.type-meter-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold-soft),var(--gold));transition:width .8s ease}
+.type-traits{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0}
+.type-trait{font-size:11.5px;font-weight:600;color:var(--gold);background:rgba(154,123,46,.09);border:1px solid var(--gold-soft);border-radius:14px;padding:5px 12px}
+.type-desc{font-size:13.5px;color:var(--ink);line-height:1.95}
+
+.section-cards{display:flex;flex-direction:column;gap:13px}
+.s-card{background:var(--paper2);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+.s-card-header{display:flex;align-items:center;gap:13px;margin-bottom:13px}
+.s-card-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:21px;background:#fff;border:1px solid var(--line);flex-shrink:0}
+.s-card-label{font-size:10px;letter-spacing:.12em;color:var(--ink3);font-weight:700}
+.s-card-num{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:700;color:var(--gold);line-height:1.2}
+.s-card-kw{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;color:var(--ink)}
+.s-card-body{font-size:13.5px;color:var(--ink);line-height:1.95}
+.s-card-desc{color:var(--ink2);margin-bottom:8px}
+.s-card-story{color:var(--ink)}
+.s-card-arrow{color:var(--gold)}
+
+.share-area{text-align:center;margin:26px 0 10px}
+.share-title{font-size:12px;color:var(--ink3);letter-spacing:.06em;margin-bottom:14px}
+.share-btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
+.share-btn{font-family:'Noto Sans JP',sans-serif;font-size:13.5px;font-weight:700;padding:11px 22px;border-radius:9px;cursor:pointer;border:1px solid var(--line);transition:.16s}
+.share-btn.x{background:var(--ink);color:#fdfaf3;border-color:var(--ink)}
+.share-btn.x:hover{filter:brightness(1.15)}
+.share-btn.copy{background:var(--paper2);color:var(--ink2)}
+.share-btn.copy:hover{border-color:var(--gold-soft);color:var(--gold)}
+.copy-toast{font-size:12px;color:var(--teal);margin-top:12px;opacity:0;transition:.3s;font-weight:600}
+.copy-toast.show{opacity:1}
+
+.free-cta{max-width:680px;margin:34px auto 0;padding:0 22px}
+.free-cta-inner{background:var(--ink);color:#f3ead6;border-radius:18px;padding:40px 32px;text-align:center;box-shadow:0 18px 44px -22px rgba(36,28,18,.7)}
+.free-cta-eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold-soft);font-weight:700;margin-bottom:12px}
+.free-cta-title{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;color:#fdfaf3;margin-bottom:12px;letter-spacing:.03em}
+.free-cta-desc{font-size:13.5px;color:#cbbfa6;line-height:1.95;max-width:500px;margin:0 auto 26px}
+.free-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.free-cta-btn{font-size:14px;font-weight:700;padding:13px 24px;border-radius:10px;transition:.18s}
+.free-cta-btn.pri{background:linear-gradient(135deg,#e0c97c,var(--gold-soft));color:var(--ink)}
+.free-cta-btn.pri:hover{filter:brightness(1.05)}
+.free-cta-btn.sec{background:transparent;color:var(--gold-soft);border:1px solid #5a4d38}
+.free-cta-btn.sec:hover{background:rgba(203,171,116,.12)}
+
+footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid var(--line);font-size:11px;color:var(--ink3);line-height:1.9}
+.footer-logo{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-mark">三</div>
+      <div>
+        <div class="logo-name">三星鑑</div>
+        <div class="logo-sub">さんせいかん</div>
+      </div>
+    </div>
+    <div class="hdr-tag">無料版</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">占星術 × 数秘術 × 四柱推命</div>
+  <h1 class="hero-title">生年月日だけで読む、<br><span>あなたの性格と才能</span></h1>
+  <p class="hero-desc">三つの分析軸を統合した「三星鑑」が、あなたの本質・才能・気質タイプ・今年の流れをやさしく読み解きます。</p>
+
+  <div class="input-card">
+    <div class="ic-label">生年月日を入力してください</div>
+    <input type="date" id="inp-birth" class="date-input" max="2010-12-31">
+
+    <!-- 日柱上書き -->
+    <div class="pillar-override">
+      <div class="po-head">
+        <div class="po-title">四柱推命・日柱の正確な値（任意）</div>
+        <div class="po-auto" id="po-auto-disp">自動計算: <span>—</span></div>
+      </div>
+      <div class="po-row">
+        <input id="inp-pillar" class="po-input" type="text" placeholder="例：甲午　（空欄なら自動計算）" maxlength="2">
+      </div>
+      <div class="po-note">
+        ※日柱は出生時刻により変わります。正確な値は
+        <a href="https://suimei.starcrawler.net/" target="_blank" rel="noopener">四柱推命スタークローラー</a>
+        等で生年月日と出生時刻を入力して確認できます。
+      </div>
+    </div>
+
+    <button class="run-btn" id="btn-run" onclick="runAnalysis()">✦ わたしの性格分析を見る</button>
+    <p class="ic-note">入力した情報はサーバーに送信されません。ブラウザ内のみで動作します。</p>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-orb"></div>
+  <div class="loading-text">三つの星が読み解いています…</div>
+</div>
+
+<div class="result-area" id="result-area">
+
+  <!-- アイデンティティカード -->
+  <div class="id-card">
+    <div class="id-eyebrow">あなたの人物分析</div>
+    <div class="id-title" id="id-title">—</div>
+    <div class="id-sub" id="id-sub">—</div>
+    <div class="id-badges" id="id-badges"></div>
+    <div class="id-copy" id="id-copy">—</div>
+  </div>
+
+  <!-- 気質タイプカード -->
+  <div class="type-card" id="type-card">
+    <div class="type-header">
+      <div class="type-icon-wrap" id="type-icon-wrap"></div>
+      <div>
+        <div class="type-label" id="type-label">気質タイプ</div>
+        <div class="type-name" id="type-name">—</div>
+        <div class="type-tagline" id="type-tagline">—</div>
+      </div>
+    </div>
+    <div class="type-meter">
+      <div class="type-meter-label"><span>内向 ◀</span><span>▶ 外向</span></div>
+      <div class="type-meter-track"><div class="type-meter-fill" id="meter-ie" style="width:0"></div></div>
+    </div>
+    <div class="type-meter">
+      <div class="type-meter-label"><span>感情型 ◀</span><span>▶ 論理型</span></div>
+      <div class="type-meter-track"><div class="type-meter-fill" id="meter-ef" style="width:0"></div></div>
+    </div>
+    <div class="type-meter">
+      <div class="type-meter-label"><span>直感型 ◀</span><span>▶ 実践型</span></div>
+      <div class="type-meter-track"><div class="type-meter-fill" id="meter-ni" style="width:0"></div></div>
+    </div>
+    <div class="type-traits" id="type-traits"></div>
+    <div class="type-desc" id="type-desc"></div>
+  </div>
+
+  <!-- セクションカード群 -->
+  <div class="section-cards" id="section-cards"></div>
+
+  <!-- シェア -->
+  <div class="share-area">
+    <div class="share-title">— 結果をシェアする —</div>
+    <div class="share-btns">
+      <button class="share-btn x" onclick="shareX()">𝕏 ポストする</button>
+      <button class="share-btn copy" onclick="copyResult()">📋 コピーする</button>
+    </div>
+    <div class="copy-toast" id="copy-toast">クリップボードにコピーしました ✓</div>
+  </div>
+
+</div>
+
+<div class="free-cta">
+  <div class="free-cta-inner">
+    <div class="free-cta-eyebrow">MORE</div>
+    <div class="free-cta-title">これは、入り口の指標だけ。</div>
+    <p class="free-cta-desc">三星鑑の統合レポートは、10天体・四柱推命・五行を重ねて、あなたの才能・仕事・人間関係・今年のテーマまで立体的に読み解きます。リリースは準備中 ―― 先行登録した方から優先でご案内します。</p>
+    <div class="free-cta-btns">
+      <a href="sanseikan_homepage.html" class="free-cta-btn pri">三星鑑について見る</a>
+      <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener" class="free-cta-btn sec">noteで先行登録する</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">三星鑑</div>
+  © 2026 三星鑑（さんせいかん）— 性格分析 × 才能診断 × 行動特性 統合分析
+</footer>
+
+<script>
+// ══════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════
+const SIGNS=['牡羊座','牡牛座','双子座','蟹座','獅子座','乙女座','天秤座','蠍座','射手座','山羊座','水瓶座','魚座'];
+const SIGN_ICON=['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+const JUKKAN=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const JUNISHI=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const PT={A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8};
+const VW=new Set(['A','E','I','O','U']);
+
+// 数秘データ
+const NUM={
+  1: {kw:'開拓者',    icon:'🔥', color:'#c06830', bg:'#fff4ee',
+      desc:'誰よりも早く、新しい道を切り開いていく人です。',
+      story:'あなたには、まだ誰も踏み入れていない場所へ進んでいく力があります。<b>最初の一歩を踏み出す勇気</b>と、独自の道を信じる強さが最大の才能。孤独を感じることもありますが、その孤独こそがあなたを本物のリーダーにします。'},
+  2: {kw:'調和の人',  icon:'🌊', color:'#4a7a9a', bg:'#eef4f8',
+      desc:'人と人の間に立ち、場を和らげる天才です。',
+      story:'周囲の気持ちを誰よりも繊細に感じ取ります。<b>その深い共感力と優しさ</b>が人間関係をスムーズにし、場に安心感をもたらします。縁の下の力持ちとして、あなたがいるだけで場が整います。'},
+  3: {kw:'表現者',    icon:'✨', color:'#b87030', bg:'#fff8ee',
+      desc:'言葉や創造で、人の心を明るくする人です。',
+      story:'あなたの周りにいるとなぜか気持ちが明るくなる。<b>天性の表現力と喜びのエネルギー</b>のおかげです。言葉・アート・アイデア——何かを通じて自分を表現するとき、あなたは最も輝きます。'},
+  4: {kw:'土台職人',  icon:'🏛️', color:'#6a5a2a', bg:'#f8f5ee',
+      desc:'コツコツと積み上げ、揺るぎない基盤を作る人です。',
+      story:'誠実さと努力で確かなものを積み上げていきます。<b>一つひとつ丁寧に</b>取り組む姿勢が信頼を生み、その信頼が人生の財産になります。派手さはなくても、あなたが作ったものは長く残ります。'},
+  5: {kw:'自由人',    icon:'🌿', color:'#3a8a6a', bg:'#eef7f3',
+      desc:'変化と冒険を愛し、多様な体験で成長する人です。',
+      story:'同じ場所に留まることを心が嫌います。<b>変化こそがあなたの栄養</b>。新しい出会い・旅・学び——多様な体験を積み重ねることで、どんな環境にも対応できる稀有な柔軟性が育まれます。'},
+  6: {kw:'守護者',    icon:'🌸', color:'#8a4a7a', bg:'#f8eef5',
+      desc:'大切な人を守り育てることに喜びを見出す人です。',
+      story:'誰かのために何かをするとき、最も自分らしくいられます。<b>愛情と責任感</b>があなたの源泉。家族や仲間を支えるその姿が、周囲の心の拠り所になっています。'},
+  7: {kw:'探求者',    icon:'🔮', color:'#4a5a8a', bg:'#eef0f8',
+      desc:'真実を探し続ける、静かで深い知性の人です。',
+      story:'表面だけで満足することができません。<b>物事の本質と深い意味</b>を探し続ける知性が最大の強みです。その洞察力は、多くの人が気づかないことを見抜く力になります。'},
+  8: {kw:'実現者',    icon:'💎', color:'#8a3a2a', bg:'#f8efee',
+      desc:'大きなビジョンを現実に変える、実行力の人です。',
+      story:'夢を絵に描いたまま終わらせない力があります。<b>強い意志と実行力</b>で、周囲が「無理だ」と思うことも形にしてしまう。物質的な豊かさへの感覚も鋭く、うまく活かせる才能があります。'},
+  9: {kw:'完成者',    icon:'🌏', color:'#5a3a8a', bg:'#f3eef8',
+      desc:'すべてを俯瞰し、人類全体への愛を持つ人です。',
+      story:'自分一人の幸せだけでは満足できません。<b>より多くの人の幸せ</b>を願う広い心が突き動かします。その深い共感力と俯瞰力は、多くの人を導く力になります。'},
+  11:{kw:'光の使者',  icon:'⚡', color:'#7a5a9a', bg:'#f3f0f8',
+      desc:'高次の直感を持つ、特別な使命を帯びた人です。',
+      story:'普通の人が気づかないことを感じ取る特別なアンテナを持っています。<b>閃きと直感</b>があなたの羅針盤。理論より感覚を信じることで、多くの人に光をもたらす役割を担っています。'},
+  22:{kw:'夢の建築家',icon:'🏗️', color:'#3a6a5a', bg:'#eef5f3',
+      desc:'壮大なビジョンを現実に建設する、稀有な人です。',
+      story:'一人の人生を超えた大きなビジョンが宿っています。<b>理想と現実を橋渡しする</b>稀有な才能で、多くの人の未来に関わる何かを作り出す力があります。焦らず、大きく、着実に。'},
+  33:{kw:'愛の導師',  icon:'💝', color:'#8a4a5a', bg:'#f8eef0',
+      desc:'無限の優しさで人々を癒し導く、特別な存在です。',
+      story:'優しさには底がありません。<b>無条件の愛と深い叡智</b>で、あなたのそばにいる人は自然と癒されていきます。その存在自体が、多くの人にとっての安らぎの場所です。'},
+};
+
+// 星座データ
+const ZODIAC={
+  '牡羊座':{trait:'情熱と直感の人。最初に飛び込む勇気が誰よりも強い。',strength:'行動力・リーダーシップ・開拓精神',weakness:'焦りやすく衝動的になることがある',
+    ie:72,ef:55,ni:45},
+  '牡牛座':{trait:'五感が豊かで、美と安定を愛する人。',strength:'忍耐力・審美眼・着実さ',weakness:'変化を嫌い頑固になりやすい',
+    ie:35,ef:60,ni:30},
+  '双子座':{trait:'知的好奇心旺盛で、言葉と情報の達人。',strength:'コミュニケーション力・柔軟性・多才',weakness:'飽きやすく集中が続きにくい',
+    ie:80,ef:45,ni:70},
+  '蟹座': {trait:'深い感情と家族への愛を持つ、守護者の星座。',strength:'共感力・直感・包容力',weakness:'傷つきやすく感情に振り回されやすい',
+    ie:30,ef:80,ni:60},
+  '獅子座':{trait:'自己表現と創造が輝く、太陽のような存在。',strength:'創造力・カリスマ・情熱',weakness:'承認欲求が強くなりやすい',
+    ie:85,ef:50,ni:55},
+  '乙女座':{trait:'分析と整理が天才的な、完璧主義者の星座。',strength:'分析力・几帳面さ・奉仕の心',weakness:'完璧を求めすぎて自分を追い詰めやすい',
+    ie:40,ef:65,ni:35},
+  '天秤座':{trait:'美と調和を愛し、人間関係を大切にする人。',strength:'バランス感覚・審美眼・外交力',weakness:'優柔不断で決断が遅れやすい',
+    ie:65,ef:70,ni:65},
+  '蠍座': {trait:'深い洞察力と変容の力を持つ、神秘的な存在。',strength:'洞察力・集中力・変容する力',weakness:'執着が強く嫉妬に苦しむことがある',
+    ie:25,ef:55,ni:75},
+  '射手座':{trait:'自由と冒険を愛し、哲学と真理を求める人。',strength:'楽観性・探求心・大局観',weakness:'軽率で責任を避けたくなることがある',
+    ie:78,ef:40,ni:80},
+  '山羊座':{trait:'着実に頂上を目指す、努力と責任の星座。',strength:'忍耐力・責任感・実行力',weakness:'感情を抑えすぎて冷たく見られることがある',
+    ie:38,ef:72,ni:28},
+  '水瓶座':{trait:'革新と個性を愛する、時代の先を行く人。',strength:'独創性・人道愛・革新力',weakness:'孤立しがちで反骨心が強くなりすぎることがある',
+    ie:55,ef:35,ni:85},
+  '魚座': {trait:'深い共感と豊かな感性を持つ、夢見る人。',strength:'共感力・芸術的感性・精神性',weakness:'現実感が薄れやすく自分を見失うことがある',
+    ie:28,ef:88,ni:70},
+};
+
+// 四柱推命・日干データ
+const PILLAR={
+  '甲':{el:'大樹',   trait:'真っ直ぐに天へ伸びる大樹のような人。正義感が強く、曲がったことが嫌い。'},
+  '乙':{el:'草花',   trait:'どんな環境でも光を見つけて咲く草花のような人。柔軟で周囲を和やかにする。'},
+  '丙':{el:'太陽',   trait:'全方位に光を降り注ぐ太陽のような人。情熱的で周囲を自然と明るくする。'},
+  '丁':{el:'灯火',   trait:'静かに、しかし確実に一点を照らし続ける灯火のような人。深い知性と感受性。'},
+  '戊':{el:'大山',   trait:'どっしりとした山のような存在感。動じない安定感と圧倒的な包容力。'},
+  '己':{el:'大地',   trait:'あらゆる種を育む豊かな大地のような人。育てること・支えることへの深い喜び。'},
+  '庚':{el:'鍛剣',   trait:'鉱石から磨かれた剣のような人。強固な決断力と揺るぎない正義感。'},
+  '辛':{el:'宝石',   trait:'磨かれるほどに輝く宝石のような人。繊細な美意識と誇り高い精神。'},
+  '壬':{el:'大海',   trait:'あらゆる器に収まる大海のような人。深い知性と大きな柔軟性。'},
+  '癸':{el:'恵雨',   trait:'大地を静かに潤す雨のような人。繊細な感受性と深い洞察力。'},
+};
+
+// 気質タイプ定義（5タイプ）
+const TYPES=[
+  {id:'creator',   name:'クリエイター型',  icon:'🎨',
+   color:'#b07030', bg:'#fff8ee', border:'#d4a84a',
+   tagline:'感性で世界を塗り替える、表現の人',
+   meters:{ie:70,ef:55,ni:72},
+   traits:['表現力が高い','独創的','感性豊か','芸術的','自由を愛する'],
+   traitColor:'#b07030', traitBg:'#fff4e0',
+   desc:'あなたは、何かを作り・表現することで最も輝く人です。言葉・音楽・デザイン・料理・どんな形でも、あなたが生み出すものには独特の「あなたらしさ」が宿ります。ルーティンよりも創造の自由を愛し、感性に従って動くとき最大のパフォーマンスを発揮します。'},
+  {id:'caregiver', name:'サポーター型',   icon:'🤝',
+   color:'#3d7a6a', bg:'#e8f5f2', border:'#5aa898',
+   tagline:'人を支え、場を温める、共感の人',
+   meters:{ie:32,ef:82,ni:50},
+   traits:['共感力が高い','気配り上手','思いやりがある','チームを支える','聞き上手'],
+   traitColor:'#3d7a6a', traitBg:'#e4f3ef',
+   desc:'あなたは、誰かのそばにいて支えるとき、最も自分らしくいられます。相手の気持ちを察する力が誰よりも高く、その温かさが周囲の人に安心感を与えます。縁の下の力持ちとして、あなたがいるだけでチームや家族の空気が変わります。'},
+  {id:'pioneer',   name:'パイオニア型',   icon:'🚀',
+   color:'#8a3a2a', bg:'#fdf0ee', border:'#c07060',
+   tagline:'誰よりも先へ、道なき道を行く人',
+   meters:{ie:80,ef:42,ni:55},
+   traits:['行動力がある','リーダーシップ','決断が速い','挑戦を好む','意志が強い'],
+   traitColor:'#8a3a2a', traitBg:'#fde8e4',
+   desc:'あなたは、誰も踏み入れていない場所に自ら踏み込んでいく人です。リスクを恐れず、直感と行動力で道を切り開きます。スピード感があり、チームを引っ張るリーダーとして自然と前に立ちます。時に独断的に見えることもありますが、それがあなたの推進力の源です。'},
+  {id:'thinker',   name:'シンカー型',     icon:'🔬',
+   color:'#3a5a8a', bg:'#eef2f8', border:'#6a8abf',
+   tagline:'深く考え、本質を見抜く、知の人',
+   meters:{ie:28,ef:35,ni:82},
+   traits:['論理的思考','分析力が高い','深掘りが得意','客観的','研究熱心'],
+   traitColor:'#3a5a8a', traitBg:'#e4ecf8',
+   desc:'あなたは、物事の表面ではなく、その奥にある本質を見抜く力を持っています。一人で静かに考える時間が好きで、深く掘り下げることで他の人が気づかないような答えを見つけます。感情より論理を重視する傾向があり、信頼できる専門家として周囲に頼られます。'},
+  {id:'connector', name:'コネクター型',   icon:'🌐',
+   color:'#5a3a8a', bg:'#f3f0f8', border:'#9080c8',
+   tagline:'人と人をつなぎ、世界を広げる人',
+   meters:{ie:65,ef:68,ni:62},
+   traits:['人脈が広い','調和を大切にする','社交的','柔軟性がある','橋渡しが得意'],
+   traitColor:'#5a3a8a', traitBg:'#ece8f5',
+   desc:'あなたは、人と人の間に立ち、つなぎ合わせることが自然とできる人です。さまざまな立場の人と関係を築き、その縁を通じて場や組織に新しい風を吹き込みます。外向きと内向きの両方の顔を持ち、どんな人とも共鳴できる稀有なバランス感覚の持ち主です。'},
+];
+
+// パーソナルイヤーデータ
+const PY={
+  1: {title:'種まきの年',    story:'新しいサイクルの始まりです。直感に従って行動することが吉。過去を手放し、新鮮な気持ちで一歩を踏み出してください。'},
+  2: {title:'縁を育む年',    story:'人との繋がりと協力がテーマです。一人で頑張るより、誰かと組むことで大きく前進します。丁寧な関係づくりを大切に。'},
+  3: {title:'表現の年',      story:'自分の思いや才能を外に向けて表現する年です。楽しむことが最高の戦略。創造的な活動が運を開きます。'},
+  4: {title:'土台固めの年',  story:'着実に積み上げることが重要な年です。生活の基盤を整えルーティンを作ることが、長期的な実りを生みます。'},
+  5: {title:'変化の年',      story:'予期せぬ変化が訪れる年です。恐れずに受け入れることで新しい扉が開きます。旅や学びに積極的に。'},
+  6: {title:'愛と責任の年',  story:'家族や大切な人との関係が中心テーマです。奉仕の心で動くことで、深い充実感と感謝が返ってきます。'},
+  7: {title:'内省の年',      story:'外より内面を見つめる静かな年です。専門性を深め、自分だけの答えを見つけることが大切な一年。'},
+  8: {title:'収穫の年',      story:'これまでの積み上げが実を結ぶ年です。自信を持って大きなことに挑戦すれば、豊かさが引き寄せられます。'},
+  9: {title:'完了と手放しの年',story:'一つのサイクルの終わりです。執着を手放し不要なものを整理することで、次の豊かなサイクルへの準備が整います。'},
+  11:{title:'直感の年',      story:'特別な閃きや出会いが訪れる年です。理屈よりも直感を信じて動くことで、思いがけない光が射します。'},
+  22:{title:'夢の具現化の年',story:'壮大なビジョンを現実に落とし込む特別な年。大きな目標を掲げ、一歩ずつ着実に建設していきましょう。'},
+};
+
+// ══════════════════════════════════════
+//  CALC
+// ══════════════════════════════════════
+function reduce(n,master=true){
+  while(n>9){
+    if(master&&(n===11||n===22||n===33))return n;
+    n=[...String(n)].reduce((a,c)=>a+parseInt(c),0);
+  }
+  return n;
+}
+function getSunSign(birth){
+  const d=new Date(birth);
+  const start=new Date(d.getFullYear(),0,0);
+  const doy=Math.floor((d-start)/86400000);
+  let lon=((doy-80)*360/365.25+360)%360;
+  const si=Math.floor(lon/30);
+  return{sign:SIGNS[si],icon:SIGN_ICON[si],deg:Math.floor(lon%30)+1,idx:si};
+}
+const MANNEN={"1940":39,"1941":45,"1942":50,"1943":55,"1944":0,"1945":6,"1946":11,"1947":16,"1948":21,"1949":27,"1950":32,"1951":37,"1952":42,"1953":48,"1954":53,"1955":58,"1956":3,"1957":9,"1958":14,"1959":19,"1960":24,"1961":30,"1962":35,"1963":40,"1964":45,"1965":51,"1966":56,"1967":1,"1968":6,"1969":12,"1970":17,"1971":22,"1972":27,"1973":33,"1974":38,"1975":43,"1976":48,"1977":54,"1978":59,"1979":4,"1980":9,"1981":15,"1982":20,"1983":25,"1984":30,"1985":36,"1986":41,"1987":46,"1988":51,"1989":57,"1990":2,"1991":7,"1992":12,"1993":18,"1994":23,"1995":28,"1996":33,"1997":39,"1998":44,"1999":49,"2000":54,"2001":0,"2002":5,"2003":10,"2004":15,"2005":21,"2006":26,"2007":31,"2008":36,"2009":42,"2010":47,"2011":52,"2012":57,"2013":3,"2014":8,"2015":13,"2016":18,"2017":24,"2018":29,"2019":34,"2020":39,"2021":45,"2022":50,"2023":55,"2024":0,"2025":6,"2026":11,"2027":16,"2028":21,"2029":27,"2030":32};
+const KANSHI60=[];(()=>{const k=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],s=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];for(let i=0;i<60;i++)KANSHI60.push(k[i%10]+s[i%12]);})();
+function calcPillarAuto(birth){
+  const parts=birth.split('-'); const y=parseInt(parts[0]),m=parseInt(parts[1]),d=parseInt(parts[2]);
+  const offset=MANNEN[String(y)];
+  if(offset===undefined) return {kan:'—',shi:'—',pillar:'（範囲外）'};
+  const doy=Math.round((new Date(y,m-1,d)-new Date(y,0,1))/86400000);
+  const p=KANSHI60[(offset+doy)%60];
+  return {kan:p[0],shi:p[1],pillar:p};
+}
+function getLp(birth){
+  return reduce([...birth.replace(/\D/g,'')].map(Number).reduce((a,b)=>a+b,0));
+}
+function getPY(birth){
+  const bp=birth.split('-');
+  return reduce([...String(2026),...String(bp[1]),...String(bp[2])].map(Number).reduce((a,b)=>a+b,0));
+}
+
+// ══════════════════════════════════════
+//  気質タイプ判定
+//  星座・LP・日干を総合してスコアリング
+// ══════════════════════════════════════
+function calcType(signName, lp, kan){
+  const zod=ZODIAC[signName]||{ie:50,ef:50,ni:50};
+  const nd=NUM[lp]||{};
+
+  // LPによるボーナス
+  const lpBonus={
+    creator:  [3,5,7,11].includes(lp)?20:0,
+    caregiver:[2,6,9,33].includes(lp)?20:0,
+    pioneer:  [1,8,22].includes(lp)?20:0,
+    thinker:  [4,7].includes(lp)?20:0,
+    connector:[2,3,6].includes(lp)?15:0,
+  };
+
+  // 日干によるボーナス
+  const kanBonus={
+    creator:  ['乙','丙','丁'].includes(kan)?15:0,
+    caregiver:['己','壬','癸'].includes(kan)?15:0,
+    pioneer:  ['甲','庚','丙'].includes(kan)?15:0,
+    thinker:  ['庚','辛','癸','甲'].includes(kan)?15:0,
+    connector:['乙','壬','己'].includes(kan)?15:0,
+  };
+
+  // 星座スコア
+  const scores={
+    creator:   Math.round(zod.ie*0.5+zod.ni*0.5),
+    caregiver: Math.round((100-zod.ie)*0.5+zod.ef*0.5),
+    pioneer:   Math.round(zod.ie*0.6+(100-zod.ef)*0.4),
+    thinker:   Math.round((100-zod.ie)*0.4+zod.ni*0.6),
+    connector: Math.round(zod.ie*0.3+zod.ef*0.4+zod.ni*0.3),
+  };
+
+  // 合算
+  TYPES.forEach(t=>{
+    scores[t.id]+=lpBonus[t.id]+(kanBonus[t.id]||0);
+  });
+
+  // 最高スコアのタイプを選択
+  let best=TYPES[0],bestScore=0;
+  TYPES.forEach(t=>{
+    if(scores[t.id]>bestScore){bestScore=scores[t.id];best=t;}
+  });
+
+  // メーターはタイプのデフォルト + 星座の値で補正
+  const ie=Math.round(best.meters.ie*0.6+zod.ie*0.4);
+  const ef=Math.round(best.meters.ef*0.6+zod.ef*0.4);
+  const ni=Math.round(best.meters.ni*0.6+zod.ni*0.4);
+  return{type:best,ie,ef,ni};
+}
+
+// ══════════════════════════════════════
+//  シェア
+// ══════════════════════════════════════
+let shareText='';
+function copyResult(){
+  if(!shareText)return;
+  navigator.clipboard.writeText(shareText).then(()=>{
+    const t=document.getElementById('copy-toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  });
+}
+function shareX(){
+  if(!shareText)return;
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText+'\n\n▶ 三星鑑で調べてみて'),'_blank');
+}
+
+// ══════════════════════════════════════
+//  ACCORDION
+// ══════════════════════════════════════
+function toggleCard(el){
+  const card=el.closest('.s-card');
+  const isOpen=card.classList.contains('open');
+  document.querySelectorAll('.s-card.open').forEach(c=>c.classList.remove('open'));
+  if(!isOpen)card.classList.add('open');
+}
+
+// ══════════════════════════════════════
+//  実行
+// ══════════════════════════════════════
+function runAnalysis(){
+  const birth=document.getElementById('inp-birth').value;
+  if(!birth){alert('生年月日を入力してください。');return;}
+
+  const btn=document.getElementById('btn-run');
+  btn.disabled=true;
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('result-area').classList.remove('show');
+
+  setTimeout(()=>{
+    // 計算
+    const lp    = getLp(birth);
+    const sun   = getSunSign(birth);
+    const pilAuto = calcPillarAuto(birth);
+    const py    = getPY(birth);
+
+    // 上書き日柱
+    const ovRaw=(document.getElementById('inp-pillar').value||'').trim();
+    let kanFinal=pilAuto.kan, pillarFinal=pilAuto.pillar;
+    if(ovRaw.length>=1&&PILLAR[ovRaw[0]]){
+      kanFinal=ovRaw[0];
+      pillarFinal=ovRaw.slice(0,2);
+    }
+
+    const lpD  =NUM[lp]||NUM[9];
+    const zodD =ZODIAC[sun.sign]||{};
+    const pilD =PILLAR[kanFinal]||{};
+    const pyD  =PY[py]||PY[9];
+    const typeR=calcType(sun.sign,lp,kanFinal);
+    const T    =typeR.type;
+
+    // ── アイデンティティカード ──
+    document.getElementById('id-title').textContent=lpD.kw+'タイプ';
+    document.getElementById('id-sub').textContent=`${sun.sign} ${sun.deg}度 ／ ライフパス ${lp} ／ 日干 ${kanFinal}（${pilD.el||''}）`;
+    document.getElementById('id-badges').innerHTML=[
+      {i:sun.icon,l:sun.sign},
+      {i:lpD.icon,l:`LP ${lp}`},
+      {i:'🌿',l:`日干 ${kanFinal}`},
+      {i:'📅',l:`PY ${py}`},
+      {i:T.icon,l:T.name},
+    ].map(b=>`<div class="id-badge">${b.i} <span>${b.l}</span></div>`).join('');
+    document.getElementById('id-copy').textContent=
+      `${sun.sign}に生まれ、「${lpD.kw}」として生きる。\n気質タイプは「${T.name}」。${T.tagline}`;
+
+    // ── 気質タイプカード ──
+    const tc=document.getElementById('type-card');
+    tc.style.borderColor=T.border;
+    tc.querySelector('.type-card::before');
+    // top border color via inline style on pseudo — use a div instead
+    const topBar=document.createElement('div');
+    // inject via style attribute on the card's before hack → use wrapper trick
+    tc.style.setProperty('--type-color',T.color);
+    tc.style.setProperty('--type-border',T.border);
+    // set ::before color via class or direct style attr on existing element
+    // simplest: just set border-top directly
+    tc.style.borderTopColor=T.border;
+    tc.style.borderTopWidth='4px';
+
+    const iconWrap=document.getElementById('type-icon-wrap');
+    iconWrap.textContent=T.icon;
+    iconWrap.style.background=T.bg;
+    iconWrap.style.border=`1px solid ${T.border}`;
+
+    document.getElementById('type-label').textContent='気質タイプ';
+    document.getElementById('type-label').style.color=T.color;
+    document.getElementById('type-name').textContent=T.name;
+    document.getElementById('type-name').style.color=T.color;
+    document.getElementById('type-tagline').textContent=T.tagline;
+
+    // meters
+    const setMeter=(id,val,color)=>{
+      document.getElementById(id).style.width=val+'%';
+      document.getElementById(id).style.background=color;
+    };
+    setMeter('meter-ie',typeR.ie,T.color);
+    setMeter('meter-ef',typeR.ef,T.color);
+    setMeter('meter-ni',typeR.ni,T.color);
+
+    // traits
+    document.getElementById('type-traits').innerHTML=T.traits.map(t=>
+      `<span class="type-trait" style="color:${T.traitColor};background:${T.traitBg};border-color:${T.border}">${t}</span>`
+    ).join('');
+
+    // desc
+    const td=document.getElementById('type-desc');
+    td.textContent=T.desc;
+    td.style.borderLeftColor=T.border;
+    td.style.background=T.bg;
+
+    // シェアテキスト
+    shareText=`【三星鑑】私の性格・才能分析\n\n${sun.sign} × ライフパス${lp}「${lpD.kw}」× 日干${kanFinal}\n気質タイプ：${T.name}\n「${T.tagline}」\n\n今年のテーマ：${pyD.title}`;
+
+    // ── セクションカード ──
+    const sections=[
+      {
+        icon:'☀️',bg:'#fffbee',label:'太陽星座',
+        num:sun.icon,kw:zodD.trait||'',
+        desc:`<b>強み：</b>${zodD.strength||''}　<b>課題：</b>${zodD.weakness||''}`,
+        story:`あなたは<b>「${sun.sign}」</b>に太陽が輝いています。${zodD.trait||''}<br><br>強みである「${zodD.strength||''}」を大切に活かしながら、「${zodD.weakness||''}」という傾向も自分への理解として受け入れてみてください。`,
+        note:null,
+      },
+      {
+        icon:lpD.icon,bg:lpD.bg,label:'ライフパスナンバー（本質）',
+        num:String(lp),kw:lpD.desc,
+        desc:'生年月日から導かれる、人生の根本テーマです。',
+        story:lpD.story,
+        note:null,
+      },
+      {
+        icon:'🌿',bg:'#f8f5ee',label:'四柱推命・日干（持って生まれた素材）',
+        num:pillarFinal,kw:pilD.trait||'',
+        desc:'東洋の知恵が示す、生まれながらの素材と気質です。',
+        story:`あなたの日干は<b>「${kanFinal}」</b>、自然界で言えば<b>「${pilD.el||''}」</b>に例えられます。<br><br>${pilD.trait||''}`,
+        note:'※日柱は出生時刻により変わります。入力欄に正確な値を上書きすると、より正確な結果が得られます。',
+      },
+      {
+        icon:'📅',bg:'#f0f8f5',label:'2026年 今年の流れ',
+        num:String(py),kw:`パーソナルイヤー ${py}`,
+        desc:'今年あなたを包む、宇宙のリズムです。',
+        story:`今年2026年は、あなたにとって<b>「${pyD.title}」</b>です。<br><br>${pyD.story}`,
+        note:null,
+      },
+    ];
+
+    document.getElementById('section-cards').innerHTML=sections.map((s,i)=>`
+      <div class="s-card${i===0?' open':''}">
+        <div class="s-card-header" onclick="toggleCard(this)">
+          <div class="s-card-icon" style="background:${s.bg}">${s.icon}</div>
+          <div class="s-card-label">${s.label}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="s-card-num">${s.num}</div>
+            <div class="s-card-arrow">▼</div>
+          </div>
+        </div>
+        <div class="s-card-body">
+          <div class="s-card-kw">${s.kw}</div>
+          <div class="s-card-desc">${s.desc}</div>
+          <div class="s-card-story">${s.story}</div>
+          ${s.note?`<div class="time-note">⏰ ${s.note}</div>`:''}
+        </div>
+      </div>
+    `).join('');
+
+    // 表示
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('result-area').classList.add('show');
+    document.getElementById('result-area').scrollIntoView({behavior:'smooth',block:'start'});
+    btn.disabled=false;
+  },900);
+}
+
+// ══════════════════════════════════════
+//  生年月日入力時に自動計算値を即表示
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('inp-birth').addEventListener('change',function(){
+    if(!this.value)return;
+    const p=calcPillarAuto(this.value);
+    document.getElementById('po-auto-disp').innerHTML=`自動計算: <span>${p.pillar}</span>`;
+  });
+  document.getElementById('inp-birth').value='';
+});
+</script>
+</body>
+</html>
