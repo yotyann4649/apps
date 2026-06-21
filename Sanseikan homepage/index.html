@@ -180,6 +180,34 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* === 音声セット === */
+.audio-split{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin-bottom:0}
+.audio-col{padding:30px 26px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+.audio-k{font-family:'EB Garamond',serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.audio-n{font-family:'EB Garamond',serif;font-size:48px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:14px}
+.audio-n span{font-family:'Shippori Mincho B1',serif;font-size:18px;margin-left:4px;color:var(--ink-2)}
+.audio-d{font-size:13.5px;color:var(--ink-2);line-height:1.9}
+.audio-cats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin-top:22px}
+.audio-cat{padding:20px 18px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:6px}
+.ac-en{font-family:'EB Garamond',serif;font-size:13px;color:var(--gold);letter-spacing:.1em}
+.ac-t{font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;line-height:1.4}
+.ac-n{font-size:12px;color:var(--ink-3)}
+.audio-foot{margin-top:30px;font-size:14px;color:var(--ink-2);line-height:2;text-align:center;max-width:560px;margin-left:auto;margin-right:auto}
+.audio-cta{text-align:center;margin-top:26px}
+@media(max-width:680px){.audio-split{grid-template-columns:1fr;border-left:none}.audio-col{border-right:none}.audio-cats{grid-template-columns:1fr 1fr;border-left:none}.audio-cat{border-right:none}}
+
+/* === 創設メンバー / モニター === */
+.founders{border:1px solid var(--gold-soft);background:var(--paper-soft);padding:26px 28px;margin-top:30px;display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.founders-mark{font-family:'EB Garamond',serif;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);writing-mode:horizontal-tb;flex-shrink:0;padding-top:3px}
+.founders-body{flex:1;min-width:240px}
+.founders-h{font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;margin-bottom:12px}
+.founders-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.founders-list li{display:grid;grid-template-columns:auto 1fr;gap:13px;font-size:13.5px;color:var(--ink-2);line-height:1.85}
+.founders-list .ic{font-family:'EB Garamond',serif;font-style:italic;color:var(--gold-soft);font-size:18px;line-height:1.4}
+.founders-list strong{color:var(--ink)}
+.founders-note{font-size:11.5px;color:var(--ink-3);margin-top:14px;line-height:1.7}
+@media(max-width:680px){.founders{flex-direction:column;gap:14px}}
 </style>
 </head>
 <body>
@@ -190,6 +218,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <nav class="nav-links">
       <a href="#thesis">三星鑑とは</a>
       <a href="#sample">サンプル</a>
+      <a href="#audio">音声</a>
       <a href="#menu">メニュー</a>
       <a href="#maker">作り手</a>
       <a href="#waitlist" class="nav-cta">先行登録</a>
@@ -294,37 +323,82 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
   </div>
 </section>
 
+<section class="sec" id="audio">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Audio Edition</span>
+      <h2 class="sec-title">読むだけでなく、<br>聴く、という選択肢。</h2>
+      <p class="sec-lead">レポートに、聴きたい回の<strong>音声解説</strong>を組み合わせられます。あなたの分析を、二人のパーソナリティ（分析役と聞き手）が語り合う番組として ―― 通勤中でも、家事をしながらでも、自分という人を"聴いて"理解できます。</p>
+    </div>
+
+    <div class="audio-split reveal">
+      <div class="audio-col">
+        <div class="audio-k">Series</div>
+        <div class="audio-n garamond">15<span>回</span></div>
+        <div class="audio-d">あなたという人を、核・恋愛・仕事・才能…と通しで読み解く基本シリーズ。まず全体像をつかみたい方へ。</div>
+      </div>
+      <div class="audio-col">
+        <div class="audio-k">Single</div>
+        <div class="audio-n garamond">45<span>回</span></div>
+        <div class="audio-d">1本ずつ独立した、テーマ別の完結回。気になるところだけを、自由に選べます。</div>
+      </div>
+    </div>
+
+    <div class="audio-cats reveal">
+      <div class="audio-cat"><span class="ac-en">A</span><span class="ac-t">性格・気質</span><span class="ac-n">全23回</span></div>
+      <div class="audio-cat"><span class="ac-en">B</span><span class="ac-t">持って生まれた素材</span><span class="ac-n">全8回</span></div>
+      <div class="audio-cat"><span class="ac-en">C</span><span class="ac-t">数が示す指標</span><span class="ac-n">全6回</span></div>
+      <div class="audio-cat"><span class="ac-en">D</span><span class="ac-t">暮らしと人生のテーマ</span><span class="ac-n">全8回</span></div>
+    </div>
+
+    <p class="audio-foot reveal">PDFレポートに、お好きな本数の音声を組み合わせた<strong>音声セット</strong>もご用意予定です。基本シリーズで全体像を、完結回でテーマを深掘り ―― 読む／聴くの二段で、自分という人をより立体的に。</p>
+    <div class="audio-cta reveal"><a href="#waitlist" class="btn btn-line">音声セットの案内を、先行登録で受け取る <span class="btn-arrow">→</span></a></div>
+  </div>
+</section>
+
 <section class="sec" id="menu">
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="eyebrow">Analysis Menu</span>
       <h2 class="sec-title">分析メニュー。</h2>
-      <p class="sec-lead">目的に合わせて選べる3つのコース（リリース時の予定価格）。すべてPDFレポートでお届けします。</p>
+      <p class="sec-lead">「読む」PDFレポートを軸に、聴きたい音声の本数で選べます（リリース時の予定価格）。安易な簡易版は作らず、どのコースも一人ひとり固有の分析をお届けします。</p>
     </div>
     <div class="tiers reveal">
       <div class="tier">
-        <div class="tier-mark">Basic</div>
-        <div class="tier-name">ライト</div>
-        <div class="tier-price garamond">¥5,500<small> /回</small></div>
-        <div class="tier-desc">本質・ライフパス・今の時期のテーマを中心にお届けする入門コース。はじめての方に。</div>
+        <div class="tier-mark">Report</div>
+        <div class="tier-name">レポート</div>
+        <div class="tier-price garamond">¥9,800</div>
+        <div class="tier-desc">約25,000字・全5章のPDF統合レポート（読む）。あなたという人の設計図を、まずじっくり手元に。</div>
         <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
       </div>
       <div class="tier feat">
-        <div class="tier-mark">Standard · 人気</div>
-        <div class="tier-name">スタンダード</div>
-        <div class="tier-price garamond">¥11,000<small> /回</small></div>
-        <div class="tier-desc">才能・向いている仕事・行動特性・深層心理まで全項目を網羅。最もバランスの良い定番です。</div>
+        <div class="tier-mark">Report + Audio · 人気</div>
+        <div class="tier-name">レポート＋音声2本</div>
+        <div class="tier-price garamond">¥16,500</div>
+        <div class="tier-desc">PDFレポートに、聴きたい音声解説を2本（読む＋聴く）。全体像と、気になるテーマを深掘りできる定番です。</div>
         <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
       </div>
       <div class="tier">
-        <div class="tier-mark">Premium</div>
-        <div class="tier-name">プレミアム</div>
-        <div class="tier-price garamond">¥22,000<small> /回</small></div>
-        <div class="tier-desc">全項目に加え、人生後半の展望・総合的な戦略のまとめまで含む完全版。じっくり向き合いたい方へ。</div>
+        <div class="tier-mark">Report + Audio</div>
+        <div class="tier-name">レポート＋音声5本</div>
+        <div class="tier-price garamond">¥29,800</div>
+        <div class="tier-desc">PDFレポートに、音声解説を5本。複数のテーマをじっくり聴き込み、自分という人と深く向き合いたい方へ。</div>
         <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
       </div>
     </div>
-    <div class="price-cap reveal">先行登録された方には、優先・特別価格でご案内します。</div>
+    <div class="price-cap reveal">音声は本数の追加も可能です。先行登録された方には、優先・特別価格でご案内します。</div>
+
+    <div class="founders reveal">
+      <div class="founders-mark">For Early<br>Supporters</div>
+      <div class="founders-body">
+        <div class="founders-h">はじまりを、一緒に。 ―― 創設メンバー特典</div>
+        <ul class="founders-list">
+          <li><span class="ic">i</span><span><strong>創設メンバー価格（先着10名）</strong><br>リリース後、最初の10名さまは全コース30%OFF。三星鑑の出発を一緒に見届けてくださる方へのお礼です。</span></li>
+          <li><span class="ic">ii</span><span><strong>モニター価格</strong><br>受け取った感想を「お客様の声」として紹介させていただける方には、お礼としてモニター価格でご提供します。</span></li>
+        </ul>
+        <div class="founders-note">どちらも数に限りがあります。ご案内は先行登録された順にお送りします。</div>
+      </div>
+    </div>
   </div>
 </section>
 
