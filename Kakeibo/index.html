@@ -135,6 +135,15 @@
     </div>
     <input type="file" id="importFile" accept="application/json" style="display:none">
     <p class="foot">記録はこの端末のブラウザに自動保存されます。<br>機種変更や履歴削除に備え、ときどき「書き出し」でバックアップを取ってください。</p>
+
+    <div style="padding:0 14px; margin-top:18px; border-top:1px solid #2a3547; padding-top:18px;">
+      <button id="saveAppBtn" style="width:100%; padding:13px; background:linear-gradient(180deg,rgba(201,164,76,0.18),rgba(201,164,76,0.06)); border:1px solid rgba(201,164,76,0.45); border-radius:10px; color:#e3c574; font-size:13px; cursor:pointer; font-family:inherit; letter-spacing:1px;">
+        ⬇ このアプリをパソコンに保存する
+      </button>
+      <p style="font-size:10px; color:#4a5260; text-align:center; margin:8px 0 0; line-height:1.6;">
+        アプリ本体を保存します（記録のバックアップとは別です）。<br>保存したファイルは、ネットがなくても開けます。
+      </p>
+    </div>
   </main>
 </div>
 <div id="tip"></div>
@@ -561,8 +570,7 @@ document.getElementById('exportBtn').onclick=function(){
   a.href=url; a.download="suitocho_backup_"+curKey+".json"; a.click();
   URL.revokeObjectURL(url);
 };
-document.getElementById('importBtn').onclick=function(){ document.getElementById('importFile').click(); };
-document.getElementById('importFile').onchange=function(e){
+document.getElementById('importBtn').onclick=function(){ document.getElementById('importFile').click(); };document.getElementById('importFile').onchange=function(e){
   var f=e.target.files[0]; if(!f) return;
   var rd=new FileReader();
   rd.onload=function(){
@@ -576,6 +584,46 @@ document.getElementById('importFile').onchange=function(e){
   };
   rd.readAsText(f);
 };
+
+// このアプリ自身（HTMLファイル）をダウンロード。記録データは一切含めない
+(function(){
+  var btn=document.getElementById('saveAppBtn');
+  if(!btn) return;
+  btn.onclick=function(){
+    try{
+      // 配布ファイルに家計データが残らないよう、保存の瞬間だけ画面の入力部分を空にする
+      var panel=document.getElementById('panel');
+      var savedPanel=panel.innerHTML;
+      var savedSummary=document.getElementById('summary').innerHTML;
+      var savedMonth=document.getElementById('curMonth').innerHTML;
+      var savedTag=document.getElementById('savedtag').innerHTML;
+      panel.innerHTML="";
+      document.getElementById('summary').innerHTML="";
+      document.getElementById('curMonth').innerHTML="";
+      document.getElementById('savedtag').innerHTML="";
+
+      var htmlText="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+
+      // すぐ画面を元に戻す
+      panel.innerHTML=savedPanel;
+      document.getElementById('summary').innerHTML=savedSummary;
+      document.getElementById('curMonth').innerHTML=savedMonth;
+      document.getElementById('savedtag').innerHTML=savedTag;
+      bindEvents();
+
+      var blob=new Blob([htmlText],{type:"text/html;charset=utf-8"});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url; a.download="城主の出納帳.html"; a.click();
+      URL.revokeObjectURL(url);
+      btn.textContent="✓ 保存しました";
+      setTimeout(function(){ btn.innerHTML="⬇ このアプリをパソコンに保存する"; },1800);
+    }catch(e){
+      btn.textContent="保存できませんでした";
+      render();
+    }
+  };
+})();
 
 render();
 </script>
