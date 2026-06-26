@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>城主の歳計帳</title>
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --ai:#5b8fb0; --matsu:#7faa78; --beni:#c17b7b; --murasaki:#9d8ec4; --line:#2a3547;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{margin:0; background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi); font-family:'Hiragino Mincho ProN','Yu Mincho',serif;}
+  .wrap{max-width:680px; margin:0 auto;}
+  header{padding:22px 22px 16px; position:relative; overflow:hidden;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .eyebrow{font-size:10px; letter-spacing:6px; color:var(--kin); margin-bottom:6px;}
+  h1{margin:0; font-size:26px; font-weight:700; letter-spacing:3px;
+    background:linear-gradient(180deg,var(--kinLite),var(--kin));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  .subtitle{margin:6px 0 0; font-size:11px; color:var(--washiSub); letter-spacing:1px;}
+
+  .summary{display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--line);
+    margin:0 14px; border-radius:8px; overflow:hidden; border:1px solid var(--ishi);}
+  .summary>div{background:var(--konjo); padding:12px 6px; text-align:center;}
+  .summary .lbl{font-size:9.5px; color:var(--washiSub); margin-bottom:3px;}
+  .summary .val{font-size:17px; font-weight:700;}
+  .summary .val span{font-size:9px; color:var(--washiSub);}
+
+  nav{display:flex; gap:4px; padding:16px 14px 0; overflow-x:auto;}
+  nav button{flex-shrink:0; padding:9px 15px; font-size:13px; cursor:pointer; border:none;
+    border-radius:8px 8px 0 0; letter-spacing:1px; font-family:inherit; background:transparent;
+    color:var(--washiSub); border-bottom:2px solid transparent;}
+  nav button.active{background:var(--konjo); color:var(--kinLite); font-weight:700; border-bottom:2px solid var(--kin);}
+
+  main{padding:0 14px 28px;}
+  .panel{background:var(--konjo); border-radius:0 10px 10px 10px; border:1px solid var(--line);
+    padding:18px 16px; box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+
+  .sectitle{display:flex; align-items:baseline; justify-content:space-between;
+    padding-bottom:6px; margin-bottom:4px; border-bottom:1px solid;}
+  .sectitle .l{font-size:14px; font-weight:700; letter-spacing:2px;}
+  .sectitle .s{font-size:10px; color:var(--washiSub); margin-left:8px;}
+  .sectitle .tot{font-size:14px; font-weight:700;}
+
+  /* 費目行：年額入力 → 月額自動表示 */
+  .frow{display:grid; grid-template-columns:1fr 96px 76px 26px; align-items:center; gap:8px;
+    padding:8px 2px; border-bottom:1px solid var(--line);}
+  .frow .nm{font-size:13px; color:var(--washi);}
+  .frow .nmInput{background:var(--sumi); border:1px solid var(--ishi); border-radius:4px;
+    color:var(--washi); font-size:13px; padding:6px 8px; font-family:inherit; outline:none; width:100%;}
+  .frow .yrwrap{display:flex; align-items:center; gap:3px;}
+  .frow input.yr{width:64px; background:var(--sumi); border-radius:4px; font-size:14px; font-weight:700;
+    padding:6px 6px; text-align:right; outline:none; border:1px solid; font-family:serif;}
+  .frow .yru{font-size:10px; color:var(--washiSub);}
+  .frow .mo{font-size:12px; text-align:right; color:var(--washiSub); font-family:serif;}
+  .frow .mo b{display:block; font-size:14px; font-weight:700;}
+  .frow .del{width:24px; height:24px; border-radius:4px; border:1px solid rgba(193,123,123,0.3);
+    background:transparent; color:var(--beni); font-size:13px; cursor:pointer; padding:0;}
+
+  .addbtn{margin-top:12px; width:100%; padding:10px; border-radius:8px;
+    font-size:13px; cursor:pointer; font-family:inherit; letter-spacing:1px;}
+
+  .bigbox{background:var(--sumi); border-radius:10px; padding:18px; margin-bottom:16px; text-align:center;}
+  .bigbox .lbl{font-size:11px; color:var(--washiSub); letter-spacing:1px;}
+  .bigbox .yr{font-size:28px; font-weight:700; font-family:serif; margin:4px 0 2px;}
+  .bigbox .yr span{font-size:13px; color:var(--washi);}
+  .bigbox .mo{font-size:12px; color:var(--washiSub);}
+
+  .donutwrap{position:relative; width:100%; height:200px;}
+  .donutcenter{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none;}
+  .legend{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:14px;}
+  .legend>div{display:flex; justify-content:space-between; align-items:center; padding:7px 10px; background:var(--sumi); border-radius:6px; font-size:11px;}
+
+  .ratiobar{height:30px; border-radius:8px; overflow:hidden; display:flex; margin:4px 0 6px;}
+  .ratiobar>div{display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;}
+
+  .resetbtn{margin-top:18px; width:100%; padding:11px; background:transparent;
+    border:1px solid var(--ishi); border-radius:8px; color:var(--washiSub);
+    font-size:12px; cursor:pointer; font-family:inherit; letter-spacing:1px;}
+  .foot{font-size:10px; color:var(--ishi); text-align:center; margin-top:14px; line-height:1.6;}
+  .saveapp{padding:0 14px; margin-top:16px;}
+  .saveapp button{width:100%; padding:13px; background:linear-gradient(180deg,rgba(201,164,76,0.18),rgba(201,164,76,0.06));
+    border:1px solid rgba(201,164,76,0.45); border-radius:10px; color:var(--kinLite); font-size:13px; cursor:pointer; font-family:inherit; letter-spacing:1px;}
+  #tip{position:fixed; pointer-events:none; background:var(--sumi); border:1px solid rgba(201,164,76,0.33);
+    border-radius:6px; font-size:12px; color:var(--washi); padding:6px 10px; opacity:0; transition:opacity .1s; z-index:50; white-space:nowrap;}
+  .empty{padding:20px; text-align:center; font-size:12px; color:var(--ishi); border:1px dashed var(--line); border-radius:8px;}
+  input[type=number]{-moz-appearance:textfield;}
+  input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="goldline"></div>
+    <div class="eyebrow">歳 計 帳</div>
+    <h1>城主の歳計帳</h1>
+    <p class="subtitle">一年の実りと出費を、ひと月の姿に。家計の全体像を一望する</p>
+  </header>
+
+  <div class="summary" id="summary"></div>
+  <nav id="nav"></nav>
+  <main><div class="panel" id="panel"></div>
+    <div class="saveapp">
+      <button id="saveAppBtn">⬇ このアプリをパソコンに保存する</button>
+      <p style="font-size:10px; color:#4a5260; text-align:center; margin:8px 0 0; line-height:1.6;">保存したファイルは、ネットがなくても開けます。</p>
+    </div>
+    <p class="foot">年額を入れると、ひと月あたりに自動換算します。<br>※概算です。入力した値はどこにも送信されません。</p>
+  </main>
+</div>
+<div id="tip"></div>
+
+<script>
+var T={sumi:"#13161c",konjo:"#1b2433",konjoLite:"#243047",ishi:"#2d3a4f",
+  kin:"#c9a44c",kinLite:"#e3c574",washi:"#ece4d3",washiSub:"#9aa3b2",
+  ai:"#5b8fb0",matsu:"#7faa78",beni:"#c17b7b",murasaki:"#9d8ec4",line:"#2a3547"};
+
+function defaults(){
+  return {
+    assets:500,
+    income:[
+      {id:1, label:"給与（手取り）", yr:322},
+      {id:2, label:"賞与", yr:120},
+      {id:3, label:"その他収入", yr:0}
+    ],
+    expense:[
+      {id:1, label:"住居", yr:96},
+      {id:2, label:"食費", yr:48},
+      {id:3, label:"水道光熱・通信", yr:24},
+      {id:4, label:"保険・医療", yr:18},
+      {id:5, label:"交通・車", yr:24},
+      {id:6, label:"日用・雑費", yr:18},
+      {id:7, label:"趣味・交際", yr:18},
+      {id:8, label:"税・年払い", yr:12}
+    ]
+  };
+}
+var p=defaults();
+var nextId=100;
+var tab="input";
+
+var INCOME_COLORS=[T.matsu,T.kin,T.ai,T.kinLite,T.murasaki,T.washiSub];
+var EXPENSE_COLORS=[T.beni,T.kin,T.ai,T.murasaki,T.matsu,T.kinLite,T.washiSub,T.ishi,T.ai,T.beni];
+
+function sumYr(arr){return arr.reduce(function(a,x){return a+(x.yr||0);},0);}
+function f1(v){return Math.round(v*10)/10;}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+/* ドーナツ */
+function donutSVG(segs,total){
+  var cx=100,cy=100,rO=82,rI=52,ang=-90,paths="";
+  segs.forEach(function(s){
+    if(s.value<=0)return;
+    var frac=total>0?s.value/total:0,a0=ang,a1=ang+frac*360;ang=a1;
+    var g=1.2;a0+=g;a1-=g;var large=(a1-a0)>180?1:0,r0=a0*Math.PI/180,r1=a1*Math.PI/180;
+    var x0o=cx+rO*Math.cos(r0),y0o=cy+rO*Math.sin(r0),x1o=cx+rO*Math.cos(r1),y1o=cy+rO*Math.sin(r1);
+    var x0i=cx+rI*Math.cos(r1),y0i=cy+rI*Math.sin(r1),x1i=cx+rI*Math.cos(r0),y1i=cy+rI*Math.sin(r0);
+    var pct=Math.round(frac*100);
+    paths+='<path d="M'+x0o+' '+y0o+' A'+rO+' '+rO+' 0 '+large+' 1 '+x1o+' '+y1o+' L'+x0i+' '+y0i+' A'+rI+' '+rI+' 0 '+large+' 0 '+x1i+' '+y1i+' Z" fill="'+s.color+'" stroke="'+T.sumi+'" stroke-width="2" class="seg" data-tip="'+esc(s.name)+' 年'+f1(s.value)+'万（'+pct+'%）"></path>';
+  });
+  if(!paths)paths='<circle cx="100" cy="100" r="67" fill="none" stroke="'+T.line+'" stroke-width="30"></circle>';
+  return '<svg viewBox="0 0 200 200" width="100%" height="200" style="display:block">'+paths+'</svg>';
+}
+
+function render(){
+  var incY=sumYr(p.income), expY=sumYr(p.expense);
+  var balY=incY-expY;
+  var rate=incY>0?Math.round(balY/incY*100):0;
+
+  // サマリー（月額換算で見せる）
+  var sums=[
+    {lbl:"収入（月）", val:incY/12, col:T.matsu},
+    {lbl:"支出（月）", val:expY/12, col:T.beni},
+    {lbl:"収支（月）", val:balY/12, col:balY>=0?T.kin:T.beni}
+  ];
+  document.getElementById('summary').innerHTML=sums.map(function(s){
+    return '<div><div class="lbl">'+s.lbl+'</div><div class="val" style="color:'+s.col+'">'+(s.val>=0?"":"▲")+f1(Math.abs(s.val))+'<span>万</span></div></div>';
+  }).join('');
+
+  var tabs=[["input","記入"],["ratio","比率"],["summary","収支サマリー"],["freedom","自由への距離"]];
+  document.getElementById('nav').innerHTML=tabs.map(function(t){
+    return '<button class="'+(tab===t[0]?'active':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>';
+  }).join('');
+
+  document.getElementById('panel').innerHTML=renderPanel(incY,expY,balY,rate);
+  bindEvents();
+}
+
+function frow(item,kind,accent){
+  var mo=(item.yr||0)/12;
+  return '<div class="frow">'+
+    '<input class="nmInput" type="text" value="'+esc(item.label)+'" data-edit="label" data-kind="'+kind+'" data-id="'+item.id+'">'+
+    '<div class="yrwrap"><span class="yru">年</span>'+
+    '<input class="yr" type="number" min="0" step="1" value="'+(item.yr||0)+'" data-edit="yr" data-kind="'+kind+'" data-id="'+item.id+'" style="color:'+accent+'; border-color:'+accent+'88">'+
+    '<span class="yru">万</span></div>'+
+    '<div class="mo">月<b style="color:'+accent+'">'+f1(mo)+'万</b></div>'+
+    '<button class="del" data-del="'+kind+'" data-id="'+item.id+'">×</button></div>';
+}
+
+function renderPanel(incY,expY,balY,rate){
+  if(tab==="input"){
+    var h='<div class="sectitle" style="border-color:'+T.matsu+'44"><div><span class="l" style="color:'+T.matsu+'">実入りの巻</span><span class="s">年間の収入（費目別）</span></div><span class="tot" style="color:'+T.matsu+'">年計 '+f1(incY)+'万</span></div>';
+    p.income.forEach(function(it){h+=frow(it,"income",T.matsu);});
+    h+='<button class="addbtn" data-add="income" style="background:rgba(127,170,120,0.12); border:1px solid rgba(127,170,120,0.4); color:'+T.matsu+'">＋ 収入の費目を足す</button>';
+    h+='<div style="height:20px"></div>';
+    h+='<div class="sectitle" style="border-color:'+T.beni+'44"><div><span class="l" style="color:'+T.beni+'">出費の巻</span><span class="s">年間の支出（費目別）</span></div><span class="tot" style="color:'+T.beni+'">年計 '+f1(expY)+'万</span></div>';
+    p.expense.forEach(function(it){h+=frow(it,"expense",T.beni);});
+    h+='<button class="addbtn" data-add="expense" style="background:rgba(193,123,123,0.12); border:1px solid rgba(193,123,123,0.4); color:'+T.beni+'">＋ 支出の費目を足す</button>';
+    h+='<div style="margin-top:16px; padding:12px 14px; background:'+T.sumi+'; border-radius:8px; border:1px solid '+T.line+'; font-size:11px; color:'+T.washiSub+'; line-height:1.7">年額を入れると、右に「ひと月あたり」が自動で出ます。年払いの保険や税金も、ここで月割りに直せます。</div>';
+    h+='<button class="resetbtn" data-reset="1">初期値に戻す</button>';
+    return h;
+  }
+  if(tab==="ratio"){
+    var incSegs=p.income.map(function(it,i){return {name:it.label,value:it.yr||0,color:INCOME_COLORS[i%INCOME_COLORS.length]};});
+    var expSegs=p.expense.map(function(it,i){return {name:it.label,value:it.yr||0,color:EXPENSE_COLORS[i%EXPENSE_COLORS.length]};});
+    function legend(segs,total){
+      return '<div class="legend">'+segs.filter(function(s){return s.value>0;}).map(function(s){
+        var pc=total>0?Math.round(s.value/total*100):0;
+        return '<div><span style="color:'+s.color+'">● '+esc(s.name)+'</span><span style="color:'+T.kinLite+'; font-weight:700">'+pc+'%</span></div>';
+      }).join('')+'</div>';
+    }
+    var h='<div style="font-size:12px; color:'+T.matsu+'; text-align:center; margin-bottom:4px">収入の内訳</div>'+
+      '<div class="donutwrap">'+donutSVG(incSegs,incY)+'<div class="donutcenter"><div style="font-size:9px;color:'+T.washiSub+'">収入計</div><div style="font-size:14px;color:'+T.matsu+';font-weight:700">年'+f1(incY)+'万</div></div></div>';
+    h+=(incY>0?legend(incSegs,incY):'<div class="empty">収入の入力がありません</div>');
+    h+='<div style="height:22px"></div>';
+    h+='<div style="font-size:12px; color:'+T.beni+'; text-align:center; margin-bottom:4px">支出の内訳</div>'+
+      '<div class="donutwrap">'+donutSVG(expSegs,expY)+'<div class="donutcenter"><div style="font-size:9px;color:'+T.washiSub+'">支出計</div><div style="font-size:14px;color:'+T.beni+';font-weight:700">年'+f1(expY)+'万</div></div></div>';
+    h+=(expY>0?legend(expSegs,expY):'<div class="empty">支出の入力がありません</div>');
+    return h;
+  }
+  if(tab==="summary"){
+    var balY=incY-expY;
+    var rate=incY>0?balY/incY*100:0;
+    var expRatio=incY>0?Math.min(100,expY/incY*100):0;
+    var savRatio=Math.max(0,100-expRatio);
+    // 収入を100として、支出と貯蓄の比率バー
+    var h='<div class="bigbox"><div class="lbl">年間の収支</div>'+
+      '<div class="yr" style="color:'+(balY>=0?T.kinLite:T.beni)+'">'+(balY>=0?"":"▲")+f1(Math.abs(balY))+'<span> 万円/年</span></div>'+
+      '<div class="mo">ひと月あたり '+(balY>=0?"":"▲")+f1(Math.abs(balY)/12)+'万</div></div>';
+
+    // 収入を満たす帯（支出ぶん＋残るぶん）
+    h+='<div style="font-size:12px; color:'+T.washiSub+'; margin-bottom:4px">収入を100としたとき</div>';
+    h+='<div class="ratiobar">';
+    if(incY>0){
+      h+='<div style="flex:'+Math.max(expRatio,0.01)+'; background:'+T.beni+'; color:'+T.sumi+'">支出 '+Math.round(expRatio)+'%</div>';
+      if(savRatio>0) h+='<div style="flex:'+savRatio+'; background:'+T.kin+'; color:'+T.sumi+'">貯蓄 '+Math.round(savRatio)+'%</div>';
+    } else {
+      h+='<div style="flex:1; background:'+T.line+'; color:'+T.washiSub+'">収入を入力してください</div>';
+    }
+    h+='</div>';
+
+    // 三つの数字
+    h+='<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:16px">'+
+      '<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:8px; padding:12px; text-align:center"><div style="font-size:10px;color:'+T.washiSub+'">収入合計</div><div style="font-size:16px;color:'+T.matsu+';font-weight:700;font-family:serif">'+f1(incY)+'万</div><div style="font-size:9px;color:'+T.ishi+'">月'+f1(incY/12)+'万</div></div>'+
+      '<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:8px; padding:12px; text-align:center"><div style="font-size:10px;color:'+T.washiSub+'">支出合計</div><div style="font-size:16px;color:'+T.beni+';font-weight:700;font-family:serif">'+f1(expY)+'万</div><div style="font-size:9px;color:'+T.ishi+'">月'+f1(expY/12)+'万</div></div>'+
+      '<div style="background:'+T.sumi+'; border:1px solid '+(rate>=0?T.kin:T.beni)+'55; border-radius:8px; padding:12px; text-align:center"><div style="font-size:10px;color:'+T.washiSub+'">貯蓄率</div><div style="font-size:16px;color:'+(rate>=0?T.kinLite:T.beni)+';font-weight:700;font-family:serif">'+(rate>=0?"":"▲")+Math.abs(Math.round(rate))+'%</div><div style="font-size:9px;color:'+T.ishi+'">収入に対し</div></div></div>';
+
+    // ひとこと評価
+    var msg, mcol;
+    if(incY===0){ msg="まず収入を入力してください。"; mcol=T.washiSub; }
+    else if(rate>=30){ msg="見事な蓄え。収入の3割以上が残る、堅い家計です。"; mcol=T.kinLite; }
+    else if(rate>=10){ msg="健全な収支。無理なく蓄えが積めています。"; mcol=T.matsu; }
+    else if(rate>=0){ msg="収支はぎりぎり黒字。蓄えの余地を探りましょう。"; mcol=T.kin; }
+    else { msg="支出が収入を上回っています。要塞の備えを見直しましょう。"; mcol=T.beni; }
+    h+='<div style="margin-top:16px; padding:14px; background:'+T.sumi+'; border-radius:8px; border:1px solid '+mcol+'44; font-size:12px; color:'+mcol+'; text-align:center; line-height:1.7">'+msg+'</div>';
+    return h;
+  }
+  if(tab==="freedom"){
+    var expY=sumYr(p.expense);
+    var assets=p.assets||0;
+    var needFI=expY*25;            // 4%ルール：年間支出×25＝永続に必要な資産
+    var fiRate=needFI>0?Math.min(100, assets/needFI*100):0;
+    var years=expY>0?assets/expY:0; // 取り崩し：手持ち÷年間支出＝何年もつ
+    var monthsExtra=Math.round((years-Math.floor(years))*12);
+
+    var h='<div style="font-size:11px; color:'+T.washiSub+'; text-align:center; margin-bottom:14px; line-height:1.7">いま無収入になったとして、<br>貯えだけでどこまで暮らせるかを試算します。</div>';
+
+    // 手持ち資産の入力
+    h+='<div class="frow" style="grid-template-columns:1fr 96px 76px; border-bottom:1px solid '+T.line+'">'+
+      '<span class="nm" style="color:'+T.washi+'">💰 いまの貯え（総資産）</span>'+
+      '<div class="yrwrap"><input class="yr" type="number" min="0" step="10" value="'+assets+'" data-asset="1" style="color:'+T.kinLite+'; border-color:'+T.kin+'88"><span class="yru">万</span></div>'+
+      '<div class="mo" style="color:'+T.ishi+'">現金＋投資<br>などの合計</div></div>';
+
+    // ① 4%ルール（永続）
+    h+='<div style="height:18px"></div>';
+    h+='<div class="sectitle" style="border-color:'+T.kin+'44"><div><span class="l" style="color:'+T.kinLite+'">① 運用で永続する道</span><span class="s">4%ルール</span></div></div>';
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:6px 0 10px; line-height:1.7">資産を投資で運用し、その運用益（年4%）だけで暮らす考え方。届けば、資産を減らさず「ずっと」暮らせます。</div>';
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:10px; padding:16px; text-align:center; margin-bottom:10px">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'">永続に必要な資産（年間支出の25倍）</div>'+
+      '<div style="font-size:26px; font-weight:700; color:'+T.kinLite+'; font-family:serif; margin:4px 0">'+f1(needFI)+'<span style="font-size:13px; color:'+T.washi+'"> 万円</span></div>'+
+      '<div style="font-size:10px; color:'+T.ishi+'">年間支出 '+f1(expY)+'万  × 25</div></div>';
+    // 達成率バー
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; display:flex; justify-content:space-between"><span>達成度</span><span style="color:'+(fiRate>=100?T.kinLite:T.washi)+'; font-weight:700">'+Math.round(fiRate)+'%</span></div>';
+    h+='<div style="height:14px; border-radius:7px; overflow:hidden; background:'+T.line+'; margin:4px 0 6px"><div style="width:'+Math.min(100,fiRate)+'%; height:100%; background:linear-gradient(90deg,'+T.kin+','+T.kinLite+')"></div></div>';
+    if(expY<=0){
+      h+='<div style="font-size:12px; color:'+T.washiSub+'; text-align:center; padding:6px">支出を入力すると判定できます。</div>';
+    } else if(fiRate>=100){
+      h+='<div style="font-size:13px; color:'+T.kinLite+'; text-align:center; padding:8px; font-weight:700">✦ 達成。運用益だけで、無収入でも暮らせる水準です。</div>';
+    } else {
+      h+='<div style="font-size:12px; color:'+T.washi+'; text-align:center; padding:6px; line-height:1.7">あと <b style="color:'+T.kinLite+'">'+f1(needFI-assets)+'万円</b> 貯えれば、運用益だけで暮らせる計算です。</div>';
+    }
+
+    // ② 取り崩し（何年もつ）
+    h+='<div style="height:22px"></div>';
+    h+='<div class="sectitle" style="border-color:'+T.ai+'44"><div><span class="l" style="color:'+T.ai+'">② 貯えを取り崩す道</span><span class="s">運用しない場合</span></div></div>';
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:6px 0 10px; line-height:1.7">運用を考えず、貯えをそのまま毎年取り崩したら、何年もつか。</div>';
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:10px; padding:16px; text-align:center">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'">無収入でも暮らせる年数</div>';
+    if(expY<=0){
+      h+='<div style="font-size:18px; color:'+T.washiSub+'; margin:6px 0">支出を入力してください</div>';
+    } else {
+      h+='<div style="font-size:26px; font-weight:700; color:'+T.ai+'; font-family:serif; margin:4px 0">約 '+Math.floor(years)+'<span style="font-size:13px; color:'+T.washi+'"> 年</span>'+(monthsExtra>0?' '+monthsExtra+'<span style="font-size:13px; color:'+T.washi+'">ヶ月</span>':'')+'</div>'+
+        '<div style="font-size:10px; color:'+T.ishi+'">貯え '+f1(assets)+'万 ÷ 年間支出 '+f1(expY)+'万</div>';
+    }
+    h+='</div>';
+    h+='<div style="margin-top:14px; font-size:10px; color:'+T.ishi+'; text-align:center; line-height:1.7">※ あくまで概算です。インフレ・税・運用成績の変動は含みません。<br>4%ルールは米国の研究を簡略化した目安です。</div>';
+    return h;
+  }
+  return "";
+}
+
+function bindEvents(){
+  document.querySelectorAll('#nav button').forEach(function(b){
+    b.onclick=function(){tab=b.getAttribute('data-tab'); render();};
+  });
+  var panel=document.getElementById('panel');
+
+  panel.querySelectorAll('[data-edit]').forEach(function(inp){
+    inp.onchange=function(){
+      var field=inp.getAttribute('data-edit'), kind=inp.getAttribute('data-kind'), id=Number(inp.getAttribute('data-id'));
+      var arr=kind==="income"?p.income:p.expense;
+      arr.forEach(function(it){
+        if(it.id===id){ it[field] = field==="label" ? inp.value : Math.max(0,Number(inp.value)||0); }
+      });
+      render();
+    };
+  });
+  panel.querySelectorAll('[data-del]').forEach(function(b){
+    b.onclick=function(){
+      var kind=b.getAttribute('data-del'), id=Number(b.getAttribute('data-id'));
+      if(kind==="income") p.income=p.income.filter(function(it){return it.id!==id;});
+      else p.expense=p.expense.filter(function(it){return it.id!==id;});
+      render();
+    };
+  });
+  panel.querySelectorAll('[data-add]').forEach(function(b){
+    b.onclick=function(){
+      var kind=b.getAttribute('data-add');
+      if(kind==="income") p.income.push({id:nextId++, label:"収入の費目", yr:0});
+      else p.expense.push({id:nextId++, label:"支出の費目", yr:0});
+      render();
+    };
+  });
+  var rb=panel.querySelector('[data-reset]');
+  if(rb) rb.onclick=function(){p=defaults(); nextId=100; render();};
+
+  // 手持ち資産（自由への距離タブ）
+  var ab=panel.querySelector('[data-asset]');
+  if(ab) ab.onchange=function(){ p.assets=Math.max(0,Number(ab.value)||0); render(); };
+
+  // ツールチップ
+  var tip=document.getElementById('tip');
+  panel.querySelectorAll('.seg').forEach(function(s){
+    s.style.cursor="pointer";
+    function show(e){var t=s.getAttribute('data-tip'); if(!t)return; tip.textContent=t; tip.style.opacity=1;
+      var x=(e.touches?e.touches[0].clientX:e.clientX),y=(e.touches?e.touches[0].clientY:e.clientY);
+      tip.style.left=Math.min(x+12,window.innerWidth-tip.offsetWidth-8)+"px"; tip.style.top=(y-40)+"px";}
+    function hide(){tip.style.opacity=0;}
+    s.addEventListener('mousemove',show); s.addEventListener('mouseleave',hide);
+    s.addEventListener('touchstart',show,{passive:true}); s.addEventListener('touchend',function(){setTimeout(hide,1200);});
+  });
+}
+
+// アプリ保存
+(function(){
+  var btn=document.getElementById('saveAppBtn');
+  if(!btn)return;
+  btn.onclick=function(){
+    try{
+      var panel=document.getElementById('panel'), sum=document.getElementById('summary');
+      var sp=panel.innerHTML, ss=sum.innerHTML;
+      panel.innerHTML=""; sum.innerHTML="";
+      var htmlText="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+      panel.innerHTML=sp; sum.innerHTML=ss; bindEvents();
+      var blob=new Blob([htmlText],{type:"text/html;charset=utf-8"});
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a'); a.href=url; a.download="城主の歳計帳.html"; a.click();
+      URL.revokeObjectURL(url);
+      btn.textContent="✓ 保存しました";
+      setTimeout(function(){btn.innerHTML="⬇ このアプリをパソコンに保存する";},1800);
+    }catch(e){ btn.textContent="保存できませんでした"; render(); }
+  };
+})();
+
+render();
+</script>
+</body>
+</html>
