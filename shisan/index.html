@@ -170,9 +170,9 @@ var T = {
 };
 var MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
 var INCOME_CATS = [
-  {key:"salary",  label:"給与（手取り）", icon:"🏯", def:26.8},
-  {key:"bonus",   label:"賞与（月割）",   icon:"🎁", def:10},
-  {key:"pension", label:"障害年金",       icon:"🛡️", def:7.1},
+  {key:"salary",  label:"給与（手取り）", icon:"🏯", def:25},
+  {key:"bonus",   label:"賞与（月割）",   icon:"🎁", def:8},
+  {key:"pension", label:"年金",       icon:"🛡️", def:0},
   {key:"side",    label:"副収入・事業",   icon:"🌱", def:0}
 ];
 var EXPENSE_CATS = [
@@ -189,19 +189,18 @@ function defaults(){
   INCOME_CATS.forEach(function(c){inc[c.key]=c.def;});
   EXPENSE_CATS.forEach(function(c){exp[c.key]=c.def;});
   return {
-    currentAge:33, retireAge:60, initCash:200, initNisa:250, initIdeco:50,
+    currentAge:35, retireAge:60, indepAge:40, startMonth:(new Date().getMonth()+1), initCash:100, initNisa:100, initIdeco:0,
     income:inc, expense:exp,
     specials:[
-      {id:1, month:6,  label:"車検・自動車税", amount:12},
+      {id:1, month:6,  label:"車検・自動車税", amount:10},
       {id:2, month:8,  label:"夏の帰省・旅行", amount:8},
-      {id:3, month:12, label:"年末・冬の灯油", amount:6}
+      {id:3, month:12, label:"年末・冬の出費", amount:6}
     ],
     specialIncomes:[
-      {id:1, month:1,  label:"お年玉・祝い金", amount:5},
-      {id:2, month:3,  label:"税の還付金", amount:4}
+      {id:1, month:1,  label:"お祝い・臨時収入", amount:0}
     ],
-    nisoMonthly:5, nisoSwitchAge1:36, nisoMonthly2:10,
-    nisoSwitchAge2:40, nisoMonthly3:15, iDecoMonthly:2, returnRate:5
+    nisoMonthly:3, nisoSwitchAge1:40, nisoMonthly2:5,
+    nisoSwitchAge2:45, nisoMonthly3:10, iDecoMonthly:1, returnRate:4
   };
 }
 var p = defaults();
@@ -238,16 +237,23 @@ function compute(){
 
   var rows=[]; var cash=p.initCash, nisa=p.initNisa, ideco=p.initIdeco;
   var rate=p.returnRate/100; var incY=incomeYearTotal; var expY=expenseYearTotal;
+  var startM=p.startMonth||1;
+  var firstFrac=(13-startM)/12; // 開始年の残り月数の割合（1月開始=1.0、6月開始=7/12）
+  var firstIdx=true;
   for(var age=p.currentAge; age<=72; age++){
     var year=2026+(age-p.currentAge);
+    var frac=firstIdx?firstFrac:1; // 最初の年だけ残り月数分
     var nisoM = age>=p.nisoSwitchAge2 ? p.nisoMonthly3 : age>=p.nisoSwitchAge1 ? p.nisoMonthly2 : p.nisoMonthly;
     var incThis = age<p.retireAge ? incY : (p.income.pension+p.income.side)*12+specialIncomeYearTotal;
-    var nisoY=nisoM*12, idecoY=p.iDecoMonthly*12;
-    nisa=(nisa+nisoY)*(1+rate);
-    ideco=(ideco+idecoY)*(1+rate);
-    cash += incThis - expY - nisoY - idecoY;
+    var nisoY=nisoM*12*frac, idecoY=p.iDecoMonthly*12*frac;
+    var rThis=rate*frac; // 運用も期間に応じて
+    nisa=(nisa+nisoY)*(1+rThis);
+    ideco=(ideco+idecoY)*(1+rThis);
+    cash += incThis*frac - expY*frac - nisoY - idecoY;
     rows.push({age:age, year:year, total:Math.round(cash+nisa+ideco),
-      cash:Math.round(cash), nisa:Math.round(nisa), ideco:Math.round(ideco), ret:Math.round(nisa*rate)});
+      cash:Math.round(cash), nisa:Math.round(nisa), ideco:Math.round(ideco), ret:Math.round(nisa*rate),
+      partial:firstIdx&&frac<1});
+    firstIdx=false;
   }
   var peak=Math.max.apply(null, rows.map(function(r){return r.total;}));
   var mTargets=[]; for(var v=1000; v<=peak; v+=1000){mTargets.push(v);}
@@ -257,10 +263,44 @@ function compute(){
     } return null;
   }).filter(Boolean);
 
+  // 経済的自由（4%ルール）：必要資産＝年間支出×25。資産推移の中で最初に到達する年齢
+  var needFI=expenseYearTotal*25;
+  var fiAge=null, fiYear=null;
+  for(var fi=0; fi<rows.length; fi++){
+    if(rows[fi].total>=needFI){ fiAge=rows[fi].age; fiYear=rows[fi].year; break; }
+  }
+
+  // 独立シミュレーション：指定年齢で独立し、無収入になった場合に何年もつか
+  var pensionYear=(p.income.pension+p.income.side)*12+specialIncomeYearTotal; // 給与賞与を除いた年収
+  function assetsAtAge(a){
+    for(var i=0;i<rows.length;i++){ if(rows[i].age===a) return rows[i].total; }
+    return rows[rows.length-1].total;
+  }
+  // 指定年齢で独立した場合の耐久年数（2パターン）
+  function survivalYears(a){
+    var assets=assetsAtAge(a);
+    var burnFull=expenseYearTotal;                         // 収入ゼロ：支出まるごと取り崩し
+    var burnPart=Math.max(0, expenseYearTotal-pensionYear);// 年金等のみ残す：差額だけ取り崩し
+    return {
+      assets:assets,
+      full: burnFull>0 ? assets/burnFull : 999,
+      part: burnPart>0 ? assets/burnPart : 999,
+      partInfinite: burnPart<=0   // 年金等だけで支出を賄える＝無限
+    };
+  }
+  // 「N年耐える」のに必要な独立年齢（収入ゼロ基準）を逆算
+  function ageToSurvive(years){
+    var need=expenseYearTotal*years;
+    for(var i=0;i<rows.length;i++){ if(rows[i].total>=need) return rows[i].age; }
+    return null;
+  }
+
   return {incomeTotal:incomeTotal, baseExpense:baseExpense, investMonthly:investMonthly,
     totalNow:totalNow, specialYearTotal:specialYearTotal, expenseYearTotal:expenseYearTotal,
     specialIncomeYearTotal:specialIncomeYearTotal, incomeYearTotal:incomeYearTotal, incomeMonthAvg:incomeMonthAvg,
     expenseMonthAvg:expenseMonthAvg, monthlyBalanceAvg:monthlyBalanceAvg,
+    needFI:needFI, fiAge:fiAge, fiYear:fiYear,
+    pensionYear:pensionYear, survivalYears:survivalYears, ageToSurvive:ageToSurvive, assetsAtAge:assetsAtAge,
     monthlyExpense:monthlyExpense, rows:rows, mTargets:mTargets, milestones:milestones,
     retire: rows.filter(function(r){return r.age===p.retireAge;})[0] || rows[rows.length-1]};
 }
@@ -398,7 +438,7 @@ function render(){
   }).join('');
 
   // タブ
-  var tabs=[["ledger","家計簿"],["monthly","月の変動"],["assets","現有資産"],["invest","投資の計"],["chart","資産の推移"],["table","年代記"]];
+  var tabs=[["ledger","家計簿"],["monthly","月の変動"],["assets","現有資産"],["invest","投資の計"],["chart","資産の推移"],["table","年代記"],["indep","独立"]];
   document.getElementById('nav').innerHTML = tabs.map(function(t){
     return '<button class="'+(tab===t[0]?'active':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>';
   }).join('');
@@ -415,7 +455,7 @@ function ledgerRow(icon,label,val,key,kind,accent,step){
     '<div class="stepper">'+
     '<button data-act="dec" data-key="'+key+'" data-kind="'+kind+'" data-step="'+step+'">−</button>'+
     '<input type="number" step="'+step+'" min="0" value="'+val+'" data-input="'+key+'" data-kind="'+kind+'" style="border:1px solid '+accent+'88; color:'+accent+'">'+
-    '<span class="u">'+(kind==="age"?"":"万")+'</span>'+
+    '<span class="u">'+(kind==="age"?"":(kind==="month"?"月":"万"))+'</span>'+
     '<button data-act="inc" data-key="'+key+'" data-kind="'+kind+'" data-step="'+step+'">＋</button>'+
     '</div></div>';
 }
@@ -513,9 +553,11 @@ function renderPanel(c){
     h+=ledgerRow("📊","NISA残高",p.initNisa,"initNisa","field",T.matsu,10);
     h+=ledgerRow("🏛️","iDeCo残高",p.initIdeco,"initIdeco","field",T.murasaki,5);
     h+='<div style="height:16px"></div>';
-    h+=sectitle("齢の設定","年齢",T.kin);
+    h+=sectitle("齢の設定","年齢・開始時期",T.kin);
     h+=ledgerRow("🎂","現在の年齢",p.currentAge,"currentAge","age",T.washi,1);
     h+=ledgerRow("🏯","退き際の年齢",p.retireAge,"retireAge","age",T.washi,1);
+    h+=ledgerRow("📅","試算を始める月",p.startMonth,"startMonth","month",T.kinLite,1);
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin-top:8px; line-height:1.6">「始める月」を今の月に合わせると、初年度は残りの月数ぶんだけ計算され、年の途中でも自然な試算になります（例：6月開始なら初年度は7ヶ月ぶん）。</div>';
     h+='<button class="resetbtn" data-reset="1">初期値に戻す</button>';
     return h;
   }
@@ -544,6 +586,47 @@ function renderPanel(c){
     h+='<div class="grid2">'+stats.map(function(it){
       return '<div class="stat"><div class="l">'+it.l+'</div><div class="v" style="color:'+it.col+'">'+it.v+'</div><div class="s">'+it.s+'</div></div>';
     }).join('')+'</div>';
+
+    // ── 無収入で生存可能か ──
+    var expY=c.expenseYearTotal;
+    var nowAssets=c.totalNow;
+    var nowRate=c.needFI>0?Math.min(100, nowAssets/c.needFI*100):0;
+    var nowYears=expY>0?nowAssets/expY:0;
+    h+='<div style="height:24px"></div>';
+    h+=sectitle("無収入で生存可能か","働かずに暮らせる水準",T.kinLite);
+
+    // ①4%ルール（必要資産とFI到達年齢）
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:8px 0 8px; line-height:1.7">① 運用益（年4%）だけで暮らす「経済的自由」の水準です。</div>';
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.kin+'44; border-radius:10px; padding:16px; text-align:center; margin-bottom:10px">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'">永続に必要な資産（年間支出 '+fmt(expY)+'万 ×25）</div>'+
+      '<div style="font-size:24px; font-weight:700; color:'+T.kinLite+'; font-family:serif; margin:4px 0">'+c.needFI.toLocaleString()+'<span style="font-size:13px; color:'+T.washi+'"> 万円</span></div></div>';
+    if(c.fiAge!==null){
+      var fromNow=c.fiAge-p.currentAge;
+      h+='<div style="background:'+T.sumi+'; border:1px solid '+T.kinLite+'55; border-radius:10px; padding:16px; text-align:center; margin-bottom:6px">'+
+        '<div style="font-size:11px; color:'+T.washiSub+'">この計画なら、経済的自由に到達するのは</div>'+
+        '<div style="font-size:26px; font-weight:700; color:'+T.kinLite+'; font-family:serif; margin:4px 0">'+c.fiAge+'<span style="font-size:14px; color:'+T.washi+'"> 歳</span> <span style="font-size:13px; color:'+T.washiSub+'">('+c.fiYear+'年)</span></div>'+
+        '<div style="font-size:11px; color:'+T.matsu+'">いまから '+fromNow+'年後 ―― 退き際('+p.retireAge+'歳)'+(c.fiAge<=p.retireAge?'までに到達':'より後')+'</div></div>';
+    } else {
+      h+='<div style="background:'+T.sumi+'; border:1px solid '+T.beni+'44; border-radius:10px; padding:16px; text-align:center; margin-bottom:6px">'+
+        '<div style="font-size:12px; color:'+T.washi+'; line-height:1.7">72歳までの試算では、まだ到達しません。<br><span style="font-size:11px; color:'+T.washiSub+'">支出を抑えるか、積立・年利を見直すと近づきます。</span></div></div>';
+    }
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; text-align:center; margin:4px 0 2px">いまの総資産での達成度　<b style="color:'+(nowRate>=100?T.kinLite:T.washi)+'">'+Math.round(nowRate)+'%</b></div>';
+    h+='<div style="height:12px; border-radius:6px; overflow:hidden; background:'+T.line+'; margin:4px 0 0"><div style="width:'+Math.min(100,nowRate)+'%; height:100%; background:linear-gradient(90deg,'+T.kin+','+T.kinLite+')"></div></div>';
+
+    // ②取り崩し（今の資産で何年）
+    h+='<div style="height:20px"></div>';
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:0 0 8px; line-height:1.7">② いま無収入になり、運用せず貯えを取り崩した場合。</div>';
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.ai+'44; border-radius:10px; padding:16px; text-align:center">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'">いまの総資産で暮らせる年数</div>';
+    if(expY>0){
+      var yi=Math.floor(nowYears), mo=Math.round((nowYears-yi)*12);
+      h+='<div style="font-size:26px; font-weight:700; color:'+T.ai+'; font-family:serif; margin:4px 0">約 '+yi+'<span style="font-size:13px; color:'+T.washi+'"> 年</span>'+(mo>0?' '+mo+'<span style="font-size:13px; color:'+T.washi+'">ヶ月</span>':'')+'</div>'+
+        '<div style="font-size:10px; color:'+T.ishi+'">総資産 '+fmt(nowAssets)+'万 ÷ 年間支出 '+fmt(expY)+'万</div>';
+    } else {
+      h+='<div style="font-size:16px; color:'+T.washiSub+'; margin:6px 0">支出を入力してください</div>';
+    }
+    h+='</div>';
+    h+='<div style="margin-top:14px; font-size:10px; color:'+T.ishi+'; text-align:center; line-height:1.7">※ 概算です。インフレ・税・運用変動は含みません。4%ルールは目安です。</div>';
     return h;
   }
   if(tab==="table"){
@@ -555,13 +638,73 @@ function renderPanel(c){
       var isR=r.age===p.retireAge;
       var bg=mile?"rgba(201,164,76,0.08)":(isR?"rgba(193,123,123,0.07)":"transparent");
       h+='<tr style="background:'+bg+'">'+
-        '<td style="color:'+(isR?T.beni:T.washi)+'; font-weight:'+(isR||mile?700:400)+'">'+r.age+(mile?" ⬥":"")+'</td>'+
+        '<td style="color:'+(isR?T.beni:T.washi)+'; font-weight:'+(isR||mile?700:400)+'">'+r.age+(mile?" ⬥":"")+(r.partial?' <span style="font-size:9px;color:'+T.washiSub+'">初年</span>':'')+'</td>'+
         '<td style="color:'+T.kinLite+'; font-weight:700; font-family:serif">'+r.total.toLocaleString()+'</td>'+
         '<td style="color:'+T.matsu+'">'+r.nisa.toLocaleString()+'</td>'+
         '<td style="color:'+T.ai+'">'+r.cash.toLocaleString()+'</td>'+
         '<td style="color:'+T.murasaki+'">'+r.ideco.toLocaleString()+'</td></tr>';
     });
-    h+='</tbody></table><div style="margin-top:8px; font-size:10px; color:'+T.ishi+'; text-align:right">単位：万円　⬥ 大台到達　紅行 = 退き際</div></div>';
+    h+='</tbody></table><div style="margin-top:8px; font-size:10px; color:'+T.ishi+'; text-align:right">単位：万円　⬥ 大台到達　紅行 = 退き際　「初年」＝開始月からの残り月数で計算</div></div>';
+    return h;
+  }
+  if(tab==="indep"){
+    var ia=p.indepAge;
+    var sv=c.survivalYears(ia);
+    var assets=sv.assets;
+    var fromNow=ia-p.currentAge;
+
+    var h='<div style="font-size:11px; color:'+T.washiSub+'; text-align:center; margin-bottom:14px; line-height:1.8">独立して、給与・賞与が無くなったとき、<br>その時の貯えで何年もちこたえられるか。<br>「いつ飛び出せるか」を見極めるための試算です。</div>';
+
+    // 独立年齢のステッパー
+    h+=sectitle("独立する年齢","ここで給与・賞与が止まる",T.kinLite);
+    h+=ledgerRow("🚀","独立する年齢",ia,"indepAge","age",T.kinLite,1);
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:10px; padding:14px; text-align:center; margin:10px 0 4px">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'">その時（'+ia+'歳・いまから'+fromNow+'年後）の貯え</div>'+
+      '<div style="font-size:24px; font-weight:700; color:'+T.kinLite+'; font-family:serif; margin:2px 0">'+Math.round(assets).toLocaleString()+'<span style="font-size:13px; color:'+T.washi+'"> 万円</span></div></div>';
+
+    // パターン①完全ゼロ
+    h+='<div style="height:18px"></div>';
+    h+='<div class="sectitle" style="border-bottom:1px solid '+T.beni+'44"><div><span class="l" style="color:'+T.beni+'">① 収入ゼロで耐える</span><span class="s">最も厳しい想定</span></div></div>';
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:8px 0; line-height:1.7">事業の収入も年金も一切なし。貯えだけで暮らす場合。</div>';
+    var yf=Math.floor(sv.full), mf=Math.round((sv.full-yf)*12);
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.beni+'55; border-radius:10px; padding:16px; text-align:center">'+
+      '<div style="font-size:11px; color:'+T.washiSub+'">無収入でもちこたえられる年数</div>'+
+      '<div style="font-size:30px; font-weight:700; color:'+T.beni+'; font-family:serif; margin:4px 0">約 '+yf+'<span style="font-size:14px; color:'+T.washi+'"> 年</span>'+(mf>0?' '+mf+'<span style="font-size:14px; color:'+T.washi+'">ヶ月</span>':'')+'</div>'+
+      '<div style="font-size:10px; color:'+T.ishi+'">貯え'+Math.round(assets).toLocaleString()+'万 ÷ 年間支出'+fmt(c.expenseYearTotal)+'万</div></div>';
+
+    // パターン②年金・副収入を残す
+    h+='<div style="height:20px"></div>';
+    h+='<div class="sectitle" style="border-bottom:1px solid '+T.matsu+'44"><div><span class="l" style="color:'+T.matsu+'">② 年金・副収入は残す</span><span class="s">現実的な想定</span></div></div>';
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:8px 0; line-height:1.7">給与・賞与は無いが、年金や副収入（年'+fmt(c.pensionYear)+'万）は続く場合。</div>';
+    h+='<div style="background:'+T.sumi+'; border:1px solid '+T.matsu+'55; border-radius:10px; padding:16px; text-align:center">';
+    if(sv.partInfinite){
+      h+='<div style="font-size:13px; color:'+T.matsu+'; font-weight:700; line-height:1.7">✦ 年金・副収入だけで支出をまかなえます。<br>貯えを減らさず、ずっと暮らせる計算です。</div>';
+    } else {
+      var yp=Math.floor(sv.part), mp=Math.round((sv.part-yp)*12);
+      h+='<div style="font-size:11px; color:'+T.washiSub+'">もちこたえられる年数</div>'+
+        '<div style="font-size:30px; font-weight:700; color:'+T.matsu+'; font-family:serif; margin:4px 0">約 '+yp+'<span style="font-size:14px; color:'+T.washi+'"> 年</span>'+(mp>0?' '+mp+'<span style="font-size:14px; color:'+T.washi+'">ヶ月</span>':'')+'</div>'+
+        '<div style="font-size:10px; color:'+T.ishi+'">貯え'+Math.round(assets).toLocaleString()+'万 ÷ 差額'+fmt(Math.max(0,c.expenseYearTotal-c.pensionYear))+'万/年</div>';
+    }
+    h+='</div>';
+
+    // 逆算：3年・5年耐えるのは何歳から（収入ゼロ基準）
+    h+='<div style="height:24px"></div>';
+    h+=sectitle("いつ飛び出せるか","収入ゼロで耐えられる年齢",T.kin);
+    var age3=c.ageToSurvive(3), age5=c.ageToSurvive(5);
+    h+='<div style="font-size:11px; color:'+T.washiSub+'; margin:8px 0 10px; line-height:1.7">収入ゼロでも「3年／5年」もちこたえられる貯えに、いつ届くか。必ずしも'+p.retireAge+'歳まで待たなくてよいかもしれません。</div>';
+    h+='<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">';
+    function lozenge(label,age,col){
+      if(age===null){
+        return '<div style="background:'+T.sumi+'; border:1px solid '+T.line+'; border-radius:10px; padding:14px; text-align:center"><div style="font-size:11px; color:'+T.washiSub+'">'+label+'もちこたえる</div><div style="font-size:13px; color:'+T.washiSub+'; margin-top:4px; line-height:1.5">72歳まででは<br>届きません</div></div>';
+      }
+      var fn=age-p.currentAge;
+      return '<div style="background:'+T.sumi+'; border:1px solid '+col+'55; border-radius:10px; padding:14px; text-align:center"><div style="font-size:11px; color:'+T.washiSub+'">'+label+'もちこたえる</div><div style="font-size:24px; font-weight:700; color:'+col+'; font-family:serif; margin:2px 0">'+age+'<span style="font-size:12px; color:'+T.washi+'">歳</span></div><div style="font-size:10px; color:'+T.matsu+'">いまから'+fn+'年後</div></div>';
+    }
+    h+=lozenge("3年",age3,T.kinLite);
+    h+=lozenge("5年",age5,T.kin);
+    h+='</div>';
+
+    h+='<div style="margin-top:16px; font-size:10px; color:'+T.ishi+'; text-align:center; line-height:1.7">※ 概算です。事業が軌道に乗るまでの生活費の目安として。<br>インフレ・税・相場変動・独立後の初期費用は含みません。</div>';
     return h;
   }
   return "";
@@ -656,6 +799,10 @@ function applyVal(kind,key,fn){
   if(kind==="income") p.income[key]=fn(p.income[key]);
   else if(kind==="expense") p.expense[key]=fn(p.expense[key]);
   else p[key]=fn(p[key]);
+  // 開始月は1〜12の範囲に収める
+  if(key==="startMonth"){ p.startMonth=Math.max(1, Math.min(12, Math.round(p.startMonth)||1)); }
+  // 独立年齢は現在の年齢〜72歳に収める
+  if(key==="indepAge"){ p.indepAge=Math.max(p.currentAge, Math.min(72, Math.round(p.indepAge)||p.currentAge)); }
 }
 
 // このアプリ自身（HTMLファイル）をダウンロードする
