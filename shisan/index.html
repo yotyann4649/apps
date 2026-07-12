@@ -155,6 +155,22 @@
       <p style="font-size:10px; color:#4a5260; text-align:center; margin:8px 0 0; line-height:1.6;">
         保存したファイルは、ネットがなくても開けます。<br>パソコンに置いて、いつでもお使いください。
       </p>
+
+      <div style="margin-top:16px; padding-top:16px; border-top:1px solid #2a3547;">
+        <p style="font-size:10px; color:#9aa3b2; text-align:center; margin:0 0 10px; line-height:1.6;">
+          入力した数値は、このブラウザに自動で覚えさせています。<br>別のパソコン・別のブラウザに移すときや、念のための控えには、下のデータ書き出しをお使いください。
+        </p>
+        <div style="display:flex; gap:8px;">
+          <button id="exportDataBtn" style="flex:1; padding:11px; background:transparent; border:1px solid #2d3a4f; border-radius:8px; color:#9aa3b2; font-size:12px; cursor:pointer; font-family:inherit; letter-spacing:.5px;">
+            ⬇ データを書き出す
+          </button>
+          <button id="importDataBtn" style="flex:1; padding:11px; background:transparent; border:1px solid #2d3a4f; border-radius:8px; color:#9aa3b2; font-size:12px; cursor:pointer; font-family:inherit; letter-spacing:.5px;">
+            ⬆ データを読み込む
+          </button>
+        </div>
+        <input type="file" id="importDataFile" accept=".json" style="display:none">
+        <p id="dataMsg" style="font-size:10px; text-align:center; margin:8px 0 0; line-height:1.6; min-height:14px;"></p>
+      </div>
     </div>
     <p class="foot">概算試算です。税・インフレ・相場変動は含みません。<br>臨時の収入・出費は年額として将来試算に反映されます。退職後は給与・賞与を除きます。</p>
   </main>
@@ -207,6 +223,65 @@ var p = defaults();
 var tab = "ledger";
 var assetView = "pie";
 var nextId = 100;
+
+/* ─────────────── データの保存・復元 ─────────────── */
+var STORAGE_KEY = "shisan_yousai_v1";
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({p:p, tab:tab, assetView:assetView, nextId:nextId, savedAt:Date.now()}));
+  }catch(e){ /* localStorageが使えない環境（file://制限等）は無視して続行 */ }
+}
+
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    var d = JSON.parse(raw);
+    if(d && d.p){
+      p = d.p; tab = d.tab||"ledger"; assetView = d.assetView||"pie"; nextId = d.nextId||100;
+      // 後から追加されたフィールドが古い保存データに無い場合のフォールバック
+      if(!p.specialIncomes) p.specialIncomes=[];
+      return true;
+    }
+  }catch(e){ /* 壊れた保存データは無視してdefaultsのまま続行 */ }
+  return false;
+}
+
+// 起動時：前回の続きがあれば自動で復元
+var restored = loadState();
+
+// JSONファイルとしてデータだけを書き出す
+function exportData(){
+  try{
+    var payload = JSON.stringify({p:p, tab:tab, assetView:assetView, nextId:nextId}, null, 2);
+    var blob = new Blob([payload], {type:"application/json;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var today = new Date();
+    var ymd = today.getFullYear()+String(today.getMonth()+1).padStart(2,'0')+String(today.getDate()).padStart(2,'0');
+    a.href = url; a.download = "資産要塞データ_"+ymd+".json"; a.click();
+    URL.revokeObjectURL(url);
+    return true;
+  }catch(e){ return false; }
+}
+
+// JSONファイルからデータを読み込む
+function importDataFile(file, cb){
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      var d = JSON.parse(ev.target.result);
+      if(!d || !d.p) throw new Error("形式が違います");
+      p = d.p; tab = d.tab||"ledger"; assetView = d.assetView||"pie"; nextId = d.nextId||100;
+      if(!p.specialIncomes) p.specialIncomes=[];
+      saveState();
+      cb(true);
+    }catch(e){ cb(false); }
+  };
+  reader.onerror = function(){ cb(false); };
+  reader.readAsText(file);
+}
 
 /* ─────────────── 計算 ─────────────── */
 function fmt(v){
@@ -447,6 +522,7 @@ function render(){
   document.getElementById('panel').innerHTML = renderPanel(c);
 
   bindEvents(c);
+  saveState();
 }
 
 function ledgerRow(icon,label,val,key,kind,accent,step){
@@ -811,7 +887,17 @@ function applyVal(kind,key,fn){
   if(!btn) return;
   btn.onclick=function(){
     try{
+      // 配布ファイルに家計データが残らないよう、保存の瞬間だけ画面の入力部分を空にする
+      var summary=document.getElementById('summary'), miles=document.getElementById('miles'), panel=document.getElementById('panel');
+      var savedSummary=summary.innerHTML, savedMiles=miles.innerHTML, savedPanel=panel.innerHTML;
+      summary.innerHTML=""; miles.innerHTML=""; panel.innerHTML="";
+
       var htmlText="<!DOCTYPE html>\n"+document.documentElement.outerHTML;
+
+      // すぐ画面を元に戻す
+      summary.innerHTML=savedSummary; miles.innerHTML=savedMiles; panel.innerHTML=savedPanel;
+      bindEvents(compute());
+
       var blob=new Blob([htmlText],{type:"text/html;charset=utf-8"});
       var url=URL.createObjectURL(blob);
       var a=document.createElement('a');
@@ -821,11 +907,47 @@ function applyVal(kind,key,fn){
       setTimeout(function(){ btn.innerHTML="⬇ このアプリをパソコンに保存する"; },1800);
     }catch(e){
       btn.textContent="保存できませんでした";
+      render();
     }
   };
 })();
 
+// データの書き出し・読み込み
+(function(){
+  var msg=document.getElementById('dataMsg');
+  function showMsg(text,color){
+    if(!msg) return;
+    msg.textContent=text; msg.style.color=color||"#7faa78";
+    setTimeout(function(){ if(msg.textContent===text) msg.textContent=""; },2500);
+  }
+  var expBtn=document.getElementById('exportDataBtn');
+  if(expBtn) expBtn.onclick=function(){
+    var ok=exportData();
+    showMsg(ok?"✓ データを書き出しました":"書き出しに失敗しました", ok?"#7faa78":"#c17b7b");
+  };
+  var impBtn=document.getElementById('importDataBtn');
+  var impFile=document.getElementById('importDataFile');
+  if(impBtn && impFile){
+    impBtn.onclick=function(){ impFile.click(); };
+    impFile.onchange=function(){
+      var file=impFile.files[0];
+      if(!file) return;
+      importDataFile(file, function(ok){
+        if(ok){ render(); showMsg("✓ データを読み込みました", "#7faa78"); }
+        else { showMsg("読み込めませんでした（ファイル形式をご確認ください）", "#c17b7b"); }
+        impFile.value="";
+      });
+    };
+  }
+})();
+
 render();
+if(restored){
+  setTimeout(function(){
+    var msg=document.getElementById('dataMsg');
+    if(msg){ msg.textContent="前回の続きを自動で復元しました"; msg.style.color="#9aa3b2"; setTimeout(function(){ if(msg.textContent==="前回の続きを自動で復元しました") msg.textContent=""; },3000); }
+  }, 100);
+}
 </script>
 </body>
 </html>
