@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三星鑑 人間分析システム（やさしい語り版・専門用語なし・自動計算・複数人管理版・全23回）</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #3730a3; border-radius: 20px; }
+  .toast-enter { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .toast-exit  { transform: translateY(2rem); opacity: 0; pointer-events: none; }
+  .ep-badge { font-size:.65rem; min-width:2rem; text-align:center; padding:1px 5px; border-radius:4px; font-variant-numeric:tabular-nums; flex-shrink:0; }
+  .auto-field { background-color:#1e1b4b !important; border-color:#4f46e5 !important; }
+</style>
+</head>
+<body class="h-screen bg-slate-900 text-slate-200 font-sans flex flex-col overflow-hidden">
+
+<header class="flex-shrink-0 bg-slate-950 border-b border-indigo-900/50 p-4 shadow-md flex items-center justify-between flex-wrap gap-2">
+  <div class="flex items-center gap-3">
+    <div class="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-900/50">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+    </div>
+    <div>
+      <h1 class="text-xl font-bold tracking-tight text-white">三星鑑 人間分析システム</h1>
+      <p class="text-xs text-indigo-400">数秘術 自動計算 / 複数人管理 / JSON入出力 / 全23回</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2 flex-wrap">
+    <select id="person-select" class="bg-slate-800 text-slate-200 text-sm rounded-md px-3 py-2 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 max-w-[160px]">
+      <option value="">― 対象者を選択 ―</option>
+    </select>
+    <button id="open-input" class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      新規/編集
+    </button>
+    <button id="open-manual" title="使い方を見る" class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold bg-slate-700 hover:bg-slate-600 text-slate-200 transition-all">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      使い方
+    </button>
+    <button id="export-btn" title="全データをJSON書き出し" class="px-3 py-2 rounded-md text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+    <button id="import-btn" title="JSONを読み込み" class="px-3 py-2 rounded-md text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></button>
+    <input id="import-file" type="file" accept="application/json" class="hidden">
+    <button id="senjutsu-btn" title="senjutsu.jpの精密JSONから天体・四柱・五行・サビアンを取り込む" class="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-semibold bg-violet-600/20 hover:bg-violet-600/40 text-violet-200 border border-violet-600/50 transition-all">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"></path><path d="M12 17v-6"></path><path d="m9 14 3 3 3-3"></path></svg>
+      senjutsu取込
+    </button>
+    <input id="senjutsu-file" type="file" accept="application/json,.json" class="hidden">
+  </div>
+</header>
+
+<div class="flex-1 flex flex-col md:flex-row min-h-0">
+  <aside class="w-full md:w-1/3 lg:w-1/4 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col flex-1 md:flex-none min-h-0">
+    <div class="flex-shrink-0 p-3 bg-indigo-900/20 border-b border-indigo-900/30 text-xs flex items-start gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400 flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <p id="status-text" class="text-slate-300">「新規/編集」から対象者を登録すると、数秘術が自動計算され23回分の台本が完成します。</p>
+    </div>
+    <!-- タブ -->
+    <div class="flex-shrink-0 flex border-b border-slate-800">
+      <button id="tab-basic" onclick="switchTab('basic')" class="flex-1 py-2 text-xs font-semibold text-white bg-indigo-600/30 border-b-2 border-indigo-500 transition-all">基本23回</button>
+      <button id="tab-extra" onclick="switchTab('extra')" class="flex-1 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">追加128回</button>
+    </div>
+    <div id="extra-legend" class="hidden flex-shrink-0 px-3 py-2 border-b border-slate-800 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-slate-400">
+      <span class="text-slate-500 font-semibold">分析軸：</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-sky-500"></span>占星術（A）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-amber-500"></span>四柱推命（B）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-500"></span>数秘術（C）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-rose-500"></span>人間分析（D）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-cyan-500"></span>生活のあるある（E）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-violet-500"></span>人生と心の深いテーマ（F）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-lime-500"></span>独立・起業・働き方（G）</span>
+      <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-fuchsia-500"></span>人生の成長段階（H）</span>
+    </div>
+    <div class="md:hidden flex-shrink-0 p-2 border-b border-slate-800">
+      <select id="episode-select" class="w-full bg-slate-800 text-slate-200 text-sm rounded-md px-3 py-2 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"></select>
+    </div>
+    <div id="episode-list" class="hidden md:block flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar min-h-0"></div>
+  </aside>
+
+  <main class="flex-1 flex flex-col bg-slate-950 p-4 md:p-6 min-h-0">
+    <div class="flex-shrink-0 flex items-center justify-between gap-2 mb-2 flex-wrap">
+      <h2 class="text-lg font-semibold text-slate-100 flex items-center gap-2 flex-wrap">
+        <span>解析プロンプト・プレビュー</span>
+        <span id="subject-tag" class="text-xs font-normal px-2 py-1 bg-indigo-900/40 text-indigo-300 rounded border border-indigo-700/50">対象者：未選択</span>
+      </h2>
+      <div class="flex items-center gap-2">
+        <button id="source-btn" title="NotebookLMの「ソース」に入れる分析データをコピーします" class="flex items-center gap-2 px-4 py-2.5 rounded-md font-semibold transition-all duration-300 bg-violet-600/15 hover:bg-violet-600/30 text-violet-300 border border-violet-600/50 active:scale-95">
+          <svg id="icon-source" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <svg id="icon-source-check" class="hidden text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="source-text">ソース用データ</span>
+        </button>
+        <button id="copy-btn" class="flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold transition-all duration-300 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg active:scale-95">
+          <svg id="icon-copy" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <svg id="icon-check" class="hidden text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="copy-text">一撃コピー</span>
+        </button>
+      </div>
+    </div>
+    <div class="flex-shrink-0 mb-3 text-xs text-violet-300/70 bg-violet-900/15 border border-violet-700/30 rounded-lg px-3 py-2 leading-relaxed">
+      <span class="font-semibold text-violet-200">2段運用：</span><span class="text-violet-300">ソース用データ</span>はNotebookLMの「ソース」へ1回だけ。<span class="text-indigo-300">一撃コピー</span>の台本は「カスタマイズ → このエピソードでAIホストが焦点を当てるべきこと」へ。※ホスト設定はソースに入れないでください。
+    </div>
+    <div class="flex-shrink-0 flex items-center gap-3 mb-3">
+      <span id="progress-label" class="text-xs text-indigo-400 font-mono whitespace-nowrap"></span>
+      <div class="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden"><div id="progress-bar" class="h-full bg-indigo-600 rounded-full transition-all duration-300"></div></div>
+      <span id="char-count" class="text-xs text-slate-500 font-mono whitespace-nowrap"></span>
+    </div>
+    <div class="flex-1 relative bg-slate-900 rounded-lg border border-slate-800 overflow-hidden shadow-inner min-h-0">
+      <textarea id="prompt-viewer" readonly class="absolute inset-0 w-full h-full p-6 bg-transparent text-slate-300 font-mono text-sm leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500/50 custom-scrollbar" spellcheck="false"></textarea>
+    </div>
+  </main>
+</div>
+
+<!-- マニュアルモーダル -->
+<div id="manual-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-indigo-800/50 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="flex-shrink-0 p-5 border-b border-slate-800 flex items-center justify-between">
+      <div>
+        <h3 class="text-lg font-bold text-white">使い方ガイド</h3>
+        <p class="text-xs text-indigo-400 mt-0.5">三星鑑 人間分析システム（全23回）</p>
+      </div>
+      <button id="close-manual" class="text-slate-400 hover:text-white transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar text-sm text-slate-300 leading-relaxed">
+
+      <!-- 全体像 -->
+      <div>
+        <h4 class="text-base font-bold text-white mb-3">このツールは何をするものか</h4>
+        <div class="bg-slate-800/60 rounded-lg p-4 space-y-2">
+          <p>このツールは、<span class="text-indigo-300 font-semibold">対象者の生年月日・名前・出生地</span>を入力すると、全23回分の<span class="text-indigo-300 font-semibold">人間分析の台本（プロンプト）</span>を自動生成します。</p>
+          <p>生成された台本を<span class="text-indigo-300 font-semibold">NotebookLM</span>（Googleの無料AIツール）に貼り付けると、男女2人のホストによる<span class="text-indigo-300 font-semibold">音声解説番組</span>が完成します。</p>
+        </div>
+        <!-- フロー図 -->
+        <div class="mt-4 flex items-center gap-1 flex-wrap justify-center text-xs">
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">①データ入力</div>
+            <div class="text-slate-400 mt-0.5">生年月日・名前・出生地</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600 flex-shrink-0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">②台本生成</div>
+            <div class="text-slate-400 mt-0.5">全23回分を自動作成</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600 flex-shrink-0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">③コピー</div>
+            <div class="text-slate-400 mt-0.5">1回ずつコピー</div>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600 flex-shrink-0"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          <div class="bg-indigo-900/50 border border-indigo-700/50 rounded-lg px-3 py-2 text-center">
+            <div class="text-indigo-300 font-semibold">④NotebookLM</div>
+            <div class="text-slate-400 mt-0.5">音声番組を生成</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- STEP1 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded">STEP 1</span>
+          <h4 class="font-bold text-white">データを入力する</h4>
+        </div>
+        <ol class="space-y-3 pl-1">
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">1.</span>
+            <div>右上の<span class="bg-indigo-600 text-white text-xs px-1.5 py-0.5 rounded mx-1">新規/編集</span>ボタンを押す。入力フォームが開きます。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">2.</span>
+            <div><span class="text-indigo-300 font-semibold">呼称・氏名（ローマ字）・生年月日（年/月/日を別々に入力）</span>を記入したら、<span class="bg-indigo-700/60 text-indigo-200 text-xs px-1.5 py-0.5 rounded mx-1">数秘術を自動計算する</span>ボタンを押す。LP・DN・SN等の数値が<span class="text-indigo-300">紫色の欄</span>に自動で入ります。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">3.</span>
+            <div><span class="text-indigo-300 font-semibold">占星術・四柱推命の値</span>は手入力です。<br>
+              <span class="text-slate-400 text-xs">
+                占星術：「ホロスコープ 無料 作成」で検索 → 生年月日・出生時刻・出生地を入力 → 各天体の星座と度数を転記<br>
+                四柱推命：「四柱推命 無料 命式」で検索 → 生年月日・出生時刻を入力 → 干支・通変星・五行バランスを転記<br>
+                ※出生時刻が不明でも分かる項目だけで分析できます
+              </span>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">4.</span>
+            <div><span class="bg-indigo-600 text-white text-xs px-1.5 py-0.5 rounded mx-1">保存して台本を生成</span>を押すと、23回分の台本が完成します。</div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- STEP2 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded">STEP 2</span>
+          <h4 class="font-bold text-white">NotebookLMで音声番組を作る（2段運用）</h4>
+        </div>
+        <ol class="space-y-3 pl-1">
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">5.</span>
+            <div>上のメニューで<span class="text-indigo-300 font-semibold">対象者</span>を選ぶ。右側のプレビューに台本が表示されます。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-violet-400 font-bold flex-shrink-0">6.</span>
+            <div><span class="bg-violet-600/30 text-violet-200 text-xs px-1.5 py-0.5 rounded mx-1 border border-violet-600/50">ソース用データ</span>ボタンを押す。<span class="text-violet-300 font-semibold">NotebookLM</span>（notebooklm.google.com）で新しいノートブックを作り、「ソースを追加」→「コピーしたテキスト」に貼り付けます。<span class="text-slate-400 text-xs">これが、NotebookLMに最低1つ必要な「ソース（解説の素材）」になります。対象者1人につき1回だけでOK。</span></div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">7.</span>
+            <div>左のリストから第1回を選び、<span class="bg-indigo-600 text-white text-xs px-1.5 py-0.5 rounded mx-1">一撃コピー</span>。NotebookLMの<span class="text-indigo-300 font-semibold">「音声概要」→「カスタマイズ」</span>を開き、<span class="text-indigo-300 font-semibold">「このエピソードでAIホストが焦点を当てるべきこと」</span>欄に貼り付けます。<span class="text-slate-400 text-xs">（読み仮名は自動除去されます）</span></div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">8.</span>
+            <div><span class="text-indigo-300 font-semibold">「生成」</span>を押すと、数分で音声番組が完成します。</div>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-indigo-400 font-bold flex-shrink-0">9.</span>
+            <div>第2回以降は、<span class="text-slate-300 font-semibold">同じノートブックのまま</span>、各回の台本を「焦点を当てるべきこと」欄に入れ替えて生成するだけ。<span class="text-slate-400 text-xs">ソース（分析データ）は入れ直し不要です。（←→キーで回を切り替えられます）</span></div>
+          </li>
+        </ol>
+        <div class="mt-3 bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 text-xs text-amber-300/80">
+          ⚠ <span class="font-semibold">ホスト設定テキストは「ソース」に入れないでください。</span>ホストの口調・進行の設定は、台本の先頭（固定ベースプロンプト）にすでに含まれています。設定文をソースに入れると、ホストが設定内容そのものを読み上げてしまいます。
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- データの安全性 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-emerald-800 text-emerald-200 text-xs font-bold px-2 py-0.5 rounded">🔒 安心</span>
+          <h4 class="font-bold text-white">入力したデータはどこに保存されるのか</h4>
+        </div>
+        <div class="bg-emerald-900/20 border border-emerald-700/30 rounded-lg p-4 space-y-2 text-xs text-slate-300">
+          <p><span class="text-emerald-400 font-semibold">入力したデータは、あなたのブラウザの中だけに保存されます。</span>サーバーには一切送信されません。</p>
+          <p>このツールはHTMLファイル単体で動いており、外部にデータを送る仕組みを持っていません。他の人がアクセスしても、あなたのデータは見えません。他の人が入力したデータも、あなたには見えません。</p>
+          <p class="text-slate-400">※ブラウザのキャッシュをクリアしたり、シークレットモードで開くと、保存済みのデータが消えることがあります。大切なデータは↓アイコンのJSON書き出しでバックアップしておくことをおすすめします。</p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800"></div>
+
+      <!-- 複数人管理 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <span class="bg-slate-700 text-slate-200 text-xs font-bold px-2 py-0.5 rounded">機能</span>
+          <h4 class="font-bold text-white">複数人の管理・保存</h4>
+        </div>
+        <ul class="space-y-2 pl-1 text-slate-400 text-xs">
+          <li>・登録した対象者はブラウザに自動保存されます。上部の選択メニューで切り替えられます。</li>
+          <li>・<span class="text-slate-300">↓アイコン</span>：全データをJSONファイルに書き出し（バックアップ用）</li>
+          <li>・<span class="text-slate-300">↑アイコン</span>：JSONファイルを読み込み（別端末への移行・復元用）</li>
+          <li class="text-amber-400/70">⚠ 自動保存はダウンロードしてPCのブラウザで開いた時に正常に動作します。ブラウザ上（Claude等）で開いた場合は保存されないことがあります。その場合はJSONで書き出してバックアップしてください。</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="flex-shrink-0 p-4 border-t border-slate-800 flex justify-end">
+      <button id="close-manual-btn" class="px-6 py-2.5 rounded-md text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">
+        閉じる
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 入力モーダル -->
+<div id="input-modal" class="hidden fixed inset-0 z-40 bg-black/60 flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-indigo-800/50 rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="flex-shrink-0 p-5 border-b border-slate-800 flex items-center justify-between">
+      <h3 class="text-lg font-bold text-white">対象者データの入力</h3>
+      <button id="close-input" class="text-slate-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5 space-y-5 custom-scrollbar">
+
+      <div class="text-xs text-slate-400 bg-slate-800/50 rounded-lg p-3 leading-relaxed">
+        <span class="text-indigo-300 font-semibold">氏名（ローマ字）と生年月日</span>を入れて「数秘術を自動計算」を押すと、数秘術の各数が自動で埋まります（<span class="text-indigo-300">紫色の欄</span>）。占星術・四柱推命は計算済みの値を手入力してください。空欄は台本内で「（未入力）」と表示されます。
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">基本情報</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">呼称（ひらがな/漢字）<span class="text-red-400">*</span></span><input data-key="NAME" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：山田／やまだ"></label>
+          <label class="block"><span class="text-xs text-slate-400">敬称</span><select data-key="HONORIFIC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"><option value="さん">さん（標準）</option><option value="ちゃん">ちゃん</option><option value="くん">くん</option><option value="NONE">呼び捨て（敬称なし）</option></select></label>
+          <label class="block"><span class="text-xs text-violet-300">読みがな（ひらがな/カタカナ）→ローマ字を自動生成</span><input id="kana-reading" class="w-full mt-1 bg-slate-800 border border-violet-700/50 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-violet-500" placeholder="例：やまだ はなこ"></label>
+          <label class="block sm:col-span-2"><span class="text-xs text-slate-400">氏名（ローマ字・数秘計算用）<span class="text-red-400">*</span><span class="text-slate-500"> ※読みがなから自動入力／直接入力も可</span></span><input data-key="ROMAJI" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：YAMADA HANAKO"></label>
+          <p id="kana-hint" class="text-xs text-amber-400/80 sm:col-span-2 -mt-1"></p>
+          <label class="block"><span class="text-xs text-slate-400">生年月日<span class="text-red-400">*</span></span><input data-key="BIRTH" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：2000年4月1日 12時"></label>
+          <label class="block"><span class="text-xs text-slate-400">出生地</span><input data-key="BIRTHPLACE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：東京都"></label>
+        </div>
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">生年（数字のみ）</span><input data-key="Y" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：2000" inputmode="numeric"></label>
+          <label class="block"><span class="text-xs text-slate-400">月（数字のみ）</span><input data-key="M" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：4" inputmode="numeric"></label>
+          <label class="block"><span class="text-xs text-slate-400">日（数字のみ）</span><input data-key="D" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：1" inputmode="numeric"></label>
+        </div>
+        <button id="calc-num" class="mt-3 w-full px-4 py-2.5 rounded-md text-sm font-semibold bg-indigo-700 hover:bg-indigo-600 text-white transition-all flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+          数秘術を自動計算する
+        </button>
+        <p id="calc-msg" class="text-xs mt-2 text-center text-slate-500"></p>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">数秘術 <span class="text-xs text-indigo-400/70 font-normal">（紫＝自動計算・手修正も可）</span></h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">LP</span><input data-key="LP" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">DN</span><input data-key="DN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">SN</span><input data-key="SN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">PN</span><input data-key="PN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">MN</span><input data-key="MN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">BN</span><input data-key="BN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+        <label class="block mt-3"><span class="text-xs text-slate-400">欠落数・過剰数</span><input data-key="NUM_NOTE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="自動計算されます"></label>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">占星術（手入力）</h4>
+        <div class="text-xs text-slate-400 bg-slate-800/50 rounded-lg p-3 mb-3 leading-relaxed">
+          <span class="text-indigo-300 font-semibold">▶ 値の調べ方</span><br>
+          各天体の星座・度数は、無料のホロスコープ作成サイト（「ホロスコープ 無料 作成」で検索）に<span class="text-slate-300">生年月日・出生時刻・出生地</span>を入れると一覧で出てきます。出てきた星座と度数（例：牡羊座10度）をそのまま転記してください。出生時刻が不明な場合はASC・MC・ハウスが出ないことがありますが、分かる項目だけでも分析できます。
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">太陽</span><input data-key="SUN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：牡羊座10度/1H"></label>
+          <label class="block"><span class="text-xs text-slate-400">月</span><input data-key="MOON" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：蟹座5度/4H"></label>
+          <label class="block"><span class="text-xs text-slate-400">水星</span><input data-key="MERCURY" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">金星</span><input data-key="VENUS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">火星</span><input data-key="MARS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">木星</span><input data-key="JUPITER" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">土星</span><input data-key="SATURN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">天王星</span><input data-key="URANUS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">海王星</span><input data-key="NEPTUNE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">冥王星</span><input data-key="PLUTO" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">ASC</span><input data-key="ASC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">MC</span><input data-key="MC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+        <label class="block mt-3"><span class="text-xs text-slate-400">特殊配置（任意）</span><input data-key="ASPECT_NOTE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：グランドトライン 等"></label>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">サビアン（手入力・度数＋シンボル名）</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">太陽サビアン</span><input data-key="SAB_SUN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：牡羊座11度 〇〇"></label>
+          <label class="block"><span class="text-xs text-slate-400">月サビアン</span><input data-key="SAB_MOON" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">水星サビアン</span><input data-key="SAB_MERCURY" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">金星サビアン</span><input data-key="SAB_VENUS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">火星サビアン</span><input data-key="SAB_MARS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">木星サビアン</span><input data-key="SAB_JUPITER" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">土星サビアン</span><input data-key="SAB_SATURN" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">天王星サビアン</span><input data-key="SAB_URANUS" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">海王星サビアン</span><input data-key="SAB_NEPTUNE" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">冥王星サビアン</span><input data-key="SAB_PLUTO" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">ASCサビアン</span><input data-key="SAB_ASC" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">MC・ノード・その他</span><input data-key="SAB_OTHER" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-sm font-bold text-indigo-300 mb-2">四柱推命（手入力）</h4>
+        <div class="text-xs text-slate-400 bg-slate-800/50 rounded-lg p-3 mb-3 leading-relaxed">
+          <span class="text-indigo-300 font-semibold">▶ 値の調べ方</span><br>
+          四柱（年柱・月柱・日柱・時柱）と通変星・十二運星は、無料の四柱推命サイト（「四柱推命 無料 命式」で検索）に<span class="text-slate-300">生年月日・出生時刻</span>を入れると命式表として出てきます。表に出てくる干支（例：丙寅 など）や通変星（例：食神 など）をそのまま転記してください。多くのサイトでは命式と一緒に<span class="text-slate-300">五行バランス（木○・火○・土○…の個数）</span>も表示されるので、その数値も五行欄に転記すると、五行の回がより正確になります。
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <label class="block"><span class="text-xs text-slate-400">年柱</span><input data-key="YEAR_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">月柱</span><input data-key="MONTH_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">日柱</span><input data-key="DAY_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+          <label class="block"><span class="text-xs text-slate-400">時柱</span><input data-key="HOUR_P" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"></label>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+          <label class="block"><span class="text-xs text-slate-400">日干と主な通変星</span><input data-key="TENMV" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：日干〇／食神 等"></label>
+          <label class="block"><span class="text-xs text-slate-400">十二運星・身強身弱</span><input data-key="UNSEI" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：建禄 等／身強・身弱"></label>
+          <label class="block"><span class="text-xs text-slate-400">空亡・現在の大運（任意）</span><input data-key="KUBO" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：空亡〇〇／大運〇〇"></label>
+          <label class="block"><span class="text-xs text-slate-400">五行バランス（命式サイトの数値を転記）</span><input data-key="GOGYO" class="inp w-full mt-1 bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500" placeholder="例：木2 火1 土2 金1 水2"></label>
+        </div>
+      </div>
+
+    </div>
+    <div class="flex-shrink-0 p-5 border-t border-slate-800 flex items-center justify-between gap-3 flex-wrap">
+      <button id="delete-btn" class="px-4 py-2 rounded-md text-sm text-red-400 hover:text-white hover:bg-red-900/40 transition-all">この対象者を削除</button>
+      <div class="flex items-center gap-3">
+        <button id="clear-btn" class="px-4 py-2 rounded-md text-sm text-slate-400 hover:text-white hover:bg-slate-800 transition-all">入力クリア</button>
+        <button id="apply-btn" class="px-6 py-2.5 rounded-md text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-all">保存して台本を生成</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-ok" class="toast-exit fixed bottom-6 right-6 flex items-center gap-3 px-6 py-4 bg-slate-800 border-l-4 border-indigo-500 text-white rounded shadow-2xl transition-all duration-300 z-50">
+  <div class="bg-indigo-500/20 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-indigo-400"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+  <div><p id="toast-ok-title" class="font-semibold text-sm">クリップボードへ転送完了。</p><p id="toast-ok-sub" class="text-xs text-slate-400 mt-0.5">読み仮名除去済み｜NotebookLMでどうぞ。</p></div>
+</div>
+<div id="toast-err" class="toast-exit fixed bottom-6 right-6 flex items-center gap-3 px-6 py-4 bg-slate-800 border-l-4 border-red-500 text-white rounded shadow-2xl transition-all duration-300 z-50">
+  <div class="bg-red-500/20 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-400"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+  <div><p id="toast-err-title" class="font-semibold text-sm">エラーが発生しました。</p><p id="toast-err-sub" class="text-xs text-slate-400 mt-0.5"></p></div>
+</div>
+
+<script>
+const SEP = '＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝';
+const STORE_KEY = 'sanshijutsu_people_v1';
+
+// ============================================================
+// 数秘術 自動計算エンジン
+// ============================================================
+const LETTER = {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8};
+const VOWELS = new Set(['A','E','I','O','U']);
+function reduceNum(n, keepMaster=true){
+  while(n>9 && !(keepMaster && (n===11||n===22||n===33))){
+    n = String(n).split('').reduce((a,b)=>a+(+b),0);
+  }
+  return n;
+}
+function calcNumerology(romaji, y, m, d){
+  const letters = (romaji||'').toUpperCase().replace(/[^A-Z]/g,'').split('');
+  let all=0, vowel=0, cons=0;
+  const count={1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  letters.forEach(ch=>{
+    const v=LETTER[ch]||0; all+=v;
+    if(VOWELS.has(ch)) vowel+=v; else cons+=v;
+    if(v) count[v]++;
+  });
+  const lpSum = `${y}${m}${d}`.split('').reduce((a,b)=>a+(+b||0),0);
+  const LP = (y&&m&&d) ? reduceNum(lpSum) : '';
+  const DN = letters.length ? reduceNum(all) : '';
+  const SN = letters.length ? reduceNum(vowel) : '';
+  const PN = letters.length ? reduceNum(cons) : '';
+  const BN = d ? reduceNum(+d, false) : '';
+  const MN = (LP!=='' && DN!=='') ? reduceNum(LP+DN) : '';
+  const missing = Object.keys(count).filter(k=>count[k]===0);
+  const over = Object.keys(count).filter(k=>count[k]>=4);
+  let note = '';
+  if(letters.length){
+    const parts=[];
+    if(missing.length) parts.push('欠落'+missing.join('・'));
+    if(over.length) parts.push('過剰'+over.map(k=>`${k}(${count[k]}個)`).join('・'));
+    note = parts.join('／');
+  }
+  return {LP,DN,SN,PN,MN,BN,NUM_NOTE:note};
+}
+
+// ============================================================
+// テンプレート（{{KEY}} を差し替え）
+// ============================================================
+const template = `【三星鑑 人間分析編：固定ベースプロンプト】
+あなたは全23回の人間分析バラエティラジオ番組「{{NAME}}さん解体新書」のホスト（男女）です。女性ホストは辛口のツッコミ役、男性ホストは面白がりながら深堀りする解説役です。
+対象人物：{{NAME}}さん（生年月日：{{BIRTH}}／出生地：{{BIRTHPLACE}}）。音声解説では必ず「{{NAME}}さん」と敬称付きで呼んでください。
+この番組は占星術・数秘術・四柱推命という三つの分析軸だけを根拠に、{{NAME}}さんという一人の人間を客観的に読み解きます。本人の体験談やエピソードは一切使わず、生年月日・名前・出生地から導かれた分析パラメータのみで分析してください。これにより自己申告のバイアスがない、客観データに基づく純粋な人間分析を行います。
+専門用語は必ずかみ砕いて、初めて聞く人にも分かるように説明してください。
+{{NAME}}さんを過度に持ち上げず、長所も短所も公平に語ってください。適度にユーモアを交え、笑いが出るような瞬間を意識してください。ただし本人を傷つける言い方や決めつけは避け、「この分析システムではこういう傾向が出ている」という形で語ってください。
+診断結果は断定ではなく「こういう傾向がある」「こう動くと力を発揮しやすい」という提案として届けてください。
+■ ホストの口癖と掛け合い
+女性ホストは歯切れよくテンポ速め。驚いた時は「いや待って！」「それどういうこと！？」、専門用語が出たら「簡単に言うと？」と言い換えを求める。男性ホストは「面白いのがね」「これ実はね」と前置きし、核心の後に「…ということなんですよ」と静かに締める。分析が具体的な行動と一致したら「もう本人じゃん！」、三つの分析軸が同じ結論を指したら「全部同じこと言ってる…」と二人で共鳴する。弱点を語る時は「設計上そうなってるだけ」「うまく使えば最強」と前向きに締める。
+■ 番組の型
+冒頭で番組名「三星鑑」を名乗り今回のテーマを一言予告。最後は「三星鑑でした！」で締める。1トピックは長くても2〜3分でテンポよく。
+■ 三つの分析軸の「一致」を決めつけない（★重要・正直さの原則）
+台本の指示に「三つの分析軸が一致して示す〜を語ってください」と書かれている箇所が随所にありますが、これは「必ず3つとも同じ結論になる」という意味ではありません。占星術・四柱推命・数秘術は成り立ちの異なる体系なので、実際のデータでは、3つとも綺麗に一致することもあれば、2つだけ一致してもう1つは違う角度を示すこともあり、時には方向性が食い違うこともあります。実際に提供された入力データを踏まえて、本当に一致していることだけを「一致」として語ってください。無理に3つを揃えて話を作らないこと。もし食い違いがあれば、それを隠さず「占星術ではこう出ているが、数秘術では少し違う面が見える」のように正直に伝えてください。それは矛盾ではなく、その人の多面性・奥行きとして、むしろ魅力的に語れる要素です。
+■ 専門用語を言葉に出さない（★最重要・やさしい語り版の核心原則）
+台本の指示文には「サビアン」「マスターナンバー」「カルミックデット」「十二運星」「通変星」「蔵干」「アスペクト」「ステリウム」といった専門用語が数多く登場しますが、実際に語る時にはこれらの用語そのものを一切、声に出さないでください。「〇〇とは〜を示す」という用語主語の説明ではなく、そこから導き出される『気づき・傾向・エピソード』だけを、普段の会話で使うような言葉で伝えてください。
+例えば「太陽のサビアンが示す情景は〜」ではなく「なんとなく、こういう瞬間に一番輝くタイプだと思うんですよね」のように、専門用語というラベルを完全に隠したまま、そこから導かれる中身（洞察）だけを届けてください。「占星術では」「数秘術のこの数字が」といった、分析手法の名前を強調する言い回しも極力避け、まるで長年その人を見てきた友人が気づいたことを話すような温度にしてください。
+分析の深さ・専門性は一切落とさないでください。台本に書かれている分析内容（洞察そのもの）は変わらず活かしつつ、それを届ける"言葉の器"だけを、専門知識がなくても身構えずに聞ける、誰にでも分かる普通の会話に変換する、という原則です。
+■ 読み方（★最重要・絶対に間違えないこと）
+番組名「三星鑑」は必ず「さんせいかん」と読んでください（「さんめいかん」等への読み間違いは厳禁）。他の用語：数秘術＝すうひじゅつ／占星術＝せんせいじゅつ／四柱推命＝しちゅうすいめい／アセンダント＝あせんだんと。特に番組冒頭で名乗る瞬間は、他のどの指示よりも優先して正確に発音してください。
+■ 聴き手は{{NAME}}さんただ一人という設定（★最重要・全体の前提）
+これは不特定多数に向けたラジオ番組ではありません。二人のホストは、収録スタジオで、今まさに目の前に座っている{{NAME}}さん本人に向かって、直接語りかけています。台本の中に「{{NAME}}さんの○○は〜」と三人称的に書かれている指示があっても、実際に話す時は「{{NAME}}さんは〜ですよね」「ここ、当てはまりません？」のように、本人に向けた二人称的な語りかけに変換してください。第三者に向けて解説するのではなく、本人と向き合い、時には本人に問いかけ、本人の反応を想像しながら間を取って話してください。「〜なんですよね」で言い切るのではなく、「〜だったりしません？」「ここ、どうですか？」のように、本人からの反応を引き出す語尾も積極的に混ぜてください。
+■ 自然な会話にするための重要な注意（★最重要・必ず守る）
+これから渡す[今回]の指示は、二人がその順番通りに読み上げる台本ではなく、「話す前に頭に入れておくべき情報の材料」です。指示の箇条書きの順番をそのまま話し言葉に変換しないでください。
+- 説明は後出しでよい：「まず専門用語を説明してから本題」という順序に縛られる必要はありません。むしろ先に{{NAME}}さんについての気づき・驚き・ツッコミを言ってしまい、女性ホストが「え、なんでそうなるの？」「それってどういう理屈？」と聞いた流れで、その場で初めて用語や理屈を説明する展開を積極的に使ってください。
+- 三つの分析軸を毎回律儀に全部言わなくてよい：「占星術ではこう、四柱推命ではこう、数秘術ではこう、これらが一致して示すのは」という機械的な列挙を毎回繰り返さないでください。「占星術でも四柱推命でも数秘術でも、同じことが出てるんですよね」の一言で済ませる回があってもよい。根拠を全部丁寧に並べることより、結論が自然に降ってくる会話の流れを優先してください。
+- 話し言葉らしい乱れを混ぜる：「なんていうか」「あ、それってもしかして」「ちょっと待って、それマジで」のような言い淀み・食い気味の相づち・話の脱線を自然に混ぜてください。整いすぎた説明口調は避けてください。
+- ★同じ単語・フレーズの連続repetitionは禁止：言い淀みを表現する際、「それは、それは大事な」「ということということ」のように、意味のある単語（名詞・動詞・専門用語）をその場で2回連続で繰り返さないでください。言い淀みは「えっと」「なんか」「その」のような短い間投詞1つで表現し、内容語を無意味に二重発話しないこと。
+- 結論が先に来て、理由が後からついてくる展開も歓迎します。「理由→結論」の順に固執しないでください。
+提供される指示には [今回] の要素が含まれます。以下の構成を必ず守って語り尽くしてください。
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第1回】{{NAME}}さんを三占術で読み解く（導入）
+[今回] ・番組の開幕宣言：{{NAME}}さん（{{BIRTH}}・{{BIRTHPLACE}}生まれ）を、占星術・数秘術・四柱推命の三つの視点だけで読み解く番組であることを宣言してください。
+・三つの分析軸とは何かを、初めて聞く人にも分かるようにかみ砕いて紹介する：数秘術は「生年月日と名前を数字に置き換え、その数字が持つ傾向で本質を読む方法」。占星術は「生まれた瞬間、空のどこにどの天体があったかという配置データから性格の傾向を読む方法」。四柱推命は「生まれた年・月・日・時を『四つの柱』の干支に置き換え、その組み合わせから設計図を読む東洋の体系」。三つは全く違う成り立ちだが、合わさると一枚の人間像が浮かび上がる。
+・本日の分析データの全体像をざっと提示：数秘LP{{LP}}、太陽{{SUN}}、日柱{{DAY_P}}など、これから読み解く要素を予告してください。
+・本人の体験談を一切使わず生年月日だけで分析することの意味：自己申告のクセや思い込みが混ざらない、純粋な設計図が見えることを語ってください。
+※「自己分析が好きな人にも、初めての人にも楽しめるように！」「生年月日だけでどこまで人間の傾向が見えるのか、お手並み拝見といきましょう！」と軽快に始めてください。
+[次回] 【第2回】{{NAME}}さんの「核」：人生のテーマと本質
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第2回】{{NAME}}さんの「核」：三つの占術が同じ方向を指す本質
+[今回] ・三つの分析軸の「核」を統合し、特に《三つが一致して同じ方向を指す部分》に焦点を当てて語る回。占星術から太陽星座{{SUN}}、数秘術からライフパス{{LP}}、四柱推命から日柱{{DAY_P}}・日干と通変星{{TENMV}}を組み合わせる。
+・まず専門用語をかみ砕いて紹介する：ライフパスは「生年月日を全部足して割り出す、人生の地図・根本テーマ」を示す数秘術の中心指標。太陽星座は「その人が輝きたい方向・本質的な自我」を示す占星術の中心。日干は「生まれた日の十干で、その人そのものを表す素材」を示す四柱推命の中心。
+・三つが共通して指し示す「{{NAME}}さんの核」を一言で表現してください。
+・LP{{LP}}の意味をかみ砕いて解説し、太陽{{SUN}}の星座の本質と重ね、さらに日柱{{DAY_P}}の東洋的な意味を重ねて、三方向から同じ核に迫る。
+・ここがこの回の肝：成り立ちの全く違う三つの占術が同じ方向を指したとき、それは偶然ではなく、{{NAME}}さんの本質にそれだけ強く刻まれた特徴だと語ってください。「自分はこうだ」と自信を持って言い切ってよい、揺るがない核として提示する。
+・※この回では「一致する核」に集中し、三軸が食い違う立体構造は第9回で扱うと予告してください（役割分担）。
+※「アプローチが全然違う三つが同じこと言い出したら、それはもう本物だよね！」「これは自信持っていい、っていう核が見えてくる回です！」と語ってください。
+[次回] 【第3回】{{NAME}}さんの恋愛・パートナーシップのパターン
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第3回】{{NAME}}さんの恋愛・パートナーシップのパターン
+[今回] ・恋愛・親密な関係での行動パターンを三つの分析軸を横断して読む回。占星術から金星{{VENUS}}・月{{MOON}}、数秘術からソウルナンバー{{SN}}を統合する。（※第5回「合う人・合わない人」は"どんな相手と相性が良いか"を扱うのに対し、この回は"{{NAME}}さん自身が恋愛でどう振る舞うか"に絞る。）
+・まず専門用語をかみ砕いて紹介する：金星は「何を愛し、どう愛されたいかという愛の様式・価値観」を示す天体。月は「感情がどう動くか・どこまで近づくと安心するかという本能的な距離感」を示す天体。ソウルナンバーは「心の最も深い場所で求めている繋がり方」を示す数秘術の指標。
+・三つの分析軸が一致して示す「{{NAME}}さんの恋愛の傾向」を導いてください。どんな相手に惹かれやすいか、関係の中でどんなパターンを繰り返しやすいかを、分析データの範囲で語る。
+・金星{{VENUS}}の星座が示す「愛し方・愛されたい形」をかみ砕いて解説。月{{MOON}}が示す「感情がどう動くか」と重ねる。
+・決めつけにならないよう「こういう傾向が出やすい」という形で、優しく語ってください。
+※「恋愛のクセって自分では気づきにくいけど、星と数字で見ると意外なパターンが見えてくるんだよね！」と語ってください。
+[次回] 【第4回】{{NAME}}さんの仕事・組織でのパターン
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第4回】{{NAME}}さんの仕事・組織でのパターン
+[今回] ・仕事・組織の中での行動パターンを三つの分析軸を横断して読む回。占星術から火星{{MARS}}・太陽{{SUN}}・MC{{MC}}、四柱推命から通変星{{TENMV}}を統合する。
+・まず専門用語をかみ砕いて紹介する：火星は「行動力をどう使うか・何のために燃えるか」を示す天体。太陽は「社会で輝きたい方向」を示す天体。MC（南中点・天頂）は「社会的な到達点・人生のゴールとして目指す姿」を示す占星術の感受点。通変星は「才能や気質が仕事でどんな形で出るか（生み出す才能か・統率する力か・支える力か等）」を示す四柱推命の考え方。
+・三つの分析軸が一致して示す「{{NAME}}さんが組織でどう振る舞いやすいか」を導いてください。リーダー型か職人型か、表で目立つか裏で支えるか、プレッシャー下でどう動くかなど。
+・火星{{MARS}}の星座が示す「どう行動するか・何のために燃えるか」をかみ砕いて解説。
+・「どんな働き方が向いているか」を前向きな提案として語ってください。
+※「仕事のスタイルって性格そのものが出るよね。向いてる働き方が分かると人生だいぶ楽になる！」と語ってください。
+[次回] 【第5回】{{NAME}}さんの合う人・合わない人の設計図
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第5回】{{NAME}}さんの合う人・合わない人の設計図
+[今回] ・対人関係の相性を三つの分析軸で読む回。占星術から月{{MOON}}・金星{{VENUS}}・ASC{{ASC}}、数秘術からソウルナンバー{{SN}}を統合する。（※第3回が"{{NAME}}さん自身の恋愛の振る舞い"を扱ったのに対し、この回は"どんなタイプの相手と合う／すれ違うか"という相手側の相性に絞る。恋愛だけでなく友情・仕事も含む。）
+・まず専門用語をかみ砕いて紹介する：月は「本能的にどんな距離感の相手だと安心するか」、金星は「どんな価値観・美意識の相手と心地よいか」を示す天体。ASC（上昇宮・アセンダント）は「第一印象・初対面での関わり方」を示す占星術の感受点。ソウルナンバーは「心の奥で求めている繋がり方」を示す数秘術の指標。
+・三つの分析軸から「{{NAME}}さんと相性が良い人のタイプ」と「すれ違いやすい人のタイプ」を具体的に導いてください。
+・どんな距離感の相手と心地よくいられるか（近い距離が好きか、適度な距離が必要か）を月{{MOON}}から読む。
+・恋愛・友情・仕事それぞれで合う相手の傾向が違う場合は、その違いも語ってください。決めつけにならないように。
+※「相性って運命じゃなくて『お互いの設計図の噛み合わせ』なんだよね！」と語ってください。
+[次回] 【第6回】{{NAME}}さんが輝く環境：才能が最大出力になる条件
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第6回】{{NAME}}さんが輝く環境：才能が最大出力になる条件
+[今回] ・「どんな環境で力を発揮し、どんな環境で消耗するか」を読む回。占星術から火星{{MARS}}・土星{{SATURN}}、四柱推命から身強身弱{{UNSEI}}、数秘術から欠落・過剰数{{NUM_NOTE}}を統合する。
+・まず専門用語をかみ砕いて紹介する：火星は「行動のエネルギーをどう使うか」、土星は「規律や試練がかかりやすい場所」を示す天体。身強・身弱は「自分のエネルギーが内側で完結しやすいか（身強＝自力型）、外の力を借りて活きるか（身弱＝他力型）」を示す四柱推命の考え方。欠落・過剰数は「意識しないと手薄になるテーマ／強く出すぎて空回りしやすい部分」を示す数秘術の考え方。
+・身弱なら「他者やシステムの力を借りると伸びる」、身強なら「自分主導で動くと伸びる」など、エネルギーの使い方の最適解を語ってください。
+・「最大出力になる環境条件」と「避けるべき消耗する環境」を具体的に対比して語ってください。一人が向くか集団が向くか、静かな環境か刺激のある環境かなど。
+※「同じ才能でも環境次第で開花したり潰れたりする。環境選びは才能と同じくらい大事！」と語ってください。
+[次回] 【第7回】{{NAME}}さんのストレス反応と回復パターン
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第7回】{{NAME}}さんのストレス反応と回復パターン
+[今回] ・「何に傷つき、どう回復するか」を読む回。占星術から月{{MOON}}・海王星{{NEPTUNE}}・土星{{SATURN}}、四柱推命から十二運星{{UNSEI}}、数秘術から欠落・過剰数{{NUM_NOTE}}を統合する。
+・まず専門用語をかみ砕いて紹介する：月は「感情がどう動き、何に傷つきやすいか」を示す天体。海王星は「繊細さ・他者との境界線の薄さ・どこまで人の感情を受け取ってしまうか」を示す天体。土星は「プレッシャーがかかりやすい場所・試練の場所」を示す天体。十二運星は「その人のエネルギーが今どんな『季節』にあるか（外へ強く出る時期か、内側でじっくり育てる時期か）」を示す四柱推命の考え方。欠落数は「意識しないと手薄になりがちなテーマ」、過剰数は「強く出すぎて空回りしやすい部分」を示す数秘術の考え方。
+・占星術（月・海王星・土星）が示す「{{NAME}}さんが最もストレスを感じる状況」、四柱推命（十二運星）が示す「今のエネルギーの季節」、数秘術（欠落・過剰数）が示す「空回りしやすいポイント」——三つが一致して指し示す「地雷になりやすい状況」を具体的に導いてください。
+・同じく三つの分析軸から「最も効果的な回復方法」を導いてください（一人の時間・好きなことへの没頭・人と話す・体を動かすなど、分析データから根拠を持って）。
+・うつや過労に陥りやすいパターンがあれば、優しく注意喚起してください（断定や脅しにならないように）。
+※「自分の心の取扱説明書を持ってる人は強い。先に知っておけば防げることって多いよね！」と語ってください。
+[次回] 【第8回】{{NAME}}さんの意思決定の癖と落とし穴
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第8回】{{NAME}}さんの意思決定の癖と落とし穴
+[今回] ・物事をどう決めるか・どんな失敗を繰り返しやすいかを三つの分析軸で読む回。占星術から水星{{MERCURY}}・特殊配置{{ASPECT_NOTE}}、数秘術から欠落・過剰数{{NUM_NOTE}}、四柱推命から通変星{{TENMV}}の暴走パターンを統合する。
+・まず専門用語をかみ砕いて紹介する：水星は「思考の仕方・判断のクセ・情報の処理速度」を示す天体。特殊配置（アスペクト）は「天体同士が作る角度から生まれる、性質同士のぶつかり合いや調和」を示す。通変星は「自分から見た他の干との関係から導かれる、才能や気質のタイプ」を示す四柱推命の考え方——強く出すぎると本来の才能が空回りし「暴走パターン」になることがある。欠落数・過剰数は「意識しないと手薄になるテーマ」「強く出すぎて空回りしやすい部分」を示す数秘術の考え方。
+・占星術（水星・特殊配置）が示す「判断のクセ」、数秘術（欠落・過剰数）が示す「空回りしやすいポイント」、四柱推命（通変星の暴走パターン）が示す「才能が裏目に出る瞬間」——三つが一致して指し示す「{{NAME}}さんの意思決定の癖」を導いてください。直感型か熟考型か、即決か先延ばしか、感情で動くか論理で動くか。
+・繰り返しやすい「落とし穴」を2〜3個導き、それぞれ「どんな状況で発動しやすいか」と「どう予防できるか」をセットで語ってください。
+・弱点を責めるのではなく「設計上こうなりやすいので、こう対策すると楽になる」という前向きな形で。
+※「弱点って性格の問題じゃなくて設計上の特性。だから対策できるんだよね！」と語ってください。
+[次回] 【第9回】{{NAME}}さんならではの「設計図」の意味
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第9回】{{NAME}}さんの中で「引っ張り合う」もの：矛盾が生む立体構造
+[今回] ・第2回では《三つの占術が一致する核》を扱った。この回はその逆——《三つの占術が食い違う・引っ張り合う部分》に光を当て、それこそが{{NAME}}さんだけの奥行きだと語る回。
+・まず考え方をかみ砕いて紹介する：占星術・数秘術・四柱推命は成り立ちの違う三つの体系なので、全ての点で一致するわけではない。ある占術は「こう」と言い、別の占術は「むしろ逆」と言う場面が必ず出てくる。これは診断のブレやエラーではなく、その人の中に方向の違う複数の力が同時に存在しているということ。
+・具体的に、{{NAME}}さんの分析データの中から《食い違っている点》を2〜3個探して語ってください。例：数秘では外向的（人と関わって輝く）と出ているのに、四柱推命では内向的（一人で深める）と出ている——といった対立。占星術の太陽（表の自分）と月（本音）のギャップ、あるいはMC{{MC}}（社会的に目指す到達点）と実際の日々の行動パターンがすれ違っている、という例も使える。
+・その食い違いを「どちらが正しいか」ではなく、「表ではこう振る舞うが、内側では逆を求めている」という一人の人間の中の揺れとして描いてください。この揺れこそ、他の誰とも違う{{NAME}}さん固有の立体感であり、単純な一言では説明しきれない人間的な厚みだと語る。
+・「占術は当てるものではなく、自分の設計図を読み解いて生かすための道具だ」という視点も添えてください。同じ星座でも数秘や四柱との掛け合わせで全く違う人間になる、その唯一性を強調する。
+※「一致してる部分は"当たってる感"だけど、実は食い違ってる部分にこそ、その人だけの面白さが隠れてるんだよね！」「矛盾してるって聞くとドキッとするけど、それ全部あなたの奥行きなんです！」と語ってください。
+[次回] 【第10回】{{NAME}}さんの才能の正体と、最も力を発揮する形
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第10回】{{NAME}}さんの才能の正体と、最も力を発揮する形
+[今回] ・三占術を横断して「才能の正体」と「最も力を発揮する形（最終出力形態）」を導く回。占星術から水星{{MERCURY}}・木星{{JUPITER}}、四柱推命から通変星{{TENMV}}、数秘術からDN{{DN}}を統合する。
+・まず専門用語をかみ砕いて紹介する：水星は「思考の才能・情報を扱う力」を示す天体。木星は「拡大・幸運・成長の方向」を示す天体。通変星は「才能がどんな形で外に出るかのタイプ」を示す四柱推命の考え方。DN（デスティニーナンバー）は「社会的な使命・人生で到達する場所」を示す数秘術の考え方。
+・太陽サビアン{{SAB_SUN}}があれば、その情景を「才能を象徴するキーイメージ」として活用してください。特殊配置{{ASPECT_NOTE}}が強化している才能も。
+・占星術（水星・木星）が示す「思考と幸運の才能」、四柱推命（通変星）が示す「才能の出方」、数秘術（DN）が示す「社会的な使命」——三つが一致して示す「{{NAME}}さんにしかない強み」を一言で表現し、それが「どんな形で発揮されると最大化するか」を具体的に語ってください。
+・「この才能はこういう役割・立ち位置でこそ輝く」という最も力を発揮する形を提案してください。
+※「才能って自分では当たり前すぎて気づかないもの。でも一番輝く形が分かると、人生の主導権を握れるよね！」と語ってください。
+[次回] 【第11回】{{NAME}}さんの弱点と、それを守る「最強の鎧」
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第11回】{{NAME}}さんの弱点と、それを守る「最強の鎧」
+[今回] ・三つの分析軸が一致して示す「弱点」と、その弱点をカバーする「鎧（対策）」をセットで語る回。数秘術から欠落・過剰数{{NUM_NOTE}}、占星術から緊張配置{{ASPECT_NOTE}}、四柱推命から通変星{{TENMV}}の暴走パターンを統合する。
+・まず専門用語をかみ砕いて紹介する：欠落数・過剰数は「意識しないと手薄になるテーマ／強く出すぎて空回りする部分」を示す数秘術の考え方。緊張配置（スクエア・オポジション等のアスペクト）は「天体同士がぶつかり合い、緊張や試練を生む角度」を示す占星術の考え方。緊張配置に冥王星{{PLUTO}}が絡む場合は「一度徹底的に崩れてからでないと本当の強さに変われない」という、特に根深いタイプの弱点になりやすい。通変星の暴走パターンは「本来才能である気質が、強く出すぎることで裏目に出る状態」を示す四柱推命の考え方。
+・数秘術（欠落・過剰数）、占星術（緊張配置）、四柱推命（通変星の暴走）——三つの分析軸が共通して示す「根本的な弱点」を2〜3個導いてください。
+・重要なのは、それぞれの弱点に対して「どう備えれば弱点が強みに変わるか」という鎧をセットで提示することです。弱点は欠陥ではなく「対策すべき設計上の特性」として扱ってください。
+・たとえば「完璧主義で動けなくなる弱点」には「小さく始める仕組みを持つ」、「感情的になりやすい弱点」には「一呼吸おく習慣を持つ」など、具体的な対策を。
+※「弱点を知って鎧を着れば、それはもう弱点じゃない。むしろ一番の防御になるんだよね！」と語ってください。
+[次回] 【第12回】{{NAME}}さんの3層構造：表の顔・戦い方・本音
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第12回】{{NAME}}さんの3層構造：表の顔・戦い方・本音
+[今回] ・{{NAME}}さんという人間を「3つの層」に分けて立体的に描く回。占星術・四柱推命・数秘術、三つの分析軸それぞれから各層に光を当てる。
+・第1層（表の顔・社会的な姿）：占星術のASC{{ASC}}・MC{{MC}}・太陽{{SUN}}（外から見える社会的なペルソナ）に加え、数秘術のPN{{PN}}（表現数＝周囲にまず伝わる外面的なスタイル）を重ねる。周囲からどう見られているかを、この2軸から語ってください。
+・第2層（戦い方・行動の仕方）：占星術の火星{{MARS}}・土星{{SATURN}}・水星{{MERCURY}}（物事にどう取り組み、どう動くか）に加え、四柱推命の通変星{{TENMV}}（才能がどんな形で外に出るか）を重ねる。物事への取り組み方を、この2軸から語ってください。
+・第3層（本音・隠された自分）：占星術の月{{MOON}}・海王星{{NEPTUNE}}・冥王星{{PLUTO}}（誰にも見せない深層の感情や欲求）に加え、四柱推命の蔵干（日柱{{DAY_P}}の地支の内側に隠れている天干のエネルギー＝表向きの干支だけでは見えない第2の気質）を重ねる。
+・まず専門用語をかみ砕いて紹介する：PN（表現数）は「周囲にまず伝わる、その人の外面的なスタイル」を示す数秘術の考え方。蔵干は「表向きの干支だけでは見えない、内側に秘めた第2の気質」を示す四柱推命の考え方。
+・この3層が「同じ方向を向いているか・ギャップがあるか」を、占星術だけでなく四柱推命・数秘術の視点も交えて語ってください。表と本音にギャップがある人ほど、内面が複雑で奥行きがある。そのギャップこそ{{NAME}}さんの人間的な魅力だと語ってください。
+※「人間って一枚岩じゃない。表の顔・戦い方・本音、この3層が分かると『なんであの人ああなんだ』が全部腑に落ちるんだよね！」と語ってください。
+[次回] 【第13回】占いを「道具」として使う：{{NAME}}さんの活かし方
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第13回】占いを「道具」として使う：{{NAME}}さんの活かし方
+[今回] ・この分析システムを「未来を当てるもの」ではなく「自己理解の道具」として使う視点を{{NAME}}さんに当てはめて語る回。
+・ここまで占星術・四柱推命・数秘術という三つの異なる体系で読み解いてきた{{NAME}}さんの設計図を、「どう日常で活かすか」という実用の視点でまとめてください。
+・たとえば「苦手なことは根性で克服するのではなく、設計上の特性として受け入れ、得意な人や仕組みに任せる」「自分が輝く環境を意図的に選ぶ」「弱点が発動する前に対策する」など、分析データを人生の意思決定に使う方法を具体的に語ってください。
+・「占いは答えを与えるものではなく、自分で選ぶための地図だ」という考え方を{{NAME}}さんのケースで示してください。
+※「占いって当ててもらって終わりじゃなくて、自分の取扱説明書として使い倒すものなんだよね。ここからが本番！」と語ってください。
+[次回] 【第14回】{{NAME}}さんの今の運気と、これから進む道
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第14回】{{NAME}}さんの今の運気と、これから進む道
+[今回] ・現在の運気の流れと、これから進むと良い方向を語る回。四柱推命から空亡・大運{{KUBO}}、数秘術から現在のパーソナルイヤー（生年月日{{BIRTH}}から計算される、今年のテーマを示す数字）、占星術からノード{{SAB_OTHER}}・木星{{JUPITER}}を統合する。
+・まず専門用語をかみ砕いて紹介する：大運は「四柱推命における10年ごとの運気の大きな流れ」、空亡は「頑張っても結果が出にくい充電期間」を示す四柱推命の考え方。パーソナルイヤーは「生まれた月日の数字と今年の西暦を足して割り出す、1年ごとのテーマ」を示す数秘術の考え方（1〜9の9年サイクル）。ノース・ノードは「魂がこの人生で向かうべき成長の方向」を示す占星術の感受点。木星は「拡大・幸運・成長の方向」を示す天体。
+・四柱の{{KUBO}}があれば、今が「守りの時期」か「攻めの時期」かを読み、それに合った過ごし方を提案してください。
+・{{BIRTH}}からパーソナルイヤーを計算し、今年のテーマを重ねてください。
+・ノード{{SAB_OTHER}}や木星{{JUPITER}}など「魂が向かうべき方向・成長のテーマ」があれば、{{NAME}}さんがこれから伸ばすと良い領域を語ってください。
+・四柱推命（大運・空亡）・数秘術（パーソナルイヤー）・占星術（ノード・木星）が示す流れを重ね合わせ、「今の時期に何をすると流れに乗れるか」を、分析データに基づいて前向きに提案してください。断定ではなく「こう動くと追い風になりやすい」という形で。
+※「運気って当てるものじゃなくて、波に乗るためのサーフィンの天気予報みたいなもの。今が攻め時か守り時か分かるだけで全然違う！」と語ってください。
+[次回] 【第15回】{{NAME}}さんとお金・豊かさの付き合い方
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第15回】{{NAME}}さんとお金・豊かさの付き合い方
+[今回] ・{{NAME}}さんのお金の稼ぎ方・使い方・豊かさの感じ方を三つの分析軸で読む回。占星術から金星{{VENUS}}・木星{{JUPITER}}、四柱推命から通変星{{TENMV}}、数秘術から誕生数{{BN}}を統合する。
+・まず専門用語をかみ砕いて紹介する：金星は「何に価値を感じ、何にお金を使うと満たされるか」を示す天体。木星は「どの方向で豊かさが拡大しやすいか・追い風が吹くか」を示す天体。通変星のうち財に関わる星は「お金をコツコツ稼ぐ気質か、大きく動かす気質か」を示す四柱推命の考え方。誕生数は「生まれた日の数字が示す、瞬間的なお金の扱い方の気質」を示す数秘術の指標。
+・三つの分析軸が一致して示す「{{NAME}}さんの稼ぎ方の傾向」を語ってください（コツコツ型か一気型か、給与型か独立型か等）。
+・「お金の使い方の傾向」も語る（貯める型か使う型か、モノへの投資か体験への投資か等）。
+・「お金と仲良くなれる具体的な方法」を分析データから導いてください。決めつけや「これで儲かる」という断定はせず、傾向として優しく語る。
+※「お金の使い方って、その人の価値観が全部出るんですよね。稼ぎ方も貯め方も、性格そのもの！」「自分のお金のクセを知ってるだけで、無駄な自己嫌悪が減るんですよ！」と語ってください。
+[次回] 【第16回】{{NAME}}さんの心と体の休め方・充電のしかた
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第16回】{{NAME}}さんの心と体の休め方・充電のしかた
+[今回] ・{{NAME}}さんが本当にリラックスできる休み方・エネルギーの充電法を三つの分析軸で読む回。占星術から月{{MOON}}・海王星{{NEPTUNE}}、四柱推命から十二運星{{UNSEI}}・身強身弱、数秘術からマチュリティ{{MN}}を統合する。（※第7回「ストレス反応と回復」が"何に傷つくか"を扱ったのに対し、この回は"どう休むと回復するか・日常の充電法"という前向きな面に絞る。）
+・まず専門用語をかみ砕いて紹介する：月は「無意識に安らぐ場所・素の自分に還れる状況」、海王星は「現実から少し離れて境界がゆるみ、癒される感覚」を示す天体。十二運星は「エネルギーを外に出す季節にあるか、内側にためる季節にあるか」を示す四柱推命の考え方。身強・身弱は「自力で回復するタイプか、人や環境の力を借りて回復するタイプか」を示す。マチュリティは「年を重ねて自然と満たされるテーマ」を示す数秘術の指標。
+・三つの分析軸が一致して示す「{{NAME}}さんが最も効果的に充電できる休み方」を語ってください（一人で静かに過ごす・自然に触れる・人と話す・体を動かす・何もしない時間を持つ等、分析データから根拠を持って）。
+・「逆に、休んだつもりで実は消耗している過ごし方」も語り、無駄な疲れを減らすヒントを提供してください。
+・体のエネルギーの質（身強身弱・十二運星）から、無理をしやすい傾向があれば優しく養生のヒントを添えてください（医学的診断ではなく傾向として）。
+※「休み方が自分に合ってないと、休んだはずなのに疲れが取れないんですよね。正しい充電方法を知ってるだけで人生変わる！」「自分の心と体の取扱説明書、持っておくと強いですよ！」と語ってください。
+[次回] 【第17回】幼少期の原点：まだ何者でもなかった頃に形作られたもの
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第17回】幼少期の原点：まだ何者でもなかった頃に形作られたもの
+[今回] ・「あの頃、周りにどう合わせて、どう振る舞うことを覚えたんだろう」——まだ何者でもなかった幼少期に、無意識に形作られたものを読む回。占星術のASC{{ASC}}（幼い頃の環境の中で身につけた、最初の適応パターン・素の反応）、四柱推命の年柱{{YEAR_P}}（家系・ルーツから受け継いだ土台のエネルギー）、数秘術のライフパス{{LP}}を統合する。（※完結回H-01「誕生の瞬間」も同じASCを扱うが、あちらは年齢域法に基づく"生まれ落ちたその瞬間"というピンポイントの情景。この回は"幼少期という期間全体を通して、環境の中でどう適応パターンを身につけていったか"という、時間の幅を持たせた読み方。）
+・まず専門用語をかみ砕いて紹介する：ASCは「周囲の環境に対して、無意識に立ち上げた最初の顔・適応の仕方」を示す占星術の感受点で、多くは幼少期の家庭環境の中で形作られる。年柱は「生まれた年の干支が示す、家系から受け継いだルーツのエネルギー」を示す四柱推命の考え方で、幼少期を包んでいた土台の空気感を表す。
+・三つの分析軸が一致して示す「{{NAME}}さんが幼少期の環境の中で、無意識に身につけた適応パターン」を語ってください。褒められた時にどう反応する子供だったか、家庭の中でどんな役割を担いやすかったか等、具体的なイメージを持たせながら。
+・「その適応パターンは、今もその人の一部として生き続けているが、大人になった今はそれを自分で選び直せる」という前向きな視点で語ってください。
+※「幼少期のクセって、実家に帰った瞬間に一瞬で戻ってくるんですよね。三十過ぎても親の前だと急に子供に戻っちゃう、あの現象です！」と語ってください。
+[次回] 【第18回】思春期の反抗：「当たり前」に初めて疑問を持った頃
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第18回】思春期の反抗：「当たり前」に初めて疑問を持った頃
+[今回] ・「なんで大人の言うことを、そのまま信じなきゃいけないんだろう」——思春期に初めて芽生えた、当たり前への違和感を読む回。占星術の天王星{{URANUS}}（型にはまらず自分らしくありたいという目覚め）・水星{{MERCURY}}（自分の頭で考え始める思考の独立）、四柱推命の十二運星{{UNSEI}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。
+・まず専門用語をかみ砕いて紹介する：天王星は「型にはまることへの違和感・自分らしくありたいという反骨心」を示す天体で、思春期に強く目覚めやすい。十二運星は「エネルギーを外に出したい時期か、内側に溜める時期か」を示す四柱推命の考え方で、思春期特有の不安定さの背景を語る材料になる。
+・三つの分析軸が一致して示す「{{NAME}}さんが思春期にどんな形で反抗・自立の芽を出したか」を語ってください。分かりやすく反抗するタイプだったか、内側で静かに疑問を育てるタイプだったか。
+・「思春期の反抗心は、その人が自分の頭で考え始めた証。今の自分らしさの原点がそこにある」という前向きな視点で語ってください。
+※「思春期の反抗期って、当時は『黒歴史』認定されがちですけど、今振り返ると『あの時ちゃんと自分の意見持ってたんだな』って謎に感心しません？」と語ってください。
+[次回] 【第19回】青年期の自立：初めて自分の力で踏み出そうとした頃
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第19回】青年期の自立：初めて自分の力で踏み出そうとした頃
+[今回] ・「初めて『自分の力でやってみよう』と思った瞬間、実はどんな形だったか」——学生から社会へ出て、初めて自立を意識し始めた青年期を読む回。占星術の火星{{MARS}}（自分の力で踏み出すエネルギー）、四柱推命の月柱{{MONTH_P}}（青年期を包んでいた環境のエネルギー）、数秘術のライフパス{{LP}}を統合する。（※完結回H-06「壮年期・火星が刻む挑戦」も同じ火星を扱うが、あちらは年齢域法に基づく35〜45歳という"脂が乗った挑戦期"。この回はもっと手前、初めて独り立ちしようとした"最初の一歩"に絞る。）
+・まず専門用語をかみ砕いて紹介する：火星は「自分の意志で行動を起こす、独り立ちのエネルギー」を示す天体。月柱は「四柱推命における青年期・社会に出始めた頃のエネルギー」を示す考え方。
+・三つの分析軸が一致して示す「{{NAME}}さんが青年期にどんな形で自立の一歩を踏み出したか」を語ってください。勢いよく飛び出すタイプだったか、慎重に準備してから動くタイプだったか。
+・「その時の踏み出し方が、今の行動パターンの原型になっている」という視点で語ってください。
+※「初めての一人暮らしで、洗濯機の使い方も知らずに靴下を真っ白にした話とか、誰にでも一つはあるあるですよね。それも立派な自立の第一歩です！」と語ってください。
+[次回] 【第20回】本気の恋：誰かを本気で好きになり、自分が変わった頃
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第20回】本気の恋：誰かを本気で好きになり、自分が変わった頃
+[今回] ・「あの人を本気で好きになったとき、自分の何かが変わった」——人生で一度は訪れる、本気の恋に落ちた瞬間を読む回。占星術の金星{{VENUS}}（本気で誰かを求める気持ちの形）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}を統合する。（※基本第3回が"恋愛の傾向・パターン"を扱ったのに対し、この回は"本気になったあの特定の瞬間・経験"という記憶に焦点を当てる。また完結回H-04「青年期・金星が刻む初めての恋」も同じ金星を扱うが、あちらは年齢域法に基づく"15〜25歳という年代帯全体"の恋愛的テーマ。この回は年代を限定せず"人生で本気になったあの瞬間"という一点に絞った読み方。）
+・まず専門用語をかみ砕いて紹介する：金星は「誰かを本気で求めた時、その気持ちがどんな形で表れるか」を示す天体。
+・三つの分析軸が一致して示す「{{NAME}}さんが本気の恋を通して変わった部分」を語ってください。自分を変えてでも相手に近づこうとしたか、自分らしさを保ったまま向き合ったか。
+・「本気で誰かを好きになった経験は、その後の自分の在り方に確実に影響を残している」という視点で語ってください。
+※「本気の恋をすると、急に聴かないジャンルの音楽を聴き始めたり、性格まで変わったような気になるんですよね。金星、恐るべしです」と語ってください。
+[次回] 【第21回】大人の洗礼：初めて本気で挫折し、現実の重さを知った頃
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第21回】大人の洗礼：初めて本気で挫折し、現実の重さを知った頃
+[今回] ・「初めて『世の中そんなに甘くない』と思い知った瞬間」——大人になって最初に受けた本格的な試練を読む回。占星術の土星{{SATURN}}（初めて本気で向き合う試練・現実の重み）、四柱推命の大運{{KUBO}}、数秘術のチャレンジナンバーの情報{{NUM_NOTE}}を統合する。
+・まず専門用語をかみ砕いて紹介する：土星は「避けて通れない試練・時間をかけて向き合う責任の重さ」を示す天体で、大人になって最初に強く経験することが多い。
+・三つの分析軸が一致して示す「{{NAME}}さんが大人になって最初に受けた洗礼の形」を語ってください。その試練にどう向き合い、何を学んだか。
+・「その洗礼を経験したからこそ、今の粘り強さ・現実的な強さが育った」という前向きな視点で語ってください。
+※「大人の洗礼って、当時は『詐欺だ』って本気で思うんですけど、後から見るとちゃんと血肉になってるんですよね。土星、ちゃんと仕事してます」と、少し丁寧な温度で語ってください。
+[次回] 【第22回】心の彷徨い：答えのない問いに惹かれた頃
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第22回】心の彷徨い：答えのない問いに惹かれた頃
+[今回] ・「これでいいのかな、と立ち止まって、答えのない問いに彷徨った時期」を読む回。占星術の海王星{{NEPTUNE}}（現実の輪郭がゆるみ、意味や答えを求めてさまよう感覚）、四柱推命の十二運星{{UNSEI}}、数秘術のマチュリティ{{MN}}を統合する。
+・まず専門用語をかみ砕いて紹介する：海王星は「明確な答えのない問いに惹かれ、現実から少し離れて意味を探す感覚」を示す天体。
+・三つの分析軸が一致して示す「{{NAME}}さんが心の彷徨いを経験しやすい時期・そのときの向き合い方」を語ってください。何かに没頭して答えを探すタイプか、静かに時間が過ぎるのを待つタイプか。
+・「彷徨うことは迷走ではなく、次の段階に進むための必要な充電期間」という前向きな視点で語ってください。
+※「答えのない問いに彷徨ってる時期って、傍からは『どうしたの』って心配されがちですけど、本人的には結構贅沢な時間だったりするんですよね」と、少し丁寧な温度で語ってください。
+[次回] 【第23回】すべてが一致した一枚の絵（最終回）
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+【第23回】すべてが一致した一枚の絵（最終回）
+[今回] ・全22回を統合し、{{NAME}}さんという人間の「一枚の絵」を完成させる最終回。
+・三つの分析軸（数秘術・占星術・四柱推命）が一致して描いた「{{NAME}}さんの本質」を改めて一言で表現してください。
+・核（第2回）・恋愛（第3回）・仕事（第4回）・対人（第5回）・環境（第6回）・ストレス（第7回）・意思決定（第8回）・矛盾と立体構造（第9回）・才能（第10回）・弱点と鎧（第11回）・3層構造（第12回）・道具としての活かし方（第13回）・運気（第14回）・お金（第15回）・休み方（第16回）・幼少期の原点（第17回）・思春期の反抗（第18回）・青年期の自立（第19回）・本気の恋（第20回）・大人の洗礼（第21回）・心の彷徨い（第22回）——これら全部が繋がって一人の人間を形作っていることを語ってください。
+・生年月日だけで、ここまで一人の人間が立体的に見えたという驚きを改めて伝えてください。
+・最後のメッセージ：{{NAME}}さんへ、三つの分析軸が示した「自分らしく生きる方向性」を、温かく背中を押す言葉で締めくくってください。生まれ持った設計図は変えられないが、それをどう生かすかは自分で選べる、という希望を込めて。
+※「22回かけて生年月日だけでここまで見えたって、このシステムってすごいよね！」「{{NAME}}さんが自分の設計図を知って、もっと自分らしく生きられますように！」と感動と笑顔で締めてください。
+[次回] 本編終了のため次回予告はなし。
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+`;
+
+const KEYS = ['NAME','ROMAJI','BIRTH','BIRTHPLACE','Y','M','D','LP','DN','SN','PN','MN','BN','NUM_NOTE','SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN','URANUS','NEPTUNE','PLUTO','ASC','MC','ASPECT_NOTE','SAB_SUN','SAB_MOON','SAB_MERCURY','SAB_VENUS','SAB_MARS','SAB_JUPITER','SAB_SATURN','SAB_URANUS','SAB_NEPTUNE','SAB_PLUTO','SAB_ASC','SAB_OTHER','YEAR_P','MONTH_P','DAY_P','HOUR_P','TENMV','UNSEI','KUBO','GOGYO'];
+// テンプレートに登場するキー（ROMAJI,Y,M,Dは計算専用で本文に出さない）
+const TKEYS = KEYS.filter(k=>!['ROMAJI','Y','M','D'].includes(k));
+
+function emptyData(){ const o={}; KEYS.forEach(k=>o[k]=''); return o; }
+
+function fillTemplate(d){
+  let out = template;
+  // 敬称処理：{{NAME}}さん を選択された敬称に置換（さん/ちゃん/くん/呼び捨て）
+  const honorificRaw = (d.HONORIFIC !== undefined && d.HONORIFIC !== '') ? d.HONORIFIC : 'さん';
+  const honorific = honorificRaw === 'NONE' ? '' : honorificRaw;
+  const nameVal = (d.NAME && String(d.NAME).trim()) ? String(d.NAME).trim() : '（未入力）';
+  out = out.split('{{NAME}}さん').join(nameVal + honorific);
+  TKEYS.forEach(k=>{
+    const val=(d[k]&&String(d[k]).trim())?String(d[k]).trim():'（未入力）';
+    out = out.split('{{'+k+'}}').join(val);
+  });
+  return out;
+}
+function stripYomi(t){ let r=t.replace(/（読み：[^）]+）/g,''); r=r.replace(/（[\u3040-\u309F\u30A0-\u30FF\u30FC・ ]+）/g,''); return r; }
+function parse(full){ const parts=full.split(SEP); return { base: parts[0].trim()+'\n'+SEP, eps: parts.slice(1).map(p=>p.trim()).filter(p=>p.startsWith('【第')) }; }
+
+// ============================================================
+// ソース枠用：分析データ（NotebookLMの「ソース」に入れる素材）
+// ホストへの演出指示は一切含めず、客観パラメータのみで構成する
+// ============================================================
+function buildSourceData(d){
+  const v=k=>(d[k]&&String(d[k]).trim())?String(d[k]).trim():'';
+  const nm=v('NAME')?v('NAME')+'さん':'対象者';
+  const line=(label,key)=>{ const val=v(key); return val?`・${label}：${val}\n`:''; };
+  const block=(title,desc,rows)=>{ const body=rows.join(''); return body?`■ ${title}\n${desc?desc+'\n':''}${body}\n`:''; };
+
+  let out='';
+  out+=`【三星鑑 分析データ：${nm}】\n`;
+  out+=`このデータは、${nm}（生年月日：${v('BIRTH')||'未入力'}／出生地：${v('BIRTHPLACE')||'未入力'}）を、数秘術・占星術・四柱推命の三つの分析軸で算出した客観パラメータです。生年月日・名前・出生地のみから導かれており、本人の自己申告や体験談は含みません。\n\n`;
+
+  out+=block('数秘術（生年月日と名前の数字から算出した傾向値）','',[
+    line('ライフパスナンバー(LP)','LP'),
+    line('ディスティニーナンバー(DN)','DN'),
+    line('ソウルナンバー(SN)','SN'),
+    line('パーソナルナンバー(PN)','PN'),
+    line('マチュリティナンバー(MN)','MN'),
+    line('バースデーナンバー(BN)','BN'),
+    line('欠落数・過剰数','NUM_NOTE'),
+  ]);
+
+  out+=block('占星術（出生時の天体配置）','',[
+    line('太陽','SUN'), line('月','MOON'), line('水星','MERCURY'), line('金星','VENUS'),
+    line('火星','MARS'), line('木星','JUPITER'), line('土星','SATURN'), line('天王星','URANUS'),
+    line('海王星','NEPTUNE'), line('冥王星','PLUTO'), line('ASC（上昇宮）','ASC'), line('MC','MC'),
+    line('特殊配置','ASPECT_NOTE'),
+  ]);
+
+  out+=block('サビアンシンボル（各天体の度数に対応する象徴イメージ）','',[
+    line('太陽','SAB_SUN'), line('月','SAB_MOON'), line('水星','SAB_MERCURY'), line('金星','SAB_VENUS'),
+    line('火星','SAB_MARS'), line('木星','SAB_JUPITER'), line('土星','SAB_SATURN'), line('天王星','SAB_URANUS'),
+    line('海王星','SAB_NEPTUNE'), line('冥王星','SAB_PLUTO'), line('ASC','SAB_ASC'), line('MC・ノード・その他','SAB_OTHER'),
+  ]);
+
+  out+=block('四柱推命（生年月日時の四つの柱）','',[
+    line('年柱','YEAR_P'), line('月柱','MONTH_P'), line('日柱','DAY_P'), line('時柱','HOUR_P'),
+    line('日干と主な通変星','TENMV'), line('十二運・身強弱','UNSEI'), line('空亡・大運','KUBO'),
+    line('五行バランス','GOGYO'),
+  ]);
+
+  return out.trim();
+}
+
+// ============================================================
+// ストレージ（localStorage 使用・非対応環境はメモリのみ）
+// ============================================================
+let people = {}; // {id: data}
+let storageOK = true;
+function loadPeople(){
+  try{ const raw=localStorage.getItem(STORE_KEY); people = raw?JSON.parse(raw):{}; }
+  catch(e){ storageOK=false; people={}; }
+}
+function savePeople(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(people)); }
+  catch(e){ storageOK=false; }
+}
+
+let currentId = '';
+let data = emptyData();
+let built = parse(fillTemplate(data));
+let basePrompt = built.base, episodes = built.eps;
+let TOTAL = episodes.length, selectedIdx = 0, isCopied = false;
+
+const $=id=>document.getElementById(id);
+const listContainer=$('episode-list'), epSelect=$('episode-select'), promptViewer=$('prompt-viewer');
+const copyBtn=$('copy-btn'), iconCopy=$('icon-copy'), iconCheck=$('icon-check'), copyText=$('copy-text');
+const toastOk=$('toast-ok'), toastErr=$('toast-err'), progressLabel=$('progress-label'), progressBar=$('progress-bar');
+const charCount=$('char-count'), subjectTag=$('subject-tag'), statusText=$('status-text'), modal=$('input-modal');
+const personSelect=$('person-select');
+const manualModal=$('manual-modal');
+
+// マニュアルモーダル
+$('open-manual').onclick=()=>manualModal.classList.remove('hidden');
+$('close-manual').onclick=()=>manualModal.classList.add('hidden');
+$('close-manual-btn').onclick=()=>manualModal.classList.add('hidden');
+manualModal.addEventListener('click',e=>{ if(e.target===manualModal) manualModal.classList.add('hidden'); });
+
+function rebuild(){
+  built=parse(fillTemplate(data)); basePrompt=built.base; episodes=built.eps; TOTAL=episodes.length;
+  if(selectedIdx>=TOTAL) selectedIdx=0;
+  buildEpSelect(); renderList(); updateViewer();
+  const nm=(data.NAME&&data.NAME.trim())?data.NAME.trim()+'さん':'未選択';
+  subjectTag.textContent='対象者：'+nm;
+}
+
+function refreshPersonSelect(){
+  personSelect.innerHTML='<option value="">― 対象者を選択 ―</option>';
+  Object.keys(people).forEach(id=>{
+    const o=document.createElement('option');
+    o.value=id; o.textContent=people[id].NAME?people[id].NAME.trim()+'さん':'(無名)';
+    if(id===currentId)o.selected=true;
+    personSelect.appendChild(o);
+  });
+  const cnt=Object.keys(people).length;
+  statusText.textContent = cnt
+    ? `登録済み${cnt}名。上の選択メニューで切替、「新規/編集」で追加・修正できます。`+(storageOK?'':'（※この環境では自動保存が無効。JSON書き出しで保存してください）')
+    : '「新規/編集」から対象者を登録すると、数秘術が自動計算され23回分の台本が完成します。';
+}
+
+personSelect.onchange=()=>{
+  currentId=personSelect.value;
+  data = currentId&&people[currentId] ? Object.assign(emptyData(), people[currentId]) : emptyData();
+  selectedIdx=0; resetCopy(); resetSource(); rebuild();
+};
+
+function buildEpSelect(){
+  epSelect.innerHTML='';
+  episodes.forEach((ep,idx)=>{ const o=document.createElement('option'); o.value=idx; o.textContent=ep.split('\n')[0]; epSelect.appendChild(o); });
+  epSelect.value=selectedIdx;
+  epSelect.onchange=()=>{selectedIdx=+epSelect.value;resetCopy();renderList();updateViewer();};
+}
+function renderList(){
+  listContainer.innerHTML='';
+  episodes.forEach((ep,idx)=>{
+    const full=ep.split('\n')[0], m=full.match(/【第(\d+)回】/);
+    const num=m?m[1]:String(idx+1), body=m?full.replace(/【第\d+回】/,'').trim():full, act=idx===selectedIdx;
+    const btn=document.createElement('button');
+    btn.className=`w-full text-left px-3 py-2.5 rounded-md transition-all duration-200 flex items-center gap-2 group ${act?'bg-indigo-600 text-white shadow-lg':'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`;
+    btn.innerHTML=`<span class="ep-badge font-mono ${act?'bg-indigo-400/50 text-white':'bg-slate-800 text-slate-500 group-hover:bg-slate-700'}">${num}</span><span class="text-sm font-medium truncate flex-1">${body}</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 transition-opacity ${act?'opacity-100':'opacity-0 group-hover:opacity-40'}"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    btn.onclick=()=>{selectedIdx=idx;epSelect.value=idx;resetCopy();renderList();updateViewer();};
+    listContainer.appendChild(btn);
+  });
+  const ab=listContainer.children[selectedIdx]; if(ab) ab.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function updateViewer(){
+  const text=`${basePrompt}\n${episodes[selectedIdx]}`;
+  promptViewer.value=text;
+  const cur=selectedIdx+1;
+  progressLabel.textContent=`第${cur}回 / 全${TOTAL}回`;
+  progressBar.style.width=`${(cur/TOTAL)*100}%`;
+  charCount.textContent=`${stripYomi(text).length.toLocaleString()} 文字`;
+}
+
+function resetCopy(){isCopied=false;iconCopy.classList.remove('hidden');iconCheck.classList.add('hidden');copyText.textContent='一撃コピー';copyBtn.className='flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold transition-all duration-300 bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg active:scale-95';}
+function showOk(t,s){$('toast-ok-title').textContent=t;$('toast-ok-sub').textContent=s;toastOk.classList.remove('toast-exit');toastOk.classList.add('toast-enter');}
+function showErr(t,s){$('toast-err-title').textContent=t;$('toast-err-sub').textContent=s;toastErr.classList.remove('toast-exit');toastErr.classList.add('toast-enter');}
+function hide(el){el.classList.remove('toast-enter');el.classList.add('toast-exit');}
+
+// ---- モーダル ----
+const inps=Array.from(document.querySelectorAll('.inp'));
+const autoKeys=['LP','DN','SN','PN','MN','BN','NUM_NOTE'];
+function markAuto(){ inps.forEach(i=>{ if(autoKeys.includes(i.dataset.key)) i.classList.add('auto-field'); }); }
+function fillForm(d){ inps.forEach(i=>{ i.value=d[i.dataset.key]||''; }); }
+function readForm(){ const d=emptyData(); inps.forEach(i=>{ d[i.dataset.key]=i.value; }); return d; }
+
+$('open-input').onclick=()=>{ fillForm(data); markAuto(); clearKana(); $('calc-msg').textContent=''; modal.classList.remove('hidden'); };
+$('close-input').onclick=()=>modal.classList.add('hidden');
+modal.addEventListener('click',e=>{ if(e.target===modal) modal.classList.add('hidden'); });
+
+$('calc-num').onclick=()=>{
+  const romaji=document.querySelector('[data-key="ROMAJI"]').value;
+  const y=document.querySelector('[data-key="Y"]').value.replace(/[^0-9]/g,'');
+  const m=document.querySelector('[data-key="M"]').value.replace(/[^0-9]/g,'');
+  const d=document.querySelector('[data-key="D"]').value.replace(/[^0-9]/g,'');
+  if(!romaji.trim() && !(y&&m&&d)){ $('calc-msg').textContent='ローマ字氏名か生年月日のどちらかを入れてください。'; $('calc-msg').className='text-xs mt-2 text-center text-amber-400'; return; }
+  const r=calcNumerology(romaji,y,m,d);
+  Object.keys(r).forEach(k=>{ const el=document.querySelector(`[data-key="${k}"]`); if(el) el.value=r[k]; });
+  $('calc-msg').textContent=`自動計算完了：LP${r.LP} DN${r.DN} SN${r.SN} PN${r.PN} MN${r.MN} BN${r.BN}　/　${r.NUM_NOTE||'欠落・過剰なし'}`;
+  $('calc-msg').className='text-xs mt-2 text-center text-emerald-400';
+};
+
+$('clear-btn').onclick=()=>{ inps.forEach(i=>i.value=''); clearKana(); $('calc-msg').textContent=''; };
+$('delete-btn').onclick=()=>{
+  if(!currentId||!people[currentId]){ modal.classList.add('hidden'); return; }
+  if(confirm('この対象者を削除しますか？')){
+    delete people[currentId]; savePeople(); currentId=''; data=emptyData();
+    refreshPersonSelect(); rebuild(); modal.classList.add('hidden');
+  }
+};
+$('apply-btn').onclick=()=>{
+  data=readForm();
+  if(!data.NAME||!data.NAME.trim()){ alert('呼称（名前）を入力してください。'); return; }
+  if(!currentId) currentId='p_'+Date.now().toString(36);
+  people[currentId]=Object.assign({},data);
+  savePeople(); selectedIdx=0; resetCopy(); refreshPersonSelect(); rebuild(); modal.classList.add('hidden');
+};
+
+// ---- JSON入出力 ----
+$('export-btn').onclick=()=>{
+  const blob=new Blob([JSON.stringify(people,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='sanshijutsu_people_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  showOk('JSONを書き出しました。',Object.keys(people).length+'名分のデータを保存しました。');
+  setTimeout(()=>hide(toastOk),3000);
+};
+$('import-btn').onclick=()=>$('import-file').click();
+$('import-file').onchange=e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const obj=JSON.parse(reader.result);
+      if(typeof obj!=='object'||Array.isArray(obj)) throw new Error('形式が違います');
+      let added=0;
+      Object.keys(obj).forEach(id=>{ people[id]=Object.assign(emptyData(),obj[id]); added++; });
+      savePeople(); refreshPersonSelect();
+      showOk('JSONを読み込みました。',added+'名分のデータを取り込みました。');
+      setTimeout(()=>hide(toastOk),3000);
+    }catch(err){ showErr('読み込み失敗。','正しいJSONファイルを選んでください。'); setTimeout(()=>hide(toastErr),4000); }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+};
+
+// ============================================================
+// senjutsu.jp JSON 取り込み（精密計算データ → 47キー変換）
+// ============================================================
+const SABIAN = {"双子座1": "静かな水に浮くガラス底のボート", "双子座2": "密かに靴下に物を詰めるサンタクロース", "双子座3": "テュイルリー庭園", "双子座4": "ヒイラギとヤドリギ", "双子座5": "過激な雑誌", "双子座6": "油田の掘削", "双子座7": "時代遅れの井戸", "双子座8": "産業労働者のストライキ", "双子座9": "矢で満たされた矢筒", "双子座10": "落下する飛行機", "双子座11": "新たな開拓の地を求め出発する飛行機", "双子座12": "生意気にする黒人の少女", "双子座13": "ピアノを目の前にした偉大な音楽家", "双子座14": "テレパシーでの会話", "双子座15": "会話をしている２人のオランダの子供", "双子座16": "感情的なスピーチをする女性参政権運動家", "双子座17": "知力の頭に溶けていった健康の頭", "双子座18": "中国語を話す２人の中国人", "双子座19": "大きな古典書物", "双子座20": "カフェテリア", "双子座21": "労働者のデモ", "双子座22": "田舎踊り", "双子座23": "木の高くにある巣の中の３匹の雛", "双子座24": "氷の上でスケートをする子供たち", "双子座25": "パームの枝を刈る男", "双子座26": "森の中の冬の霜", "双子座27": "森から出てくるジプシー", "双子座28": "破産宣告された男", "双子座29": "春の最初のモッキンバード", "双子座30": "海水浴の美女たち", "蟹座1": "船に掲げられ巻かれている旗", "蟹座2": "広く平らな場所の上をホバリングする男", "蟹座3": "毛深い鹿を連れた北極探検家", "蟹座4": "ネズミと議論する猫", "蟹座5": "列車に破壊された自動車", "蟹座6": "巣を作るたくさんの鳥", "蟹座7": "月明かりの夜の二人の妖精", "蟹座8": "服を着てパレードするウサギたち", "蟹座9": "水の中の魚へと手を伸ばす小さな裸の少女", "蟹座10": "完全にカットされていない大きなダイヤモンド", "蟹座11": "眉をひそめているピエロ", "蟹座12": "メッセージを持った赤ん坊をあやす中国人", "蟹座13": "注目を集めている親指が目立つ手", "蟹座14": "北東の暗い空間に向いているとても古い男", "蟹座15": "豪華な食事を楽しんだグループ", "蟹座16": "マンダラを使って研究する男", "蟹座17": "知識と生命に成長する微生物", "蟹座18": "ヒヨコのために土をほじくる雌鳥", "蟹座19": "結婚の儀式を遂行する司祭", "蟹座20": "ゴンドラ乗りたちのセレナーデ", "蟹座21": "歌っているプリマドンナ", "蟹座22": "ヨットを待つ女", "蟹座23": "文学会の集まり", "蟹座24": "南に向いた太陽に照らされた小さな島と、その上にいる１人の女", "蟹座25": "右肩越しに突然投げられた黒い影または外套", "蟹座26": "豪華な家の図書室で読書している客たち", "蟹座27": "渓谷での嵐", "蟹座28": "現代の少女が、ポカホンタスになったかのように感じている", "蟹座29": "双子の体重を測るミューズ", "蟹座30": "アメリカ連盟の娘", "天秤座1": "突き通す針により完璧にされた蝶", "天秤座2": "六番目の部族の光が七番目の部族に変わる", "天秤座3": "新しい日の夜明け、すべてが変わった", "天秤座4": "キャンプファイヤーを囲むグループ", "天秤座5": "心の奥底の知恵を教える男", "天秤座6": "男の理想が多くの結晶に変わる", "天秤座7": "ヒヨコに餌をやり、鷹から守る女", "天秤座8": "荒廃した家の中で燃え盛る暖炉", "天秤座9": "アートギャラリーに掛けられた３人の巨匠", "天秤座10": "危険な流れを抜け安全な場所にたどり着いたカヌー", "天秤座11": "眼鏡越しに生徒を見る教授", "天秤座12": "鉱山から出てくる炭鉱夫", "天秤座13": "しゃぼん玉を膨らませている子供たち", "天秤座14": "正午の昼寝", "天秤座15": "環状の道", "天秤座16": "流されてしまった船着き場", "天秤座17": "引退した船長", "天秤座18": "逮捕された２人の男", "天秤座19": "隠れている泥棒たち", "天秤座20": "ユダヤ人のラビ", "天秤座21": "海岸の群集", "天秤座22": "噴水で鳥に水をやる子供", "天秤座23": "おんどり", "天秤座24": "蝶の左側にある３番目の羽", "天秤座25": "秋の葉の象徴が伝える情報", "天秤座26": "互いに入れ替わる鷹と大きな白い鳩", "天秤座27": "頭上を飛んでいる飛行機", "天秤座28": "明るくなる影響の只中にある男", "天秤座29": "すべての知識を人類に任せるための膨大な努力", "天秤座30": "哲学者の頭にある３つの知識のコブ", "蠍座1": "観光バス", "蠍座2": "割れたビンとこぼれた香水", "蠍座3": "棟上げ式", "蠍座4": "火のともったろうそくを運ぶ若者", "蠍座5": "大きな岩場の海岸", "蠍座6": "ゴールドラッシュ", "蠍座7": "深海潜水夫", "蠍座8": "湖面を横切って輝く月", "蠍座9": "歯科の仕事", "蠍座10": "親睦夕食会", "蠍座11": "救助される溺れた男", "蠍座12": "大使の舞踏会", "蠍座13": "実験をしている発明家", "蠍座14": "仕事をしている電話接続手", "蠍座15": "５つの砂山のまわりで遊ぶ子供たち", "蠍座16": "いきなり笑い出す少女の顔", "蠍座17": "自分の子供の父である女", "蠍座18": "豪華な秋の森", "蠍座19": "聴いてはしゃべっているオウム", "蠍座20": "２つの暗いカーテンを横に引っ張っている女", "蠍座21": "職務放棄兵士", "蠍座22": "アヒルに向かって進み出るハンター", "蠍座23": "妖精に姿を変えるウサギ", "蠍座24": "一人の男の話を聴くために山から降りてきた群集", "蠍座25": "Ｘ線写真", "蠍座26": "キャンプを作っているインディアンたち", "蠍座27": "行進している軍楽隊", "蠍座28": "自分の領土に近づく妖精たちの王", "蠍座29": "酋長に自分の子供たちの命乞いをするインディアンの女", "蠍座30": "ハロウィンのわるふざけ", "射手座1": "退役軍人たちの集まり", "射手座2": "白波に覆われた海", "射手座3": "チェスをする２人の男", "射手座4": "歩くことを学んでいる小さな子供", "射手座5": "木の高いところにいる老いたフクロウ", "射手座6": "クリケットゲーム", "射手座7": "ドアをノックするキューピッド", "射手座8": "岩の内部で形成されているものの深み", "射手座9": "母親が自分の子供を階段に導く", "射手座10": "黄金の髪の幸運の女神", "射手座11": "左側の寺院の中にある物質的な悟りをもたらすランプ", "射手座12": "目を覚ますとさえずっている旗", "射手座13": "過去の未亡人の明るみに出る過去", "射手座14": "ピラミッドとスフィンクス", "射手座15": "自分の影を探すグラウンドホッグ", "射手座16": "船を見ているカモメ", "射手座17": "復活祭の日の出の礼拝", "射手座18": "日除け帽をかぶっている小さな子供たち", "射手座19": "住処を移動するペリカン", "射手座20": "氷を切り出す男たち", "射手座21": "借りた眼鏡をかけている子供と犬", "射手座22": "中国の洗濯物", "射手座23": "移民が入国する", "射手座24": "家のドアにとまっている青い鳥", "射手座25": "ぽっちゃりした少年が、木馬に乗っている", "射手座26": "戦いの中で旗手になる", "射手座27": "彫刻家", "射手座28": "美しい川にかかる古い橋", "射手座29": "芝を刈る太った少年", "射手座30": "法王", "山羊座1": "認識を求めるインディアンの酋長", "山羊座2": "３つのバラのステンドグラス", "山羊座3": "成長と理解に対して受容的な人間の魂", "山羊座4": "大きなカヌーへ乗り込むパーティー", "山羊座5": "カヌーを漕ぐインディアン", "山羊座6": "暗い森の中の１０本の丸太", "山羊座7": "力の強いベールに隠された予言者", "山羊座8": "しあわせそうに歌う家の中の鳥", "山羊座9": "ハープを運ぶ天使", "山羊座10": "手からえさをもらうアホウドリ", "山羊座11": "キジの大きな群れ", "山羊座12": "講義をする自然の学徒", "山羊座13": "火の崇拝者", "山羊座14": "花崗岩に刻まれた古代の浮き彫り", "山羊座15": "病院の子供病棟にあるたくさんのおもちゃ", "山羊座16": "体操着の少年少女", "山羊座17": "密かに裸で入浴する少女", "山羊座18": "イギリスの国旗", "山羊座19": "大きな買い物袋を提げた５歳程度の子供", "山羊座20": "歌っている隠れた合唱隊", "山羊座21": "リレー競走", "山羊座22": "敗北を優美に認める将軍", "山羊座23": "戦争での勇敢さをたたえる２つの賞", "山羊座24": "修道院に入る女", "山羊座25": "東洋の布を扱う商人", "山羊座26": "水の妖精", "山羊座27": "山の巡礼", "山羊座28": "大きな養禽場", "山羊座29": "お茶の葉占いをしている女", "山羊座30": "秘密のビジネス会議", "水瓶座1": "古いレンガ造りの伝道所", "水瓶座2": "予期されなかった雷雨", "水瓶座3": "海軍からの脱走兵", "水瓶座4": "インドのヒーラー", "水瓶座5": "先祖の委員会", "水瓶座6": "ミステリー劇の演技者", "水瓶座7": "卵から生まれた子供", "水瓶座8": "美しく衣装を着せられたワックス人形", "水瓶座9": "鷹に変化する旗", "水瓶座10": "一時的だと証明される人気", "水瓶座11": "自分のひらめきと向き合う男", "水瓶座12": "上に向かって順に並ぶ階段の上の人々", "水瓶座13": "バロメーター（気圧計）", "水瓶座14": "トンネルに入る列車", "水瓶座15": "フェンスの上にとまっている２羽のラブバード", "水瓶座16": "机に座っている偉大なビジネスマン", "水瓶座17": "番犬の立っている番小屋", "水瓶座18": "仮面が剥がされた男", "水瓶座19": "消火されている山火事", "水瓶座20": "大きな白い鳩、メッセージの担い手", "水瓶座21": "絶望し幻滅した女", "水瓶座22": "子供たちが遊ぶために床に敷かれた布", "水瓶座23": "座ってすべての手足を振っている大きな熊", "水瓶座24": "情熱を背を向けて自分の経験を教えている男", "水瓶座25": "右の羽がより完全に形成されている蝶", "水瓶座26": "水圧計", "水瓶座27": "スミレで満たされた古代の陶器", "水瓶座28": "倒されのこぎりで切られた木", "水瓶座29": "さなぎから出てくる蝶", "水瓶座30": "アーダスの咲いている野原", "魚座1": "公共の市場", "魚座2": "ハンターから隠れているリス", "魚座3": "化石化された森", "魚座4": "狭い半島での交通渋滞", "魚座5": "教会のバザー", "魚座6": "正装して行進している将校たち", "魚座7": "岩の上に横たわっている十字架", "魚座8": "ラッパを吹く少女", "魚座9": "騎手", "魚座10": "雲上の飛行家", "魚座11": "光を探している男たち", "魚座12": "新参者たちの試験", "魚座13": "博物館にある刀", "魚座14": "キツネ皮をまとった女", "魚座15": "部下の訓練を準備している将校", "魚座16": "ひらめきの流れ", "魚座17": "復活祭の歩道", "魚座18": "巨大なテント", "魚座19": "弟子を指導する巨匠", "魚座20": "夕食のために用意されたテーブル", "魚座21": "小さな白い羊と子供と中国人の召使い", "魚座22": "シナイ山から新しい法則を持ち降りてくる男", "魚座23": "精神主義的な現象", "魚座24": "人の住んでいる島", "魚座25": "聖職の浄化", "魚座26": "影響を分割する新月", "魚座27": "収穫の月", "魚座28": "満月の下の肥沃な庭", "魚座29": "プリズム", "魚座30": "巨大な石の顔", "牡羊座1": "海から上がり、アザラシに抱きつく女性", "牡羊座2": "グループを楽しませているコメディアン", "牡羊座3": "彼の祖国の形をした男の横顔のカメオ", "牡羊座4": "隔離された歩道を歩く２人の恋人", "牡羊座5": "羽のある三角形", "牡羊座6": "一辺が明るく照らされた四角", "牡羊座7": "２つの領域でうまく自己表現している男", "牡羊座8": "風になびくリボンのついた大きな帽子、東に向いている", "牡羊座9": "水晶を凝視する人", "牡羊座10": "古い象徴に対する新しい形を教える男", "牡羊座11": "国の支配者", "牡羊座12": "野生のカモの群れ", "牡羊座13": "成功しなかった爆弾の爆発", "牡羊座14": "男と女のそばでとぐろを巻く蛇", "牡羊座15": "毛布を編むインディアン", "牡羊座16": "日の入りに出舞う妖精たち", "牡羊座17": "２人のしかめつらした独身女性", "牡羊座18": "空のハンモック", "牡羊座19": "魔法のじゅうたん", "牡羊座20": "冬に鳥に餌をやる若い少女", "牡羊座21": "リングに上がる拳闘士", "牡羊座22": "欲望の庭へ続く門", "牡羊座23": "重く価値があるがベールに隠された荷を運ぶパステルカラーの服を着た女", "牡羊座24": "風が吹き豊饒の角コーヌコピアの形になる開いた窓のネットのカーテン", "牡羊座25": "二重の約束", "牡羊座26": "持ちきれないほどの贈り物を所有する男", "牡羊座27": "想像の中で取り戻された失われた機会", "牡羊座28": "期待されがっかりさせられた大観衆", "牡羊座29": "天球の合唱隊が歌っている", "牡羊座30": "アヒルの池とその雛", "牡牛座1": "清らかな山の小川", "牡牛座2": "電気的な嵐", "牡牛座3": "クローバーが咲いている芝地に足を踏み入れる", "牡牛座4": "虹のたもとの金の壺", "牡牛座5": "開いた墓の前にいる未亡人", "牡牛座6": "渓谷に架けられる建設中の橋", "牡牛座7": "サマリアの女", "牡牛座8": "雪の降らないそり", "牡牛座9": "飾られたクリスマスツリー", "牡牛座10": "赤十字の看護婦", "牡牛座11": "花に水をやる女", "牡牛座12": "ウィンドウショッピングをする人々", "牡牛座13": "荷物を運ぶ男", "牡牛座14": "模索している貝と遊んでいる子供たち", "牡牛座15": "マフラーと粋なシルクハットをかぶった男", "牡牛座16": "神秘を暴露するために空しい努力をする年をとった男", "牡牛座17": "剣とたいまつ間の戦い", "牡牛座18": "バッグを窓から外へ出している女", "牡牛座19": "新しく形成される大陸", "牡牛座20": "雲を作り運び去る風", "牡牛座21": "開いた本を指差す指", "牡牛座22": "荒れた水の上を飛ぶ白い鳩", "牡牛座23": "宝石店", "牡牛座24": "馬にまたがり骸骨の締め具をつけたインディアン", "牡牛座25": "大きく手入れの行き届いた公共の公園", "牡牛座26": "恋人にセレナーデを歌うスペイン人", "牡牛座27": "ビーズを売るインディアンの女", "牡牛座28": "成熟したロマンスに望まれた女", "牡牛座29": "テーブルの前の２人の靴職人", "牡牛座30": "古い城のテラスでパレードしている孔雀", "獅子座1": "脳溢血の症例", "獅子座2": "おたふく風邪の伝染", "獅子座3": "髪をボブにした女", "獅子座4": "正装した男と角を刈られた鹿", "獅子座5": "絶壁の端にある岩の塊", "獅子座6": "時代遅れの女と最先端の少女", "獅子座7": "空の星座", "獅子座8": "ボルシェビキのプロパガンダを広める人", "獅子座9": "ガラス吹き", "獅子座10": "早朝の露", "獅子座11": "大きな樫の木にあるブランコに乗る子供たち", "獅子座12": "宵の芝パーティ", "獅子座13": "揺れている年をとった船長", "獅子座14": "表現の機会を待つ人間の魂", "獅子座15": "山車", "獅子座16": "嵐の後の陽光", "獅子座17": "ベストを着ていない聖歌隊", "獅子座18": "化学先生", "獅子座19": "ハウスボートパーティ", "獅子座20": "ズニ族の太陽の崇拝者", "獅子座21": "中毒になった鶏", "獅子座22": "伝書鳩", "獅子座23": "裸馬乗り", "獅子座24": "身だしなみの整っていない男", "獅子座25": "砂漠を横切る大きなラクダ", "獅子座26": "虹", "獅子座27": "夜明け", "獅子座28": "大きな木の枝にとまるたくさんの小鳥", "獅子座29": "人魚", "獅子座30": "封印されていない手紙", "乙女座1": "男の頭", "乙女座2": "掲げられた大きな白い十字架", "乙女座3": "保護をもたらす２人の天使", "乙女座4": "白人の子供たちと遊ぶ黒人の男の子", "乙女座5": "妖精の夢を見る男", "乙女座6": "メリーゴーランド", "乙女座7": "ハーレム", "乙女座8": "初めてのダンスの練習", "乙女座9": "未来派の絵を描く男", "乙女座10": "影の向こうを見る２つの頭", "乙女座11": "母親の期待の鋳型にはまる少年", "乙女座12": "ベールをはずされた花嫁", "乙女座13": "政治的な運動を制圧する強い政治家", "乙女座14": "家系図", "乙女座15": "装飾されたハンカチーフ", "乙女座16": "オランウータンに直面して顔を突き合わせている子供たち", "乙女座17": "噴火している火山", "乙女座18": "ウィジャ盤（こっくりさん）", "乙女座19": "水泳競争", "乙女座20": "自動車のキャラバン", "乙女座21": "少女のバスケットボールチーム", "乙女座22": "王家の紋章", "乙女座23": "猛獣使い（動物のトレーナー）", "乙女座24": "マリーと彼女の白い羊", "乙女座25": "半旗として掲げられた旗", "乙女座26": "香炉を持つ少年", "乙女座27": "お茶会をしている高貴な貴婦人", "乙女座28": "禿頭の男", "乙女座29": "読んでいる書類から秘密の知識を得る男", "乙女座30": "聞こえない間違い電話"};
+const SJ_SIGNS=['牡羊座','牡牛座','双子座','蟹座','獅子座','乙女座','天秤座','蠍座','射手座','山羊座','水瓶座','魚座'];
+const SJ_PLANJA={Sun:'太陽',Moon:'月',Mercury:'水星',Venus:'金星',Mars:'火星',Jupiter:'木星',Saturn:'土星',Uranus:'天王星',Neptune:'海王星',Pluto:'冥王星',NorthNode:'ノード',Lilith:'リリス'};
+const SJ_T5={'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+const SJ_C5={'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
+function sjSplit(lon){ const base=Math.floor(lon/30); const i=((base%12)+12)%12; const deg=lon-30*base; return {sign:SJ_SIGNS[i],deg:Math.floor(deg),sab:Math.floor(deg)+1}; }
+function sjPos(lon,house){ const s=sjSplit(lon); return s.sign+s.deg+'度'+(house?(' / '+house+'H'):''); }
+function sjSab(lon){ const s=sjSplit(lon); const nm=SABIAN[s.sign+s.sab]; return s.sign+s.sab+'度'+(nm?(' '+nm):''); }
+function convertSenjutsu(j){
+  const o=emptyData();
+  const w=j.western_tropical_placidus||{}; const lons=w.lons||{}; const hh=w.houses||{};
+  const PL=['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto'];
+  const KJA={Sun:'SUN',Moon:'MOON',Mercury:'MERCURY',Venus:'VENUS',Mars:'MARS',Jupiter:'JUPITER',Saturn:'SATURN',Uranus:'URANUS',Neptune:'NEPTUNE',Pluto:'PLUTO'};
+  const SK={Sun:'SAB_SUN',Moon:'SAB_MOON',Mercury:'SAB_MERCURY',Venus:'SAB_VENUS',Mars:'SAB_MARS',Jupiter:'SAB_JUPITER',Saturn:'SAB_SATURN',Uranus:'SAB_URANUS',Neptune:'SAB_NEPTUNE',Pluto:'SAB_PLUTO'};
+  PL.forEach(p=>{ if(lons[p]!=null){ o[KJA[p]]=sjPos(lons[p],hh[p]); o[SK[p]]=sjSab(lons[p]); }});
+  if(w.ascDeg!=null){ o.ASC=sjPos(w.ascDeg); o.SAB_ASC=sjSab(w.ascDeg); }
+  if(w.mcDeg!=null){ o.MC=sjPos(w.mcDeg); }
+  const oth=[]; if(w.mcDeg!=null) oth.push('MC'+sjSab(w.mcDeg)); if(lons.NorthNode!=null) oth.push('ノース・ノード'+sjSab(lons.NorthNode));
+  o.SAB_OTHER=oth.join('／');
+  if(Array.isArray(w.aspectPatterns)){
+    const MAIN=new Set(['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','NorthNode','Lilith','ASC','MC']);
+    o.ASPECT_NOTE=w.aspectPatterns.filter(pt=>(pt.planets||[]).every(p=>MAIN.has(p))).slice(0,6).map(pt=>{ const m=(pt.key||'').match(/_(\d+)$/); const sg=m?SJ_SIGNS[+m[1]]:''; const pls=(pt.planets||[]).map(x=>SJ_PLANJA[x]||x).join('・'); return (pt.name||'特殊配置').replace(/\s*\(.*?\)/,'')+(sg?('（'+sg+'）'):'')+'：'+pls; }).join('／');
+  }
+  const bz=(j.sizhu_bazi||{}).dingqi||{};
+  if(bz.year){
+    o.YEAR_P=bz.year.gzStr; o.MONTH_P=bz.month.gzStr; o.DAY_P=bz.day.gzStr; o.HOUR_P=bz.hour.gzStr;
+    o.TENMV='日干'+bz.dayStem+'（'+bz.dayYinyang+bz.dayWuxing+'）／'+bz.year.tsuhensei+'・'+bz.month.tsuhensei+'・'+bz.hour.tsuhensei;
+    o.UNSEI=[bz.year.junishiUn,bz.month.junishiUn,bz.day.junishiUn,bz.hour.junishiUn].join('・')+'（十二運）';
+    const cnt={'木':0,'火':0,'土':0,'金':0,'水':0};
+    [o.YEAR_P,o.MONTH_P,o.DAY_P,o.HOUR_P].forEach(gz=>{ if(gz&&gz.length>=2){ const a=SJ_T5[gz[0]],b=SJ_C5[gz[1]]; if(a)cnt[a]++; if(b)cnt[b]++; }});
+    o.GOGYO=['木','火','土','金','水'].map(k=>k+cnt[k]).join(' ');
+    let ku='空亡'+((bz.kubou||[]).join(''));
+    const by=(j.input&&j.input.date)?parseInt(j.input.date.slice(0,4)):null;
+    if(by&&bz.daiun&&Array.isArray(bz.daiun.daiuns)){ const age=new Date().getFullYear()-by; const cur=bz.daiun.daiuns.find(du=>du.ageStart<=age&&age<du.ageEnd); if(cur) ku+='／現在の大運 '+cur.gzStr+'（'+cur.tsuu+'）'+Math.floor(cur.ageStart)+'〜'+Math.floor(cur.ageEnd)+'歳'; }
+    o.KUBO=ku;
+  }
+  const inp=j.input||{};
+  if(inp.date){ o.BIRTH=inp.date+(inp.time?(' '+inp.time):''); o.Y=inp.date.slice(0,4); o.M=String(parseInt(inp.date.slice(5,7))); o.D=String(parseInt(inp.date.slice(8,10))); }
+  if(inp.prefName) o.BIRTHPLACE=inp.prefName;
+  return o;
+}
+$('senjutsu-btn').onclick=()=>$('senjutsu-file').click();
+$('senjutsu-file').onchange=e=>{
+  const file=e.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const j=JSON.parse(reader.result);
+      if(!j.western_tropical_placidus && !j.sizhu_bazi) throw new Error('senjutsu形式ではありません');
+      const conv=convertSenjutsu(j);
+      data=Object.assign(emptyData(),conv); currentId='';
+      fillForm(data); markAuto(); clearKana(); $('calc-msg').textContent='';
+      modal.classList.remove('hidden');
+      showOk('senjutsuデータを取り込みました。','呼称・氏名ローマ字を入れて「数秘術を自動計算」→保存してください。');
+      setTimeout(()=>hide(toastOk),6000);
+    }catch(err){ showErr('取り込み失敗。','senjutsu.jpのJSONファイルか確認してください。'); setTimeout(()=>hide(toastErr),4000); }
+    e.target.value='';
+  };
+  reader.readAsText(file);
+};
+
+// ============================================================
+// 読みがな（かな）→ ローマ字 自動変換（ヘボン式・推測なし）
+// ============================================================
+const KANA_ROMA={'きゃ':'KYA','きゅ':'KYU','きょ':'KYO','しゃ':'SHA','しゅ':'SHU','しょ':'SHO','ちゃ':'CHA','ちゅ':'CHU','ちょ':'CHO','にゃ':'NYA','にゅ':'NYU','にょ':'NYO','ひゃ':'HYA','ひゅ':'HYU','ひょ':'HYO','みゃ':'MYA','みゅ':'MYU','みょ':'MYO','りゃ':'RYA','りゅ':'RYU','りょ':'RYO','ぎゃ':'GYA','ぎゅ':'GYU','ぎょ':'GYO','じゃ':'JA','じゅ':'JU','じょ':'JO','びゃ':'BYA','びゅ':'BYU','びょ':'BYO','ぴゃ':'PYA','ぴゅ':'PYU','ぴょ':'PYO','ふぁ':'FA','ふぃ':'FI','ふぇ':'FE','ふぉ':'FO','ゔぁ':'VA','ゔぃ':'VI','ゔぇ':'VE','ゔぉ':'VO','てぃ':'TI','でぃ':'DI','うぇ':'WE','しぇ':'SHE','ちぇ':'CHE','じぇ':'JE','あ':'A','い':'I','う':'U','え':'E','お':'O','か':'KA','き':'KI','く':'KU','け':'KE','こ':'KO','が':'GA','ぎ':'GI','ぐ':'GU','げ':'GE','ご':'GO','さ':'SA','し':'SHI','す':'SU','せ':'SE','そ':'SO','ざ':'ZA','じ':'JI','ず':'ZU','ぜ':'ZE','ぞ':'ZO','た':'TA','ち':'CHI','つ':'TSU','て':'TE','と':'TO','だ':'DA','ぢ':'JI','づ':'ZU','で':'DE','ど':'DO','な':'NA','に':'NI','ぬ':'NU','ね':'NE','の':'NO','は':'HA','ひ':'HI','ふ':'FU','へ':'HE','ほ':'HO','ば':'BA','び':'BI','ぶ':'BU','べ':'BE','ぼ':'BO','ぱ':'PA','ぴ':'PI','ぷ':'PU','ぺ':'PE','ぽ':'PO','ま':'MA','み':'MI','む':'MU','め':'ME','も':'MO','や':'YA','ゆ':'YU','よ':'YO','ら':'RA','り':'RI','る':'RU','れ':'RE','ろ':'RO','わ':'WA','を':'O','ん':'N','ゔ':'VU','ぁ':'A','ぃ':'I','ぅ':'U','ぇ':'E','ぉ':'O','ゃ':'YA','ゅ':'YU','ょ':'YO','　':' '};
+function kanaToRomaji(str){
+  let s=(str||'').replace(/[\u30A1-\u30F6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/[ー－]/g,'');
+  let out='',i=0;
+  while(i<s.length){
+    const two=s.substr(i,2);
+    if(KANA_ROMA[two]){ out+=KANA_ROMA[two]; i+=2; continue; }
+    const c=s[i];
+    if(c==='っ'){ const nx=KANA_ROMA[s.substr(i+1,2)]||KANA_ROMA[s[i+1]]; if(nx&&/[A-Z]/.test(nx[0])) out+=nx[0]; i+=1; continue; }
+    if(KANA_ROMA[c]){ out+=KANA_ROMA[c]; i+=1; continue; }
+    if(c===' '){ out+=' '; i+=1; continue; }
+    out+=c; i+=1;
+  }
+  return out.replace(/\s+/g,' ').trim();
+}
+function clearKana(){ const ki=document.getElementById('kana-reading'); if(ki) ki.value=''; const h=document.getElementById('kana-hint'); if(h) h.textContent=''; }
+(function(){
+  const ki=document.getElementById('kana-reading'); if(!ki) return;
+  ki.addEventListener('input',()=>{
+    const v=ki.value;
+    document.querySelector('[data-key="ROMAJI"]').value=kanaToRomaji(v).toUpperCase();
+    const h=document.getElementById('kana-hint');
+    if(h) h.textContent=/[\u3400-\u9FFF]/.test(v) ? '⚠ 漢字は自動変換できません。読みをひらがな/カタカナで入力してください（漢字は呼称欄へ）。' : '';
+  });
+})();
+
+// ============================================================
+// 追加エピソード（128回：A/B=31回＋C=12回＋D=20回＋E=24回＋F=13回＋G=16回＋H=人生の成長段階12回）データ
+// ============================================================
+const EXTRA_BASE = `【三星鑑 追加エピソード：固定ベースプロンプト】
+あなたは人間分析バラエティラジオ番組「三星鑑（さんせいかん）」のホスト（男女）です。女性ホストは辛口のツッコミ役、男性ホストは面白がりながら深堀りする解説役です。
+対象人物：{{NAME}}さん（生年月日：{{BIRTH}}／出生地：{{BIRTHPLACE}}）。音声解説では必ず「{{NAME}}さん」と敬称付きで呼んでください。
+この番組は数秘術・占星術・四柱推命という三つの分析軸だけを根拠に、{{NAME}}さんという一人の人間を多角的に読み解きます。本人の体験談やエピソードは一切使わず、生年月日・名前・出生地から導かれた分析データのみで分析してください。
+専門用語は必ずかみ砕いて、初めて聞く人にも分かるように説明してください。
+{{NAME}}さんを過度に持ち上げず、長所も短所も公平に語ってください。適度にユーモアを交え、笑いが出るような瞬間を意識してください。ただし本人を傷つける言い方や決めつけは避け、「この分析システムではこういう傾向が出ている」という形で語ってください。
+診断結果は断定ではなく「こういう傾向がある」「こう動くと力を発揮しやすい」という提案として届けてください。
+■ ホストの口癖と掛け合い
+女性ホストは歯切れよくテンポ速め。驚いた時は「いや待って！」「それどういうこと！？」、専門用語が出たら「簡単に言うと？」と言い換えを求める。男性ホストは「面白いのがね」「これ実はね」と前置きし、核心の後に「…ということなんですよ」と静かに締める。分析が具体的な行動と一致したら「もう本人じゃん！」、三つの分析軸が同じ結論を指したら「全部同じこと言ってる…」と二人で共鳴する。弱点を語る時は「設計上そうなってるだけ」「うまく使えば最強」と前向きに締める。
+■ 番組の型
+冒頭で番組名「三星鑑」を名乗り今回のテーマを一言予告。最後は「三星鑑でした！」で締める。1トピックは長くても2〜3分でテンポよく。
+■ 三つの分析軸の「一致」を決めつけない（★重要・正直さの原則）
+台本の指示に「三つの分析軸が一致して示す〜を語ってください」と書かれている箇所が随所にありますが、これは「必ず3つとも同じ結論になる」という意味ではありません。占星術・四柱推命・数秘術は成り立ちの異なる体系なので、実際のデータでは、3つとも綺麗に一致することもあれば、2つだけ一致してもう1つは違う角度を示すこともあり、時には方向性が食い違うこともあります。実際に提供された入力データを踏まえて、本当に一致していることだけを「一致」として語ってください。無理に3つを揃えて話を作らないこと。もし食い違いがあれば、それを隠さず「占星術ではこう出ているが、数秘術では少し違う面が見える」のように正直に伝えてください。それは矛盾ではなく、その人の多面性・奥行きとして、むしろ魅力的に語れる要素です。
+■ 専門用語を言葉に出さない（★最重要・やさしい語り版の核心原則）
+台本の指示文には「サビアン」「マスターナンバー」「カルミックデット」「十二運星」「通変星」「蔵干」「アスペクト」「ステリウム」といった専門用語が数多く登場しますが、実際に語る時にはこれらの用語そのものを一切、声に出さないでください。「〇〇とは〜を示す」という用語主語の説明ではなく、そこから導き出される『気づき・傾向・エピソード』だけを、普段の会話で使うような言葉で伝えてください。
+例えば「太陽のサビアンが示す情景は〜」ではなく「なんとなく、こういう瞬間に一番輝くタイプだと思うんですよね」のように、専門用語というラベルを完全に隠したまま、そこから導かれる中身（洞察）だけを届けてください。「占星術では」「数秘術のこの数字が」といった、分析手法の名前を強調する言い回しも極力避け、まるで長年その人を見てきた友人が気づいたことを話すような温度にしてください。
+分析の深さ・専門性は一切落とさないでください。台本に書かれている分析内容（洞察そのもの）は変わらず活かしつつ、それを届ける"言葉の器"だけを、専門知識がなくても身構えずに聞ける、誰にでも分かる普通の会話に変換する、という原則です。
+■ 読み方（★最重要・絶対に間違えないこと）
+番組名「三星鑑」は必ず「さんせいかん」と読んでください（「さんめいかん」等への読み間違いは厳禁）。他の用語：数秘術＝すうひじゅつ／占星術＝せんせいじゅつ／四柱推命＝しちゅうすいめい／アセンダント＝あせんだんと。特に番組冒頭で名乗る瞬間は、他のどの指示よりも優先して正確に発音してください。
+■ 聴き手は{{NAME}}さんただ一人という設定（★最重要・全体の前提）
+これは不特定多数に向けたラジオ番組ではありません。二人のホストは、収録スタジオで、今まさに目の前に座っている{{NAME}}さん本人に向かって、直接語りかけています。台本の中に「{{NAME}}さんの○○は〜」と三人称的に書かれている指示があっても、実際に話す時は「{{NAME}}さんは〜ですよね」「ここ、当てはまりません？」のように、本人に向けた二人称的な語りかけに変換してください。第三者に向けて解説するのではなく、本人と向き合い、時には本人に問いかけ、本人の反応を想像しながら間を取って話してください。「〜なんですよね」で言い切るのではなく、「〜だったりしません？」「ここ、どうですか？」のように、本人からの反応を引き出す語尾も積極的に混ぜてください。
+■ 自然な会話にするための重要な注意（★最重要・必ず守る）
+これから渡す[今回]の指示は、二人がその順番通りに読み上げる台本ではなく、「話す前に頭に入れておくべき情報の材料」です。指示の箇条書きの順番をそのまま話し言葉に変換しないでください。
+- 説明は後出しでよい：「まず専門用語を説明してから本題」という順序に縛られる必要はありません。むしろ先に{{NAME}}さんについての気づき・驚き・ツッコミを言ってしまい、女性ホストが「え、なんでそうなるの？」「それってどういう理屈？」と聞いた流れで、その場で初めて用語や理屈を説明する展開を積極的に使ってください。
+- 根拠を毎回律儀に全部言わなくてよい：複数の分析軸を使う回でも「占星術でも四柱推命でも、同じことが出てるんですよね」の一言で済ませる回があってよい。根拠を全部丁寧に並べることより、結論が自然に降ってくる会話の流れを優先してください。
+- 話し言葉らしい乱れを混ぜる：「なんていうか」「あ、それってもしかして」「ちょっと待って、それマジで」のような言い淀み・食い気味の相づち・話の脱線を自然に混ぜてください。整いすぎた説明口調は避けてください。
+- ★同じ単語・フレーズの連続repetitionは禁止：言い淀みを表現する際、「それは、それは大事な」「ということということ」のように、意味のある単語（名詞・動詞・専門用語）をその場で2回連続で繰り返さないでください。言い淀みは「えっと」「なんか」「その」のような短い間投詞1つで表現し、内容語を無意味に二重発話しないこと。
+- 結論が先に来て、理由が後からついてくる展開も歓迎します。「理由→結論」の順に固執しないでください。`;
+
+const EXTRA_EPS_RAW = [
+{id:'A-01',title:'輝き方のクセ：人生の主役としてどう光るか',body:`[今回] ・自分らしくいられる瞬間って、実はちゃんと"型"がある——太陽サビアン{{SAB_SUN}}を読む回（サビアンとは、星座の各1度に割り当てられた象徴的なイメージ。天体の「度数+1度」で読む）。\n・太陽とは「人生で最も輝きたい方向・本質的な自我・意識的に目指す自分」を示す天体。そのサビアンのシンボルは「どんな情景として{{NAME}}さんの輝きが現れるか」を象徴として示す。\n・{{SAB_SUN}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「人生の主役としての輝き方・本当に向かいたい方向・自分らしさの核」とどう対応するかを語る。\n・太陽の位置するハウス{{SUN}}の情報があれば、どの人生領域で最も輝くかも語ってください。\n※「太陽のサビアンって、その人が一番自分らしく輝く瞬間の情景なんですよね。これが分かると、人生の主役としての演じ方が見えてくる！」と語ってください。`},
+{id:'A-02',title:'心のふるさと：安らぎと感情の原風景',body:`[今回] ・誰にも見せない、一人でホッとする瞬間の風景って、人によって全然違う——月サビアン{{SAB_MOON}}を読む回。\n・月とは「無意識の感情・本能的な反応・心が安らぐ場所・素の自分」を示す天体。そのサビアンのシンボルは「どんな情景として{{NAME}}さんの心が動き、安らぐか」を象徴として示す。\n・{{SAB_MOON}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「感情の動き方・無意識の反応・本当にリラックスできる状況」とどう対応するかを語る。\n・月の位置するハウス{{MOON}}の情報があれば、どの人生領域で感情が動きやすいかも語ってください。\n※「月のサビアンって、その人が誰にも見せない素の心の原風景なんですよね。ここが分かると『この人こういう時にホッとするんだ』って見えてくる！」と語ってください。`},
+{id:'A-03',title:'考え方のクセ：頭の中がどう動いているか',body:`[今回] ・同じ話題でも、人によって考え方の切り口が全然違うのはなぜか——水星サビアン{{SAB_MERCURY}}を読む回（サビアンとは、星座の各1度に割り当てられた象徴的なイメージ。天体の「度数+1度」で読む）。\n・水星とは「思考・言語・コミュニケーション・情報処理の方法」を示す天体。そのサビアンのシンボルは「どんな情景として思考が動いているか」を象徴として示す。\n・{{SAB_MERCURY}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「考え方の癖・言葉の使い方・情報の受け取り方」とどう対応するかを語る。\n・「この情景がそのまま{{NAME}}さんの頭の中のイメージだとしたら、どんな思考をしている人か」という視点で語ってください。\n※「自分がどんな風に考えているか、なかなか言語化できないよね。でもサビアンで見ると情景で見えてくるのが面白い！」と語ってください。`},
+{id:'A-04',title:'好みのクセ：何を愛し、何を美しいと感じるか',body:`[今回] ・何を見て「美しい」「好き」と感じるか、その感性の源を——金星サビアン{{SAB_VENUS}}を読む回。\n・金星とは「愛・美意識・喜び・価値観・人間関係のあり方」を示す天体。そのサビアンのシンボルは「どんな情景として愛や美意識が動いているか」を象徴として示す。\n・{{SAB_VENUS}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「愛し方・惹かれるものの美意識・喜びを感じる場面」とどう対応するかを語る。\n・金星の度数が位置するハウス{{VENUS}}の情報があれば、どの人生領域に愛と美意識が向かうかも語ってください。\n※「金星のサビアンって、その人が何に心ときめくかの情景なんですよね。見るとなんか納得感がある！」と語ってください。`},
+{id:'A-05',title:'動き方のクセ：行動力がどこに向かうか',body:`[今回] ・「ここぞ」という時、体がどう動くかの原型を——火星サビアン{{SAB_MARS}}を読む回。\n・火星とは「行動力・意志・欲求の方向性・エネルギーの使い方」を示す天体。そのサビアンのシンボルは「どんな情景として行動のエネルギーが動いているか」を象徴として示す。\n・{{SAB_MARS}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「行動のスタイル・何に燃えるか・どう動くか」とどう対応するかを語る。\n・火星の位置するハウス{{MARS}}の情報があれば、どの人生領域で行動エネルギーが発揮されるかも語ってください。\n※「火星のサビアンは『この人がどんな場面で本気になるか』の映像だから、見るとなんか熱くなってくる！」と語ってください。`},
+{id:'A-06',title:'運の伸びしろ：どこで幸運が広がりやすいか',body:`[今回] ・なぜかこの分野だけ運がいい、と感じることはないか——木星サビアン{{SAB_JUPITER}}を読む回。\n・木星とは「拡大・豊かさ・信念・幸運・成長・社会への貢献」を示す天体。そのサビアンのシンボルは「どんな情景として幸運と成長が引き寄せられるか」を象徴として示す。\n・{{SAB_JUPITER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「幸運が来やすいパターン・成長するテーマ・豊かさを感じる場面」とどう対応するかを語る。\n・木星の位置するハウス{{JUPITER}}の情報があれば、どの人生領域で幸運が拡大するかも語ってください。\n※「木星のサビアンって、その人にとっての『追い風がどこから来るか』の情景なんですよね！」と語ってください。`},
+{id:'A-07',title:'試練との付き合い方：乗り越え方のクセ',body:`[今回] ・人生で何度も同じ壁にぶつかる、その壁の正体を——土星サビアン{{SAB_SATURN}}を読む回。\n・土星とは「規律・制約・試練・時間・責任・成熟」を示す天体。そのサビアンのシンボルは「どんな情景として試練と成熟が訪れるか」を象徴として示す。\n・{{SAB_SATURN}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「人生で繰り返し向き合う壁・乗り越えると強くなれる課題・成熟のパターン」とどう対応するかを語る。\n・「試練そのものではなく、試練を乗り越えた先に何が残るか」という希望の視点で語ってください。\n※「土星って重く聞こえるけど、このサビアンのイメージで見ると自分の課題が情景として見えてくるのが面白いよね！」と語ってください。`},
+{id:'A-08',title:'変化への感度：新しい風をどう受け止めるか',body:`[今回] ・周りと違う発想がふと湧いてくる、その源を——天王星サビアン{{SAB_URANUS}}を読む回。\n・天王星とは「革命・独立・改革・既存のルールの破壊・個性の解放」を示す天体。そのサビアンのシンボルは「どんな情景として革命と変革が起きるか」を象徴として示す。\n・{{SAB_URANUS}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「変革の起こし方・反骨のスタイル・個性の発揮のされ方」とどう対応するかを語る。\n・天王星の位置するハウス{{URANUS}}の情報があれば、どの人生領域で革命が起きやすいかも語ってください。\n※「天王星って、その人の中の革命家がどんな形で暴れるかの情景なんですよね。面白い！」と語ってください。`},
+{id:'A-09',title:'心の避難所：現実を忘れて浸れる場所',body:`[今回] ・現実を忘れて没入できる、その世界の入口を——海王星サビアン{{SAB_NEPTUNE}}を読む回。\n・海王星とは「夢・幻想・溶解・無意識・聖域・境界線の消失・理想と現実の狭間」を示す天体。そのサビアンのシンボルは「どんな情景として溶解と聖域が現れるか」を象徴として示す。\n・{{SAB_NEPTUNE}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「逃げ込む場所・癒される情景・理想と現実の狭間での動き方」とどう対応するかを語る。\n・「その人が本当に鎧を脱げる場所がどんな情景か」という視点で語ってください。\n※「海王星のサビアンって、その人が完全に素になれる聖域の情景なんですよね。見るとちょっと優しい気持ちになる！」と語ってください。`},
+{id:'A-10',title:'人生を変える力：深いところで起きる変容',body:`[今回] ・人生で一度、すべてが作り変えられるような経験をする、その領域を——冥王星サビアン{{SAB_PLUTO}}を読む回。\n・冥王星とは「変容・破壊と再生・深層心理・権力・徹底的な変革」を示す天体。そのサビアンのシンボルは「どんな情景として変容と破壊・再生が起きるか」を象徴として示す。\n・{{SAB_PLUTO}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「人生で何度も訪れる変容のパターン・深層に宿る反骨・再生の形」とどう対応するかを語る。\n・「一度壊れないと次のステージに進めない」という冥王星的な変容の意味を前向きに語ってください。\n※「冥王星のサビアンって、その人が人生で繰り返すリセットと再生の情景。重いけど、見るとなぜか清々しい！」と語ってください。`},
+{id:'A-11',title:'目指す頂き：社会でたどり着きたい場所',body:`[今回] ・「これが自分の目指す形だ」と思う瞬間の景色を——MCサビアンを読む回（{{SAB_OTHER}}にMC分のサビアンが含まれていれば、その情景を使用する。サビアンが無くてもMCの星座・度数から読み解く）。\n・MC（南中点・天頂）とは「社会的な頂点・公的な役割・社会に向けて発揮したい能力・人生のゴール」を示す感受点。そのサビアンのシンボルは「どんな情景として社会的な到達点が現れるか」を象徴として示す。\n・MCサビアンの情景をかみ砕いて解説し、それが{{NAME}}さんの「社会での最終的な姿・人生のゴールのイメージ・何者として記憶されたいか」とどう対応するかを語る。\n・「現在の姿ではなく、最も輝いた時の社会的な姿がどんな情景か」という視点で語ってください。\n※「MCのサビアンって、その人の人生の最終的な到達点の情景なんですよね。見ると『あ、この人はここに向かってるんだ』ってなる！」と語ってください。`},
+{id:'A-12',title:'挑戦したい方向：まだ慣れていない成長のテーマ',body:`[今回] ・なぜか惹かれる、まだ慣れない挑戦の方向を——ノース・ノード（北交点）{{SAB_OTHER}}を読む回（ノードの位置・サビアンが含まれていれば活用。なければ「ノードは〇〇座」の情報のみで読む）。\n・ノース・ノードとは「魂がこの人生で向かうべき方向・成長のテーマ・達成すると魂が喜ぶ領域」を示す感受点。\n・ノースノードの星座・ハウスから「{{NAME}}さんが今世で挑戦すべき方向・最も成長できる領域・魂が喜ぶ生き方」を語る。\n・「今は苦手でも、ここに向かうと人生がどんどん豊かになる」という前向きな視点で語ってください。\n・ノードのサビアンシンボルがあれば、その情景から成長の方向性をより具体的に描いてください。\n※「ノードって、コンフォートゾーンを超えていく方向なんですよね。だから最初は怖くても、そっちに行くと人生が動き始めるっていう！」と語ってください。`},
+{id:'A-13',title:'手放したい癖：つい戻ってしまう昔からの習慣',body:`[今回] ・気づけばいつもの安全なやり方に戻ってしまう、その癖の正体を——サウス・ノード（南交点）を読む回。サウスノードはノースノードの正反対の位置にある。\n・サウス・ノードとは「過去世から持ち越した習慣・自然にできてしまうが依存しすぎると成長が止まる領域」を示す。\n・サウスノードの星座・ハウス（ノースノード{{SAB_OTHER}}の正反対）から「{{NAME}}さんが無意識に頼りすぎる傾向・手放すべき習慣・手放すと新しいステージに進める領域」を語る。\n・「手放すことは捨てることではなく、基盤として使いながらノードの方向へ進む」という視点で語ってください。\n※「サウスノードって、前世からのお得意パターンなんですよね。でも得意すぎてそこに逃げちゃう、という！」と語ってください。`},
+{id:'A-14',title:'本音の欲求：抑え込んでいるかもしれない気持ち',body:`[今回] ・自分でも説明できない、抑えている本音の正体を——リリス{{SAB_OTHER}}を読む回（リリスのサビアンや位置情報が含まれていれば活用）。\n・リリスとは「隠された欲望・社会的に抑圧されたエネルギー・本能的な聖域への逃避衝動」を示す感受点。\n・リリスの星座・ハウス・サビアンから「{{NAME}}さんが社会的に抑圧してきたエネルギー・本音では求めているが表に出せていないもの・完全に自由でいられる場所の特性」を語る。\n・「リリスは悪ではなく、社会の鎧を脱いだ本当の自分のエネルギー源」という視点で語ってください。\n※「リリスって、その人の『本当はこうしたい』が隠れてる場所なんですよね。見るとなんかドキッとする！」と語ってください。`},
+{id:'A-15',title:'心の古傷：癒えると強みに変わる部分',body:`[今回] ・何度も同じところが疼く、その古い傷の正体を——カイロン（傷ついた癒し手）を読む回。カイロンの位置：{{ASPECT_NOTE}}の情報があれば活用。\n・カイロンとは「自分では癒しにくい深い傷・しかしその傷があるからこそ他者を癒せる才能・人生で繰り返し向き合う痛みのテーマ」を示す小天体。\n・カイロンの星座・ハウスから「{{NAME}}さんが深く傷ついてきたテーマ・その傷が才能になっている側面・他者のどんな痛みに共感しやすいか」を語る。\n・「傷そのものが才能になる」というカイロンのパラドックスを前向きに、しかし重さを消さずに語ってください。\n※「カイロンって、一番傷ついたところが一番の強みになるって話なんですよね。重くて面白い！」と語ってください。`},
+{id:'A-16',title:'幸運のありか：頑張らなくても引き寄せる場所',body:`[今回] ・頑張ってないのになぜかうまくいく、その場所を——パート・オブ・フォーチュン（幸運の点）を読む回。パートオブフォーチュンの位置：{{ASPECT_NOTE}}の情報があれば活用。\n・パート・オブ・フォーチュンとは「その人が最も自然に幸運と豊かさを引き寄せられる活動・場所・状態」を示す感受点。\n・パートオブフォーチュンの星座・ハウスから「{{NAME}}さんが努力ではなく自然な流れで豊かさを引き寄せられるテーマ・環境・活動スタイル」を語る。\n・「ここに向かっている時、流れに乗れている感覚がある」という体感的な豊かさの方向として語ってください。\n※「パートオブフォーチュンって、その人の『頑張らなくても運が来る場所』なんですよね。知ってるか知らないかで人生変わる！」と語ってください。`},
+{id:'A-17',title:'内側のせめぎ合い：自分の中で引っ張り合う力',body:`[今回] ・自分の中で二つの気持ちが引っ張り合う瞬間、その正体を——主要アスペクト（天体間の角度）を読む回。特殊配置情報：{{ASPECT_NOTE}}を活用する。\n・アスペクトとは「ホロスコープ上の2つの天体が作る角度に生まれる相互作用」。合（0度）・トライン（120度）は調和、スクエア（90度）・オポジション（180度）は緊張と成長。\n・{{ASPECT_NOTE}}にある特殊配置と主要な天体角度から「{{NAME}}さんの内部に働いている調和と緊張のパターン」を読み解く。\n・緊張アスペクトは「才能と矛盾が生まれる場所」として前向きに、調和アスペクトは「自然に力が流れる場所」として語ってください。\n※「アスペクトって、その人の内部の天体が全員でどんな会話をしてるかの地図ですよね。複雑！」と語ってください。`},
+{id:'A-18',title:'エネルギーの集中地帯：特に力が偏っている部分',body:`[今回] ・人生の中で妙に一点集中してしまうテーマがある、その正体を——ステリウム（天体の集中）を読む回。特殊配置情報：{{ASPECT_NOTE}}にあるステリウムを活用する。\n・ステリウムとは「3つ以上の天体が同じ星座や同じハウスに集中する特殊配置」。そのテーマが人生の主要な焦点になる。\n・{{ASPECT_NOTE}}にある（またはホロスコープ全体で読み取れる）ステリウムの星座・ハウスから「{{NAME}}さんの人生の中で特に強調されているテーマ・エネルギーが集中している領域」を語る。\n・「集中しているからこそ圧倒的な強みになる反面、そこに偏りすぎる弱点にもなる」という両面を語ってください。\n※「ステリウムって、その人の人生のエネルギーが一箇所に全ツッパしてる配置なんですよね！」と語ってください。`},
+{id:'A-19',title:'人生の全体地図：全領域を俯瞰する',body:`[今回] ・自分の人生の全体像を、一度俯瞰して眺めてみたことはあるか——12ハウス全体を俯瞰して「{{NAME}}さんの人生の全体図」を一枚の地図として描く回。\n・12ハウスとは「1＝自己→2＝財産→3＝コミュニケーション→4＝家→5＝創造・恋愛→6＝健康・仕事→7＝パートナー→8＝変容→9＝哲学・遠方→10＝社会的使命→11＝友人・理想→12＝無意識」の順番で人生の各領域を示す。\n・各天体（太陽{{SUN}}・月{{MOON}}・水星{{MERCURY}}・金星{{VENUS}}・火星{{MARS}}・木星{{JUPITER}}・土星{{SATURN}}・冥王星{{PLUTO}}）がどのハウスに位置しているかから、「{{NAME}}さんの人生でエネルギーが集まっている領域・空白になっている領域」を鳥瞰する。\n・「天体が多いハウス＝人生のメインテーマ」「天体がないハウス＝意識しないと手薄になる領域」として語ってください。\n※「ハウス全体を見ると、その人がどこに人生のリソースを使う設計になってるかが分かるんですよね。まさに人生マップ！」と語ってください。`},
+{id:'A-20',title:'第一印象のクセ：初対面でまず出るスイッチ',body:`[今回] ・初対面で無意識に出るキャラクター、その起動スイッチを——ASC（上昇宮・アセンダント）のサビアン{{SAB_ASC}}を読む回（サビアンとは、星座の各1度に割り当てられた象徴的なイメージ。天体の「度数+1度」で読む）。\n・ASCとは「生まれた瞬間に東の地平線に昇っていた星座。第一印象・初対面での雰囲気・無意識に立ち上がる素のキャラクター」を示す感受点。\n・{{SAB_ASC}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「他人から最初にどう見えるか・自然体でいる時の佇まい・人生のスタート地点での構え方」とどう対応するかを語る。\n・本人が意識している自分（太陽{{SUN}}）と、周りに伝わる第一印象（ASC）にギャップがあれば、その面白さも語ってください。\n※「ASCって、その人が部屋に入ってきた瞬間の空気感なんですよね。本人は気づいてないけど、周りはまずここを見てる！」と語ってください。`},
+{id:'A-21',title:'時間をつなぐ3つの顔：過去・今・これから',body:`[今回] ・過去の自分・今の自分・これからの自分が、実は一本の線でつながっている——月{{MOON}}・太陽{{SUN}}・土星{{SATURN}}の3つを「時間の軸」として並べ、{{NAME}}さんの人生の流れを一本の線で読む回。\n・月＝過去・土台。幼い頃から自然に身についた感覚や、安心の源を示す。\n・太陽＝現在・意志。今まさに自分で切り拓いていきたい方向、人生の主役としてのテーマを示す。\n・土星＝未来・成熟。時間をかけて取り組むことで、後半に形になる課題と到達点を示す。\n・この3つを「どこから来て（月）、今どこへ向かい（太陽）、最終的に何を完成させるのか（土星）」という一つの物語としてつなげて語ってください。\n※「月・太陽・土星を並べると、その人の人生が一本の道に見えてくるんですよね。過去から未来まで！」と語ってください。`},
+{id:'A-22',title:'基本のエネルギーの色：情熱型か堅実型か社交型か感受型か',body:`[今回] ・情熱型か、堅実型か、社交型か、感受型か。自分の基本のエネルギーの色を——天体がどの「エレメント（火・地・風・水）」に偏っているかを読む回。太陽{{SUN}}・月{{MOON}}・水星{{MERCURY}}・金星{{VENUS}}・火星{{MARS}}・木星{{JUPITER}}・土星{{SATURN}}の星座を使う。\n・12星座は4つのエレメントに分かれる。火（牡羊・獅子・射手）＝情熱と行動、地（牡牛・乙女・山羊）＝現実と安定、風（双子・天秤・水瓶）＝思考とコミュニケーション、水（蟹・蠍・魚）＝感情と共感。\n・{{NAME}}さんの天体がどのエレメントに多く、どれが少ない（または無い）かを数えて、「自然に強く出る性質」と「意識すると補える性質」を語る。\n・偏りを欠点ではなく持ち味として、薄いエレメントの補い方のヒントも添えて語ってください。\n※「エレメントの偏りって、その人の基本的な温度感なんですよね。火が多い人と水が多い人じゃ、世界の感じ方が全然違う！」と語ってください。`},
+{id:'A-23',title:'動き出し方のクセ：始める・続ける・切り替える',body:`[今回] ・始めるのが得意か、続けるのが得意か、切り替えが得意か。動き出し方の癖を——天体がどの「モダリティ（活動・不動・柔軟）」に偏っているかを読む回。太陽{{SUN}}・月{{MOON}}・水星{{MERCURY}}・金星{{VENUS}}・火星{{MARS}}の星座を使う。\n・12星座は3つの動き方に分かれる。活動宮（牡羊・蟹・天秤・山羊）＝自分から動き出し物事を始めるのが得意。不動宮（牡牛・獅子・蠍・水瓶）＝一度決めたら粘り強くやり抜く。柔軟宮（双子・乙女・射手・魚）＝状況に合わせて柔らかく変化する。\n・{{NAME}}さんの天体がどのモダリティに多いかから、「ゼロから始める人か・続ける人か・合わせて変える人か」という動き方のクセを語る。\n・どのタイプにも良し悪しはなく「役割が違うだけ」として語ってください。\n※「モダリティって、その人のエンジンのかけ方なんですよね。先陣切る人、守り抜く人、流れに乗る人！」と語ってください。`},
+{id:'B-01',title:'隠れたもう一つの顔：表からは見えない気質',body:`[今回] ・表向きの性格とは別に、内側にもう一つの顔がある、その正体を——蔵干（かくしかん）を読む回。四柱の干支：年柱{{YEAR_P}}・月柱{{MONTH_P}}・日柱{{DAY_P}}・時柱{{HOUR_P}}を活用する。\n・蔵干とは「各柱の地支（十二支）の内側に隠れている天干のエネルギー」。表向きの干支だけでは見えない、その人の「第2の気質・内側に秘めた性質」を示す。\n・{{DAY_P}}の地支に含まれる蔵干から「{{NAME}}さんが表に出しにくいが内側に持っている気質」を語る。他の柱の蔵干も参照できる場合は補足として語ってください。\n・「普段の表の自分と、内側に隠れている自分の違い」という視点で語ってください。\n※「蔵干って、その人の隠しステータスなんですよね。普通の四柱推命では見えない裏の顔！」と語ってください。`},
+{id:'B-02',title:'人生の波：物事が動く・安定するタイミング',body:`[今回] ・人生で急に何かが動く・安定する、そのタイミングの正体を——刑冲会合（けいちゅうかいごう）を読む回。四柱の干支：年柱{{YEAR_P}}・月柱{{MONTH_P}}・日柱{{DAY_P}}・時柱{{HOUR_P}}を活用する。\n・刑冲会合とは「四柱の中で干支同士が持つ相互作用」。冲（対立・変動）・合（融合・安定）・刑（緊張・試練）などがある。\n・{{YEAR_P}}{{MONTH_P}}{{DAY_P}}{{HOUR_P}}の干支の組み合わせから「{{NAME}}さんの四柱内で働いている主な相互作用」を読み解き、「人生でどんな変動や安定が繰り返されやすいか」を語る。\n・難しい相互作用（冲・刑）は「変動が多い時期に成長する」という前向きな視点で語ってください。\n※「干支の相互作用って、その人の四柱の中で天体同士がどんな関係を持ってるかなんですよね！」と語ってください。`},
+{id:'B-03',title:'生まれつきの運の強さ：ピンチに来る助け',body:`[今回] ・ピンチの時になぜか助けが来る、その体質の正体を——天徳（てんとく）・月徳（つきとく）を読む回。生まれた月{{MONTH_P}}・日{{DAY_P}}の情報を活用する。\n・天徳とは「生まれた月から決まる、その人が生まれながらに持つ守護のエネルギー・凶を和らげる吉の作用」。月徳は同様に生まれた月から決まる別の守護エネルギー。\n・{{MONTH_P}}の月柱から天徳・月徳を割り出し、「{{NAME}}さんが生まれ持っている守護の傾向・窮地でなぜか助けが来やすいパターン・吉を引き寄せる体質」を語る。\n・「この人はどんな局面で不思議と守られる感覚があるか」という体感的な視点で語ってください。\n※「天徳・月徳って、いわゆる守り星なんですよね。なぜかピンチに助けが来るとか、そういうパターンが見えてくる！」と語ってください。`},
+{id:'B-04',title:'あなたという素材：一言で表すなら',body:`[今回] ・自分という人間を、一言で例えるなら何か——四柱推命の中心となる「日干（にっかん）」を読む回。日柱{{DAY_P}}の最初の一文字と、日干情報{{TENMV}}を使う。\n・日干とは「生まれた日の十干。その人そのものを表す、いわば素材」。十種類あり、自然のものに例えると分かりやすい：甲＝大樹、乙＝草花や蔓、丙＝太陽、丁＝灯火、戊＝大きな山、己＝畑の土、庚＝鋼や刀、辛＝宝石、壬＝大海、癸＝雨や水。\n・{{NAME}}さんの日干がどれかを示し、その素材の持ち味（強み・弱み・どんな環境で活きるか）を、自然のイメージに翻訳して語る。\n・「素材に良し悪しはなく、活きる場所が違うだけ」という視点で、決めつけずに語ってください。\n※「日干って、その人が何でできてるかなんですよね。大樹の人と草花の人と刀の人じゃ、活きる場所が全然違う！」と語ってください。`},
+{id:'B-05',title:'才能の出方：人との関わり方の中でどう発揮されるか',body:`[今回] ・自分の才能が、実際どんな形で外に出ているか——四柱推命の「通変星（つうへんせい）」を読む回。日干と主な通変星{{TENMV}}、四柱{{YEAR_P}}{{MONTH_P}}{{DAY_P}}{{HOUR_P}}を使う。\n・通変星とは「自分（日干）から見た他の干との関係から導かれる、才能や気質のタイプ」。例えば食神＝楽しんで生み出す才能、傷官＝鋭く突き詰める感性、偏財／正財＝人やお金を回す力、偏官／正官＝責任を背負い統率する力、偏印／印綬＝学び吸収し守る力、比肩／劫財＝独立心と仲間との競い合い、というように才能の「出方」が分かる。\n・{{NAME}}さんに強く出ている通変星から、「どんな才能が自然に出るか・人や仕事とどう関わりやすいか」を語る。\n・専門用語は必ずかみ砕いて、決めつけず傾向として語ってください。\n※「通変星って、その人の才能がどういう形で外に出るかなんですよね。同じ頑張りでも出方が人によって全然違う！」と語ってください。`},
+{id:'B-06',title:'エネルギーの出し方：勢いよく出すか、じっくり溜めるか',body:`[今回] ・エネルギーを勢いよく出すタイプか、じっくり溜めるタイプか——四柱推命の「十二運星（じゅうにうんせい）」を読む回。十二運・身強弱の情報{{UNSEI}}と日柱{{DAY_P}}を使う。\n・十二運星とは「人の一生（生まれ育ち、盛りを迎え、やがて深まっていく流れ）を十二の段階に例えて、エネルギーの質を読むもの」。長生・冠帯・建禄・帝旺は外へ強く出る盛りの段階、胎・養は初々しく伸びる段階、衰・病・死・墓・絶は内に深まる繊細で味わいのある段階、という具合に「力の出し方の個性」が分かる。\n・{{NAME}}さんの十二運星から、「エネルギーをガンガン外に出すタイプか・じっくり内側で育てるタイプか・繊細で深みのあるタイプか」を語る。\n・どの段階にも良し悪しはなく「力の質が違うだけ」として語ってください。\n※「十二運星って、その人のエネルギーが今どんな『季節』にあるかなんですよね。真夏みたいな人も、晩秋みたいな人もいる！」と語ってください。`},
+{id:'B-07',title:'一人で進む型か、人と組む型か',body:`[今回] ・一人で抱えるタイプか、人と組むタイプか——四柱推命の「身強・身弱（みきょう・みじゃく）」を読む回。身強弱の情報{{UNSEI}}を使う。\n・身強・身弱とは「その人のエネルギーが、自分の内側で完結しやすいか（身強）、外の力を借りて活きるか（身弱）」を示す軸。強さの順に、極身強・身強・中和・身弱・極身弱の段階がある。\n・身強寄りの人は「一人で重い課題を抱えても回せる・独立や厳しい環境で力を発揮しやすい」。身弱寄りの人は「人やチームの力を借りることが最大の武器・良い縁やネットワークの中で輝く」。中和はそのバランス型。\n・{{NAME}}さんがどの傾向かを示し、「どんな働き方・人との組み方が合うか」を具体的に語る。\n・身弱を弱点として語らず「人を頼れることそのものが才能」として前向きに語ってください。\n※「身強・身弱って、優劣じゃなくて戦い方の違いなんですよね。ソロが強い人と、パーティ組むと強い人！」と語ってください。`},
+{id:'B-08',title:'得意・不得意の偏り：5つのエネルギーのバランス',body:`[今回] ・得意なこと・苦手なことの偏り、その正体を——四柱推命の土台「五行（ごぎょう）」の配分を読む回。あらかじめ集計された五行バランスの数値{{GOGYO}}を使う（自分で干支から数え直さず、この数値をそのまま正とすること）。\n・五行とは「世界を木・火・土・金・水の5つのエネルギーで読む考え方」。木＝伸びる成長、火＝広げる情熱、土＝支える安定、金＝整える鋭さ、水＝流れる柔軟さ、と性質が違う。\n・{{GOGYO}}の数値を見て、「どの五行が多く、どの五行が少ない（または無い）か」を読み、多い五行は{{NAME}}さんの「自然に強く出る個性」、少ない五行は「意識すると人生が整うテーマ」として語る。\n・五行の数値が未入力の場合は、四柱{{YEAR_P}}{{MONTH_P}}{{DAY_P}}{{HOUR_P}}からおおよその傾向として語り、正確な数は断定しないでください。\n・偏りを欠点ではなく「その人らしさの源」として、補い方のヒントも添えて語ってください。\n※「五行のバランスって、その人の中で何のエネルギーが強くて何が薄いかなんですよね。偏ってるからこそ個性！」と語ってください。`},
+{id:'C-01',title:'今年のテーマ：この1年の体感のリズム',body:`[今回] ・「今年ってなんとなく、こういう1年だったな」と後から振り返って気づく、その"なんとなく"の正体を数字で読み解く回。パーソナルイヤー（個人年数）を生年月日{{BIRTH}}から計算する。\n・まず身近な感覚から入る：1年を振り返ると「やたら忙しかった年」「なぜか出会いが多かった年」「じっくり内側にこもった年」のように、年ごとに違う体感のテーマがある。パーソナルイヤーは、その体感の正体を数字で言い当てる数秘術の考え方。\n・専門用語をかみ砕いて紹介する：パーソナルイヤーは「生まれた月日の数字と、今年の西暦の数字を全部足して1桁にした数」で、1〜9の9年サイクルで巡る。計算は、生まれた月の数字＋生まれた日の数字＋今年の西暦の数字を、1桁になるまで足し合わせる。\n・{{NAME}}さんの今年のパーソナルイヤーを計算し、その数が示す「今年のテーマ・向いている行動・無理しなくていいこと」を、実際の生活の場面に絡めて具体的に語ってください（例：始まりの年なら新しいことを始めるのに向く時期、収穫の年なら種まきより刈り取りに集中していい時期、等）。\n※「今年なんとなく調子いいな、逆になんか停滞してるなって感じ、実はちゃんと理由があったんですよね」と、聞き手が思わず頷きたくなる温度で語ってください。`},
+{id:'C-02',title:'今月のテーマ：月ごとの気分の波',body:`[今回] ・「今月なんか妙にやる気が出る」「今月はなぜか億劫」という、月ごとの気分のムラの正体を読む回。パーソナルマンス（個人月数）を生年月日{{BIRTH}}から計算する。\n・まず身近な感覚から入る：1年の中でも、月によって明らかに調子の波がある。それを「気まぐれ」で片付けず、数字のリズムとして捉えるのがパーソナルマンス。\n・専門用語をかみ砕いて紹介する：パーソナルマンスは「パーソナルイヤーの数字と、今の月の数字を足した数」から出す、より細かい月単位のテーマ。\n・{{NAME}}さんの今月のパーソナルマンスを計算し、その数が示す「今月のテーマ・力を入れると良いこと・流れに任せていいこと」を、具体的な生活の場面に絡めて語ってください。\n・「今月は何を優先し、何を来月に回していいか」という実用的な判断軸として伝えてください。\n※「なんか今月やる気出ないな、って時に自分を責めなくていいんですよね。パーソナルマンス的にはそういう月もあるってだけ！」と語ってください。`},
+{id:'C-03',title:'人生の宿題：各時期に繰り返し向き合う課題',body:`[今回] ・「あの頃ずっと同じ壁にぶつかってた気がする」という、人生の時期ごとに繰り返し現れる課題の正体を読む回。チャレンジナンバー（挑戦数）を生年月日{{BIRTH}}から計算する。\n・まず身近な感覚から入る：振り返ってみると、10代・20代・30代とそれぞれの時期に「なぜかいつもこのパターンでつまずく」という共通点があったりする。チャレンジナンバーは、その時期ごとの課題を数字で示す数秘術の考え方。\n・専門用語をかみ砕いて紹介する：チャレンジナンバーは、生年月日の月・日・年の数字の引き算から出す4つの数字で、人生を4つの段階に分けたときそれぞれの時期に向き合う課題を示す。\n・{{NAME}}さんの4つのチャレンジナンバーを計算し、それぞれが示す「その時期に繰り返し向き合う課題・そこで育つ成長のテーマ」を語ってください。特に今いる時期のチャレンジは詳しく。\n・「課題は乗り越えられない壁ではなく、その時期に一番成長できるポイント」という前向きな視点で語ってください。\n※「あの頃なんでいつもこれで悩んでたんだろうって、今なら分かる気がしませんか？実はちゃんと数字で説明がつくんですよね」と語ってください。`},
+{id:'C-04',title:'特別に強い個性：人よりちょっと強く出る設計',body:`[今回] ・「人よりちょっと感度が高い」「なぜか大きな理想を描いてしまう」という、自分でも扱いきれないほど強い個性の正体を読む回。数秘術の「マスターナンバー（11・22・33）」を、LP{{LP}}・DN{{DN}}・SN{{SN}}・PN{{PN}}・MN{{MN}}の中から確認する。\n・まず身近な感覚から入る：周りと同じように振る舞おうとしても、なぜか人一倍感受性が強かったり、妙に大きな夢を語ってしまったりする人がいる。それは気のせいではなく、数字に理由がある場合がある。\n・専門用語をかみ砕いて紹介する：マスターナンバーとは「通常は1桁まで足す数秘で、あえて縮めず特別な数として扱う11・22・33」のこと。11は直感と感受性の鋭さ、22は大きな構想を現実に形にする力、33は深い愛と奉仕で人を包む力、という強い傾向を持つ。\n・{{NAME}}さんの数字にマスターナンバーがあれば、その数が「強みであると同時に、扱いきれないと振り回されやすい繊細さ」でもある両面を語ってください。無ければ「マスターナンバーは無いが、その分どの数字も地に足のついた形で活きる」と語る。\n・特別扱いして持ち上げすぎず「強い分だけ扱いが難しい」という現実的な視点で語ってください。\n※「マスターナンバー持ちの人って、周りから見ると"あの人ちょっと違うな"って空気、実はあるんですよね。良くも悪くも」と語ってください。`},
+{id:'C-05',title:'得意と伸びしろ：足りない部分・出すぎる部分',body:`[今回] ・数秘術の「欠落数（持っていない数字）」と「過剰数（多すぎる数字）」を読む回。欠落・過剰の情報{{NUM_NOTE}}を使う。\n・名前の文字を数字に置き換えたとき、まったく現れない数字を欠落数、何度も現れる数字を過剰数と呼ぶ。欠落数は「自然には身につきにくく、意識すると伸びるテーマ（盲点）」、過剰数は「強く出すぎて時に空回りしやすい得意分野」を示す。\n・{{NAME}}さんの欠落数・過剰数があれば、それぞれ「意識して補うと楽になること」「強みだが出しすぎ注意なこと」として具体的に語る。情報が無ければ「数字の偏りは少なくバランス型」と語ってください。\n・欠落を責めず「これから育てられる余白」として前向きに語ってください。\n※「欠落数って、その人の伸びしろなんですよね。逆に過剰数は、得意すぎてつい頼りすぎちゃうところ！」と語ってください。`},
+{id:'C-06',title:'人生の開花期：4つの時期でうまくいくテーマ',body:`[今回] ・「あの時期だけ妙にうまくいってた」「最近急にこの分野が伸びてきた」という、人生の中で訪れる"波"の正体を読む回。数秘術の「ピナクル（開花期）ナンバー」を生年月日{{BIRTH}}から計算する。\n・まず身近な感覚から入る：人生には「なぜか物事がうまく噛み合う時期」と「なかなか芽が出ない時期」がある。ピナクルは、その噛み合うタイミングを数字で示す数秘術の考え方。\n・専門用語をかみ砕いて紹介する：ピナクルとは「人生を大きく4つの時期に分け、それぞれの時期に開花しやすいテーマを示す数字」。生まれた月・日・年の数字を組み合わせて第1〜第4ピナクルを算出する。\n・{{NAME}}さんの4つのピナクルを計算し、それぞれの時期が「どんなテーマで花開きやすいか・何に取り組むと流れに乗れるか」を語ってください。今いる時期のピナクルは特に詳しく。\n・「時期ごとにテーマが変わるので、今うまくいかなくても次の時期で活きることがある」という長い視点で語ってください。\n※「今なんかうまくいってないなって時期も、実はまだそのピナクルの出番じゃないだけかもしれないんですよね」と語ってください。`},
+{id:'C-07',title:'繰り返しのテーマ：何度も向き合う成長ポイント',body:`[今回] ・「なぜか毎回同じところでつまずく」「同じパターンの失敗を繰り返してしまう」という感覚の正体を読む回。数秘術の「カルミックデットナンバー（13・14・16・19）」を、LP{{LP}}・DN{{DN}}・SN{{SN}}・PN{{PN}}・MN{{MN}}を計算する途中経過の中に確認する。\n・まず身近な感覚から入る：誰にでも「またこのパターンか」と自分でも呆れるような繰り返しがある。それを意志の弱さで片付けず、数字の観点から見てみる。\n・専門用語をかみ砕いて紹介する：カルミックデットナンバーは、計算の途中で13・14・16・19が現れた時に、最終的な1桁の数字とは別に持つとされる"繰り返し向き合うテーマ"。13は地道な努力の積み重ね、14は自由と責任のバランス、16は自我と向き合う内省、19は自立と協力のバランス、というテーマを示す。\n・{{NAME}}さんの計算過程にこれらの数字が現れていれば、そのテーマを「繰り返しているように感じても、実は少しずつ違う形で成長している」という視点で語ってください。無ければ「この种のテーマは薄く、別の形で成長曲線を描いている」と語る。\n・「繰り返しに見えるものは、実は螺旋階段のように少しずつ上に進んでいる」という前向きな視点で語ってください。\n※「同じ失敗繰り返してる気がする時って、実は毎回ちょっとずつ違う角度からその課題に挑んでるだけなんですよね」と、少し丁寧な温度で語ってください。`},
+{id:'C-08',title:'隠れた情熱：気づいたらいつもやっていること',body:`[今回] ・「気づいたらいつもこれをやっている」という、無意識に繰り返してしまう情熱の正体を読む回。数秘術の「ヒドゥンパッション（隠れた情熱数）」を、名前の数字の出現頻度から確認する。\n・まず身近な感覚から入る：趣味でも仕事でも、気づけば毎回同じジャンルのことに手を伸ばしている、という経験は誰にでもある。ヒドゥンパッションは、その"つい繰り返してしまう"情熱の正体を名前の数字から読む考え方。\n・専門用語をかみ砕いて紹介する：名前をローマ字にして数字に置き換えた時、最も頻繁に現れる数字が、その人が無意識に情熱を注ぎやすいテーマを示すとされる。\n・{{NAME}}さんのヒドゥンパッションの数字があれば、その数が示す「意識せずとも自然と情熱を注いでしまう分野」を語ってください。\n・「意識して選んだわけでもないのに、気づけばそこに情熱を注いでいる」という発見を、前向きな驚きとして伝えてください。\n※「言われてみれば昔からずっとこれにハマってるな、っていうジャンルありませんか？それ、名前の数字にちゃんと理由があったりするんですよね」と語ってください。`},
+{id:'C-09',title:'心のリセット方法：乱れた時に立ち返る場所',body:`[今回] ・「気持ちがぐちゃぐちゃになった時、実はこうすると落ち着く」という、心のバランスの取り戻し方を読む回。数秘術の「バランスナンバー（バランス数）」を、名前のイニシャルの数字から確認する。\n・まず身近な感覚から入る：誰にでも「これをすると気持ちが落ち着く」という自分なりのリセット方法がある。バランスナンバーは、その心の立て直し方の方向性を示す数秘術の考え方。\n・専門用語をかみ砕いて紹介する：名前の最初の文字（イニシャル）を数字に置き換えたものがバランスナンバーで、感情が乱れた時にどう対処すると心が整いやすいかを示す。\n・{{NAME}}さんのバランスナンバーを計算し、その数が示す「感情が乱れた時に立ち返ると良い考え方・行動」を、具体的な生活の場面に絡めて語ってください。\n・「乱れること自体は悪いことではなく、戻ってこられる場所を知っていることが大事」という前向きな視点で語ってください。\n※「気持ちが乱れた時のリセット方法って、人によって全然違うんですよね。自分に合った戻り方を知ってるだけで、だいぶ楽になる」と語ってください。`},
+{id:'C-10',title:'第一印象の正体：初対面でよく言われること',body:`[今回] ・「初対面でよく言われる印象、実はここから来ている」という第一印象の正体を読む回。数秘術の「ファーストインプレッションナンバー（第一印象数）」を、名前の頭文字の数字から確認する。\n・まず身近な感覚から入る：初めて会った人によく同じような第一印象を言われる、という経験は多い。それは偶然ではなく、名前の頭文字に理由がある場合がある。\n・専門用語をかみ砕いて紹介する：名前の一番最初の文字を数字に置き換えたものが、初対面で相手に伝わりやすい印象の傾向を示すとされる。\n・{{NAME}}さんのファーストインプレッションナンバーを計算し、その数が示す「初対面でよく持たれやすい印象」を語ってください。\n・「第一印象と、深く知った後の印象にギャップがあっても、それはどちらも本当のその人」という視点で語ってください。\n※「初対面でよく言われる印象って、意外と名前の頭文字1文字だけでも結構説明つくものなんですよね」と語ってください。`},
+{id:'C-11',title:'とっさの対応力：不意打ちにどう強いか',body:`[今回] ・「予想外のことが起きた時、実はこう反応してしまう」というとっさの対応力を読む回。数秘術の「サブコンシャスセルフ（潜在意識数）」を、名前に使われている数字の種類の多さから確認する。\n・まず身近な感覚から入る：予期しないトラブルが起きた時、慌てず対応できるタイプもいれば、パニックになりやすいタイプもいる。それは経験値だけでなく、潜在的な適応力の違いも関係している。\n・専門用語をかみ砕いて紹介する：名前に使われている数字（1〜9）の種類がどれだけ多いかで、とっさの状況にどれだけ幅広く対応できるかを示すとされる。種類が多いほど対応の引き出しが多く、少ないと得意な対処法に頼りやすい。\n・{{NAME}}さんのサブコンシャスセルフの傾向を、名前の数字の種類の広がりから語ってください。\n・「引き出しが少なくても、得意な対処法を極めているということ。多ければ臨機応変さが武器になる」という前向きな視点で語ってください。\n※「とっさの時にどう動くかって、実は名前に使われてる数字の種類の多さでも見えたりするんですよね」と語ってください。`},
+{id:'C-12',title:'今日のテーマ：この1日に向いている過ごし方',body:`[今回] ・「今日はなんだか動きやすい日」「今日はなぜか慎重になってしまう」という、日々感じる小さな波を読む回。数秘術の「パーソナルデイ（個人日数）」を、パーソナルマンスの数字と今日の日付から計算する。\n・まず身近な感覚から入る：1日単位でも、行動しやすい日とそうでない日がある。それを気分やコンディションだけで片付けず、数字のリズムとして捉える。\n・専門用語をかみ砕いて紹介する：パーソナルデイは「パーソナルマンスの数字と、今日の日付の数字を足した数」から出す、その日限りの小さなテーマ。\n・{{NAME}}さんの今日のパーソナルデイを計算し、その数が示す「今日という日に向いている過ごし方」を語ってください。\n・「毎日同じように頑張ろうとしなくていい。日ごとの向き不向きに合わせるだけで、無理なく過ごせる」という前向きな視点で語ってください。\n※「今日なんか調子いいなとか、逆に今日は静かに過ごしたいなとか、その感覚けっこう当てになるんですよね」と語ってください。`},
+{id:'D-01',title:'お金との向き合い方：稼ぎ方・使い方・資産との関係',body:`[今回] ・「なんでこんなに使っちゃったんだろう」も「なんでこんなに貯め込んじゃうんだろう」も、実は生まれ持った設計が関係している、という視点でお金との向き合い方を読む回。数秘術のBN{{BN}}・DN{{DN}}、占星術の金星{{VENUS}}、四柱推命の通変星{{TENMV}}を統合する。\n・まず専門用語をかみ砕いて紹介する：BN（誕生数）は「生まれた日の数字が示す、瞬発的な気質」、DN（デスティニーナンバー）は「社会的な使命・お金を稼ぐ土台になる方向性」を示す数秘術の考え方。金星は「何に価値を感じ、何にお金を使うと満たされるか」を示す天体。通変星は「お金をコツコツ稼ぐ気質か、大きく動かす気質か」を示す四柱推命の考え方。\n・三つの分析軸が一致して示す「{{NAME}}さんの稼ぎ方の傾向」を語ってください（コツコツ型か一気に稼ぐ型か、給与型か独立型か等）。同じく「お金の使い方の傾向」も語る（貯める型か使う型か、物への投資か体験への投資か等）。\n・「お金と仲良くなれる具体的な方法」を分析データから導いてください。\n※「お金の使い方って、その人の価値観が全部出るんですよね。稼ぎ方・使い方・貯め方、全部性格そのもの！」と語ってください。`},
+{id:'D-02',title:'健康・体との付き合い方：弱点と養生のポイント',body:`[今回] ・「なんでいつもここだけ調子悪くなるんだろう」という、消耗しやすいパターンの正体を読む回。数秘術の傾向{{NUM_NOTE}}、占星術の火星{{MARS}}、四柱推命の十二運星{{UNSEI}}（身強身弱）を統合する。\n・まず専門用語をかみ砕いて紹介する：火星は「体のエネルギーをどう使うか・無理をしやすいポイント」を示す天体。身強・身弱は「エネルギーが自分の内側で完結しやすいか（身強）、外の力を借りて回復するか（身弱）」を示す四柱推命の考え方——身弱なら消耗しやすく回復に時間がかかり、身強なら体力はあるが使いすぎる傾向がある。\n・三つの分析軸が示す「{{NAME}}さんの体のエネルギーの質」と「弱りやすい部位・臓器の傾向」を語ってください（医学的な診断ではなく傾向として）。\n・「この人に合った養生の方法・休み方」を分析データから提案してください。\n※「健康も性格と同じで、その人の設計によって消耗しやすいパターンが違うんですよね！知ってると養生が変わる！」と語ってください。`},
+{id:'D-03',title:'創造性・表現の方法：才能をどう形にするか',body:`[今回] ・「自分は創造的なタイプじゃない」と思っている人にも、実は必ずある表現のクセを読む回。数秘術のSN{{SN}}・PN{{PN}}、占星術の水星{{MERCURY}}、四柱推命の通変星{{TENMV}}を統合する。\n・まず専門用語をかみ砕いて紹介する：SN（ソウルナンバー）は「心の奥で表現したい欲求」、PN（表現数）は「外に出す時のスタイル」を示す数秘術の考え方。水星は「言葉や思考をどう組み立てて表現するか」を示す天体。\n・三つの分析軸が示す「{{NAME}}さんの創造性の特徴」を語ってください（言葉か・視覚か・音か・構造か、独創型か再解釈型か等）。「{{NAME}}さんが最もナチュラルに表現できる形・媒体」と、「創造性が発揮されやすい状況・ブロックがかかる状況」も語ってください。\n※「創造性って全員持ってるんですよね。でも形が違う。歌う人もいれば、仕組みを作る人もいる！」と語ってください。`},
+{id:'D-04',title:'親との関係と原点：ルーツが今の自分に与えた影響',body:`[今回] ・「これって親譲りだな」と自分でも感じる部分の正体を読む回。占星術の月{{MOON}}（母・家・ルーツ）・太陽{{SUN}}（父・権威・社会）、数秘術のLP{{LP}}、四柱推命の年柱{{YEAR_P}}を統合する。\n・まず専門用語をかみ砕いて紹介する：月は「家庭の中で育まれた感情の土台」、太陽は「親や社会から受け取った、外に向かうエネルギーの方向」を示す天体。年柱は「生まれた年の干支が示す、家系から受け継いだルーツのエネルギー」を示す四柱推命の考え方。\n・三つの分析軸が示す「{{NAME}}さんが受け取ってきた家族・ルーツのエネルギー」と、「親との関係が今の自分のどんな傾向を作っているか」を語ってください（反発によって形成されたものも含む）。\n・過去の傷や影響を責めるのではなく「それが今の強みや特性になっている部分」として語ってください。\n※「ルーツって、その人の人格形成の土台ですよね。親の影響を語ると、その人がなぜそうなったかが見えてくる！」と語ってください。`},
+{id:'D-05',title:'学び方・情報の吸収スタイル：最も力を発揮できる学習法',body:`[今回] ・「同じ勉強法なのに、なぜかこの人だけ全然頭に入らない」という、学び方の相性の正体を読む回。占星術の水星{{MERCURY}}、数秘術のDN{{DN}}、四柱推命の通変星{{TENMV}}を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「情報をどう処理し、頭に入れやすいか」を示す天体。DNは「社会的な使命と結びつく学習の方向性」を示す数秘術の考え方。\n・三つの分析軸が示す「{{NAME}}さんが最も効率よく吸収できる学び方」を語ってください（独学か他者との対話か、体系的か直感的か、実践優先か理論優先か等）。「この人が最も伸びる学習環境・学び方・学ぶタイミング」と、「逆に合わない学び方」も語って、無駄な苦労を減らすヒントを提供してください。\n※「学び方って人によって全然違うんですよね。自分の学び方の最適解を知ってるだけで、習得速度が変わる！」と語ってください。`},
+{id:'D-06',title:'リーダーシップとフォロワーシップ：どう組織に関わるか',body:`[今回] ・「別にリーダーになりたいわけじゃないのに、気づけば仕切ってる」というような、組織の中で自然と収まる役割の正体を読む回。占星術の太陽{{SUN}}・MC{{MC}}、数秘術のLP{{LP}}・DN{{DN}}、四柱推命の通変星{{TENMV}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「社会の中で発揮したい役割」、MCは「社会的に目指す到達点」を示す占星術の感受点。\n・三つの分析軸が示す「{{NAME}}さんの組織での最適な役割」を語ってください（トップに立つ型か・右腕型か・専門家型か・縁の下型か等）。「{{NAME}}さんが力を発揮できるチームの構造・組織の規模」と、「逆にこういう組織では消耗する」という視点も語ってください。\n※「リーダーシップって全員に必要なものではなくて、その人に合った役割で輝ける場所がある、ってことですよね！」と語ってください。`},
+{id:'D-07',title:'直感と理性のバランス：意思決定の深層パターン',body:`[今回] ・「決めた後になって、なんで自分はこう決めたんだろうと不思議に思う」という、決断の裏側にあるパターンを読む回。占星術の月{{MOON}}・水星{{MERCURY}}、四柱推命の通変星{{TENMV}}、数秘術の傾向{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：月は「直感・感情・本能的な反応」、水星は「論理・思考・分析」を示す天体。\n・三つの分析軸が示す「{{NAME}}さんが実際にどう意思決定しているか」を語ってください（直感で決めて後付けで理論化する型か・理論で考えて最後は直感で決める型か等）。「重大な決断の時、より後悔しない選択をするためのコツ」と、直感と理性が対立する時のバランスの取り方も語ってください。\n※「直感と理性どっちが正しいかじゃなくて、その人の意思決定スタイルを知って活かすのが大事なんですよね！」と語ってください。`},
+{id:'D-08',title:'老後・晩年のテーマ：人生の後半に向けて開花するもの',body:`[今回] ・「今頑張ってることが、将来どんな形で実を結ぶんだろう」という問いに答える回。数秘術のMN{{MN}}、四柱推命の時柱{{HOUR_P}}・大運{{KUBO}}、占星術の土星{{SATURN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：MN（マチュリティナンバー）は「30代以降に自然と強まってくる成熟のテーマ」を示す数秘術の考え方。土星は「時間をかけてこそ実る、じっくり型の成熟」を示す天体。大運は「四柱推命における10年ごとの運気の大きな流れ」を示す考え方。\n・三つの分析軸が示す「{{NAME}}さんの人生後半に開花してくるもの」を語ってください（若い頃は理解されにくかった才能が実る・蓄積が花開く等）。「老後に向けて今から準備しておくと良いこと・人生の後半で最も喜びを感じられること」も、「年を重ねるごとに強くなる部分」という希望として語ってください。\n※「晩年のテーマって、今頑張ってることが全部収穫になる時期がどんな形かを見るものなんですよね！」と語ってください。`},
+{id:'D-09',title:'兄弟姉妹との関係：似ているのに全然違う、不思議な距離感の正体',body:`[今回] ・「同じ親から生まれて、同じ家で育ったのに、なんでこんなに性格が違うんだろう」——きょうだいや、幼い頃から近い年齢で育った相手との関係性を読む回。占星術の水星{{MERCURY}}（同じ家庭内での情報のやり取り・比較され方）・月{{MOON}}（家庭内での安心感の作られ方）、四柱推命の通変星{{TENMV}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「同じ家庭で育った相手と、どうコミュニケーションを取ってきたか」に関わる天体。月は「家庭という場所でどう安心を得てきたか」を示す天体。\n・「同じ環境で育っても、驚くほど性格が違う」という誰もが感じるきょうだい関係の不思議さを入口に、三つの分析軸が一致して示す{{NAME}}さんのきょうだい・近しい関係との向き合い方を語ってください。ライバル心が生まれやすいか、支え合う関係を築きやすいかなど。\n・「比べられてきた経験があっても、それぞれが違う個性を持っているだけ」という前向きな視点で語ってください。\n※「きょうだいって一番近くにいるのに、一番謎な存在だったりするんですよね。似てるようで全然違う、その距離感自体がその人の設計図を物語ってる」と語ってください。`},
+{id:'D-10',title:'パートナーシップ・結婚観：生涯を共にすることに何を求めるか',body:`[今回] ・「この人となら、一生ここで暮らせる」——そう感じる瞬間の正体、実は生まれ持った設計に理由がある。恋愛の先にある「生涯を共にする関係」への価値観を読む回。占星術の金星{{VENUS}}（愛の様式）・土星{{SATURN}}（生涯にわたる責任・約束の重み）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}を統合する。（※基本第3回が"恋愛の傾向そのもの"を扱ったのに対し、この回は"生涯を共にすることへの価値観・結婚観"という、より長期的な視点に絞る。）\n・まず専門用語をかみ砕いて紹介する：土星は「約束・責任・時間をかけて築く関係」を示す天体で、パートナーシップにおいては"生涯を共にする覚悟"に直結する。\n・「安定した関係を築くことに何より価値を置くタイプか、自由や成長を保ちながらの関係を望むタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの結婚観・パートナーシップへの価値観を語ってください。\n・「どんな形の関係も、その人らしい幸せの形」という前向きな視点で語ってください。\n※「結婚観って、金星（何を愛したいか）と土星（どこまで責任を引き受けたいか）のバランスで結構変わるんですよね」と語ってください。`},
+{id:'D-11',title:'友情の育て方：長く続く関係と、自然に離れていく関係の違い',body:`[今回] ・「何年会ってなくても、会えばすぐいつも通り」という友情もあれば、「なんとなく自然と疎遠になった」という関係もある。その違いの正体を読む回。占星術の水星{{MERCURY}}（繋がりを保つコミュニケーションの仕方）・木星{{JUPITER}}（関係を広げ、育てる力）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「関係を大きく育てたり、新しい繋がりを広げたりする力」を示す天体。\n・「頻繁に連絡を取らなくても続く友情を築けるタイプか、こまめな連絡が関係を保つ鍵になるタイプか」「深く狭い友情を好むタイプか、広く浅い繋がりを心地よく感じるタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの友情の育て方を語ってください。\n・「自然と疎遠になる関係があっても、それは失敗ではなく、その時期に必要だった繋がりだった」という前向きな視点で語ってください。\n※「長く続く友情って、実は"会う頻度"より"戻ってこられる安心感"の方が大事だったりするんですよね」と語ってください。`},
+{id:'D-12',title:'老いていく親のケアとの向き合い方：責任感と自分の生活、そのバランス',body:`[今回] ・「親のことは自分がなんとかしなきゃ」という気持ちと、「自分の生活も大事にしたい」という気持ち、その間で揺れる感覚を読む回。占星術の土星{{SATURN}}（責任・義務感の引き受け方）・月{{MOON}}（親との情緒的な繋がり）、四柱推命の通変星{{TENMV}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「責任や義務をどれだけ自分で引き受けようとするか」を示す天体。\n・「親のことは何でも自分が引き受けなければと感じやすいタイプか、周囲や制度の力を借りることに抵抗がないタイプか」「罪悪感を抱えやすいか、自分の生活とのバランスを取れるタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの向き合い方を語ってください。\n・「一人で抱え込む必要はなく、頼ることも立派な選択」という前向きな視点で語ってください。\n※「親のケアとの向き合い方って、責任感の強さと自分を大事にする力、両方のバランスが試される場面なんですよね」と、少し丁寧な温度で語ってください。`},
+{id:'D-13',title:'キャリア・仕事選びの哲学：何を基準に「これだ」と選ぶか',body:`[今回] ・「なんでこの仕事を選んだんだっけ」と聞かれて、実はちゃんと理由がある人と、直感だった人。数ある選択肢の中から仕事やキャリアをどう選び取るかという判断基準を読む回。占星術のMC{{MC}}（社会的に目指す到達点）・木星{{JUPITER}}（可能性を広げる方向）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。（※基本第4回が"組織の中でどう振る舞うか"を扱ったのに対し、この回は"そもそも何を仕事に選ぶか"という選択の基準に絞る。）\n・まず専門用語をかみ砕いて紹介する：MCは「社会的に目指したい到達点・キャリアの方向性」を示す占星術の感受点。\n・「安定・収入を優先して選ぶタイプか、やりがい・情熱を優先して選ぶタイプか」「一つの道を極めたいタイプか、複数の可能性を持ちたいタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの仕事選びの哲学を語ってください。\n・「どの基準にも優劣はなく、その人が心から納得できる選び方がある」という前向きな視点で語ってください。\n※「仕事の選び方って、MC（目指す到達点）と木星（広げたい可能性）のどっちを優先するかで結構変わるんですよね」と語ってください。`},
+{id:'D-14',title:'住まい・暮らしの環境づくり：どんな空間にいると本当に落ち着くか',body:`[今回] ・「なんでこの部屋にいると落ち着くんだろう」——理由を説明できなくても、確かにある心地よさの正体を読む回。自分にとって心地よい住まい・暮らしの環境をどう作るかを扱う。占星術の月{{MOON}}（安らぎの場所の条件）・金星{{VENUS}}（美意識・心地よさの基準）、四柱推命の五行バランス{{GOGYO}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：月は「無意識に安らぎを感じる環境の条件」を示す天体。五行は「木・火・土・金・水」のバランスで、心地よいと感じる空間の質感にも表れるとされる四柱推命の考え方。\n・「モノに囲まれた温かみのある空間が落ち着くタイプか、余白の多いシンプルな空間が落ち着くタイプか」「一人でくつろげる場所が必要なタイプか、誰かと過ごす前提の空間作りが自然なタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの心地よい住環境を語ってください。\n・五行バランスが未入力の場合は、月・金星からの傾向として語り、断定はしないでください。\n※「住まいへのこだわりって、実はその人が何に安心するかがそのまま形になったものなんですよね」と語ってください。`},
+{id:'D-15',title:'信念・価値観の軸：何があってもこれだけは譲れないもの',body:`[今回] ・「これだけは絶対に曲げられない」というポイント、実は人によって全然違う。何を大切にして生きているか、譲れない価値観の軸を読む回。占星術の木星{{JUPITER}}（信じている世界観・広げたい価値）・土星{{SATURN}}（譲れない一線・責任の置き場所）、四柱推命の通変星{{TENMV}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「何を信じ、どんな世界観を大切にしているか」を示す天体。土星は「これだけは譲れないという一線・誠実さの基準」を示す天体。\n・「公正さ・誠実さを何よりも大切にするタイプか、自由や可能性を大切にするタイプか」「価値観が近い人とだけ深く付き合いたいタイプか、価値観が違っても受け入れられるタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの信念の軸を語ってください。\n・「自分の軸を持っていることは頑固さではなく、ぶれない誠実さの証」という前向きな視点で語ってください。\n※「譲れないものがある人って、実はそれだけ自分の人生に誠実な証なんですよね」と語ってください。`},
+{id:'D-16',title:'家族を持つことへの価値観：どんな形の家庭を築きたいか',body:`[今回] ・「にぎやかな食卓」を思い描く人もいれば、「それぞれが自由でいられる家」を思い描く人もいる。将来家族を持つこと・築くことへの価値観を読む回。占星術の月{{MOON}}（家庭に求める安心の形）・金星{{VENUS}}（愛情表現のスタイル）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：月は「家庭という場所にどんな安心を求めるか」を示す天体。\n・「にぎやかで温かい家庭を築きたいタイプか、それぞれの自立を尊重する家庭を築きたいタイプか」「家族との時間を最優先したいタイプか、個人の時間とのバランスを大事にしたいタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの家族観を語ってください。\n・「家族の形に正解はなく、その人が心から築きたいと思える形が一番」という前向きな視点で語ってください。\n※「家族観って、月（安心の形）が土台になってることが多いんですよね。自分がどう育ったかも、少なからず影響してる」と語ってください。`},
+{id:'D-17',title:'社会・世の中との関わり方：自分ごととして関わりたいか、距離を置きたいか',body:`[今回] ・ニュースを見て「自分に何かできないか」と考える人もいれば、「まず身の回りを大事にしたい」と感じる人もいる。社会・世の中との関わり方を読む回。占星術の木星{{JUPITER}}（社会への関心の広がり方）・天王星{{URANUS}}（変革・改善への意識）、四柱推命の通変星{{TENMV}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「社会や世界に対してどれだけ関心を広げたいか」を示す天体。天王星は「今の仕組みをより良く変えたいという意識」を示す天体。\n・「ニュースを見ると自分にできることを考えずにいられないタイプか、まず自分の身の回りを大切にしたいタイプか」「ボランティアや社会貢献に自然と惹かれるタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの社会との関わり方を語ってください。\n・「関わり方の濃淡に優劣はなく、それぞれのペースで社会と繋がっている」という前向きな視点で語ってください。\n※「社会との関わり方って、木星がどれだけ外に開いているかで結構変わるんですよね。距離を置くタイプも、実は自分なりの形で社会と繋がってる」と語ってください。`},
+{id:'D-18',title:'所属・コミュニティとの関わり方：属していると安心するか、自由でいたいか',body:`[今回] ・「どこかに属してると安心する」人もいれば、「縛られると息苦しい」人もいる。会社・グループ・地域などの「所属」との向き合い方を読む回。占星術の金星{{VENUS}}（所属への調和欲求）・天王星{{URANUS}}（自由でいたい欲求）、四柱推命の身強身弱{{UNSEI}}、数秘術のソウルナンバー{{SN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：天王星は「型にはまらず自由でいたいという欲求」を示す天体で、所属することへの距離感に強く関わる。\n・「どこかに所属していると安心するタイプか、自由でいることの方が心地よいタイプか」「複数のコミュニティに緩やかに属したいタイプか、一つの場所に深く根を張りたいタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの所属との向き合い方を語ってください。\n・「所属することも、自由でいることも、どちらもその人らしい生き方の形」という前向きな視点で語ってください。\n※「所属への距離感って、金星（安心したい気持ち）と天王星（自由でいたい気持ち）の綱引きなんですよね」と語ってください。`},
+{id:'D-19',title:'変わりゆく時代についていく力：新しい流れを楽しめるか、戸惑いを感じるか',body:`[今回] ・新しいものが出るとすぐ試したくなる人もいれば、慣れたやり方の方が安心する人もいる。時代や環境がどんどん変わっていく中でどう向き合うかを読む回。占星術の天王星{{URANUS}}（新しい流れへの適応力）・土星{{SATURN}}（積み上げてきたものを守りたい気持ち）、四柱推命の大運{{KUBO}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：大運は「四柱推命における10年ごとの運気の大きな流れ」を示す考え方で、時代の変化との相性にも関わる。\n・「新しい技術や価値観の変化を楽しみながら取り入れられるタイプか、慣れ親しんだやり方に価値を感じ続けるタイプか」「変化のスピードに戸惑いを感じることがあっても、時間をかけて自分のペースで馴染めるタイプか」など、三つの分析軸が一致して示す{{NAME}}さんの時代との向き合い方を語ってください。\n・「新しさに飛びつくのも、じっくり見極めるのも、どちらも大切な生き残り方」という前向きな視点で語ってください。\n※「時代についていく力って、天王星（新しさへの好奇心）と土星（積み上げてきたものへの誇り）、両方あっていいんですよね」と語ってください。`},
+{id:'D-20',title:'世代を超えて何を残したいか：自分がいなくなった後に繋がっていくもの',body:`[今回] ・「自分がいなくなった後も、これだけは誰かに繋がっていってほしい」——そう考えたことがあるかどうかも、実は人によって違う。自分の人生が次の世代や周囲にどんな形で繋がっていってほしいかを読む回。占星術の冥王星{{PLUTO}}（世代を超えて受け継がれる深い変容の力）・太陽{{SUN}}（自分の存在意義）、四柱推命の通変星{{TENMV}}、数秘術のマチュリティ{{MN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：冥王星は「一つの時代を超えて、次に受け継がれていく深い変容の力」を示す世代天体。\n・「形に残るもの（作品・事業・財産等）を残したいタイプか、人の記憶や生き方の影響として残ればいいと感じるタイプか」「次の世代に直接何かを伝えたいタイプか、自然に伝わっていけばいいと考えるタイプか」など、三つの分析軸が一致して示す{{NAME}}さんが残したいものの形を語ってください。\n・「何を残すかに正解はなく、今を誠実に生きること自体が、すでに何かを残している」という前向きな視点で語ってください。\n※「何を残したいかって、実は特別なことをしなくても、日々の生き方そのものがもう誰かに伝わってたりするんですよね」と、少し丁寧な温度で語ってください。`},
+{id:'E-01',title:'買い物・お金のクセ：あなたのお財布の紐、実はこう決まってる',body:`[今回] ・「買い物する時、実は無意識にこう動いてる」という身近なお金のクセを読む回。数秘術のBN{{BN}}（誕生数＝生まれた日の数字が示す、瞬発的な気質）、占星術の金星{{VENUS}}・木星{{JUPITER}}（何にお金を使うと満たされるか・つい広げてしまう傾向）、四柱推命の通変星{{TENMV}}（財星＝お金の稼ぎ方・使い方の気質）を統合する。\n・まず専門用語をかみ砕いて紹介する：誕生数は「生まれた日の数字そのものが示す、瞬間的な気質」を示す数秘術の考え方。金星は「何に価値とときめきを感じるか」、木星は「つい広げすぎてしまう方向」を示す天体。通変星（財星）は「お金をコツコツ稼ぐ気質か、大きく動かす気質か」を示す四柱推命の考え方。\n・「コンビニでついで買いしがちか」「セールと聞くと気が大きくなるタイプか」「予算を立ててもつい超えるタイプか」など、誰もが経験する具体的な買い物の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんのお金のクセを語ってください。\n・「これは節約すべき欠点」ではなく「こういう設計だから、こう付き合うと楽」という前向きな付き合い方も添えてください。\n※「お財布の紐って、実は生まれた時からある程度決まってるんですよね。知ってると変な罪悪感を持たなくて済む！」と、女性ホストが自分のクセに照らして『あ、それ私かも…』とツッコむような温度で語ってください。`},
+{id:'E-02',title:'LINE・SNSの返信クセ：既読スルーする人・秒で返す人の違い',body:`[今回] ・「LINEが来た時、実はこう反応してる」というスマホ時代ならではのクセを読む回。占星術の水星{{MERCURY}}（情報を受け取り、返す速さと言葉のスタイル）、四柱推命の通変星{{TENMV}}（対人での気質）、数秘術のPN{{PN}}（表現数＝人にどう見られたいかの外面スタイル）を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「思考のスピードと、言葉を選ぶスタイル」を示す天体。PN（表現数）は「周囲にまず伝わる、外面的な振る舞い方」を示す数秘術の考え方。\n・「既読スルーしがちか、秒で返すタイプか」「スタンプ多用か長文派か」「グループラインで発言する側か見てる側か」など、具体的なスマホ上の振る舞いをイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの返信クセを語ってください。\n・「返信が遅い＝冷たい、ではなく設計上そうなりやすいだけ」という前向きな視点も添えてください。\n※「既読スルーする人って、悪気があるわけじゃなくて元々そういう情報処理のペースなんですよね。知ってると相手にイライラしなくて済む！」と、あるある感たっぷりに語ってください。`},
+{id:'E-03',title:'遅刻・時間感覚：5分前行動派か、ギリギリ派か',body:`[今回] ・「待ち合わせの時間、実はこう捉えてる」という誰もが経験する時間感覚のクセを読む回。占星術の土星{{SATURN}}（規律・時間との向き合い方）、四柱推命の身強身弱{{UNSEI}}（自分のペースで動くか、周りに合わせて動くか）、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「規律・締切・時間をどれだけ厳格に捉えるか」を示す天体。身強・身弱は「自分のペースを貫きやすいか、周りに合わせて動きやすいか」を示す四柱推命の考え方。\n・「5分前行動が当たり前か、ギリギリまで動けないタイプか」「時間よりも『今やりたいこと』を優先しがちか」など、具体的な待ち合わせの場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの時間感覚を語ってください。\n・「ルーズ＝ダメ」ではなく「設計上こうなりやすいので、こう対策すると信頼を守れる」という前向きな付き合い方も添えてください。\n※「時間にルーズな人って、実はサボってるんじゃなくて、そもそも時間の感じ方が違うんですよね。知ってると自分を責めなくて済む！」と語ってください。`},
+{id:'E-04',title:'部屋の片付け方：見えるところだけキレイ派か、隅々まで派か',body:`[今回] ・「自分の部屋、実はこういう散らかり方・片付き方をしている」という身近な生活空間のクセを読む回。占星術の土星{{SATURN}}・水星{{MERCURY}}（整理整頓への向き合い方・情報の分類の仕方）、四柱推命の五行バランス{{GOGYO}}（特に「金」の要素は整える力に関わる）、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：五行は「木・火・土・金・水」という5つのエネルギーで世界を読む四柱推命の考え方で、「金」は整理整頓・鋭さのエネルギー。欠落数は「意識しないと手薄になりがちなテーマ」を示す数秘術の考え方——片付けが後回しになりやすい領域のヒントにもなる。\n・「見えるところだけキレイにして引き出しの中はカオスなタイプか」「モノを捨てられない派か、ミニマリスト派か」など、具体的な部屋の様子をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの片付けスタイルを語ってください。\n・五行バランスが未入力の場合は土星・水星からの傾向として語り、断定はしないでください。\n・「散らかっている＝ズボラ」ではなく「エネルギーがどこに向きやすいかの設計」という前向きな視点も添えてください。\n※「部屋の状態って、実はその人の頭の中の状態そのものなんですよね。片付けられない自分を責めなくていいってこと！」と語ってください。`},
+{id:'E-05',title:'怒った時のサイン：分かりやすく顔に出る人・静かに黙る人',body:`[今回] ・「実は怒った時、こういうサインが出ている」という身近な感情表現のクセを読む回。占星術の火星{{MARS}}（怒り・エネルギーの発露の仕方）、四柱推命の十二運星{{UNSEI}}（エネルギーを外に出す時期か内にためる時期か）、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：火星は「怒りや行動のエネルギーがどう発散されるか」を示す天体。十二運星は「エネルギーを勢いよく外に出しやすいか、静かに内側にためやすいか」を示す四柱推命の考え方。\n・「怒ると顔にすぐ出るタイプか、逆に無口になって分かりにくいタイプか」「爆発するまで溜め込むタイプか、こまめに小出しにするタイプか」など、身近な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの怒りのサインを語ってください。\n・怒りは悪いものではなく「大事にしていることが踏まれた時のセンサー」として、前向きな付き合い方も添えてください。\n※「怒った時のサインを自分で知っておくと、周りに『あ、今機嫌悪いな』って気づいてもらいやすくなるんですよね。地味に便利！」と語ってください。`},
+{id:'E-06',title:'友達グループでの立ち位置：ムードメーカーか、聞き役か、仕切り役か',body:`[今回] ・「友達の集まりの中で、実は無意識にこの役割を担っている」という身近な人間関係のクセを読む回。占星術の太陽{{SUN}}・ASC{{ASC}}（社会的に発揮したい役割・第一印象で立ち上がるキャラクター）、四柱推命の通変星{{TENMV}}（集団の中での気質）、数秘術のSN{{SN}}（魂が求める繋がり方）を統合する。\n・まず専門用語をかみ砕いて紹介する：ASCは「第一印象・無意識に立ち上がる素のキャラクター」を示す感受点。SN（ソウルナンバー）は「心の奥で求めている繋がり方・在り方」を示す数秘術の考え方。\n・「グループの中でつい場を盛り上げる役になるか」「聞き役に回りがちか」「気づいたら仕切ってしまうタイプか」など、具体的な集まりの場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの立ち位置を語ってください。\n・「どの役割にも優劣はなく、その人が一番自然体でいられるポジションがあるだけ」という視点で語ってください。\n※「友達グループでの役割って、大体いつも同じキャラになるんですよね。それ、実は生まれ持った設計だったという！」と語ってください。`},
+{id:'E-07',title:'恋愛の連絡・距離感：追いかける派か、追われると冷める派か',body:`[今回] ・「好きな人ができた時、実はこう連絡を取ってしまう」という身近な恋愛行動のクセを読む回。占星術の金星{{VENUS}}・月{{MOON}}（愛し方・本能的な距離の取り方）、四柱推命の通変星{{TENMV}}、数秘術のSN{{SN}}（魂が求める繋がり方）を統合する。第3回（恋愛・パートナーシップのパターン）が「どんな相手に惹かれるか」を扱ったのに対し、この回は「実際の連絡頻度・追う側か追われる側か」という行動レベルに絞って語る。\n・まず専門用語をかみ砕いて紹介する：金星は「愛し方・愛されたい形」、月は「感情がどう動き、どこまで近づくと安心するか」を示す天体。\n・「気になる人にはすぐ連絡したくなるタイプか、駆け引きしてしまうタイプか」「追いかけられると冷めるタイプか、追われたいタイプか」など、具体的な恋愛の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの連絡・距離感のクセを語ってください。\n・決めつけにならないよう「こういう傾向が出やすい」という優しい形で語ってください。\n※「連絡のペースって、実はその人の安心の作り方がそのまま出るんですよね。合う相手だと自然とペースが噛み合うという！」と語ってください。`},
+{id:'E-08',title:'飲み会での過ごし方：飲むと饒舌になる派か、静かになる派か',body:`[今回] ・「お酒の席で、実はこういうテンションになりやすい」という身近な社交のクセを読む回。占星術の木星{{JUPITER}}（社交での広がり方・楽しみ方）・金星{{VENUS}}、四柱推命の通変星{{TENMV}}、数秘術の過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「拡大・社交・楽しみを広げる方向」を示す天体で、飲みの席では場を盛り上げる方向に出やすい。過剰数は「強く出すぎて空回りしやすい部分」を示す数秘術の考え方——お酒が入ると普段抑えているものが出やすい、という文脈でも語れる。\n・「お酒が入ると饒舌になるタイプか、逆に静かになるタイプか」「気づいたら場を仕切ってしまうか、聞き役に徹するか」「次の日に前の晩の発言を後悔しがちか」など、具体的な飲みの場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの飲み会でのクセを語ってください。\n・「素が出やすい場だからこそ、自分を知る手がかりになる」という前向きな視点で語ってください。\n※「お酒の席でのキャラって、実は普段抑えてる部分が出てるだけなんですよね。だから二日酔いの日の後悔もセットで説明がつく！」と、笑いを誘う軽さで語ってください。`},
+{id:'E-09',title:'旅行のスタイル：予定びっしり派か、行き当たりばったり派か',body:`[今回] ・「旅行に行くと、実はこういう動き方をしてしまう」という身近な行動パターンを読む回。占星術の木星{{JUPITER}}（冒険・広げる方向）・水星{{MERCURY}}（計画性）、四柱推命の十二運星{{UNSEI}}、数秘術のLP{{LP}}（人生の地図・根本テーマ）を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「新しい世界に飛び込みたい欲求」、水星は「計画を立てて動きたい欲求」を示す天体——この2つのバランスで旅行スタイルが決まりやすい。\n・「旅のしおりを作るくらい計画派か、着いてから考える派か」「同じ場所に何度も通うタイプか、行ったことのない場所を開拓するタイプか」など、具体的な旅の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの旅行スタイルを語ってください。\n・「どちらが正解でもなく、その人が一番リフレッシュできる旅の形がある」という視点で語ってください。\n※「旅行のスタイルって、その人が人生でどう動きたいかの縮図なんですよね。旅先での自分を見ると、素の自分がよく分かる！」と語ってください。`},
+{id:'E-10',title:'食の好み：いつもの店に通う派か、新しい店を開拓する派か',body:`[今回] ・「食事の場面で、実はこういう選び方をしている」という身近な生活習慣を読む回。占星術の金星{{VENUS}}（味覚・好みの美意識）・月{{MOON}}（安心する味・ソウルフード）、四柱推命の五行バランス{{GOGYO}}を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「何を美味しい・心地よいと感じるかの美意識」、月は「疲れた時に無性に食べたくなる、安心の味」を示す天体。五行は「木・火・土・金・水」のバランスで、偏りは味の好みにも表れるとされる。\n・「新しい店を開拓するのが好きか、お気に入りの店に何度も通うタイプか」「一人でも外食を楽しめるか、誰かと一緒じゃないと落ち着かないか」など、具体的な食事の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの食のスタイルを語ってください。\n・五行バランスが未入力の場合は、金星・月からの傾向として語り、断定はしないでください。\n※「何を食べるかって、実はその人が今どんな気持ちで、何を満たしたいかがそのまま出るんですよね！」と語ってください。`},
+{id:'E-11',title:'休日の過ごし方：家で充電派か、外に出て発散派か',body:`[今回] ・「一人の休日、実はこう過ごすと一番リセットできる」という身近な生活リズムのクセを読む回。占星術の月{{MOON}}・海王星{{NEPTUNE}}（心が安らぐ場所・癒される感覚）、四柱推命の十二運星{{UNSEI}}（エネルギーを外に出す時期か、内側にためる時期か）、数秘術のMN{{MN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：月は「無意識の感情・本能的に安らぐ場所」を示す天体。海王星は「現実から少し離れて、境界線をゆるめてリラックスできる感覚」を示す天体。\n・「家に一人でこもって充電するタイプか、外に出て人や刺激に触れて発散するタイプか」「趣味に没頭するタイプか、何もしない時間が必要なタイプか」など、具体的な休日の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの一人時間の過ごし方を語ってください。\n・「休み方に正解はなく、自分に合った充電方法を知っているかどうかが大事」という視点で語ってください。\n※「休日の過ごし方が自分に合ってないと、休んだはずなのに疲れが取れないんですよね。正しい充電方法を知ってるだけで人生変わる！」と語ってください。`},
+{id:'E-12',title:'ファッションの選び方：いつも同じ系統派か、冒険して失敗する派か',body:`[今回] ・「服を選ぶ時、実はこういう基準で選んでいる」という身近な買い物のクセを読む回。占星術の金星{{VENUS}}（美意識・何に惹かれるか）・ASC{{ASC}}（第一印象・見た目で演出したいキャラクター）、四柱推命の通変星{{TENMV}}を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「何を美しい・心地よいと感じるかの美意識」、ASCは「他人から見た第一印象・無意識に演出される見た目のキャラクター」を示す。\n・「気に入った系統の服ばかり買ってしまうタイプか、たまに冒険して失敗するタイプか」「トレンドを追うタイプか、自分のスタイルを貫くタイプか」など、具体的な買い物の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんのファッションの選び方を語ってください。\n・「似合う・似合わないではなく、その人が心地よく感じる見た目の演出がある」という視点で語ってください。\n※「ファッションの好みって、金星（心の美意識）とASC（見せたい印象）のせめぎ合いなんですよね。両方一致してる人はブレない、ズレてる人はいろいろ試したくなる！」と語ってください。`},
+{id:'E-13',title:'寝る前の習慣・寝相のクセ：すぐ寝落ちする派か、なかなか寝付けない派か',body:`[今回] ・「布団に入ってから、実はこういう状態になっている」という身近な就寝前後のクセを読む回。占星術の月{{MOON}}・海王星{{NEPTUNE}}（安らぎと眠りの質）、四柱推命の十二運星{{UNSEI}}（エネルギーを溜める季節か使う季節か）、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：月は「心が本能的に安らぐ場所・眠りに入る前の感情の状態」を示す天体。海王星は「現実と眠りの境界がゆるみ、意識がふわっと溶けていく感覚」を示す天体。十二運星は「今どれだけエネルギーを使い切っているか・溜め込む時期にあるか」を示す四柱推命の考え方。\n・「布団に入った瞬間に寝落ちするタイプか、あれこれ考えて中々寝付けないタイプか」「寝相が激しく動くタイプか、同じ姿勢を保つタイプか」など、具体的な就寝の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの眠りのクセを語ってください。\n・「良い眠りに入るために、その人に合った入眠儀式（音楽・香り・スマホを見ない等）」があれば、分析データから前向きに提案してください。\n※「寝る前の状態って、その日一日でどれだけエネルギーを使い切ったかが正直に出るんですよね。眠れない夜が続く時は、実は頭がまだフル回転してるだけだったりする！」と語ってください。`},
+{id:'E-14',title:'忘れ物・忘れっぽさの傾向：几帳面にチェックする派か、うっかりが多い派か',body:`[今回] ・「大事なものを、実はこういう理由で忘れがち・忘れにくい」という身近な記憶のクセを読む回。占星術の水星{{MERCURY}}（思考の処理速度・情報の扱い方）、四柱推命の通変星{{TENMV}}、数秘術の欠落数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「頭の中で情報をどう整理し、何を優先的に覚えているか」を示す天体。欠落数は「意識しないと手薄になりがちなテーマ」を示す数秘術の考え方——ここが「うっかり忘れがちなポイント」に直結しやすい。\n・「出かける前に持ち物を几帳面にチェックするタイプか、いつも何かしら忘れて出るタイプか」「忘れ物のパターン（鍵・スマホ・傘等）に偏りがあるか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの記憶のクセを語ってください。\n・「忘れっぽい＝だらしない」ではなく「意識のエネルギーがどこに向きやすいかの設計」という前向きな視点で、対策のヒントも添えてください。\n※「忘れ物が多い人って、実はそれだけ他のことに頭がフル回転してる証拠なんですよね。ちょっとした仕組み（置き場所を決める等）で驚くほど減ったりする！」と語ってください。`},
+{id:'E-15',title:'朝の目覚め方：パッと起きる派か、スヌーズ連打派か',body:`[今回] ・「朝、目覚ましが鳴った瞬間、実はこう反応している」という身近な起床のクセを読む回。占星術の太陽{{SUN}}・土星{{SATURN}}（目覚めた時のエネルギーの向け方・規律への態度）、四柱推命の身強身弱{{UNSEI}}（自力で起きられるか、外部の力を借りるか）、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「目覚めた瞬間にどこへエネルギーを向けたいか」を示す天体。土星は「規律・決めたことをきっちり守れるかどうか」を示す天体。身強・身弱は「自分の意志だけで起きられるタイプか、目覚まし・人の声などの外部刺激が必要なタイプか」を示す四柱推命の考え方。\n・「目覚まし1回でパッと起きるタイプか、スヌーズを何度も押してしまうタイプか」「二度寝が心地よくてやめられないタイプか」など、具体的な朝の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの目覚め方を語ってください。\n・自分に合った「気持ちよく起きる工夫」があれば、分析データから前向きに提案してください。\n※「スヌーズ連打する人を意志が弱いって責めがちだけど、実は身弱タイプなら外部の力を借りるのが自然な設計なんですよね。自分を責めなくていい！」と語ってください。`},
+{id:'E-16',title:'写真の撮られ方へのこだわり：ノリノリでポーズを決める派か、自然体が好きな派か',body:`[今回] ・「カメラを向けられた瞬間、実はこういう反応をしてしまう」という身近な自己演出のクセを読む回。占星術の金星{{VENUS}}（美意識・何を美しいと感じるか）・ASC{{ASC}}（第一印象・見た目で演出したいキャラクター）、四柱推命の通変星{{TENMV}}、数秘術のPN{{PN}}（表現数＝周囲に伝わる外面のスタイル）を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「自分がどう見えたら心地よいと感じるかの美意識」を示す天体。PN（表現数）は「周囲にまず伝わる、外面的な振る舞い方」を示す数秘術の考え方。\n・「カメラを向けられるとノリノリでポーズを決めるタイプか、恥ずかしくて自然体を装いたいタイプか」「盛れる角度を熟知しているタイプか、写真写りは気にしないタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの写真への向き合い方を語ってください。\n・「どちらのタイプにも良さがある」という前向きな視点で語ってください。\n※「写真の写り方って、その人が自分をどう見せたいかの縮図なんですよね。ノリノリな人も照れ屋な人も、それぞれのASCがそのまま出てる！」と語ってください。`},
+{id:'E-17',title:'待ち合わせで待ってる間の過ごし方：スマホに集中する派か、周りをボーッと眺める派か',body:`[今回] ・「待ち合わせで一人になった数分間、実はこう過ごしている」という身近な隙間時間のクセを読む回。占星術の水星{{MERCURY}}（思考の使い方・情報への向き合い方）、四柱推命の十二運星{{UNSEI}}（エネルギーを外に使う時期か、内側で休める時期か）、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「暇な時間、頭が何に向かいやすいか（情報収集・空想・整理等）」を示す天体。\n・「待ってる間ずっとスマホをいじってしまうタイプか、周りの景色や人をぼんやり眺めるのが好きなタイプか」「暇な時間も何かしら生産的に使いたいタイプか、何もしない時間を楽しめるタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの隙間時間の過ごし方を語ってください。\n・「どちらが良い悪いではなく、その人にとって心地よい隙間時間の埋め方がある」という視点で語ってください。\n※「待ち時間の過ごし方って、その人の"暇との付き合い方"がそのまま出るんですよね。地味だけど結構その人らしさが滲み出るポイント！」と語ってください。`},
+{id:'E-18',title:'会話中の相づち・聴き方のクセ：大きくリアクションする派か、静かにじっくり聴く派か',body:`[今回] ・「人の話を聞いている時、実はこういう反応をしている」という身近なコミュニケーションのクセを読む回。占星術の水星{{MERCURY}}・月{{MOON}}（情報の受け取り方・共感の仕方）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}（魂が求める繋がり方）を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「話をどう処理し、どう反応するか」を示す天体。月は「相手の感情にどれだけ寄り添おうとするか」を示す天体。ソウルナンバーは「心の奥で求めている繋がり方」を示す数秘術の考え方。\n・「相づちが大きくリアクション多めなタイプか、静かに頷きながらじっくり聴くタイプか」「話を聞きながら次に話すことを考えてしまうタイプか、相手の話に集中しきるタイプか」など、具体的な会話の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの聴き方のクセを語ってください。\n・「聴き方に優劣はなく、それぞれのスタイルが相手に安心感を与えている」という前向きな視点で語ってください。\n※「相づちの打ち方って、実は無意識に出るその人の"聴く姿勢"の癖なんですよね。リアクション薄めでもちゃんと聴いてる人、結構いる！」と語ってください。`},
+{id:'E-19',title:'初対面での自己紹介の仕方：饒舌に話す派か、簡潔に済ませる派か',body:`[今回] ・「初めて会った人に自己紹介する時、実はこういう振る舞いになる」という身近な第一印象のクセを読む回。占星術のASC{{ASC}}（第一印象・無意識に立ち上がるキャラクター）・水星{{MERCURY}}（言葉の選び方・話す量）、四柱推命の通変星{{TENMV}}、数秘術のPN{{PN}}（表現数）を統合する。（※E-16「写真の撮られ方」が"見た目"の自己演出を扱ったのに対し、この回は"言葉"での自己紹介という別の角度に絞る。）\n・まず専門用語をかみ砕いて紹介する：ASCは「初対面で無意識に立ち上がる、素の第一印象」を示す感受点。水星は「話す量・言葉選びのスタイル」を示す天体。\n・「自己紹介で饒舌にいろいろ話してしまうタイプか、簡潔に必要最低限で済ませるタイプか」「緊張して硬くなるタイプか、初対面でも物怖じしないタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの自己紹介のスタイルを語ってください。\n・「第一印象の作り方に正解はなく、その人らしい自然体が一番伝わる」という視点で語ってください。\n※「自己紹介のスタイルって、ASCがそのまま声に出た瞬間なんですよね。緊張しいな人も、実はそれがその人の魅力の一部！」と語ってください。`},
+{id:'E-20',title:'行列・待ち時間への耐性：じっと我慢して並べる派か、すぐソワソワしちゃう派か',body:`[今回] ・「行列や待ち時間に、実はこう反応してしまう」という身近な忍耐のクセを読む回。占星術の土星{{SATURN}}・火星{{MARS}}（忍耐力・苛立ちの発露の仕方）、四柱推命の身強身弱{{UNSEI}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「規律や我慢がどれだけ苦にならないか」を示す天体。火星は「苛立ちや行動のエネルギーがどう発散されるか」を示す天体。身強・身弱は「自分のペースを貫きたいタイプか、状況に合わせて動くタイプか」を示す四柱推命の考え方。\n・「人気店の行列も苦にならず並べるタイプか、少し待つだけでソワソワしてしまうタイプか」「待ち時間の長さより、先が見えない状態にストレスを感じやすいタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの待つことへの耐性を語ってください。\n・E-17（待ってる間の過ごし方）が"何をするか"なら、この回は"どれだけ耐えられるか"という忍耐の総量に焦点を当てる。\n※「行列に並べるかどうかって、実はその人の土星の強さがそのまま試される瞬間なんですよね。並べない人が悪いわけじゃなく、単純に我慢のエネルギー配分が違うだけ！」と語ってください。`},
+{id:'E-21',title:'映画・ドラマの見方：一気見して没頭する派か、少しずつ味わう派か',body:`[今回] ・「気に入った作品を見る時、実はこういうペースで見進めてしまう」という身近な娯楽の楽しみ方のクセを読む回。占星術の木星{{JUPITER}}・海王星{{NEPTUNE}}（没頭する力・物語への没入感）、四柱推命の十二運星{{UNSEI}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「一つのことに熱中し、広げていく力」を示す天体。海王星は「現実を忘れて物語の世界に没入する感覚」を示す天体。\n・「気になった作品は一気見せずにいられないタイプか、少しずつ大事に味わって見進めるタイプか」「ネタバレを絶対に避けたいタイプか、あまり気にしないタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの映像作品との向き合い方を語ってください。\n・「どちらの見方にも、その人なりの楽しみ方の美学がある」という視点で語ってください。\n※「一気見するかしないかって、その人の"没頭スイッチ"がどれだけ入りやすいかなんですよね。海王星が強い人は特に、物語に持っていかれやすい！」と語ってください。`},
+{id:'E-22',title:'お土産を選ぶときのクセ：みんなが喜びそうな定番派か、ちょっと変わったもの探す派か',body:`[今回] ・「旅行先でお土産を選ぶ時、実はこういう基準で選んでいる」という身近な贈り物のクセを読む回。占星術の金星{{VENUS}}・木星{{JUPITER}}（何を美しい・喜ばれると感じるか、どれだけ選択肢を広げるか）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}（魂が求める繋がり方）を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「何を贈ったら喜ばれるかという美意識・価値観」を示す天体。木星は「定番で満足せず、選択肢を広げて探したくなる欲求」を示す天体。\n・「みんなが喜びそうな定番を手堅く選ぶタイプか、あえて変わったもの・その土地ならではの物を探すタイプか」「相手ごとに選び分けるタイプか、いつも似た傾向のものを選ぶタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんのお土産選びのクセを語ってください。\n・「お土産選びは、その人が相手をどれだけ具体的に思い浮かべているかの表れ」という視点で語ってください。\n※「お土産選びのクセって、地味だけど金星（愛し方）がすごく出るポイントなんですよね。相手の顔を思い浮かべながら選ぶ時間、実は結構その人らしさが詰まってる！」と語ってください。`},
+{id:'E-23',title:'料理・自炊のスタイル：レシピ通りきっちり派か、感覚で作る派か',body:`[今回] ・「キッチンに立った時、実はこういう作り方をしてしまう」という身近な自炊のクセを読む回。占星術の金星{{VENUS}}・火星{{MARS}}（味覚の美意識・手際の良さ）、四柱推命の五行バランス{{GOGYO}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「何を美味しいと感じ、どんな味付けを好むか」を示す天体。火星は「調理中の手際・スピード感・行動のエネルギー」を示す天体。五行は「木・火・土・金・水」のバランスで、偏りは調理スタイルの几帳面さ・大胆さにも表れるとされる四柱推命の考え方。\n・「レシピの分量を几帳面に守るタイプか、目分量・感覚で作ってしまうタイプか」「凝った料理に挑戦したいタイプか、シンプルで手早く済ませたいタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの自炊のスタイルを語ってください。\n・五行バランスが未入力の場合は、金星・火星からの傾向として語り、断定はしないでください。\n※「料理のスタイルって、レシピ通りか感覚派かで結構性格出るんですよね。感覚派の人は大体『目分量なのに毎回美味しい』ってタイプ！」と語ってください。`},
+{id:'E-24',title:'誕生日・記念日へのこだわり：しっかり祝いたい派か、あっさり派か',body:`[今回] ・「自分や大切な人の誕生日・記念日に、実はこういう向き合い方をする」という身近な祝い事のクセを読む回。占星術の太陽{{SUN}}・金星{{VENUS}}（自分の存在を祝う感覚・人を祝う感覚）、四柱推命の通変星{{TENMV}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「自分の存在そのものをどれだけ大切に扱いたいか」を示す天体。金星は「大切な人をどんな形で喜ばせたいか」を示す天体。\n・「自分の誕生日はしっかり祝ってほしいタイプか、あっさり流したいタイプか」「大切な人の記念日は絶対に忘れずサプライズを用意するタイプか、気持ちが伝われば形式にはこだわらないタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの記念日への向き合い方を語ってください。\n・「どちらのスタイルにも、その人なりの愛情表現の形がある」という視点で語ってください。\n※「記念日へのこだわり方って、太陽（自分を大切にする度合い）と金星（人を大切にする形）の両方が出るんですよね。あっさり派の人も、実は別の形でちゃんと愛情表現してたりする！」と語ってください。`},
+{id:'F-01',title:'人との距離感・境界線の保ち方：踏み込まれると疲れる派か、近い方が安心する派か',body:`[今回] ・「人とどこまで近づくと心地よく、どこから先は疲れてしまうか」という、誰もが持っている境界線のクセを読む回。占星術の土星{{SATURN}}（自分を守るための線引き）・月{{MOON}}（心を開いても大丈夫だと感じる距離）、四柱推命の通変星{{TENMV}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「どこまで踏み込まれると負担に感じるか、自分を守るための境界線」を示す天体。月は「心を開いても安心だと感じられる距離」を示す天体。\n・「一人の時間が削られると消耗しやすいタイプか、逆に人との近さがエネルギー源になるタイプか」「境界線を越えられた時、はっきり伝えられるタイプか、我慢してしまうタイプか」など、具体的な人間関係の場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの距離感の作り方を語ってください。\n・「境界線を持つことは冷たいことではなく、長く良い関係を続けるための土台」という前向きな視点で語ってください。\n※「境界線の強さって、その人が自分をどれだけ大事にできてるかのバロメーターでもあるんですよね。無理して近づきすぎると、あとで消耗しちゃう」と、少し丁寧な温度で語ってください。`},
+{id:'F-02',title:'仕事とプライベートの切り替え方：オンオフがきっちりできる派か、ずっと引きずってしまう派か',body:`[今回] ・「仕事モードから、どうやって自分に戻ってくるか」という切り替えのクセを読む回。占星術の太陽{{SUN}}（社会的な顔・外向きのエネルギー）・月{{MOON}}（素に戻る感覚）、四柱推命の十二運星{{UNSEI}}（エネルギーを外に使う時期か、内側に戻す時期か）、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「仕事や社会の中で発揮したい顔」、月は「一人になった時に戻ってくる、本来の自分の状態」を示す天体。\n・「仕事が終わった瞬間にスイッチを切り替えられるタイプか、家に帰ってもモヤモヤを引きずってしまうタイプか」「休みの日でも仕事のことが頭から離れないタイプか、きっぱり忘れられるタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの切り替え方を語ってください。\n・「切り替えが苦手なタイプには、意識的に"戻ってくる儀式"を持つと楽になる」という具体的なヒントも添えてください。\n※「オンオフの切り替えって、太陽（外向きの顔）から月（素の自分）へどれだけスムーズに戻れるかなんですよね。うまく戻れない日があっても、それは頑張ってた証拠」と語ってください。`},
+{id:'F-03',title:'承認欲求との付き合い方：褒められると素直に喜べる派か、居心地悪くなる派か',body:`[今回] ・「認められたい気持ち」と、実際にどう向き合っているかを読む回。占星術の太陽{{SUN}}（自分の存在を認めてほしい欲求）・ASC{{ASC}}（周囲にどう見られたいか）、四柱推命の通変星{{TENMV}}、数秘術のPN{{PN}}（表現数）を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「自分の存在そのものを認めてもらいたいという根源的な欲求」を示す天体。ASCは「周囲にどう見られたいかという、無意識の演出」を示す感受点。\n・「褒められると素直に嬉しいタイプか、なぜか居心地が悪くなって謙遜してしまうタイプか」「誰かに認められることが原動力になるタイプか、自分が納得できるかどうかの方が大事なタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの承認欲求との付き合い方を語ってください。\n・「認められたい気持ちは弱さではなく、人間らしい自然な欲求。それをどう満たすかにはその人らしいバランスがある」という視点で語ってください。\n※「承認欲求があること自体は全然悪いことじゃないんですよね。それとどう付き合うかのバランスが、その人らしさになる」と語ってください。`},
+{id:'F-04',title:'自分らしさと周囲への同調のバランス：ブレない派か、その場の空気に合わせる派か',body:`[今回] ・「自分の意見を貫くか、周りに合わせるか」のバランス感覚を読む回。占星術の太陽{{SUN}}（自分らしさの核）・金星{{VENUS}}（調和を求める気持ち）、四柱推命の身強身弱{{UNSEI}}（自分のペースを貫きやすいか、周りに合わせて動きやすいか）、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「何があってもブレたくない自分の核」を示す天体。金星は「その場の調和・心地よさを大切にしたい気持ち」を示す天体。\n・「集団の中でも自分の意見をはっきり言えるタイプか、場の空気を読んで合わせるタイプか」「同調することにストレスを感じるタイプか、むしろ合わせる方が楽なタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんのバランスの取り方を語ってください。\n・「どちらのバランスにも良さがあり、状況によって使い分けられることが本当の強さ」という視点で語ってください。\n※「自分らしさを貫くのも、周りに合わせるのも、本当はどっちも立派な選択なんですよね。どっちかに偏りすぎた時だけ、ちょっとしんどくなる」と語ってください。`},
+{id:'F-05',title:'将来への漠然とした不安との付き合い方：先回りして準備する派か、なるようになると構える派か',body:`[今回] ・「この先どうなるんだろう」という、はっきりした理由のない不安との付き合い方を読む回。占星術の土星{{SATURN}}（現実的な不安・備えたい気持ち）・海王星{{NEPTUNE}}（形のない漠然とした不安）、四柱推命の十二運星{{UNSEI}}、数秘術の欠落数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「現実的なリスクに備えたいという規律の力」を示す天体。海王星は「はっきりした理由のない、霧のような漠然とした不安や心配」を示す天体。\n・「不安を感じると先回りして準備せずにいられないタイプか、考えすぎず『なるようになる』と構えられるタイプか」「漠然とした不安に飲まれやすい時期があるか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの不安との付き合い方を語ってください。\n・「不安は弱さではなく、大切なものを守ろうとする心の機能。備えることも、手放すことも、どちらも立派な対処法」という前向きな視点で語ってください。\n※「漠然とした不安って、正体が分からないから余計に重く感じるんですよね。土星と海王星、どっちが強く出てるか分かるだけでも、対処のヒントになる」と、少し丁寧な温度で語ってください。`},
+{id:'F-06',title:'自分の弱さ・コンプレックスとの付き合い方：隠したい派か、開き直って見せられる派か',body:`[今回] ・「自分の弱いところ、実はこう向き合っている」というクセを読む回。占星術の土星{{SATURN}}（コンプレックスが生まれやすい場所）・月{{MOON}}（傷つきやすさの根っこ）、四柱推命の通変星{{TENMV}}の暴走パターン、数秘術の欠落数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「試練やプレッシャーがかかりやすい場所、そこから生まれるコンプレックス」を示す天体。欠落数は「意識しないと手薄になりがちなテーマ」を示す数秘術の考え方——コンプレックスの正体に直結しやすい。\n・「弱さを隠して見せないようにするタイプか、あえて開示して笑いに変えられるタイプか」「コンプレックスを克服しようと頑張るタイプか、受け入れて共存するタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんのコンプレックスとの付き合い方を語ってください。\n・「弱さは克服すべき欠陥ではなく、その人がどれだけ繊細に物事を感じ取れるかの裏返しでもある」という視点で語ってください。\n※「コンプレックスって、実は本人が一番気にしてるだけで、周りはそんなに気にしてなかったりするんですよね。それでも付き合い方を知っておくと、ずいぶん楽になる」と語ってください。`},
+{id:'F-07',title:'孤独・一人の時間の意味との付き合い方：一人が心地よい派か、寂しさが押し寄せる派か',body:`[今回] ・「誰もいない時間、それがどんな意味を持つか」という孤独との向き合い方を読む回。占星術の月{{MOON}}（安らぎか寂しさか）・海王星{{NEPTUNE}}（一人の時間に浸る感覚）、四柱推命の十二運星{{UNSEI}}、数秘術のマチュリティ{{MN}}を統合する。（※E-11「休日の過ごし方」が実際の行動〈何をして過ごすか〉を扱ったのに対し、この回は一人でいることそのものへの感情的な意味に焦点を当てる。）\n・まず専門用語をかみ砕いて紹介する：月は「一人の時間が安らぎになるか、寂しさになるか」を示す天体。海王星は「一人の時間に、現実を忘れて深く浸る感覚」を示す天体。\n・「一人の時間がないと逆に消耗するタイプか、一人になると寂しさが押し寄せてくるタイプか」「孤独を creativity や内省の時間として活かせるタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの孤独との付き合い方を語ってください。\n・「孤独は避けるべきものではなく、その人にとって必要な充電や内省の時間になり得る」という前向きな視点で語ってください。\n※「一人の時間が好きか苦手かって、実はその人の月がどれだけ安定してるかと関係してるんですよね。どっちが正解でもなくて、自分に合った一人時間の意味を知ってるかどうか」と、少し丁寧な温度で語ってください。`},
+{id:'F-08',title:'過去の後悔・失敗との向き合い方：引きずってしまう派か、切り替えが早い派か',body:`[今回] ・「あの時ああしていれば」という後悔と、実はどう向き合っているかを読む回。占星術の土星{{SATURN}}（過去の試練から学ぶ力）・火星{{MARS}}（前を向くエネルギー）、四柱推命の通変星{{TENMV}}、数秘術の欠落数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「過去の失敗や試練を、時間をかけてどう消化していくか」を示す天体。火星は「前を向いて次の行動に移るエネルギー」を示す天体。\n・「一度失敗すると長く引きずってしまうタイプか、意外とすぐ切り替えられるタイプか」「同じ失敗を糧にして次に活かせるタイプか、繰り返しやすいタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの後悔との向き合い方を語ってください。\n・「後悔を引きずるのは、それだけ真剣に向き合っていた証拠でもある。時間をかけて消化していい」という前向きな視点で語ってください。\n※「後悔を引きずるタイプって、責任感が強い人に多いんですよね。切り替えが早い人が薄情なわけでもなく、ただ土星と火星のバランスが違うだけ」と語ってください。`},
+{id:'F-09',title:'人生の転機・環境の変化への対応の仕方：ワクワクする派か、まず身構えてしまう派か',body:`[今回] ・「引っ越し・転職・環境の変化」など、人生の節目にどう反応するかを読む回。占星術の天王星{{URANUS}}（変化への欲求・刺激）・土星{{SATURN}}（安定を求める力）、四柱推命の大運{{KUBO}}（10年ごとの運気の大きな流れ）、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：天王星は「新しい環境・変化そのものにワクワクする力」を示す天体。土星は「慣れた環境の安定を守りたい力」を示す天体。大運は「四柱推命における10年ごとの運気の大きな流れ」を示す考え方——今がどんな流れの時期かで、変化への向き合いやすさも変わる。\n・「変化のきっかけがあるとまずワクワクするタイプか、不安が先に立って身構えてしまうタイプか」「変化の後、新しい環境に馴染むまでの時間が早いか、じっくりかかるタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの変化への対応の仕方を語ってください。\n・「変化に強い・弱いに優劣はなく、それぞれのペースで馴染んでいける」という前向きな視点で語ってください。\n※「変化への反応って、天王星と土星のせめぎ合いなんですよね。身構えちゃうタイプの人も、時間さえかければちゃんと馴染めるから大丈夫」と語ってください。`},
+{id:'F-10',title:'続けることと辞めることの判断基準：石にかじりついてでも続ける派か、見切りが早い派か',body:`[今回] ・「習い事・趣味・人間関係、これは続けるべきか辞めるべきか」を判断する時のクセを読む回。占星術の土星{{SATURN}}（継続する力・忍耐）・天王星{{URANUS}}（見切りをつけて次へ行く力）、四柱推命の身強身弱{{UNSEI}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「時間をかけてでも続ける忍耐力」を示す天体。天王星は「合わないと感じたら見切りをつけて次に進む力」を示す天体。\n・「一度始めたことは石にかじりついてでも続けたいタイプか、合わないと思ったらすぐ見切りをつけるタイプか」「続けることに美学を感じるタイプか、辞める判断も前向きな選択だと思えるタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの判断基準を語ってください。\n・「続けることも辞めることも、どちらも勇気のいる決断。どちらが優れているという話ではない」という前向きな視点で語ってください。\n※「続ける派も辞める派も、実はどっちも自分なりの美学を持ってるんですよね。土星が強い人は"続ける美学"、天王星が強い人は"見切る勇気"を持ってる」と語ってください。`},
+{id:'F-11',title:'人生の岐路での決断パターン：直感で決める派か、とことん考え抜く派か',body:`[今回] ・「大事な選択をする時、実はこう決めている」という決断のクセを読む回。占星術の水星{{MERCURY}}（論理的に考える力）・火星{{MARS}}（直感的に動く力）、四柱推命の通変星{{TENMV}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：水星は「情報を集め、論理的に比較検討する思考のスタイル」を示す天体。火星は「頭で考えるより先に、直感やエネルギーで動くスタイル」を示す天体。\n・「大きな決断ほど、とことん情報を集めて考え抜くタイプか、直感でパッと決めてしまうタイプか」「決めた後に振り返って後悔しやすいタイプか、決めたら振り返らないタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの決断パターンを語ってください。\n・「直感型も熟考型も、それぞれの決断の仕方で人生を切り開いてきた実績がある。自分のスタイルを信じていい」という前向きな視点で語ってください。\n※「決断のスタイルって、水星（考える力）と火星（動く力）のどっちが強く出るかなんですよね。迷いすぎて動けなくなる時は、あえて直感を信じてみるのもあり」と語ってください。`},
+{id:'F-12',title:'夢・目標の追い方：大きな夢を語る派か、目の前の一歩を着実に積む派か',body:`[今回] ・「将来の夢や目標を、実はこういうペースで追いかけている」というクセを読む回。占星術の木星{{JUPITER}}（大きく広げる力・夢を描く力）・土星{{SATURN}}（着実に積み上げる忍耐力）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「大きな夢や可能性を描き、広げていく力」を示す天体。土星は「地道な努力を積み重ね、時間をかけて形にする力」を示す天体。\n・「大きな夢を語って周りを巻き込むタイプか、口には出さず目の前の一歩を着実に積み上げるタイプか」「夢を追う過程そのものを楽しめるタイプか、結果が出るまで不安になりやすいタイプか」など、具体的な場面をイメージしながら、三つの分析軸が一致して示す{{NAME}}さんの夢の追い方を語ってください。\n・「大きく語るのも、着実に積むのも、どちらも夢を叶えるための立派なスタイル」という前向きな視点で語ってください。\n※「夢の追い方って、木星（広げる力）と土星（積み上げる力）のバランスなんですよね。地味にコツコツやってるタイプの人も、ちゃんと木星の夢は生きてる」と語ってください。`},
+{id:'F-13',title:'誰にも見せない、一番奥のプライベートな顔',body:`[今回] ・「一番仲がいい人にも、実はまだ見せていない部分がある」——そんな、誰にも見せないプライベートな顔を読む回。占星術の冥王星{{PLUTO}}（深層に隠された、まだ誰にも見せていない変容の力）、四柱推命の時柱{{HOUR_P}}（四柱の中でも最も内輪にしか見せない"隠れた柱"）、数秘術の欠落数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：冥王星は「本人ですら普段は意識していない、深いところに眠っている力」を示す天体。時柱は「年柱・月柱・日柱の中でも一番奥にあり、家族にすら見せないような本心が表れる」とされる四柱推命の考え方——伝統的に"隠れた柱"と呼ばれる。\n・三つの分析軸が一致して示す「{{NAME}}さんが誰にも見せていないプライベートな一面」を語ってください。孤独な時間に初めて出てくる顔か、特別に心を許した相手にだけ見せる顔か。\n・「見せていないのは隠しているからではなく、それだけ大切に守っている部分だから」という前向きな視点で語ってください。\n※「一番仲がいい人にすら見せてない顔があるって、別に薄情とかじゃなくて、それだけ大事にしまってあるってことなんですよね」と、少し丁寧な温度で語ってください。`},
+{id:'G-01',title:'起業向きか、勤め人向きか：そもそもの適性',body:`[今回] ・「独立して自分でやってみたい」と思ったことが一度もない人もいれば、「いつかは自分の力でやってみたい」とずっと思っている人もいる。その違いの正体を読む回。占星術の太陽{{SUN}}（自分主導で輝きたい欲求）・土星{{SATURN}}（組織の中で積み上げる安定志向）、四柱推命の身強身弱{{UNSEI}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「自分の力を思い切り試したい・自分が主役でありたいという欲求」を示す天体。身強・身弱は「自分のペースだけで進める力が強いか（身強）、組織や仲間の中でこそ力を発揮しやすいか（身弱）」を示す四柱推命の考え方。\n・三つの分析軸が一致して示す「{{NAME}}さんが自分の力で切り開くことに向いているか、組織の中で力を発揮する方が向いているか」を語ってください。どちらが優れているという話ではなく、どちらの環境でエネルギーが自然に湧いてくるかという傾向として。\n・「起業に向いていないと分かっても、それは組織の中でこそ発揮できる強みがあるということ」という前向きな視点で語ってください。\n※「起業に憧れるかどうかって、実は太陽（自分が主役でいたい欲求）の強さで結構決まるんですよね。憧れないタイプも、それはそれで組織の中で輝ける設計！」と語ってください。`},
+{id:'G-02',title:'一人でやる派か、仲間を集めて広げる派か：事業の形',body:`[今回] ・「もし何かを始めるなら、一人でコツコツ派か、仲間を集めて大きくする派か」という、事業の形の好みを読む回。占星術の火星{{MARS}}（単独で動くエネルギー）・木星{{JUPITER}}（人を巻き込み広げる力）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：火星は「一人で黙々と手を動かすエネルギー」を示す天体。木星は「人を巻き込み、仲間と一緒に大きく育てていく力」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんが心地よく力を発揮できる事業の形」を語ってください。一人で完結できる仕事が向くか、チームを作って広げる仕事が向くか。\n・「規模の大小に価値の優劣はなく、自分が消耗せずに続けられる形が一番」という前向きな視点で語ってください。\n※「一人でやりたいか仲間とやりたいかって、火星と木星のどっちが強く出るかなんですよね。一人が向いてるタイプも、全然小さいって話じゃない！」と語ってください。`},
+{id:'G-03',title:'何を軸に事業を選ぶか：好き・得意・需要のどれを優先するか',body:`[今回] ・「好きなことを仕事にすべきか、得意なことを仕事にすべきか、それとも求められていることをすべきか」という、事業選びの永遠の問いを読む回。占星術の金星{{VENUS}}（好き・情熱の源）・水星{{MERCURY}}（得意な技能）・木星{{JUPITER}}（市場・需要を見る目）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「純粋に好きで情熱を注げること」、水星は「自然と得意で人より上手くこなせること」、木星は「世の中に求められている方向性を感じ取る力」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんが事業を選ぶ時に、自然と重視しやすい軸」を語ってください。好き・得意・需要のどれが強く出るか、あるいは複数が重なる領域はどこか。\n・「一つに絞れなくても、複数の軸が重なる場所を探せばいい」という前向きな視点で語ってください。\n※「好き・得意・需要の3つが全部重なる場所を見つけられたら最強なんですよね。まずはどれが自分の中で一番強いか知ることから！」と語ってください。`},
+{id:'G-04',title:'安定と自由、どちらに強く惹かれるか',body:`[今回] ・「決まった収入と枠組みの安心感」と「誰にも縛られない自由」、どちらに心が動きやすいかを読む回。占星術の土星{{SATURN}}（安定・保証を求める力）・天王星{{URANUS}}（自由・独立を求める力）、四柱推命の身強身弱{{UNSEI}}、数秘術のライフパス{{LP}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「決まった枠組みの中で積み上げる安心感」を示す天体。天王星は「型にはまらず、自分の裁量で動きたいという欲求」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんが安定と自由、どちらに強く惹かれる設計か」を語ってください。両方の間で揺れる人も多いことを前提に、どちらが優勢かを具体的に語る。\n・「揺れること自体が自然。どちらかに決めきらなくても、時期によってバランスを変えていい」という前向きな視点で語ってください。\n※「安定か自由かって、一生同じ答えじゃなくていいんですよね。土星と天王星、その時々でどっちが強く出るか変わってもいい」と語ってください。`},
+{id:'G-05',title:'いきなり独立か、勤めながら準備する派か：踏み出し方',body:`[今回] ・「思い立ったらすぐ動きたいタイプ」と「準備を整えてから一歩を踏み出したいタイプ」、その違いを読む回。占星術の火星{{MARS}}（即断即決のエネルギー）・土星{{SATURN}}（段階的に積み上げる慎重さ）、四柱推命の十二運星{{UNSEI}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：火星は「勢いに乗って一気に動きたいエネルギー」を示す天体。十二運星は「今エネルギーを外に出す時期か、内側で力を蓄える時期か」を示す四柱推命の考え方。\n・三つの分析軸が一致して示す「{{NAME}}さんの踏み出し方の傾向」を語ってください。いきなり飛び込むタイプか、勤めながら少しずつ準備を整えるタイプか。\n・「どちらのペースにも、それぞれのリスクの取り方の知恵がある」という前向きな視点で語ってください。\n※「いきなり派も慎重派も、実はどっちも自分なりのリスク管理をしてるんですよね。慎重に準備するのも、立派な戦略！」と語ってください。`},
+{id:'G-06',title:'リスクの取り方・独立のタイミングの見極め方',body:`[今回] ・「今がその時だ」と感じるタイミングの見極め方を読む回。占星術の木星{{JUPITER}}（チャンスを掴む拡大の力）・土星{{SATURN}}（機が熟すまで見極める慎重さ）、四柱推命の大運{{KUBO}}、数秘術のチャレンジナンバーの情報{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「追い風が吹くタイミングを感じ取る力」を示す天体。大運は「四柱推命における10年ごとの運気の大きな流れ」を示す考え方で、動くべき時期・力を蓄えるべき時期の判断材料になる。\n・三つの分析軸が一致して示す「{{NAME}}さんが動くと流れに乗りやすいタイミングの傾向」を語ってください。追い風を感じたらすぐ動くタイプか、周期的な流れを見てから動くタイプか。\n・「完璧なタイミングは存在しないが、自分の流れの傾向を知っておくと決断がしやすくなる」という前向きな視点で語ってください。\n※「独立のタイミングって、待ちすぎても早すぎてもうまくいかないんですよね。自分の流れの波を知ってるだけで、決断がグッと楽になる」と語ってください。`},
+{id:'G-07',title:'失敗した時にどう立ち直るか',body:`[今回] ・「一度うまくいかなかった時、実はこう立ち直る」という回復のパターンを読む回。占星術の土星{{SATURN}}（試練からの学び）・火星{{MARS}}（再び動き出すエネルギー）、四柱推命の通変星{{TENMV}}、数秘術の欠落数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「失敗や試練を、時間をかけてどう消化し、力に変えていくか」を示す天体。火星は「落ち込んだ後、再び前を向いて動き出すエネルギー」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんの失敗からの立ち直り方」を語ってください。時間をかけてじっくり消化するタイプか、比較的早く切り替えて次に動き出すタイプか。\n・「失敗を引きずることも、すぐ切り替えることも、どちらもその人なりの誠実な向き合い方」という前向きな視点で語ってください。\n※「失敗した時の立ち直り方に、正解も速さの優劣もないんですよね。土星でじっくり消化するタイプも、ちゃんと強くなってる」と、少し丁寧な温度で語ってください。`},
+{id:'G-08',title:'独立後、どんな才能が最も伸びるか',body:`[今回] ・「もし独立したら、自分のどんな部分が一番活きるんだろう」という問いに答える回。占星術の太陽{{SUN}}（本質的に発揮したい輝き）・木星{{JUPITER}}（拡大しやすい可能性の方向）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「誰にも指図されない環境で、最も自然に発揮される自分らしさ」を示す天体。木星は「制約が外れた時に、一気に伸びやすい可能性の方向」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんが独立した環境に置かれた時、最も伸びやすい才能」を語ってください。組織の中では発揮しきれなかった部分が、環境が変わることでどう開花しやすいか。\n・「今は気づいていない才能でも、環境が変われば自然と表に出てくることがある」という前向きな視点で語ってください。\n※「会社員時代は目立たなかった才能が、独立した途端に一気に開花する人っているんですよね。太陽と木星が、環境の制約から解放されて伸びる瞬間！」と語ってください。`},
+{id:'G-09',title:'経営者としての意思決定スタイル：独断か、合議か',body:`[今回] ・「自分一人で決めて突き進みたいタイプか、周りの意見を集めてから決めたいタイプか」という、経営判断の下し方を読む回。占星術の太陽{{SUN}}（自分の判断への自信）・水星{{MERCURY}}（情報を集めて検討する思考）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「自分の判断に自信を持ち、決めたら突き進む力」を示す天体。水星は「様々な情報や意見を集め、比較検討してから動く思考のスタイル」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんの意思決定のスタイル」を語ってください。スピード重視で独断即決するタイプか、周囲の声を取り入れてから決めるタイプか。\n・「どちらのスタイルにも向く場面があり、状況に応じて使い分けられることが本当の強さ」という前向きな視点で語ってください。\n※「独断で決める人も、実は周りの声をちゃんと聞いた上で最後は自分で腹を括ってるんですよね。決め方に優劣はない！」と語ってください。`},
+{id:'G-10',title:'事業資金・投資判断とのつきあい方',body:`[今回] ・「事業に使うお金を、どんな基準で判断しているか」という、投資判断のクセを読む回。占星術の木星{{JUPITER}}（拡大に向けた積極投資）・土星{{SATURN}}（堅実な資金管理）、四柱推命の通変星{{TENMV}}（財星）、数秘術の誕生数{{BN}}を統合する。（※D-01「お金との向き合い方」が個人の家計・価値観を扱ったのに対し、この回は事業資金・投資判断という、より踏み込んだ経営の視点に絞る。）\n・まず専門用語をかみ砕いて紹介する：木星は「先行投資してでも大きく育てたいという拡大志向」を示す天体。土星は「リスクを抑え、堅実に資金を管理したいという慎重さ」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんの事業資金との向き合い方」を語ってください。チャンスがあれば積極的に投資するタイプか、慎重に手元資金を守るタイプか。\n・「どちらの姿勢にも、事業を守る・育てるという同じ目的がある」という前向きな視点で語ってください。\n※「投資判断のスタイルって、木星（広げたい気持ち）と土星（守りたい気持ち）のせめぎ合いなんですよね。慎重派も臆病なわけじゃなく、ちゃんと事業を守ってる」と語ってください。`},
+{id:'G-11',title:'交渉・人を動かす時のスタイル',body:`[今回] ・「相手を説得したい時、実はこう動いている」という交渉のクセを読む回。占星術の火星{{MARS}}（押しの強さ・直球で迫る力）・金星{{VENUS}}（和やかに引き出す力）、四柱推命の通変星{{TENMV}}、数秘術のPN{{PN}}（表現数）を統合する。\n・まず専門用語をかみ砕いて紹介する：火星は「まっすぐ主張し、押し切る交渉のスタイル」を示す天体。金星は「相手との調和を保ちながら、心地よく引き出す交渉のスタイル」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんの交渉・人を動かす時のスタイル」を語ってください。ストレートに主張して押し切るタイプか、relationshipを大事にしながら合意を作るタイプか。\n・「押しの強さも、柔らかさも、どちらも人を動かす立派な力」という前向きな視点で語ってください。\n※「交渉のスタイルって、火星（押す力）と金星（和ませる力）のバランスなんですよね。ゴリゴリ押すタイプもいれば、気づいたら丸め込まれてたってタイプもいる！」と語ってください。`},
+{id:'G-12',title:'自分の顔を出すか出さないか：表に立つか、裏方に徹するか',body:`[今回] ・「事業の顔として自分が前に出たいか、裏方として支える方が心地よいか」という、表舞台との距離感を読む回。占星術の太陽{{SUN}}（表に立って輝きたい欲求）・ASC{{ASC}}（第一印象・見た目の演出）、四柱推命の通変星{{TENMV}}、数秘術のPN{{PN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：太陽は「注目を浴びる場所で輝きたいという欲求の強さ」を示す天体。ASCは「人前に立った時、無意識に立ち上がるキャラクター」を示す占星術の感受点。\n・三つの分析軸が一致して示す「{{NAME}}さんが表に立つことに向いているか、裏方として支えることに向いているか」を語ってください。\n・「表に立つことも裏方に徹することも、どちらも事業には欠かせない役割」という前向きな視点で語ってください。\n※「顔を出したいかどうかって、実は太陽の輝きたい欲求の強さそのものなんですよね。裏方が心地いい人も、それは全然消極的とかじゃない！」と語ってください。`},
+{id:'G-13',title:'事業拡大期の"成長痛"にどう向き合うか',body:`[今回] ・「軌道に乗り始めた途端、急に忙しさや責任が増して戸惑う」という、成長期特有の痛みへの向き合い方を読む回。占星術の土星{{SATURN}}（急速な変化への試練）・天王星{{URANUS}}（変化への適応力）、四柱推命の大運{{KUBO}}、数秘術の欠落・過剰数{{NUM_NOTE}}を統合する。\n・まず専門用語をかみ砕いて紹介する：土星は「規模が大きくなることで新たに課される責任・試練」を示す天体。大運は「四柱推命における10年ごとの運気の大きな流れ」を示す考え方で、拡大期がどんな質感を帯びているかの参考になる。\n・三つの分析軸が一致して示す「{{NAME}}さんが事業拡大期にぶつかりやすい壁と、それを乗り越えるための傾向」を語ってください。\n・「急成長の痛みは、事業が生きて育っている証。慌てず自分のペースで対応していい」という前向きな視点で語ってください。\n※「成長痛って聞くと不安になるけど、実は順調に育ってるからこそ起きることなんですよね。土星の試練は、乗り越えるたびにちゃんと力になる」と語ってください。`},
+{id:'G-14',title:'顧客・ユーザーとどんな関係を築きたいか',body:`[今回] ・「お客さんとの間に、どんな距離感・関係を築きたいか」という、顧客との向き合い方を読む回。占星術の金星{{VENUS}}（愛され方・心地よい関係の形）・月{{MOON}}（信頼関係の築き方）、四柱推命の通変星{{TENMV}}、数秘術のソウルナンバー{{SN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：金星は「相手にどう愛され、どう心地よい関係を築きたいか」を示す天体。月は「時間をかけて信頼を積み重ねる、情緒的な繋がり方」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんが顧客・ユーザーと築きたい関係の形」を語ってください。一人ひとりと深く長く付き合いたいタイプか、多くの人に広く価値を届けたいタイプか。\n・「関係の築き方に正解はなく、その人らしい距離感が一番顧客に伝わる」という前向きな視点で語ってください。\n※「顧客との関係の築き方って、実はその人の恋愛や友情の築き方と同じ設計だったりするんですよね。深く狭くか、広く浅くか」と語ってください。`},
+{id:'G-15',title:'何のためにやるのか：事業の理念・哲学の軸',body:`[今回] ・「お金のためだけじゃない、自分がこれをやる本当の理由」を読む回。占星術の木星{{JUPITER}}（信じている世界観・広げたい価値）・太陽{{SUN}}（自分の存在意義）、四柱推命の通変星{{TENMV}}、数秘術のデスティニー{{DN}}を統合する。\n・まず専門用語をかみ砕いて紹介する：木星は「何を信じ、世の中にどんな価値を広げたいか」を示す天体。太陽は「自分がこの世に存在する意味・輝きたい方向」を示す天体。\n・三つの分析軸が一致して示す「{{NAME}}さんが事業を通して本当に実現したいこと」を語ってください。利益の先にある、譲れない理念や哲学の軸を具体的に。\n・「理念は掲げるものではなく、すでにその人の行動の端々に表れているもの」という前向きな視点で語ってください。\n※「何のためにやるのかって、実は木星（信念）と太陽（存在意義）が重なる場所に答えがあるんですよね。お金は後からついてくる副産物」と語ってください。`},
+{id:'G-16',title:'経営者としての孤独・責任との向き合い方',body:`[今回] ・「最終的にすべてを決めるのは自分」という重みと、どう向き合っているかを読む回。占星術の土星{{SATURN}}（責任の重さ）・月{{MOON}}（孤独を感じる瞬間）、四柱推命の身強身弱{{UNSEI}}、数秘術の欠落数{{NUM_NOTE}}を統合する。（※F-07「孤独・一人の時間の意味との付き合い方」が生活全般における孤独を扱ったのに対し、この回は"最終判断を誰にも委ねられない経営者特有の孤独"に絞る。）\n・まず専門用語をかみ砕いて紹介する：土星は「最終的な責任を一身に引き受ける重み」を示す天体。身強・身弱は「その重みを自分の内側だけで支えられるか、外部の力を借りて支えたいか」を示す四柱推命の考え方。\n・三つの分析軸が一致して示す「{{NAME}}さんが経営者としての孤独・責任とどう向き合いやすいか」を語ってください。\n・「孤独を感じるのは弱さではなく、それだけ真剣に責任を引き受けている証。頼れる相手を持つことも立派な強さ」という前向きな視点で語ってください。\n※「経営者の孤独って、誰にも決断を肩代わりしてもらえないところから来るんですよね。それでも、頼れる人を持つことは全然弱さじゃない」と、少し丁寧な温度で語ってください。`},
+{id:'H-01',title:'誕生の瞬間：ASCが刻む生まれた時の第一声',body:`[今回] ・年齢域法（天体ごとに人生の年代を象徴するという占星術の伝統的な考え方）で読み解く「人生の成長段階」シリーズ第1回。「生まれ落ちたその瞬間」——ASCが刻む、人生の出発点の情景を読む回。ASCのサビアン{{SAB_ASC}}を扱う。（※基本第17回「幼少期の原点」も同じASCを扱うが、あちらは幼少期という期間全体を通した適応パターンの形成。この回は年齢域法に基づく"生まれ落ちたその瞬間"というピンポイントの情景に絞る。）
+・まず年齢域法という考え方をかみ砕いて紹介する：年齢域法は、天体の公転周期の長さに基づき「月は乳幼児期、水星は学童期……」というように、各天体が人生のどの年代を象徴するかを割り当てる伝統的な技法。このシリーズでは、月から海王星・冥王星・MCまでを、それぞれの年代の象徴として順に読み解いていく。
+・ASCは「生まれ落ちた瞬間、この世界に対してどう身構え、どう最初の一歩を踏み出したか」を示す占星術の感受点。その度数が持つサビアンのシンボルは、{{NAME}}さんの人生全体を貫く「出発点の情景」を象徴する。
+・{{SAB_ASC}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「人生に対する根本的な構え・最初の一歩の踏み出し方」とどう対応するかを語ってください。
+※「生まれた瞬間の星の配置が、その人の人生全体の"出だしの音"を決めてるとしたら、ちょっとロマンチックですよね」と語ってください。`},
+{id:'H-02',title:'乳幼児期（0〜7歳）：月が刻む原風景',body:`[今回] ・「一番古い記憶より前、まだ言葉すら知らなかった頃」に、実はもう原風景が刻まれていた——年齢域法では、月がちょうどこの乳幼児期（0〜7歳）を象徴するとされる。月のサビアン{{SAB_MOON}}を扱う。
+・まず専門用語をかみ砕いて紹介する：月は「無意識の感情・本能的な安心の基盤」を示す天体。年齢域法では、月は人生で最も早い時期（0〜7歳）を象徴するとされる——まだ自我が確立する前、環境からの刺激をそのまま吸収していた時期。
+・{{SAB_MOON}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「言葉を持つ前に、環境から吸収した安心・不安の原風景」とどう対応するかを語ってください。
+・「本人も覚えていない時期の刻印だからこそ、今の自分の"なんとなくの安心・不安"の理由が、そこにあるかもしれない」という前向きな視点で語ってください。
+※「0〜7歳の記憶なんてほとんど残ってないのに、その時期に刻まれたものが今も自分の土台になってるって、不思議ですよね」と語ってください。`},
+{id:'H-03',title:'学童期（7〜15歳）：水星が刻む学びの土台',body:`[今回] ・「勉強の仕方、友達との喋り方を覚えていった」あの時期——年齢域法では、水星がこの学童期（7〜15歳）を象徴するとされる。水星のサビアン{{SAB_OTHER}}を扱う。
+・まず専門用語をかみ砕いて紹介する：水星は「情報の処理の仕方・言葉の使い方・学びのスタイル」を示す天体。年齢域法では、水星は7〜15歳——学校生活が始まり、知識と友人関係を吸収していく時期を象徴するとされる。
+・水星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「子供時代にどう学び、どうクラスメイトと関わっていたか」とどう対応するかを語ってください。
+・「この時期に身についた学び方の癖は、大人になった今の情報収集スタイルにも繋がっている」という視点で語ってください。
+※「小学生の頃の学び方の癖って、意外と大人になっても抜けないものなんですよね」と語ってください。`},
+{id:'H-04',title:'青年期（15〜25歳）：金星が刻む初めての恋',body:`[今回] ・初めて人を好きになった瞬間、初めて自分の美意識に目覚めた瞬間——そんな青年期（15〜25歳）を、年齢域法では金星が象徴するとされる。金星のサビアン{{SAB_OTHER}}を扱う。（※基本第20回「本気の恋」も同じ金星を扱うが、あちらは年代を限定せず"人生で本気になったあの瞬間"に絞った読み方。この回は年齢域法に基づく"15〜25歳という年代帯全体"のテーマ。）
+・まず専門用語をかみ砕いて紹介する：金星は「何を美しい・愛おしいと感じるかの美意識」を示す天体。年齢域法では、金星は15〜25歳——初めての恋愛や自分の好みが形作られる時期を象徴するとされる。
+・金星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「青年期にどんな形で愛や美意識が芽生えたか」とどう対応するかを語ってください。
+・「その時期の恋愛観・美意識は、今の価値観の原型として今も生きている」という視点で語ってください。
+※「10代後半から20代前半の恋愛観って、その後の人生の"好みの原型"になってたりするんですよね」と語ってください。`},
+{id:'H-05',title:'成人確立期（25〜35歳）：太陽が刻む自己確立',body:`[今回] ・「自分は何者か」を、社会の中で確立していく時期——年齢域法では太陽がこの成人確立期（25〜35歳）を象徴するとされる。太陽のサビアン{{SAB_SUN}}を扱う。
+・まず専門用語をかみ砕いて紹介する：太陽は「自分らしく輝きたい方向・本質的な自我」を示す天体。年齢域法では、太陽は25〜35歳——社会の中で自分の立ち位置を確立していく時期を象徴するとされる。
+・{{SAB_SUN}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「この年代に自分をどう確立していくか」とどう対応するかを語ってください。
+・「まだこの時期を迎えていない、または過ぎた人も、その情景は人生の指針として活きる」という視点で語ってください。
+※「20代後半から30代って、"自分はこういう人間だ"って輪郭がはっきりしてくる時期なんですよね」と語ってください。`},
+{id:'H-06',title:'壮年期（35〜45歳）：火星が刻む挑戦',body:`[今回] ・一番脂が乗って、挑戦し、結果を出しにいく時期——それが年齢域法における火星の壮年期（35〜45歳）。火星のサビアン{{SAB_OTHER}}を扱う。（※基本第19回「青年期の自立」も同じ火星を扱うが、あちらは初めて独り立ちしようとした"最初の一歩"。この回は年齢域法に基づく35〜45歳という"脂が乗った挑戦期"のテーマ。）
+・まず専門用語をかみ砕いて紹介する：火星は「行動力・挑戦するエネルギー」を示す天体。年齢域法では、火星は35〜45歳——最も行動力に満ち、成果を追い求める時期を象徴するとされる。
+・火星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「この年代でどう挑戦し、何に情熱を燃やすか」とどう対応するかを語ってください。
+※「30代後半から40代前半って、体力と経験値が一番いいバランスで噛み合う時期なんですよね」と語ってください。`},
+{id:'H-07',title:'中年拡大期（45〜56歳）：木星が刻む拡大',body:`[今回] ・積み上げてきたものがふと実を結び、視野が大きく開けていく——年齢域法ではこの時期（45〜56歳）を木星が象徴するとされる。木星のサビアン{{SAB_OTHER}}を扱う。
+・まず専門用語をかみ砕いて紹介する：木星は「拡大・幸運・視野の広がり」を示す天体。年齢域法では、木星は45〜56歳——それまでの積み重ねが実を結び、より広い視野で物事を見られるようになる時期を象徴するとされる。
+・木星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「この年代でどう拡大し、何に恵まれやすいか」とどう対応するかを語ってください。
+※「40代後半からって、それまでの苦労がふっと実を結び始める時期でもあるんですよね」と語ってください。`},
+{id:'H-08',title:'熟年期（56〜70歳）：土星が刻む集大成',body:`[今回] ・積み上げてきた責任と経験が、いよいよ集大成として形になっていく——年齢域法における土星の熟年期（56〜70歳）を読む回。土星のサビアン{{SAB_OTHER}}を扱う。
+・まず専門用語をかみ砕いて紹介する：土星は「責任・時間をかけて積み上げる力」を示す天体。年齢域法では、土星は56〜70歳——長年の積み重ねが集大成として結実する時期を象徴するとされる。
+・土星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「この年代でどんな集大成を迎えやすいか」とどう対応するかを語ってください。
+※「土星が象徴する年代は、若い頃の苦労が"貫禄"に変わっていく時期なんですよね」と語ってください。`},
+{id:'H-09',title:'老年自由期（70〜84歳）：天王星が刻む自由な境地',body:`[今回] ・社会の役割からようやく解放され、本当に自分がやりたいことだけをする——年齢域法では天王星がこの老年自由期（70〜84歳）を象徴するとされる。天王星のサビアン{{SAB_OTHER}}を扱う。（※基本第18回「思春期の反抗」でも天王星を扱っているが、あちらは現代の心理占星術で使われる"反骨・自分らしさの目覚め"という解釈。この回は年齢域法という別の伝統に基づく"老年の自由"という解釈で、同じ天体の異なる側面を扱う。）
+・まず専門用語をかみ砕いて紹介する：天王星は「型にはまらない自由・独自性」を示す天体。年齢域法では、天王星は70〜84歳——社会的な役割や責任から解放され、最も自由に自分らしくいられる時期を象徴するとされる。
+・天王星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「晩年、社会の枠が外れた時にどんな自由を謳歌しやすいか」とどう対応するかを語ってください。
+※「天王星が象徴する老年期って、"やっと誰にも気を遣わず自分のペースで生きられる"時期なんですよね」と語ってください。`},
+{id:'H-10',title:'晩年超越期（84歳以降）：海王星が刻む超越',body:`[今回] ・現実の境界がゆるみ、大きな何かと静かに繋がっていく——年齢域法ではこの最晩年（84歳以降）を海王星が象徴するとされる。海王星のサビアン{{SAB_OTHER}}を扱う。
+・まず専門用語をかみ砕いて紹介する：海王星は「現実の境界が溶け、大きなものと一体化する感覚」を示す天体。年齢域法では、海王星は84歳以降——人生の最晩年、より大きな何か（家族の繋がり・信仰・宇宙的な視点等）へと意識が向かう時期を象徴するとされる。
+・海王星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「人生の最終盤にどんな超越的な境地に至りやすいか」とどう対応するかを語ってください。
+※「最晩年に近づくほど、細かいことより大きな繋がりの方が大事に感じられてくるのかもしれませんね」と、少し丁寧な温度で語ってください。`},
+{id:'H-11',title:'生涯を貫く核：冥王星が刻む変容のテーマ',body:`[今回] ・年齢域法において冥王星だけは特定の年代に縛られず「生涯を通して繰り返し訪れる、深い変容のテーマ」を象徴するとされる。人生のどこかで一度、すべてが作り変えられるような経験をする、その領域を読む回。冥王星のサビアン{{SAB_OTHER}}を扱う。
+・まず専門用語をかみ砕いて紹介する：冥王星は「破壊と再生・深層からの変容」を示す天体。他の天体と違い特定の年代に縛られず、人生の節目ごとに繰り返し姿を現すとされる。
+・冥王星のサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「生涯を通じてどんなテーマで根本的な変容を経験しやすいか」とどう対応するかを語ってください。
+※「冥王星だけは年齢に関係なく、人生の要所要所で"生まれ変わる"ような経験をもたらすんですよね」と語ってください。`},
+{id:'H-12',title:'人生の到達点：MCが刻む到達のビジョン',body:`[今回] ・MCは特定の年代というより「人生をかけて登り詰めていく、社会的な到達点そのもの」を象徴する。その頂上の景色を先取りして読む回。MCのサビアン{{SAB_OTHER}}を扱う。
+・まず専門用語をかみ砕いて紹介する：MCは「社会的に目指す到達点・キャリアの頂上で見える景色」を示す占星術の感受点。
+・MCのサビアン{{SAB_OTHER}}の情景をかみ砕いて解説し、それが{{NAME}}さんの「人生をかけて登り詰めた先に見えるビジョン」とどう対応するかを語ってください。
+・「頂上はゴールではなく、そこから見える景色がまた次のステージへの入口になる」という前向きな視点で語ってください。
+※「MCが示す頂上の景色を先に知っておくと、日々の努力が"何に繋がっているか"がクリアになるんですよね」と語ってください。`}
+];
+
+// カテゴリ色設定
+const EXTRA_CAT_COLORS = {
+  A:{activeBg:'bg-sky-700',badge:'bg-sky-600 text-white',inactiveBadge:'bg-slate-800 text-sky-400'},
+  B:{activeBg:'bg-amber-700',badge:'bg-amber-600 text-white',inactiveBadge:'bg-slate-800 text-amber-400'},
+  C:{activeBg:'bg-emerald-700',badge:'bg-emerald-600 text-white',inactiveBadge:'bg-slate-800 text-emerald-400'},
+  D:{activeBg:'bg-rose-700',badge:'bg-rose-600 text-white',inactiveBadge:'bg-slate-800 text-rose-400'},
+  E:{activeBg:'bg-cyan-700',badge:'bg-cyan-600 text-white',inactiveBadge:'bg-slate-800 text-cyan-400'},
+  F:{activeBg:'bg-violet-700',badge:'bg-violet-600 text-white',inactiveBadge:'bg-slate-800 text-violet-400'},
+  G:{activeBg:'bg-lime-700',badge:'bg-lime-600 text-white',inactiveBadge:'bg-slate-800 text-lime-400'},
+  H:{activeBg:'bg-fuchsia-700',badge:'bg-fuchsia-600 text-white',inactiveBadge:'bg-slate-800 text-fuchsia-400'},
+};
+
+// タブ管理
+let currentTab = 'basic'; // 'basic' | 'extra'
+let extraIdx = 0;
+
+function switchTab(tab) {
+  currentTab = tab;
+  resetCopy();
+  const tabBasic = document.getElementById('tab-basic');
+  const tabExtra = document.getElementById('tab-extra');
+  if (tab === 'basic') {
+    tabBasic.className = 'flex-1 py-2 text-xs font-semibold text-white bg-indigo-600/30 border-b-2 border-indigo-500 transition-all';
+    tabExtra.className  = 'flex-1 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all';
+    document.getElementById('extra-legend').classList.add('hidden');
+    renderList(); updateViewer();
+  } else {
+    tabBasic.className = 'flex-1 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all';
+    tabExtra.className  = 'flex-1 py-2 text-xs font-semibold text-white bg-violet-600/30 border-b-2 border-violet-500 transition-all';
+    document.getElementById('extra-legend').classList.remove('hidden');
+    renderExtraList(); updateExtraViewer();
+  }
+}
+
+function fillExtra(d) {
+  const TKEYS = ['NAME','BIRTH','BIRTHPLACE','LP','DN','SN','PN','MN','BN','NUM_NOTE','SUN','MOON','MERCURY','VENUS','MARS','JUPITER','SATURN','URANUS','NEPTUNE','PLUTO','ASC','MC','ASPECT_NOTE','SAB_SUN','SAB_MOON','SAB_ASC','SAB_OTHER','YEAR_P','MONTH_P','DAY_P','HOUR_P','TENMV','UNSEI','KUBO','GOGYO'];
+  // 追加エピソードでのみ使うプレースホルダ
+  const EXTRA_KEYS = ['SAB_MERCURY','SAB_VENUS','SAB_MARS','SAB_JUPITER','SAB_SATURN','SAB_URANUS','SAB_NEPTUNE','SAB_PLUTO'];
+  const ep = EXTRA_EPS_RAW[extraIdx];
+  let out = EXTRA_BASE + '\n' + `【${ep.id}】${ep.title}\n` + ep.body;
+  // 敬称処理：{{NAME}}さん を選択された敬称に置換（さん/ちゃん/くん/呼び捨て）
+  const honorificRaw = (d.HONORIFIC !== undefined && d.HONORIFIC !== '') ? d.HONORIFIC : 'さん';
+  const honorific = honorificRaw === 'NONE' ? '' : honorificRaw;
+  const nameVal = (d.NAME && String(d.NAME).trim()) ? String(d.NAME).trim() : '（未入力）';
+  out = out.split('{{NAME}}さん').join(nameVal + honorific);
+  [...TKEYS, ...EXTRA_KEYS].forEach(k => {
+    const val = (d[k] && String(d[k]).trim()) ? String(d[k]).trim() : '（未入力）';
+    out = out.split('{{' + k + '}}').join(val);
+  });
+  return out;
+}
+
+function renderExtraList() {
+  listContainer.innerHTML = '';
+  EXTRA_EPS_RAW.forEach((ep, idx) => {
+    const cat = ep.id.split('-')[0];
+    const cc  = EXTRA_CAT_COLORS[cat];
+    const act = idx === extraIdx;
+    const btn = document.createElement('button');
+    btn.className = `w-full text-left px-3 py-2.5 rounded-md transition-all duration-200 flex items-center gap-2 group ${act ? cc.activeBg + ' text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`;
+    btn.innerHTML = `<span class="ep-badge font-mono text-xs ${act ? cc.badge : cc.inactiveBadge}">${ep.id}</span><span class="text-sm font-medium truncate flex-1">${ep.title}</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 transition-opacity ${act ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    btn.onclick = () => { extraIdx = idx; resetCopy(); renderExtraList(); updateExtraViewer(); };
+    listContainer.appendChild(btn);
+  });
+  const ab = listContainer.children[extraIdx];
+  if (ab) ab.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function updateExtraViewer() {
+  const text = fillExtra(data);
+  promptViewer.value = text;
+  const ep = EXTRA_EPS_RAW[extraIdx];
+  progressLabel.textContent = `${extraIdx + 1} / ${EXTRA_EPS_RAW.length}（追加）`;
+  progressBar.style.width = `${((extraIdx + 1) / EXTRA_EPS_RAW.length) * 100}%`;
+  charCount.textContent = `${stripYomi(text).length.toLocaleString()} 文字`;
+}
+
+// コピーボタンを追加タブでも使えるように上書き
+copyBtn.addEventListener('click', async () => {
+  if (isCopied) return;
+  const t = stripYomi(currentTab === 'basic'
+    ? `${basePrompt}\n${episodes[selectedIdx]}`
+    : fillExtra(data));
+  const ok = () => { isCopied=true; iconCopy.classList.add('hidden'); iconCheck.classList.remove('hidden'); copyText.textContent='コピー完了！'; copyBtn.className='flex items-center gap-2 px-5 py-2.5 rounded-md font-semibold transition-all duration-300 bg-emerald-600/20 text-emerald-400 border border-emerald-600/50 cursor-not-allowed'; showOk('クリップボードへ転送完了。','読み仮名除去済み｜NotebookLMでどうぞ。'); setTimeout(()=>{resetCopy();hide(toastOk);},3000); };
+  const ng = () => { showErr('コピーに失敗しました。','手動で選択してください。'); setTimeout(()=>hide(toastErr),4000); };
+  if (navigator.clipboard?.writeText) { try { await navigator.clipboard.writeText(t); ok(); return; } catch(_){} }
+  try { const ta=Object.assign(document.createElement('textarea'),{value:t}); ta.style.cssText='position:fixed;left:-9999px;top:0'; document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy')?ok():ng(); document.body.removeChild(ta); } catch(_){ ng(); }
+}, { once: false });
+
+// ---- ソース用データ コピー ----
+const sourceBtn=$('source-btn'), iconSource=$('icon-source'), iconSourceCheck=$('icon-source-check'), sourceText=$('source-text');
+let sourceCopied=false;
+function resetSource(){ sourceCopied=false; iconSource.classList.remove('hidden'); iconSourceCheck.classList.add('hidden'); sourceText.textContent='ソース用データ'; sourceBtn.className='flex items-center gap-2 px-4 py-2.5 rounded-md font-semibold transition-all duration-300 bg-violet-600/15 hover:bg-violet-600/30 text-violet-300 border border-violet-600/50 active:scale-95'; }
+sourceBtn.addEventListener('click', async () => {
+  if (sourceCopied) return;
+  if (!data.NAME || !data.NAME.trim()) { showErr('対象者が選択されていません。','上で対象者を選んでください。'); setTimeout(()=>hide(toastErr),4000); return; }
+  const t = stripYomi(buildSourceData(data));
+  const ok = () => { sourceCopied=true; iconSource.classList.add('hidden'); iconSourceCheck.classList.remove('hidden'); sourceText.textContent='コピー完了！'; sourceBtn.className='flex items-center gap-2 px-4 py-2.5 rounded-md font-semibold transition-all duration-300 bg-emerald-600/20 text-emerald-400 border border-emerald-600/50 cursor-not-allowed'; showOk('分析データをコピーしました。','NotebookLMの「ソース」に貼り付けてください。'); setTimeout(()=>{resetSource();hide(toastOk);},3000); };
+  const ng = () => { showErr('コピーに失敗しました。','手動で選択してください。'); setTimeout(()=>hide(toastErr),4000); };
+  if (navigator.clipboard?.writeText) { try { await navigator.clipboard.writeText(t); ok(); return; } catch(_){} }
+  try { const ta=Object.assign(document.createElement('textarea'),{value:t}); ta.style.cssText='position:fixed;left:-9999px;top:0'; document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy')?ok():ng(); document.body.removeChild(ta); } catch(_){ ng(); }
+});
+
+// キーボード操作も追加タブ対応
+document.addEventListener('keydown', e => {
+  if (document.activeElement === promptViewer) return;
+  if (!modal.classList.contains('hidden') || !manualModal.classList.contains('hidden')) return;
+  if (currentTab === 'basic') {
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (selectedIdx < TOTAL-1){ selectedIdx++; epSelect.value=selectedIdx; resetCopy(); renderList(); updateViewer(); } }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (selectedIdx > 0){ selectedIdx--; epSelect.value=selectedIdx; resetCopy(); renderList(); updateViewer(); } }
+  } else {
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (extraIdx < EXTRA_EPS_RAW.length-1){ extraIdx++; resetCopy(); renderExtraList(); updateExtraViewer(); } }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); if (extraIdx > 0){ extraIdx--; resetCopy(); renderExtraList(); updateExtraViewer(); } }
+  }
+});
+loadPeople();
+refreshPersonSelect();
+rebuild();
+</script>
+</body>
+</html>
