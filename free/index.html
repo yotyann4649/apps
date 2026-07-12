@@ -144,7 +144,7 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
 
   <div class="input-card">
     <div class="ic-label">生年月日を入力してください</div>
-    <input type="date" id="inp-birth" class="date-input" max="2010-12-31">
+    <input type="date" id="inp-birth" class="date-input">
 
     <!-- 日柱上書き -->
     <div class="pillar-override">
@@ -406,7 +406,7 @@ function getSunSign(birth){
   const si=Math.floor(lon/30);
   return{sign:SIGNS[si],icon:SIGN_ICON[si],deg:Math.floor(lon%30)+1,idx:si};
 }
-const MANNEN={"1940":39,"1941":45,"1942":50,"1943":55,"1944":0,"1945":6,"1946":11,"1947":16,"1948":21,"1949":27,"1950":32,"1951":37,"1952":42,"1953":48,"1954":53,"1955":58,"1956":3,"1957":9,"1958":14,"1959":19,"1960":24,"1961":30,"1962":35,"1963":40,"1964":45,"1965":51,"1966":56,"1967":1,"1968":6,"1969":12,"1970":17,"1971":22,"1972":27,"1973":33,"1974":38,"1975":43,"1976":48,"1977":54,"1978":59,"1979":4,"1980":9,"1981":15,"1982":20,"1983":25,"1984":30,"1985":36,"1986":41,"1987":46,"1988":51,"1989":57,"1990":2,"1991":7,"1992":12,"1993":18,"1994":23,"1995":28,"1996":33,"1997":39,"1998":44,"1999":49,"2000":54,"2001":0,"2002":5,"2003":10,"2004":15,"2005":21,"2006":26,"2007":31,"2008":36,"2009":42,"2010":47,"2011":52,"2012":57,"2013":3,"2014":8,"2015":13,"2016":18,"2017":24,"2018":29,"2019":34,"2020":39,"2021":45,"2022":50,"2023":55,"2024":0,"2025":6,"2026":11,"2027":16,"2028":21,"2029":27,"2030":32};
+const MANNEN={"1940":39,"1941":45,"1942":50,"1943":55,"1944":0,"1945":6,"1946":11,"1947":16,"1948":21,"1949":27,"1950":32,"1951":37,"1952":42,"1953":48,"1954":53,"1955":58,"1956":3,"1957":9,"1958":14,"1959":19,"1960":24,"1961":30,"1962":35,"1963":40,"1964":45,"1965":51,"1966":56,"1967":1,"1968":6,"1969":12,"1970":17,"1971":22,"1972":27,"1973":33,"1974":38,"1975":43,"1976":48,"1977":54,"1978":59,"1979":4,"1980":9,"1981":15,"1982":20,"1983":25,"1984":30,"1985":36,"1986":41,"1987":46,"1988":51,"1989":57,"1990":2,"1991":7,"1992":12,"1993":18,"1994":23,"1995":28,"1996":33,"1997":39,"1998":44,"1999":49,"2000":54,"2001":0,"2002":5,"2003":10,"2004":15,"2005":21,"2006":26,"2007":31,"2008":36,"2009":42,"2010":47,"2011":52,"2012":57,"2013":3,"2014":8,"2015":13,"2016":18,"2017":24,"2018":29,"2019":34,"2020":39,"2021":45,"2022":50,"2023":55,"2024":0,"2025":6,"2026":11,"2027":16,"2028":21,"2029":27,"2030":32,"2031":37,"2032":42,"2033":48,"2034":53,"2035":58,"2036":3,"2037":9,"2038":14,"2039":19,"2040":24,"2041":30,"2042":35,"2043":40,"2044":45,"2045":51,"2046":56,"2047":1,"2048":6,"2049":12,"2050":17,"2051":22,"2052":27,"2053":33,"2054":38,"2055":43,"2056":48,"2057":54,"2058":59,"2059":4,"2060":9,"2061":15,"2062":20,"2063":25,"2064":30,"2065":36,"2066":41,"2067":46,"2068":51,"2069":57,"2070":2,"2071":7,"2072":12,"2073":18,"2074":23,"2075":28,"2076":33,"2077":39,"2078":44,"2079":49,"2080":54};
 const KANSHI60=[];(()=>{const k=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'],s=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];for(let i=0;i<60;i++)KANSHI60.push(k[i%10]+s[i%12]);})();
 function calcPillarAuto(birth){
   const parts=birth.split('-'); const y=parseInt(parts[0]),m=parseInt(parts[1]),d=parseInt(parts[2]);
@@ -554,14 +554,8 @@ function runAnalysis(){
     // ── 気質タイプカード ──
     const tc=document.getElementById('type-card');
     tc.style.borderColor=T.border;
-    tc.querySelector('.type-card::before');
-    // top border color via inline style on pseudo — use a div instead
-    const topBar=document.createElement('div');
-    // inject via style attribute on the card's before hack → use wrapper trick
     tc.style.setProperty('--type-color',T.color);
     tc.style.setProperty('--type-border',T.border);
-    // set ::before color via class or direct style attr on existing element
-    // simplest: just set border-top directly
     tc.style.borderTopColor=T.border;
     tc.style.borderTopWidth='4px';
 
@@ -662,12 +656,21 @@ function runAnalysis(){
 //  生年月日入力時に自動計算値を即表示
 // ══════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('inp-birth').addEventListener('change',function(){
+  const birthInp=document.getElementById('inp-birth');
+
+  // 入力可能な範囲を設定：min=万年暦データの開始年(1940)、max=今日（未来日付は入力不可）
+  // 固定の日付をハードコードすると年々ズレていくため、常にその場で計算する
+  const today=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  birthInp.max=`${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+  birthInp.min='1940-01-01';
+
+  birthInp.addEventListener('change',function(){
     if(!this.value)return;
     const p=calcPillarAuto(this.value);
     document.getElementById('po-auto-disp').innerHTML=`自動計算: <span>${p.pillar}</span>`;
   });
-  document.getElementById('inp-birth').value='';
+  birthInp.value='';
 });
 </script>
 </body>
