@@ -113,6 +113,7 @@ details.op-adv[open] summary{color:var(--gold)}
 .num-card{background:var(--paper2);border:1px solid var(--line);border-radius:12px;padding:18px 16px;box-shadow:var(--shadow);position:relative}
 .num-card::after{content:"";position:absolute;left:16px;right:16px;top:54px;height:1px;background:var(--line2)}
 .num-label{font-size:10px;color:var(--ink3);letter-spacing:.08em;font-weight:600;margin-bottom:6px}
+.num-def{font-size:10.5px;color:var(--ink3);line-height:1.6;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--line)}
 .num-val{font-family:'Noto Serif JP',serif;font-size:38px;font-weight:700;color:var(--gold);line-height:1}
 .num-kw{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:600;color:var(--ink);margin:14px 0 5px}
 .num-desc{font-size:11.5px;color:var(--ink2);line-height:1.7}
@@ -192,8 +193,10 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
   .section{page-break-inside:avoid;box-shadow:none}
   .num-grid,.pillar-card,.gogyo-card{page-break-inside:avoid}
   .planet-card,.report-card{display:none!important}
+  .sec-print-hide{display:none!important}
   #print-full{display:block!important}
-  .print-sec{page-break-inside:avoid;page-break-after:always;padding:8px 0}
+  .print-sec{page-break-inside:avoid;padding:8px 0}
+  .print-sec-break{page-break-after:always;padding:0!important;height:0;margin:0;border:none}
   .print-sec h3{font-family:'Noto Serif JP',serif;color:var(--gold);font-size:18px;margin-bottom:13px;border-bottom:1px solid var(--line);padding-bottom:9px}
   .print-sec p{font-size:13px;line-height:2;margin-bottom:11px;color:#241c12}
   .planet-card-display{border:1px solid var(--line);border-radius:10px;padding:16px}
@@ -246,10 +249,12 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
   <div class="op">
     <div class="op-label">鑑定者パネル — 対象者データ入力</div>
     <div class="op-grid">
-      <div class="fld"><label>お名前</label><input id="inp-name" class="fi" type="text" value="やまだ はなこ" placeholder="例：やまだ はなこ"></div>
-      <div class="fld"><label>ローマ字氏名（数秘用）</label><input id="inp-alpha" class="fi" type="text" value="YAMADA HANAKO" placeholder="例：YAMADA HANAKO"></div>
+      <div class="fld"><label>お名前（漢字）</label><input id="inp-name" class="fi" type="text" value="山田 花子" placeholder="例：山田 花子"></div>
+      <div class="fld"><label>ふりがな</label><input id="inp-furigana" class="fi" type="text" value="やまだ はなこ" placeholder="例：やまだ はなこ"></div>
+      <div class="fld"><label>ローマ字氏名（数秘用・自動入力）</label><input id="inp-alpha" class="fi" type="text" value="YAMADA HANAKO" placeholder="ふりがなを入力すると自動で入ります"></div>
       <div class="fld full"><label>生年月日</label><input id="inp-birth" class="fi" type="date" value="1990-09-10"></div>
     </div>
+    <p style="font-size:10px;color:var(--ink3);margin-top:4px">※レポート本文の呼びかけには「お名前（漢字）」、数秘術の計算には「ローマ字氏名」が使われます。ローマ字氏名は、ふりがなから自動で変換されます（手動で書き換えることもできます）。</p>
     <button id="senjutsu-btn" class="senj-btn" type="button">✦ senjutsu取込（天体・四柱・五行を精密自動入力）</button>
     <input id="senjutsu-file" type="file" accept="application/json,.json" style="display:none">
     <div class="senj-note">senjutsu.jp で出力した鑑定JSONを選ぶと、10天体＋ASC・四柱・五行を推測なしで自動入力します。手入力は不要になります。</div>
@@ -313,19 +318,21 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
   <!-- 1. 数秘6指標 -->
   <div class="section">
     <div class="sec-head"><span class="sec-no">01</span><span class="sec-title">数が示す6つの指標</span><span class="sec-sub">NUMEROLOGY</span></div>
+    <p style="font-size:12.5px;color:var(--ink2);line-height:1.9;margin-bottom:16px">数秘術では、生年月日や名前の文字から6種類の数字を算出します。同じ「数字」でも、どの角度（本質・使命・内なる欲求など）から見るかによって、意味合いが変わってきます。</p>
     <div class="num-grid">
-      <div class="num-card" data-n=""><div class="num-label">ライフパス — 本質</div><div class="num-val" id="v-lp">—</div><div class="num-kw" id="k-lp">—</div><div class="num-desc" id="d-lp">—</div></div>
-      <div class="num-card" data-n=""><div class="num-label">ディスティニー — 使命</div><div class="num-val" id="v-dn">—</div><div class="num-kw" id="k-dn">—</div><div class="num-desc" id="d-dn">—</div></div>
-      <div class="num-card" data-n=""><div class="num-label">ソウル — 内なる欲求</div><div class="num-val" id="v-sn">—</div><div class="num-kw" id="k-sn">—</div><div class="num-desc" id="d-sn">—</div></div>
-      <div class="num-card" data-n=""><div class="num-label">パーソナリティ — 外面</div><div class="num-val" id="v-pn">—</div><div class="num-kw" id="k-pn">—</div><div class="num-desc" id="d-pn">—</div></div>
-      <div class="num-card" data-n=""><div class="num-label">マチュリティ — 晩年</div><div class="num-val" id="v-mn">—</div><div class="num-kw" id="k-mn">—</div><div class="num-desc" id="d-mn">—</div></div>
-      <div class="num-card" data-n=""><div class="num-label">パーソナルイヤー '26</div><div class="num-val" id="v-py">—</div><div class="num-kw" id="k-py">—</div><div class="num-desc" id="d-py">—</div></div>
+      <div class="num-card" data-n=""><div class="num-label">ライフパス — 本質</div><div class="num-def">生年月日の数字から算出。人生を通じて生きるテーマを示します。</div><div class="num-val" id="v-lp">—</div><div class="num-kw" id="k-lp">—</div><div class="num-desc" id="d-lp">—</div></div>
+      <div class="num-card" data-n=""><div class="num-label">ディスティニー — 使命</div><div class="num-def">名前の文字から算出。社会に対して果たす役割・使命を示します。</div><div class="num-val" id="v-dn">—</div><div class="num-kw" id="k-dn">—</div><div class="num-desc" id="d-dn">—</div></div>
+      <div class="num-card" data-n=""><div class="num-label">ソウル — 内なる欲求</div><div class="num-def">名前の母音部分から算出。心の奥にある、静かな願いを示します。</div><div class="num-val" id="v-sn">—</div><div class="num-kw" id="k-sn">—</div><div class="num-desc" id="d-sn">—</div></div>
+      <div class="num-card" data-n=""><div class="num-label">パーソナリティ — 外面</div><div class="num-def">名前の子音部分から算出。周囲に見せる、外向きの顔を示します。</div><div class="num-val" id="v-pn">—</div><div class="num-kw" id="k-pn">—</div><div class="num-desc" id="d-pn">—</div></div>
+      <div class="num-card" data-n=""><div class="num-label">マチュリティ — 晩年</div><div class="num-def">ライフパスとディスティニーを足して算出。人生後半に向かうテーマを示します。</div><div class="num-val" id="v-mn">—</div><div class="num-kw" id="k-mn">—</div><div class="num-desc" id="d-mn">—</div></div>
+      <div class="num-card" data-n=""><div class="num-label">パーソナルイヤー '26</div><div class="num-def">生年月日と今年の年数から算出。今年1年のテーマを示します。</div><div class="num-val" id="v-py">—</div><div class="num-kw" id="k-py">—</div><div class="num-desc" id="d-py">—</div></div>
     </div>
   </div>
 
   <!-- 2. 日柱 -->
   <div class="section">
     <div class="sec-head"><span class="sec-no">02</span><span class="sec-title">持って生まれた素材</span><span class="sec-sub">FOUR PILLARS</span></div>
+    <p style="font-size:12.5px;color:var(--ink2);line-height:1.9;margin-bottom:14px">四柱推命では、生まれた年・月・日・時刻それぞれに「干支」が割り当てられます。中でも生まれた日の干支（日干）は、あなたという人間の中心的な素材・気質そのものを示すとされています。</p>
     <div class="pillar-card">
       <div class="pillar-glyph" id="v-pillar">—</div>
       <div>
@@ -345,7 +352,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
   </div>
 
   <!-- 4. 10天体 -->
-  <div class="section">
+  <div class="section sec-print-hide">
     <div class="sec-head"><span class="sec-no">04</span><span class="sec-title">10天体が示す特性分析</span><span class="sec-sub" id="planet-count-lbl">—</span></div>
     <div class="planet-card">
       <div class="planet-tabs" id="planet-tabs"><span class="muted">天体データを入力すると各天体のタブが表示されます。</span></div>
@@ -354,7 +361,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
   </div>
 
   <!-- 5. 5章レポート -->
-  <div class="section">
+  <div class="section sec-print-hide">
     <div class="sec-head"><span class="sec-no">05</span><span class="sec-title">統合分析レポート</span><span class="sec-sub" id="report-name2">全5章</span></div>
     <div class="cross-summary" id="cross-summary"><p class="muted">分析を実行すると、3つの占術が一致する核と、食い違う立体構造をここに表示します。</p></div>
     <div class="report-card">
@@ -386,6 +393,41 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
 </div>
 
 <script>
+
+// ════════════════════════════════════════════
+//  ふりがな → ローマ字氏名 自動変換
+// ════════════════════════════════════════════
+const KANA_ROMA={'きゃ':'KYA','きゅ':'KYU','きょ':'KYO','しゃ':'SHA','しゅ':'SHU','しょ':'SHO','ちゃ':'CHA','ちゅ':'CHU','ちょ':'CHO','にゃ':'NYA','にゅ':'NYU','にょ':'NYO','ひゃ':'HYA','ひゅ':'HYU','ひょ':'HYO','みゃ':'MYA','みゅ':'MYU','みょ':'MYO','りゃ':'RYA','りゅ':'RYU','りょ':'RYO','ぎゃ':'GYA','ぎゅ':'GYU','ぎょ':'GYO','じゃ':'JA','じゅ':'JU','じょ':'JO','びゃ':'BYA','びゅ':'BYU','びょ':'BYO','ぴゃ':'PYA','ぴゅ':'PYU','ぴょ':'PYO','ふぁ':'FA','ふぃ':'FI','ふぇ':'FE','ふぉ':'FO','ゔぁ':'VA','ゔぃ':'VI','ゔぇ':'VE','ゔぉ':'VO','てぃ':'TI','でぃ':'DI','うぇ':'WE','しぇ':'SHE','ちぇ':'CHE','じぇ':'JE','あ':'A','い':'I','う':'U','え':'E','お':'O','か':'KA','き':'KI','く':'KU','け':'KE','こ':'KO','が':'GA','ぎ':'GI','ぐ':'GU','げ':'GE','ご':'GO','さ':'SA','し':'SHI','す':'SU','せ':'SE','そ':'SO','ざ':'ZA','じ':'JI','ず':'ZU','ぜ':'ZE','ぞ':'ZO','た':'TA','ち':'CHI','つ':'TSU','て':'TE','と':'TO','だ':'DA','ぢ':'JI','づ':'ZU','で':'DE','ど':'DO','な':'NA','に':'NI','ぬ':'NU','ね':'NE','の':'NO','は':'HA','ひ':'HI','ふ':'FU','へ':'HE','ほ':'HO','ば':'BA','び':'BI','ぶ':'BU','べ':'BE','ぼ':'BO','ぱ':'PA','ぴ':'PI','ぷ':'PU','ぺ':'PE','ぽ':'PO','ま':'MA','み':'MI','む':'MU','め':'ME','も':'MO','や':'YA','ゆ':'YU','よ':'YO','ら':'RA','り':'RI','る':'RU','れ':'RE','ろ':'RO','わ':'WA','を':'O','ん':'N','ゔ':'VU','ぁ':'A','ぃ':'I','ぅ':'U','ぇ':'E','ぉ':'O','ゃ':'YA','ゅ':'YU','ょ':'YO','　':' '};
+function kanaToRomaji(str){
+  let s=(str||'').replace(/[\u30A1-\u30F6]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/[ー－]/g,'');
+  let out='',i=0;
+  while(i<s.length){
+    const two=s.substr(i,2);
+    if(KANA_ROMA[two]){ out+=KANA_ROMA[two]; i+=2; continue; }
+    const c=s[i];
+    if(c==='っ'){ const nx=KANA_ROMA[s.substr(i+1,2)]||KANA_ROMA[s[i+1]]; if(nx&&/[A-Z]/.test(nx[0])) out+=nx[0]; i+=1; continue; }
+    if(KANA_ROMA[c]){ out+=KANA_ROMA[c]; i+=1; continue; }
+    if(c===' '){ out+=' '; i+=1; continue; }
+    out+=c; i+=1;
+  }
+  return out.replace(/\s+/g,' ').trim();
+}
+(function(){
+  const fi=document.getElementById('inp-furigana'); if(!fi) return;
+  const alpha=document.getElementById('inp-alpha');
+  let hint=document.getElementById('furigana-hint');
+  if(!hint){
+    hint=document.createElement('p');
+    hint.id='furigana-hint'; hint.style.cssText='font-size:10px;color:#c17b7b;margin-top:2px;grid-column:1/-1';
+    fi.closest('.fld').after(hint);
+  }
+  fi.addEventListener('input',()=>{
+    const v=fi.value;
+    if(alpha) alpha.value=kanaToRomaji(v).toUpperCase();
+    hint.textContent = /[\u3400-\u9FFF]/.test(v) ? '⚠ 漢字は自動変換できません。ふりがな欄はひらがな/カタカナで入力してください。' : '';
+  });
+})();
+
 
 // ════════════════════════════════════════════
 //  PLANET DEFINITIONS
@@ -959,6 +1001,16 @@ function buildPhaseReports() {
   const neptune = S.planets.find(p => p.id==='neptune');
   const pluto   = S.planets.find(p => p.id==='pluto');
 
+  // 数秘6指標のうち、異なる指標が偶然同じ数字になった場合、
+  // 単なる説明の使い回しに見えないよう「意味ある一致」として明示するヘルパー。
+  function numMatchText(label, value, kw, desc, priorEntries){
+    const matched = priorEntries.find(e => e.value === value);
+    if (matched){
+      return `実はこれは、${matched.label}と全く同じ数字です。偶然ではありません。「${kw}」というテーマが、それだけ強くあなたに刻まれている証です。`;
+    }
+    return desc || '';
+  }
+
   phaseTexts[0] = `
 <h3>✦ ${S.name}さんを、ひと言で表すと</h3>
 <p>あなたは<strong>「${lp.kw||S.lp}」</strong>というテーマを生きるために生まれてきた存在です。${lp.desc||''}</p>
@@ -970,8 +1022,8 @@ ${asc?`<p>そして、周囲があなたに最初に抱く印象（ASC）は<str
 
   phaseTexts[1] = `
 <h3>✦ あなたが輝く舞台と才能</h3>
-<p>社会的な使命（ディスティニー：<strong>${S.dn}番「${dn.kw||''}」</strong>）は${dn.desc||''}</p>
-<p>日干「<strong>${S.kanFinal}</strong>」が持つ${pd.el||''}の気質が、仕事や社会においてどのように輝くかを決める土台です。</p>
+<p>社会的な使命（ディスティニー：<strong>${S.dn}番「${dn.kw||''}」</strong>）は${numMatchText('ライフパス',S.dn,dn.kw,dn.desc,[{label:'ライフパス',value:S.lp}])}</p>
+<p>日干（にっかん・生まれた日の干支が示す、あなたという人間の素材そのもの）「<strong>${S.kanFinal}</strong>」が持つ${pd.el||''}の気質が、仕事や社会においてどのように輝くかを決める土台です。</p>
 ${sun?`<p>${sun.sign}のコア「${zod.core||''}」が仕事の羅針盤です。自分のペースで納得できる品質でじっくり取り組める環境で最大限に力を発揮します。</p>`:''}
 ${mars?`<p>行動力の星・火星は<strong>${mars.sign}</strong>にあります。あなたが本気を出すとき、その原動力になるのは「${marsZod.core||''}」というエネルギー。目標に向かって動き出すときのスタイルがここに表れます。</p>`:''}
 ${jupiter&&jupiter.sign?`<p>幸運と拡大の星・木星は<strong>${jupiter.sign}</strong>に位置し、「${jupiterZod.core||''}」という領域であなたに追い風が吹きやすいことを示します。ここに関わる活動は、努力以上の恵みが返ってきやすい場所です。</p>`:''}
@@ -981,14 +1033,14 @@ ${jupiter&&jupiter.sign?`<p>幸運と拡大の星・木星は<strong>${jupiter.s
 <h3>✦ 愛し方と、心の奥で本当に求めているもの</h3>
 ${venus?`<p>愛と喜びの星・金星が<strong>${venus.sign} ${venus.deg}度</strong>に位置しています。これは「${venus.sign}」が持つ<strong>「${venusZod.core||''}」</strong>というエネルギーを通して、愛情や美しさを感じ取るスタイルを示します。親しい関係の中で、あなたは「${venusZod.core||''}」が満たされているときに深い喜びを感じ、その形で人を愛そうとします。</p>`:''}
 ${moon?`<p>感情の基盤である月は<strong>${moon.sign}</strong>にあり、親密な相手の前でこそ出る素の顔・安心したいときの距離感を示します。あなたが本当にくつろげるのは「${moonZod.core||''}」を分かち合える関係の中です。</p>`:''}
-<p>ソウルナンバー「<strong>${S.sn}番・${sn.kw||''}」</strong>が示すのは心の最も深い場所にある欲求です。${sn.desc||''}</p>
+<p>ソウルナンバー「<strong>${S.sn}番・${sn.kw||''}」</strong>が示すのは心の最も深い場所にある欲求です。${numMatchText('ソウル',S.sn,sn.kw,sn.desc,[{label:'ライフパス',value:S.lp},{label:'ディスティニー',value:S.dn}])}</p>
 <p>表向きの使命（ディスティニー：<strong>${S.dn}番</strong>）と内なる欲求（ソウル：<strong>${S.sn}番</strong>）の間には微妙なギャップがあります。社会では「${dn.kw||''}」として動きながら、心の奥では「${sn.kw||''}」を静かに渇望している。この揺れ動きがあなたの人間的な深みを生んでいます。</p>
 ${(venusZod.shadow||zod.shadow)?`<p>ときに<strong>「${venusZod.shadow||zod.shadow}」</strong>というパターンが現れるときは、心が疲れているサインです。それは弱さではなく、深く愛したいからこそ生まれる、裏返しの個性です。</p>`:''}`;
 
   phaseTexts[3] = `
 <h3>✦ 人生の転換点と手にする果実</h3>
 ${saturn?`<p>試練と成熟の星・土星は<strong>${saturn.sign}</strong>に位置しています。これは「${saturnZod.core||''}」という領域が、あなたが人生で繰り返し向き合い、時間をかけて乗り越えていく課題であることを示します。若い頃は重荷に感じるこのテーマこそ、年を重ねるごとにあなたの最も揺るぎない強さへと変わっていきます。</p>`:''}
-<p>マチュリティナンバー「<strong>${S.mn}番・${mn.kw||''}」</strong>が示すのは人生の後半に自然と引き寄せられていくテーマです。${mn.desc||''}</p>
+<p>マチュリティナンバー「<strong>${S.mn}番・${mn.kw||''}」</strong>が示すのは人生の後半に自然と引き寄せられていくテーマです。${numMatchText('マチュリティ',S.mn,mn.kw,mn.desc,[{label:'ライフパス',value:S.lp},{label:'ディスティニー',value:S.dn},{label:'ソウル',value:S.sn}])}</p>
 ${saturn&&saturnZod.shadow?`<p>土星のテーマに向き合う過程で「${saturnZod.shadow}」という壁にぶつかることがあるかもしれません。けれどそれは、この課題を真剣に生きている証。逃げずに向き合った分だけ、あなたは深くなります。</p>`:''}
 ${(uranus&&uranus.sign)||(neptune&&neptune.sign)||(pluto&&pluto.sign)?`<div class="outer-block"><div class="outer-h">世代を超えて、あなたの深部に流れる3つの力</div>${uranus&&uranus.sign?`<p>${OUTER_PLANET.uranus.body(uranus.sign, uranus.phase&&uranus.phase.title)}</p>`:''}${neptune&&neptune.sign?`<p>${OUTER_PLANET.neptune.body(neptune.sign, neptune.phase&&neptune.phase.title)}</p>`:''}${pluto&&pluto.sign?`<p>${OUTER_PLANET.pluto.body(pluto.sign, pluto.phase&&pluto.phase.title)}</p>`:''}<p class="outer-note">※これらの星は同じ世代の人が近い配置を持ちますが、あなたの生まれた時刻・他の星との組み合わせによって、その力が現れる人生の舞台は一人ひとり異なります。</p></div>`:''}
 <p>若い頃の「うまくいかない」という体験は、あなたがより深い知恵を身につけるための授業でした。その見えない積み上げが晩年に大きな花として咲き誇ります。</p>
@@ -996,7 +1048,7 @@ ${(uranus&&uranus.sign)||(neptune&&neptune.sign)||(pluto&&pluto.sign)?`<div clas
 
   phaseTexts[4] = `
 <h3>✦ 2026年、あなたを包む流れ</h3>
-<p>今年のパーソナルイヤーは「<strong>${S.py}番・${py.kw||''}」</strong>。${py.desc||''}</p>
+<p>今年のパーソナルイヤーは「<strong>${S.py}番・${py.kw||''}」</strong>。${numMatchText('パーソナルイヤー',S.py,py.kw,py.desc,[{label:'ライフパス',value:S.lp},{label:'ディスティニー',value:S.dn},{label:'ソウル',value:S.sn},{label:'マチュリティ',value:S.mn}])}</p>
 <p>${getPYStory(S.py, S.name)}</p>
 <p>焦らなくて大丈夫です。三つの分析アプローチが示す、あなた自身の本質を信じてください。あなたのペースで、あなたの道を歩んでください。</p>`;
   phaseTexts.forEach((t,i)=>{ if(t) phaseTexts[i]=cleanJargon(t); });
@@ -1095,15 +1147,83 @@ function buildPlanetStory(planet, pillarKan){
   const shadow = (kb.zodShadow||'').trim();
   const title = ph.title || kb.phaseTitle || '';
 
+  // 天体ごとの「切り口」フレーズ：同じ星座に複数の天体が重なっても、
+  // どの領域を通してその星座の芯が現れるかを明示し、文章の同一化を防ぐ。
+  const LENS = {
+    sun:     '人生の目的そのものに滲み出る',
+    moon:    '無意識の奥・安心を求める瞬間に滲み出る',
+    mercury: '思考の運び方や言葉選びの端々に滲み出る',
+    venus:   '愛し方や美意識の中に滲み出る',
+    mars:    '行動を起こす瞬間の勢いに滲み出る',
+    jupiter: '追い風が吹く場面での振る舞いに滲み出る',
+    saturn:  '試練と向き合う姿勢に滲み出る',
+    uranus:  '型を破ろうとする衝動に滲み出る',
+    neptune: '理想や夢を描く感受性に滲み出る',
+    pluto:   '深く変容する局面での在り方に滲み出る',
+    asc:     '第一印象という入口に滲み出る',
+  };
+  const lens = LENS[planet.id] || 'あなたの中に滲み出る';
+
+  // 締めの一文も天体ごとに数パターン用意し、11天体全てが同じ結びにならないようにする
+  const CLOSING = {
+    sun:     (name,role)=>`その揺らぎを認めたとき、${name}が司る「${role}」は、もっと自然に輝きはじめます。`,
+    moon:    (name,role)=>`その揺らぎごと受け入れられたとき、${name}が示す「${role}」に、深い安心が戻ってきます。`,
+    mercury: (name,role)=>`その揺らぎを飼いならせたとき、${name}が担う「${role}」は、より伸びやかに動きだします。`,
+    venus:   (name,role)=>`その揺らぎも含めて愛せたとき、${name}が映す「${role}」は、いっそう豊かに花開きます。`,
+    mars:    (name,role)=>`その揺らぎを味方につけたとき、${name}が示す「${role}」は、迷いなく前へ進みだします。`,
+    jupiter: (name,role)=>`その揺らぎを恐れなかったとき、${name}が開く「${role}」は、さらに大きく広がっていきます。`,
+    saturn:  (name,role)=>`その揺らぎを引き受けたとき、${name}が鍛える「${role}」は、揺るぎない強さに変わっていきます。`,
+    uranus:  (name,role)=>`その揺らぎを解き放ったとき、${name}が灯す「${role}」は、本来の自由さを取り戻します。`,
+    neptune: (name,role)=>`その揺らぎごと信じられたとき、${name}が描く「${role}」は、静かな輝きを増していきます。`,
+    pluto:   (name,role)=>`その揺らぎを恐れず潜ったとき、${name}が宿す「${role}」は、桁違いの再生力に変わります。`,
+    asc:     (name,role)=>`その揺らぎも含めて出会えたとき、${name}が作る「${role}」は、より自然な姿になっていきます。`,
+  };
+  const closingFn = CLOSING[planet.id] || ((name,role)=>`その揺らぎごと受けとめたとき、${name}が司る「${role}」は、もっとものびやかに輝きはじめます。`);
+
+  // p1（フェーズの物語）用の短い視点フレーズ。同じ度数の天体同士でも、
+  // どの角度からその時期を生きているかを一言添えることで、丸写し感を減らす。
+  const PHASE_LENS = {
+    sun:     'それは特に、人生の舵を取る場面で強く表れます。',
+    moon:    'それは特に、一人になったときの心の内側で強く表れます。',
+    mercury: 'それは特に、言葉の選び方や考えの巡らせ方に表れます。',
+    venus:   'それは特に、何を愛し、何を美しいと感じるかに表れます。',
+    mars:    'それは特に、動き出す瞬間の勢いに表れます。',
+    jupiter: 'それは特に、運が向いてくる場面での構え方に表れます。',
+    saturn:  'それは特に、時間をかけて向き合う課題の中に表れます。',
+    uranus:  'それは特に、型を破りたくなる衝動の中に表れます。',
+    neptune: 'それは特に、夢や理想を描く感受性の中に表れます。',
+    pluto:   'それは特に、根っこから変わろうとする局面に表れます。',
+    asc:     'それは特に、人と出会う最初の瞬間に表れます。',
+  };
+  const phaseLens = PHASE_LENS[planet.id] || '';
+
   const p1 = `<p>${planet.name}が映し出すのは、あなたの<strong>「${planet.role}」</strong>という領域です。`
-           + (title ? `そこにいま流れているのは<em>「${title}」</em>と呼べる空気です。` : ``)
+           + (title ? `そこにいま流れているのは<em>「${title}」</em>と呼べる空気です。${phaseLens}` : ``)
            + `${story}</p>`;
-  const p2 = `<p>その奥にあるのは、${planet.sign}が生まれ持つ<strong>「${core}」</strong>という、変わらない芯。${grp}いまのあなたは、${coreHead}という持ち味を、自分らしいリズムで育てています。</p>`;
+  const p2 = `<p>その奥にあるのは、${lens}${planet.sign}生まれの<strong>「${core}」</strong>という、変わらない芯。${grp}いまのあなたは、${coreHead}という持ち味を、自分らしいリズムで育てています。</p>`;
   let p3 = `<p>`;
   if (shadow) p3 += `ときに<em>「${shadow}」</em>という影が顔をのぞかせることがあるかもしれません。けれどそれは弱さではなく、${coreHead}を深く生きているからこそ生まれる、裏返しの個性です。`;
   else p3 += `${coreHead}という持ち味は、無理に隠さずそのまま差し出すほどに磨かれていきます。`;
-  p3 += `その揺らぎごと受けとめたとき、${planet.name}が司る「${planet.role}」は、もっとものびやかに輝きはじめます。</p>`;
-  return p1 + p2 + p3;
+  p3 += closingFn(planet.name, planet.role) + `</p>`;
+  // p4：この星の力を、日々の暮らしでどう活かすかという実践的な一歩。
+  // 描写だけで終わらせず、具体的にどう動けばいいかまで踏み込む。
+  const ACTIVATE = {
+    sun:     name=>`<p><strong>活かし方：</strong>大きな決断をするとき、「周りがどう思うか」より先に「自分は何に向かって輝きたいか」を自分に問うてみてください。この問いを起点にした選択ほど、後になって後悔が少なくなります。</p>`,
+    moon:    name=>`<p><strong>活かし方：</strong>一日の終わりに、意識して一人になれる時間を確保してみてください。人と会った日ほど、その時間の効果が大きく感じられるはずです。安心の基盤を自分で用意できる人は、外の変化に強くなります。</p>`,
+    mercury: name=>`<p><strong>活かし方：</strong>大事な話をする前に、一度紙やメモに考えを書き出す習慣を持ってみてください。頭の中だけで組み立てるより、言葉にしてから話す方が、あなたの思考の精度がそのまま伝わります。</p>`,
+    venus:   name=>`<p><strong>活かし方：</strong>疲れている時ほど、美しいと感じるもの（音楽・景色・手触りの良いもの）に意識的に触れてみてください。感情が枯れる前に満たす習慣が、あなたの愛し方を安定させます。</p>`,
+    mars:    name=>`<p><strong>活かし方：</strong>「やる気が出たら動く」のではなく、「動き始めたらやる気が出る」という順番を意識してみてください。最初の小さな一歩さえ踏み出せれば、あとは自然と勢いがついていくタイプです。</p>`,
+    jupiter: name=>`<p><strong>活かし方：</strong>迷ったときは、努力量よりも「追い風が吹いている感覚があるかどうか」を判断材料にしてみてください。手応えの軽さは怠けではなく、あなたに合っている証拠であることが多いです。</p>`,
+    saturn:  name=>`<p><strong>活かし方：</strong>この試練を一気に片付けようとせず、「今日はここまで」と区切って少しずつ進めてみてください。焦らず積み上げる姿勢そのものが、この星があなたに求めている生き方です。</p>`,
+    uranus:  name=>`<p><strong>活かし方：</strong>「変わってる」と言われることを恐れず、あえて一つだけ、人と違うやり方を試してみてください。周囲に合わせ続けるより、その小さな逸脱の方が、あなたを自由にしてくれます。</p>`,
+    neptune: name=>`<p><strong>活かし方：</strong>心に浮かんだ理想やイメージは、忘れる前に一言でもメモに残してみてください。形にする前の柔らかい直感こそ、後から振り返ると一番の道しるべになっていることがあります。</p>`,
+    pluto:   name=>`<p><strong>活かし方：</strong>何かが大きく崩れる時期が来ても、それを失敗と決めつけず「作り直すタイミングが来た」と捉えてみてください。あなたはその先で、崩れる前より強い形に生まれ変わる力を持っています。</p>`,
+    asc:     name=>`<p><strong>活かし方：</strong>初対面で少し緊張しても、それは自然なことだと割り切ってみてください。あなたの第一印象は入口に過ぎず、本当の魅力はそこから先、関係が深まるほど伝わっていくものです。</p>`,
+  };
+  const activateFn = ACTIVATE[planet.id];
+  const p4 = activateFn ? activateFn(planet.name) : '';
+
+  return p1 + p2 + p3 + p4;
 }
 
 // ════════════════════════════════════════════
@@ -1249,10 +1369,13 @@ function convertSenjutsu(j){
 
 function buildPrintAll(){
   let out='';
+  out+='<div class="sec-head" style="margin-top:0"><span class="sec-no">04</span><span class="sec-title">10天体が示す特性分析</span></div>';
+  (typeof allPlanetsCache!=='undefined'?allPlanetsCache:[]).forEach(p=>{ out+=`<section class="print-sec">${buildPlanetReportHTML(p)}</section>`; });
+  out+='<section class="print-sec print-sec-break"></section>';
+  out+='<div class="sec-head"><span class="sec-no">05</span><span class="sec-title">統合分析レポート</span></div>';
   const cs=document.getElementById('cross-summary');
   if(cs && cs.innerHTML && !cs.querySelector('.muted')) out+=`<section class="print-sec">${cs.innerHTML}</section>`;
   (typeof phaseTexts!=='undefined'?phaseTexts:[]).forEach(t=>{ if(t) out+=`<section class="print-sec">${t}</section>`; });
-  (typeof allPlanetsCache!=='undefined'?allPlanetsCache:[]).forEach(p=>{ out+=`<section class="print-sec">${buildPlanetReportHTML(p)}</section>`; });
   const el=document.getElementById('print-full'); if(el) el.innerHTML=out||'<p>先に分析を実行してください。</p>';
 }
 window.addEventListener('beforeprint', buildPrintAll);
