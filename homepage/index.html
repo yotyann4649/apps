@@ -454,7 +454,25 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <div class="wl-eyebrow">Priority List</div>
     <h2 class="wl-title">先行登録 ―― リリースを、<br>いちばん先にお知らせします。</h2>
     <p class="wl-body">三星鑑は、一人ひとりに丁寧に向き合うため、いまは少人数で準備を進めています。先行登録された方には、リリース時の<strong>優先案内</strong>・<strong>先行特典</strong>、そして登録者向けの<strong>無料の分析コンテンツ</strong>を、順次お届けします。</p>
-    <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener" class="btn btn-gold">noteで先行登録する（フォロー）</a>
+
+    <!-- 先着30名 先行登録特典エリア（退職後の点火でアクティブになる。既定は準備中） -->
+    <div id="senchaku-area" style="max-width:520px;margin:0 auto 30px">
+      <!-- (1) 準備中：既定の表示。退職までここが出る -->
+      <div id="senchaku-prep">
+        <p style="color:#cdc2ac;font-size:14.5px;line-height:2">先行登録特典（<strong style="color:var(--paper)">先着30名・全コース30%OFF</strong>）は、リリース準備が整い次第、この場所で受付を開始します。</p>
+      </div>
+      <!-- (2) 受付中：残り人数を自動表示（点火後） -->
+      <div id="senchaku-open" style="display:none">
+        <p style="color:var(--gold-soft);font-size:16px;font-weight:700;margin-bottom:20px">先行登録特典・先着30名 ／ 全コース30%OFF　のこり <span id="senchaku-nokori">--</span> 名</p>
+        <a id="senchaku-form-link" href="#" target="_blank" rel="noopener" class="btn btn-gold">先行登録する（先着30名特典）</a>
+      </div>
+      <!-- (3) 受付終了：30名に達したら自動表示 -->
+      <div id="senchaku-closed" style="display:none">
+        <p style="color:#cdc2ac;font-size:14.5px;line-height:2">先着30名の先行登録は、おかげさまで受付を終了しました。ありがとうございました。</p>
+      </div>
+    </div>
+
+    <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener" class="btn btn-gold">noteでも先行案内を受け取る（フォロー）</a>
     <div class="wl-perks">
       <div class="wl-perk"><div class="k">Priority</div><div class="v">登録順に優先ご案内</div></div>
       <div class="wl-perk"><div class="k">Special</div><div class="v">先行登録者だけの特別価格</div></div>
@@ -508,6 +526,42 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   const pad=n=>String(n).padStart(2,'0');
   dateInp.max=`${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
   dateInp.min='1940-01-01';
+})();
+
+// ============================================================
+//  先着30名 先行登録特典（退職後の点火用スイッチ）
+//  【退職後にやること】下の LAUNCH を false → true に変えるだけ。
+//  それで「先着30名・残り◯名・先行登録する」が動き出します。
+//  数える係（GAS）は既に稼働中なので、他の設定は不要です。
+// ============================================================
+(function(){
+  const LAUNCH = false;   // ★退職後、募集を始めるときだけ true にする（今は準備中）
+
+  const GAS_URL  = "https://script.google.com/macros/s/AKfycbyPEJh8c4nivIrentQQlN1VTWOrAQo5Q6zJ2fuG6VOBAlWNcgvl_h4eJhNdFWOeOXLj/exec";
+  const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSeNcbRVIfhwIi98sEr2_WzFvs3Wolb1ejDFrshPsuTYJQj_xA/viewform";
+
+  const prep   = document.getElementById('senchaku-prep');
+  const openEl = document.getElementById('senchaku-open');
+  const closed = document.getElementById('senchaku-closed');
+  if(!prep) return;
+  if(!LAUNCH) return;               // 準備中：準備中メッセージのまま（募集しない）
+
+  prep.style.display = 'none';      // 受付モード：まず準備中を隠す
+  fetch(GAS_URL)
+    .then(r=>{ if(!r.ok) throw new Error('status '+r.status); return r.json(); })
+    .then(d=>{
+      if(d.closed){ closed.style.display=''; }               // 30達成 → 受付終了
+      else{
+        document.getElementById('senchaku-nokori').textContent = d.remaining;
+        document.getElementById('senchaku-form-link').href = FORM_URL;
+        openEl.style.display='';                             // 空きあり → 残り人数＋申込ボタン
+      }
+    })
+    .catch(err=>{
+      // 【安全装置】人数が確認できない時は不正確な「先着」を出さず準備中に戻す（景表法リスク回避）
+      prep.style.display='';
+      console.warn('カウント取得に失敗したため準備中表示に戻しました:', err);
+    });
 })();
 </script>
 </body>
