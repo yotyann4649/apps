@@ -673,5 +673,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   birthInp.value='';
 });
 </script>
+<!-- 無料版アクセスカウント（GAS無料枠／個人情報なし／失敗しても本体は止まらない）-->
+<script>
+(function(){
+  try{
+    var u = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec?p=free";
+    new Image().src = u + "&t=" + Date.now();
+  }catch(e){}
+})();
+</script> 
 </body>
 </html>
