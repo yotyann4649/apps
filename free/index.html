@@ -673,14 +673,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   birthInp.value='';
 });
 </script>
-<!-- 無料版アクセスカウント（GAS無料枠／個人情報なし／失敗しても本体は止まらない）-->
+<!-- 無料版アクセスカウント：①PV(free)＋②重複除外(free_uu)を並行記録／個人情報なし／本体は止めない -->
 <script>
 (function(){
   try{
-    var u = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec?p=free";
-    new Image().src = u + "&t=" + Date.now();
+    var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+    new Image().src = base + "?p=free&t=" + Date.now();              // ① PV（毎回）
+    var key = "cnt_free_" + new Date().toISOString().slice(0,10);
+    if(!localStorage.getItem(key)){                                  // ② 重複除外（1ブラウザ1日1回）
+      localStorage.setItem(key, "1");
+      new Image().src = base + "?p=free_uu&t=" + Date.now();
+    }
   }catch(e){}
 })();
-</script> 
+</script>
 </body>
 </html>
