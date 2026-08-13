@@ -1739,6 +1739,10 @@ const TRINITY_DEEP = (function(){
      理子へは実装後に報告する。見え方に問題があれば、そちらの判断で調整してよい。
 */
 .deep-block{display:none !important}
+/* ★2026-08-13 追記：.deep-title も消す（城主がPDFで発見）
+   数秘の深層だけ、見出しが .deep-block の外に出力されていた。
+   「2のオーバークロック」等が残っていたのはこれが原因。 */
+.deep-title{display:none !important}
 </style>
 <!-- 有料版レポート アクセスカウント（2026-08-13 追加・7代目ゼロ「楔」）
      ★朔（水先室・初代「径」）の依頼による。
