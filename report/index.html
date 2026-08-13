@@ -1028,7 +1028,7 @@ ${asc?`<p>そして、周囲があなたに最初に抱く印象（ASC）は<str
 ${sun?`<p>${sun.sign}のコア「${zod.core||''}」が仕事の羅針盤です。自分のペースで納得できる品質でじっくり取り組める環境で最大限に力を発揮します。</p>`:''}
 ${mars?`<p>行動力の星・火星は<strong>${mars.sign}</strong>にあります。あなたが本気を出すとき、その原動力になるのは「${marsZod.core||''}」というエネルギー。目標に向かって動き出すときのスタイルがここに表れます。</p>`:''}
 ${jupiter&&jupiter.sign?`<p>幸運と拡大の星・木星は<strong>${jupiter.sign}</strong>に位置し、「${jupiterZod.core||''}」という領域であなたに追い風が吹きやすいことを示します。ここに関わる活動は、努力以上の恵みが返ってきやすい場所です。</p>`:''}
-<p>サビアン${sun?sun.deg:0}度「<em>${ph.title||''}</em>」のフェーズは${ph.story||''}あなたの才能は、その場にいるだけで独自の存在感を放ちます。</p>`;
+${sun?`<p>サビアン${sun.deg}度「<em>${ph.title||''}</em>」のフェーズは${ph.story||''}あなたの才能は、その場にいるだけで独自の存在感を放ちます。</p>`:''}`;
 
   phaseTexts[2] = `
 <h3>✦ 愛し方と、心の奥で本当に求めているもの</h3>
@@ -1700,8 +1700,25 @@ const TRINITY_DEEP = (function(){
 
    【2】天体カードの深層見出しを一時的に伏せる
         解説文の書き直しが済むまでの暫定措置。下の1行を消せば戻る。
-        対象は天体カードのみ。日干と数秘の見出しには当てていない。
+        対象は天体カードのみ。日干の見出しには当てていない。
         見出しだけを伏せ、ブロック・ラベル・本文は残すので、欠落には見えない。
+
+   【3】深層層を3箇所とも一時的に伏せる（2026-08-12 追加）
+        「バグと最適解」「深層システム解読」の本文そのものを止める。
+        見出しだけを落とす形では足りなかった。本文がシステム用語で構成されているため。
+
+        止めた3箇所（下の3行が対応する）：
+          ・数秘6指標   … [id^="deep-num-"]
+          ・日干（02）  … #deep-pillar
+          ・天体カード  … .planet-card-display .deep-block
+
+        ★天体カードの1行は、同じクラスを使う「天体×フェーズ42マス」も一緒に伏せる。
+          42マスの文はシステム用語が少ないが、クラスが同一で区別する手がかりが無いため、
+          分けるには既存コードへクラスを足す改修が要る。今は一括で下げている。
+        ★どの箇所も、カード上部（番号・キーワード・既存の説明文）はそのまま残る。
+          → ブロックが丸ごと空白になることはなく、欠落には見えない。
+        ★戻すときは2段階にできる。まず .deep-block を戻し、見出しがまだ汚れていれば
+          .deep-title の行だけ残しておく（【2】の行がその役目を果たす）。
 
    ※注意：style / script のコメント内に、その要素の閉じタグを文字列として書かないこと。
      HTMLの字句解析はCSS/JSのコメントを認識せず、そこで要素が閉じて本文へ流出する。
@@ -1710,7 +1727,68 @@ const TRINITY_DEEP = (function(){
   .num-grid{grid-template-columns:1fr 1fr}
 }
 .planet-card-display .deep-title{display:none}
+[id^="deep-num-"]{display:none}
+#deep-pillar{display:none}
+.planet-card-display .deep-block{display:none}
 </style>
+<!-- 操作の見える化（2026-08-12 追加）― 2件
+     既存の関数・CSS・HTMLは変更していない。既存関数を包んで、後ろに処理を足すだけ。
+     不要になったら、このコメントから直後のスクリプト終端までを消せば元に戻る。
+     ※どちらの表示も既存のログ欄（画面のみ・印刷時は非表示）に出るため、PDFには出ない。
+
+     【1】天体データ未入力の検知
+       天体が1つも入っていないと、04章が空になり「輝く舞台と才能」の一節も欠ける。
+       出力側は条件付きにしてあるので壊れた文は出ないが、入れ忘れ自体には気づけないため。
+
+     【2】クリアで、入力欄をすべて空にする
+       元の clearAll がクリアするのは天体・出生時刻・日柱の上書きのみで、
+       お名前・ふりがな・ローマ字・生年月日は残っていた。
+       一方でサンプル読み込みは、その4つも含めて入力する。★対になっていなかった。
+       → クリアでも同じ4つを空にし、「クリア＝全部消える」という見たままの動きに揃える。
+       ★2026-08-12、実際に「クリアを押しても何も消えない」「全て表示が消えるのではないのか」
+         という指摘が出た箇所である。当初は"何が消えたかをログで説明する"形で実装したが、
+         説明を要する時点で設計が誤っていた。説明を足すのではなく、説明の要らない動きにした。
+
+     ※実装の経緯は 06_商品_コンテンツ\実装コード\三星鑑_統合レポート有料版_追加ブロック実装メモ_2026-08-11.md
+-->
+<script>
+(function(){
+  'use strict';
+  if (typeof addLog !== 'function') return;
+
+  // 【1】天体データ未入力の検知
+  if (typeof runAnalysis === 'function') {
+    var _origRun = runAnalysis;
+    runAnalysis = async function(){
+      await _origRun.apply(this, arguments);
+      try {
+        var ps = (typeof S !== 'undefined' && S && Object.prototype.toString.call(S.planets) === '[object Array]')
+               ? S.planets : [];
+        var filled = 0;
+        for (var i = 0; i < ps.length; i++) { if (ps[i] && ps[i].sign) filled++; }
+        if (filled === 0) {
+          addLog('CHECK','warn','天体データが未入力です。04章と「輝く舞台と才能」の一節は出力されません（「サンプル：やまだ はなこ」ボタン、または senjutsu取込 で入ります）');
+        }
+      } catch(e){ /* 既存の表示は絶対に壊さない */ }
+    };
+  }
+
+  // 【2】クリアで、入力欄をすべて空にする
+  if (typeof clearAll === 'function') {
+    var _origClear = clearAll;
+    clearAll = function(){
+      _origClear.apply(this, arguments);
+      try {
+        var ids = ['inp-name','inp-furigana','inp-alpha','inp-birth'];
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          if (el) el.value = '';
+        }
+      } catch(e){ /* 既存の表示は絶対に壊さない */ }
+    };
+  }
+})();
+</script>
 <style>
 /* ★★2026-08-13：深層ブロックを全て非表示にする（城主の直接の指示）=====================
 
@@ -1739,9 +1817,24 @@ const TRINITY_DEEP = (function(){
      理子へは実装後に報告する。見え方に問題があれば、そちらの判断で調整してよい。
 */
 .deep-block{display:none !important}
-/* ★2026-08-13 追記：.deep-title も消す（城主がPDFで発見）
-   数秘の深層だけ、見出しが .deep-block の外に出力されていた。
-   「2のオーバークロック」等が残っていたのはこれが原因。 */
+
+/* ★★2026-08-13・追記：.deep-title も消す（城主がPDFで発見）================
+   最初は .deep-block だけを消した。★それでは足りなかった。
+
+   城主の指摘：「余計な単語が残っている」
+     → PDFに「2のオーバークロック」「動的ネットワーク・モジュール」
+       「ランダムジェネレータ・並列処理」「ディープ・アナライザ」
+       「レシーバー・デュアルコア」が残っていた。
+
+   原因：数秘の深層だけ、見出しが .deep-block の外に出ていた。
+     numDeepHTML() の実装：
+       if (label) out += '<div class="deep-title" …>' … ★箱の外
+       if (bug || patch) { out += '<div class="deep-block deep-fix"…' } ★箱の中
+     → 「バグと最適解」は消えたのに、見出しだけが残る形になっていた。
+
+   ★ゼロの判断ミスである。「深層の中身は全部 .deep-block に入っている」と
+     天体側の実装だけを見て決め、数秘側を確かめなかった。
+     城主が実機でPDFにして、初めて見つかった。 */
 .deep-title{display:none !important}
 </style>
 <!-- 有料版レポート アクセスカウント（2026-08-13 追加・7代目ゼロ「楔」）
