@@ -674,16 +674,63 @@ document.addEventListener('DOMContentLoaded',()=>{
   birthInp.value='';
 });
 </script>
-<!-- 無料版アクセスカウント：①PV(free)＋②重複除外(free_uu)を並行記録／個人情報なし／本体は止めない -->
+<!-- 無料版アクセスカウント：①PV(free)＋②重複除外(free_uu)を並行記録／個人情報なし／本体は止めない
+
+     ★★2026-08-14 追加（9代目ゼロ「鋼」）― 城主の承認済み（栞経由・2026-08-13）
+
+     【何を足したか・2件】
+       ① note から来た人だけを数え分ける（3行）
+       ② ★日付のずれを直した（1行）
+
+     【① なぜ要るか】
+       城主が2026-08-10に手で測られた「note 244ビュー → 無料診断 4人（1.6%）」を、
+       自動で出せるようにする。★いま a（note→無料診断の遷移率）は手作業でしか出ない。
+
+       ・document.referrer … ★ブラウザが最初から持っている値。「どのページから来たか」。
+                             外部サービスではない。note の Referrer-Policy 次第で空になりうる
+       ・?src=note        … 結が今後の記事の末尾CTAに付ける目印（apps/free/ 宛だけ。
+                             ★中盤のLP宛には付けない＝朔の決定。付けると a の定義が壊れる）
+       ★両方やるのは、referrer が効かなくても目印で拾えるようにするため。どちらに転んでも損はしない
+
+     【★なぜ重複除外の if の中に入れるか ―― ここが要である】
+       既存の free_uu とまったく同じ物差し（1ブラウザ1日1回）になる。
+       ★円（積荷室・2代目「錘」）が M-028 深化で定めた条件を、運用ではなく構造で満たす：
+         「分母を絞るときは、分子と同じ範囲に絞る」
+       ★if の外（PV側）に置くと、1人が何度も数えられて free_uu と単位が揃わなくなる。
+         朔が「実装するとき見落としやすい形です」と警告していた箇所である
+
+     【② 日付のずれ（★これも同時に承認済み）】
+       旧： new Date().toISOString().slice(0,10)   ＝ 世界標準時（UTC）の日付
+       GAS側：Asia/Tokyo                            ＝ 日本時間の日付
+       → ★9時間ずれていた。日本時間 0:00〜9:00 に来た人が、前日のキーで判定されていた。
+       ★円の判定「今は直すな。b′の実装と同じ機会にまとめて直せ。断層が1回で済む」に従い、
+         ①と同じこの機会に直す。
+
+     【送るもの】件数だけ。氏名・生年月日は1文字も通らない（DNA-329 / DNA-343）。
+     【フェイルセーフ】既存と同じく try{}catch{} の中。失敗しても診断そのものは止まらない。
+-->
 <script>
 (function(){
   try{
     var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
     new Image().src = base + "?p=free&t=" + Date.now();              // ① PV（毎回）
-    var key = "cnt_free_" + new Date().toISOString().slice(0,10);
+
+    // ★2026-08-14：UTC → 日本時間へ。GAS側（Asia/Tokyo）と日付の切れ目を揃える
+    var d = new Date(Date.now() + 9*60*60*1000);                     // UTC+9 ＝ 日本時間
+    var key = "cnt_free_" + d.toISOString().slice(0,10);
+
     if(!localStorage.getItem(key)){                                  // ② 重複除外（1ブラウザ1日1回）
       localStorage.setItem(key, "1");
       new Image().src = base + "?p=free_uu&t=" + Date.now();
+
+      // ★★2026-08-14 追加：note から来た人だけを数え分ける（★この if の中であることが要）
+      var ref = document.referrer || "";
+      if (/^https?:\/\/([a-z0-9-]+\.)?note\.com/i.test(ref)) {
+        new Image().src = base + "?p=free_uu_noteref&t=" + Date.now();   // J列
+      }
+      if (/[?&]src=note(&|$)/i.test(location.search)) {
+        new Image().src = base + "?p=free_uu_note&t=" + Date.now();      // I列
+      }
     }
   }catch(e){}
 })();
