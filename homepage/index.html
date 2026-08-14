@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>三星鑑（さんせいかん）｜性格分析 × 才能診断 × 行動特性 — 統合人間分析</title>
 <meta name="description" content="三星鑑は占いではありません。生年月日という客観データから、あなたの性格・才能・行動特性を読み解く、ひとりの作り手による統合人間分析です。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yotyann4649.github.io/apps/homepage/">
+<meta property="og:title" content="三星鑑（さんせいかん）｜性格・才能・行動特性の統合人間分析">
+<meta property="og:description" content="占星術・数秘術・四柱推命の三つの分析軸を統合し、性格・才能・行動特性の傾向を読み解きます。占いではなく、生年月日という客観データに基づく、ひとりの作り手による人間分析です。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -193,6 +197,11 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
 .ac-en{font-family:'EB Garamond',serif;font-size:13px;color:var(--gold);letter-spacing:.1em}
 .ac-t{font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;line-height:1.4}
 .ac-n{font-size:12px;color:var(--ink-3)}
+/* ★「ほか4カテゴリ」タイルの中だけに出る、束ねた中身の名前。2026-08-14・城主裁定「名前を見せる」による。
+   ・11px にしてあるのは、.ac-t（15px・見出し）と同じ強さで並ばせないため。ここは見出しではなく内訳である
+   ・このタイルは常にグリッドの最後にあるので、行数が1行増えても伸びるのは最終行だけで済む
+   ・タイル体裁の例外はこの1クラスだけ。他の9タイルには一切影響しない */
+.ac-sub{font-size:11px;color:var(--ink-3);line-height:1.7}
 .audio-foot{margin-top:30px;font-size:14px;color:var(--ink-2);line-height:2;text-align:center;max-width:560px;margin-left:auto;margin-right:auto}
 .audio-cta{text-align:center;margin-top:26px}
 @media(max-width:680px){.audio-split{grid-template-columns:1fr;border-left:none}.audio-col{border-right:none}.audio-cats{grid-template-columns:1fr 1fr;border-left:none}.audio-cat{border-right:none}}
@@ -335,12 +344,12 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <div class="audio-split reveal">
       <div class="audio-col">
         <div class="audio-k">Series</div>
-        <div class="audio-n garamond">23<span>回</span></div>
+        <div class="audio-n garamond">31<span>回</span></div>
         <div class="audio-d">あなたという人を、核・恋愛・仕事・才能・幼少期から今に至るまで、通しで読み解く基本シリーズ。まず全体像をつかみたい方へ。</div>
       </div>
       <div class="audio-col">
         <div class="audio-k">Single</div>
-        <div class="audio-n garamond">150<span>回</span></div>
+        <div class="audio-n garamond">181<span>回</span></div>
         <div class="audio-d">1本ずつ独立した、テーマ別の完結回。気になるところだけを、自由に選べます。</div>
       </div>
     </div>
@@ -349,12 +358,36 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
       <div class="audio-cat"><span class="ac-en">A</span><span class="ac-t">性格・気質</span><span class="ac-n">全23回</span></div>
       <div class="audio-cat"><span class="ac-en">B</span><span class="ac-t">持って生まれた素材</span><span class="ac-n">全8回</span></div>
       <div class="audio-cat"><span class="ac-en">C</span><span class="ac-t">数が示す指標</span><span class="ac-n">全12回</span></div>
-      <div class="audio-cat"><span class="ac-en">D</span><span class="ac-t">暮らしと人生のテーマ</span><span class="ac-n">全20回</span></div>
+      <div class="audio-cat"><span class="ac-en">D</span><span class="ac-t">暮らしと人生のテーマ</span><span class="ac-n">全24回</span></div>
       <div class="audio-cat"><span class="ac-en">E</span><span class="ac-t">生活のあるある</span><span class="ac-n">全24回</span></div>
       <div class="audio-cat"><span class="ac-en">F</span><span class="ac-t">人生と心の深いテーマ</span><span class="ac-n">全13回</span></div>
       <div class="audio-cat"><span class="ac-en">G</span><span class="ac-t">独立・起業・働き方</span><span class="ac-n">全16回</span></div>
       <div class="audio-cat"><span class="ac-en">H</span><span class="ac-t">人生の成長段階</span><span class="ac-n">全12回</span></div>
       <div class="audio-cat"><span class="ac-en">J</span><span class="ac-t">向いていないこと</span><span class="ac-n">全22回</span></div>
+      <!-- ★このタイルだけ4行ある。理由と、直すときの注意（2026-08-14・理子3代目「帷」）
+
+           【なぜ名前を出しているか】
+             城主が実機で御覧になり「これはわざと？」と問われた。他は全部名前が出ているのに
+             4つだけ匿名になっている ―― その不透明さが裁定の動機である。
+             ★裁定は「名前を見せる」であって、「束ねるのをやめる」ではない。
+               束ねる形（案C）は保守性のために城主が選ばれたもので、今も生きている。
+               だからタイルは10枚のまま、中身の名前だけを添える形にした。
+
+           【なぜ小さい字で、いちばん下に置くか】
+             他の9タイルは［記号／名前／回数］の3行で、横に並ぶと3行目まで目線が揃う。
+             名前を2行目に割り込ませると、このタイルだけ回数の位置がずれて読みにくくなる。
+             ★4行目に足せば、既存の3行はどのタイルとも揃ったままになる。
+
+           【回数を書いていないのは、わざとである】
+             城主の裁定は「名前を見せる」までである。回数まで出すのは、こちらが
+             「あったほうがよい」と思っただけのもので、それは提案に留める（2026-08-13の掟）。
+             ★内訳は実測済みで、K=1／L=12／N=11／P=3 の計27回。上の「全27回」と合っている。
+
+           【★増えたときにここを直す人へ】
+             このタイルの「4カテゴリ」「全27回」と、下の名前は、必ず同時に直すこと。
+             片方だけ直すとページの中で矛盾する（理子庫 U-022）。
+             ★9タイルの回数の合計＋27＝181 で、上の「181回」と一致している。この関係を壊さないこと。 -->
+      <div class="audio-cat"><span class="ac-en">+</span><span class="ac-t">ほか4カテゴリ</span><span class="ac-n">全27回</span><span class="ac-sub">ステータスカード／隠れた指標／恋愛深掘り／総合診断</span></div>
     </div>
 
     <p class="audio-foot reveal">PDFレポートに、お好きな本数の音声を組み合わせた<strong>音声セット</strong>もご用意予定です。基本シリーズで全体像を、完結回でテーマを深掘り ―― 読む／聴くの二段で、自分という人をより立体的に。</p>
@@ -394,7 +427,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     </div>
     <div class="price-cap reveal">音声は本数の追加も可能です。先行登録された方には、優先・特別価格でご案内します。</div>
     <div class="reveal" style="margin-top:24px;padding:20px 24px;border:1px solid var(--rule);border-radius:2px;text-align:center">
-      <div style="font-size:14.5px;color:var(--ink)"><strong>完結回</strong>は、レポートなしで単品購入も可能です。全150本のカタログから、気になるテーマだけ自由にお選びいただけます。</div>
+      <div style="font-size:14.5px;color:var(--ink)"><strong>完結回</strong>は、レポートなしで単品購入も可能です。全181本のカタログから、気になるテーマだけ自由にお選びいただけます。</div>
       <div class="garamond" style="font-size:26px;color:var(--ink);margin-top:8px">¥3,000<span style="font-size:14px;color:var(--ink-2)"> ／ 1本</span></div>
     </div>
 
@@ -586,6 +619,16 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
   try{
     var u = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec?p=homepage";
     new Image().src = u + "&t=" + Date.now();
+    // ★2026-08-13 追加：重複除外（1ブラウザ1日1回）＝homepage_uu。朔の依頼（h′の分母）。
+    //   理由：homepage は PV しか無く、free_uu（実人数）と単位が揃っていない。
+    //         分母の片方がPVで、もう片方がUUだと比が意味を持たない（朔・2026-08-11）。
+    //   ★上の2行は1文字も変えていない（Z-005）。保存キーも無料診断とは別にしてある。
+    var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+    var key = "cnt_homepage_" + new Date().toISOString().slice(0,10);
+    if(!localStorage.getItem(key)){
+      localStorage.setItem(key, "1");
+      new Image().src = base + "?p=homepage_uu&t=" + Date.now();
+    }
   }catch(e){}
 })();
 </script>
