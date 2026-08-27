@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Trinity - Master Visual Synthesizer</title>
+  <!-- ★2026-08-20（理子・舷門 6代目「欄（らん）」）：①書体を読み込む ━━━━━━━━━━━━━
+       🔴 ★v2 は書体を1度も読み込んでいなかった（v1.1 で入れたものが戻っていた）。
+          ★canvas 側は書体名を指定しているが、入っていない環境では別の書体に落ちる。
+       ★書体が変われば ★文字幅が変わり ★マーカーと座布団の幅がズレる。
+       ★これは理子庫 U-015（PDFキャプチャ時のフォント同期）と同じ形である。 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0f0f1a;
+      --card-bg: #16213e;
+      --accent-blue: #4285f4;
+      --text-main: #ffffff;
+      --text-muted: #8e9aaf;
+      --border-line: #2a3b66;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: "Google Sans", "Noto Sans JP", -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-panel { text-align: center; }
+    .header-panel h1 { font-size: 20px; color: var(--accent-blue); letter-spacing: 0.05em; margin-bottom: 4px; }
+    .header-panel p { font-size: 12px; color: var(--text-muted); }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 20px;
+      width: 100%;
+      max-width: 1480px;
+    }
+
+    @media (max-width: 1024px) {
+      .app-layout { grid-template-columns: 1fr; }
+    }
+
+    .controls-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-line);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .controls-container::-webkit-scrollbar { width: 6px; }
+    .controls-container::-webkit-scrollbar-thumb { background: var(--border-line); border-radius: 3px; }
+
+    .control-section {
+      border-bottom: 1px solid var(--border-line);
+      padding-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+    }
+
+    .input-field { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+    input[type="text"], textarea, select {
+      background: #0f0f1a;
+      border: 1px solid var(--border-line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 48px;
+      line-height: 1.4;
+    }
+
+    input[type="text"]:focus, textarea:focus, select:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+
+    input[type="range"] { accent-color: var(--accent-blue); cursor: pointer; }
+
+    .preview-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .stage-wrapper {
+      position: relative;
+      width: 100%;
+      /* ★2026-08-27（理子・舷門 9代目「衾」／★城主の裁定）：16 / 9 → 1280 / 670 へ。
+         ★理由＝出来た絵を note の見出しへ上げると、note 側は 1.91:1 で扱う
+           （★響さん〔信号所・7代目〕が公開中の記事6本を実測。★6本とも 1.91:1）。
+         ★1280×720 のまま上げると、上下が 25 ずつ切られる計算になる。
+         🔴 ★ここを直さずに canvas だけ直すと、★下の絵は 670 なのに枠だけ 16:9 のままで、
+            ★画面の中で絵が引き伸ばされる。★3か所を必ず揃えること（★L327 / ★下の SVG）。 */
+      aspect-ratio: 1280 / 670;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid var(--border-line);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+
+    canvas { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .action-bar { width: 100%; display: flex; gap: 12px; }
+    /* ★2026-08-21（理子・舷門 6代目「欄」）：縮めたことを静かに知らせる欄 */
+    .text-note { font-size: 10.5px; line-height: 1.55; color: var(--text-muted); }
+    .fit-note { width: 100%; font-size: 11px; line-height: 1.6; color: #ffd76a;
+                min-height: 1.2em; text-align: center; }
+
+    button {
+      flex: 1;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(66, 133, 244, 0.4);
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.9; }
+
+    /* ★2026-08-20（理子・舷門 6代目「欄」）：②記事タイトルから段組をつくる欄 ━━━━━━━━
+       ★既存のクラスは1つも書き換えていない。ここで新しい名前だけを足している。 */
+    .title-src {
+      background: #0b1633;
+      border: 1px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .title-src textarea { min-height: 56px; }
+    .split-btn {
+      padding: 10px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
+    .split-note {
+      font-size: 11px;
+      line-height: 1.65;
+      color: #cfe0ff;
+      background: #0f0f1a;
+      border-left: 3px solid var(--accent-blue);
+      border-radius: 4px;
+      padding: 9px 10px;
+      white-space: pre-wrap;
+    }
+    .split-note b { color: #ffd76a; }
+    .split-note .warn { color: #ffb4b4; }
+    .split-note .ok { color: #8ef0b8; }
+  </style>
+</head>
+<body>
+
+  <div class="header-panel">
+    <h1>THE TRINITY // MASTER VISUAL SYNTHESIZER</h1>
+    <p>全段完全自律型装甲・プロフェッショナル配色パレット搭載</p>
+  </div>
+
+  <div class="app-layout">
+    <div class="controls-container">
+
+      <!-- ★2026-08-20（理子・舷門 6代目「欄」）：記事タイトルから段組をつくる ━━━━━━━━
+           ★城主のカケラ「記事タイトルを入れたら素人感まる出しのデザインになってしまう」
+           ★実測（52本の実タイトル）… ★38本（73%）が、そのままでは1段10文字を超える
+           ★外すときは、この節と、下のスクリプト内の同じ日付のブロック2つを消す -->
+      <div class="control-section">
+        <span class="section-title">✂️ 記事タイトルから段組をつくる</span>
+        <div class="title-src">
+          <div class="input-field">
+            <label>記事タイトルを、そのまま貼ってください<span id="srcLen">0文字</span></label>
+            <textarea id="titleSrc" rows="2" placeholder="【気まぐれ.006】5年後に辞めると決めた2つのきっかけ"></textarea>
+          </div>
+          <div class="input-field">
+            <label>段の数</label>
+            <select id="tierMode">
+              <option value="auto">おまかせ（文字数から決める）</option>
+              <option value="2">2段</option>
+              <option value="3">3段</option>
+              <option value="4">4段</option>
+            </select>
+          </div>
+          <button class="split-btn" id="splitBtn">この題を段に割る</button>
+          <div class="split-note" id="splitNote">記事タイトルを貼って、上のボタンを押すと、下の各段へ流し込みます。
+気になるところがあれば、ここに出します。押しても、下の段は手でいくらでも直せます。</div>
+        </div>
+      </div>
+
+      <!-- 配色プリセット -->
+      <div class="control-section">
+        <span class="section-title">🎨 プロフェッショナル配色テーマ</span>
+        <div class="input-field">
+          <select id="themePreset">
+            <option value="classic">王道セールス（濃紺 × 鮮烈赤 × 蛍光黄）</option>
+            <option value="monolith">The Trinity Monolith（漆黒 × サイバーシアン × スレート）</option>
+            <option value="passion">パッション・エンペラー（真紅 × リッチゴールド × 純白）</option>
+            <option value="emerald">信頼・ビジネス（ディープフォレスト × ミント × レモン）</option>
+            <option value="purple">高貴・エレガンス（ディープバイオレット × ローズピンク × プラチナ）</option>
+            <option value="darkneon">ネオン・フューチャー（ミッドナイト × ネオングリーン × サンセットオレンジ）</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ★2026-08-21（理子・舷門 6代目「欄（らん）」）：文字の後ろに、うっすら帯 ━━━━━━
+           ★出どころ … 城主の2枚目のサムネ（★13人が横一列）が読みにくかった。
+           ★背景に空きが無いとき、★文言をどう直しても読みにくいままだった。
+           ★文字の側だけを、うっすら暗く（または明るく）する。★背景の絵は消さない。 -->
+      <div class="control-section">
+        <div class="section-header">
+          <span class="section-title">🌫️ 文字の後ろに帯</span>
+          <label><input type="checkbox" id="scrimOn"> 敷く</label>
+        </div>
+        <div class="grid-2">
+          <div class="input-field">
+            <label>どちらへ寄せるか</label>
+            <select id="scrimTone">
+              <option value="dark">暗くする（白い文字が映える）</option>
+              <option value="light">明るくする（濃い文字が映える）</option>
+            </select>
+          </div>
+          <div class="input-field">
+            <label>濃さ <span id="scrimPowerVal">55</span></label>
+            <input type="range" id="scrimPower" min="0" max="90" value="55">
+          </div>
+        </div>
+        <p class="text-note">★文字を置いた側だけに敷きます。背景がごちゃついていても、文字が浮きます。</p>
+      </div>
+
+      <!-- 全体制御 -->
+      <div class="control-section">
+        <span class="section-title">📐 全体レイアウト＆座標</span>
+        <div class="input-field">
+          <label>横位置 (X座標) <span id="posXVal">820</span></label>
+          <input type="range" id="posX" min="200" max="1100" value="820">
+        </div>
+        <div class="input-field">
+          <label>縦位置の微調整（★ 0 ＝自動で中央）<span id="posYVal">0</span></label>
+          <input type="range" id="posY" min="-200" max="200" value="0">
+        </div>
+        <div class="input-field">
+          <label>段落間スペーシング <span id="spacingVal">1.0x</span></label>
+          <input type="range" id="lineSpacing" min="0.5" max="2.0" step="0.05" value="1.0">
+        </div>
+      </div>
+
+      <!-- 動的4段コンポーネント群 -->
+      <div id="tiersContainer"></div>
+
+      <!-- ★2026-08-21（理子・舷門 6代目「欄（らん）」）：設定を覚える ━━━━━━━━━━━━
+           ★DNA-382（この端末に自動保存し、持ち出せる形も用意する）。
+           🔴 ★覚えるのは【この端末の中だけ】。★どこへも送っていない。
+           ★消す手段を必ず置く（★DNA-377 —— 残したくないものが残り続けないように）。 -->
+      <div class="control-section">
+        <div class="section-header">
+          <span class="section-title">💾 設定を覚える</span>
+          <label><input type="checkbox" id="memOn" checked> 次も この設定で開く</label>
+        </div>
+        <button class="split-btn" id="memClear"
+          style="background:#3a2233;color:#ffb4b4;border:1px solid #6b3450;">覚えたものを消して、初期状態に戻す</button>
+        <p class="text-note" id="memNote">★この端末の中だけに残ります。どこへも送っていません。</p>
+      </div>
+
+      <!-- 背景画像 -->
+      <div class="control-section">
+        <span class="section-title">🖼️ 背景画像</span>
+        <div class="input-field">
+          <label>※ キャンバスへのD&D または クリックで差し替え</label>
+          <input type="file" id="filePicker" accept="image/*" style="display:none;">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- プレビュー＆キャンバス -->
+    <div class="preview-stage">
+      <div class="stage-wrapper" id="dropArea" title="クリックまたは画像をドラッグ＆ドロップで差し替え">
+        <!-- ★2026-08-27（理子・舷門 9代目「衾」／★城主の裁定）：720 → 670（1.91:1）。★上の .stage-wrapper と、下の既定背景SVGも同じ数字に揃えてある -->
+        <canvas id="mainCanvas" width="1280" height="670"></canvas>
+      </div>
+      <p id="fitNote" class="fit-note"></p>
+      <div class="action-bar">
+        <button id="downloadBtn">プロ仕様バナーをPNG保存（一発出力）</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const canvas = document.getElementById('mainCanvas');
+      const ctx = canvas.getContext('2d');
+      const dropArea = document.getElementById('dropArea');
+      const filePicker = document.getElementById('filePicker');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const themePreset = document.getElementById('themePreset');
+      const posX = document.getElementById('posX');
+      const posY = document.getElementById('posY');
+      const lineSpacing = document.getElementById('lineSpacing');
+      const tiersContainer = document.getElementById('tiersContainer');
+
+      /* ★2026-08-20（理子・舷門 6代目「欄」）：書体の指定を、この1本に揃える ━━━━━━━━
+         🔴 ★v2 は【測るとき】と【描くとき】で書体の指定が違っていた（2通り）。
+            ★同じ文字を2つの物差しで測ることになり、マーカーと座布団の幅がズレる。
+         ★以後、書体を触るときは この関数だけを直せばよい。 */
+      const FACE = (px) => `900 ${px}px "Noto Sans JP", "Arial Black", sans-serif`;
+
+      // 6大プロフェッショナル配色パレット
+      const themes = {
+        classic: {
+          style1: { text: '#0f295a', stroke: '#ffffff', marker: '#ffea29', badgeBg: '#0f295a', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style2: { text: '#e62424', stroke: '#ffffff', marker: '#ffea29', badgeBg: '#e62424', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style3: { text: '#0f295a', stroke: '#ffffff', marker: '#ffea29', badgeBg: '#0f295a', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style4: { text: '#ffea00', stroke: '#0f295a', marker: '#ffea29', badgeBg: '#0b2e75', badgeText: '#ffea00', badgeBorder: '#ffffff' }
+        },
+        monolith: {
+          /* ★2026-08-21（理子・舷門 6代目「欄（らん）」）：暗いテーマのマーカーを、見える色にした
+             🔴 ★城主の3枚目のサムネで実測 —— ★描いているのに、暗い背景と同化して見えなかった。
+             ★全6テーマを点検した結果、★この暗いテーマの3つだけが暗い色だった（★他5テーマは明るい）。
+             ★marker だけを変えている。★text・stroke・badge は1文字も触っていない。 */
+          style1: { text: '#ffffff', stroke: '#0f0f1a', marker: '#4285f4', badgeBg: '#16213e', badgeText: '#ffffff', badgeBorder: '#4285f4' },
+          style2: { text: '#4285f4', stroke: '#ffffff', marker: '#e8eaed', badgeBg: '#4285f4', badgeText: '#ffffff', badgeBorder: '#8ab4f8' },
+          style3: { text: '#e0e0e0', stroke: '#0f0f1a', marker: '#4285f4', badgeBg: '#16213e', badgeText: '#e0e0e0', badgeBorder: '#4285f4' },
+          style4: { text: '#8ab4f8', stroke: '#0f0f1a', marker: '#4285f4', badgeBg: '#0f0f1a', badgeText: '#8ab4f8', badgeBorder: '#4285f4' }
+        },
+        passion: {
+          style1: { text: '#2b0000', stroke: '#ffffff', marker: '#ffe600', badgeBg: '#2b0000', badgeText: '#ffffff', badgeBorder: '#ffe600' },
+          style2: { text: '#d90429', stroke: '#ffffff', marker: '#ffccd5', badgeBg: '#d90429', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style3: { text: '#2b0000', stroke: '#ffffff', marker: '#ffe600', badgeBg: '#2b0000', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style4: { text: '#ffe600', stroke: '#2b0000', marker: '#ffccd5', badgeBg: '#d90429', badgeText: '#ffe600', badgeBorder: '#ffffff' }
+        },
+        emerald: {
+          style1: { text: '#064e3b', stroke: '#ffffff', marker: '#a7f3d0', badgeBg: '#064e3b', badgeText: '#ffffff', badgeBorder: '#a7f3d0' },
+          style2: { text: '#047857', stroke: '#ffffff', marker: '#fef08a', badgeBg: '#047857', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style3: { text: '#064e3b', stroke: '#ffffff', marker: '#a7f3d0', badgeBg: '#064e3b', badgeText: '#ffffff', badgeBorder: '#a7f3d0' },
+          style4: { text: '#facc15', stroke: '#064e3b', marker: '#a7f3d0', badgeBg: '#064e3b', badgeText: '#facc15', badgeBorder: '#ffffff' }
+        },
+        purple: {
+          style1: { text: '#3b0764', stroke: '#ffffff', marker: '#f5d0fe', badgeBg: '#3b0764', badgeText: '#ffffff', badgeBorder: '#f5d0fe' },
+          style2: { text: '#c026d3', stroke: '#ffffff', marker: '#fae8ff', badgeBg: '#c026d3', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style3: { text: '#3b0764', stroke: '#ffffff', marker: '#f5d0fe', badgeBg: '#3b0764', badgeText: '#ffffff', badgeBorder: '#f5d0fe' },
+          style4: { text: '#ffffff', stroke: '#3b0764', marker: '#f5d0fe', badgeBg: '#581c87', badgeText: '#f5d0fe', badgeBorder: '#c026d3' }
+        },
+        darkneon: {
+          style1: { text: '#ffffff', stroke: '#000000', marker: '#10b981', badgeBg: '#000000', badgeText: '#ffffff', badgeBorder: '#10b981' },
+          style2: { text: '#10b981', stroke: '#000000', marker: '#f59e0b', badgeBg: '#10b981', badgeText: '#000000', badgeBorder: '#ffffff' },
+          style3: { text: '#ffffff', stroke: '#000000', marker: '#10b981', badgeBg: '#000000', badgeText: '#ffffff', badgeBorder: '#10b981' },
+          style4: { text: '#f59e0b', stroke: '#000000', marker: '#10b981', badgeBg: '#18181b', badgeText: '#f59e0b', badgeBorder: '#f59e0b' }
+        }
+      };
+
+      // 4つの段の初期構成（全段独立・完全カスタマイズ対応）
+      const tiersConfig = [
+        { id: 1, name: '第1段', text: 'noteの無料記事が', type: 'plain', size: 76, stroke: 20, mThick: 30, mPos: 15, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
+        { id: 2, name: '第2段', text: '有料記事の', type: 'marker', size: 88, stroke: 22, mThick: 32, mPos: 16, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
+        { id: 3, name: '第3段', text: '売上を左右する', type: 'plain', size: 82, stroke: 20, mThick: 30, mPos: 15, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
+        { id: 4, name: '第4段', text: '本当の理由✨', type: 'badge', size: 74, stroke: 0, mThick: 22, mPos: 46, padX: 42, padY: 22, lineGap: 1.35, enabled: true }
+      ];
+
+      // コントロールUIを動的生成（DNA-149: 自己増殖型UI）
+      const buildControls = () => {
+        tiersContainer.innerHTML = '';
+        tiersConfig.forEach((tier, idx) => {
+          const sec = document.createElement('div');
+          sec.className = 'control-section';
+          sec.innerHTML = `
+            <div class="section-header">
+              <span class="section-title">${tier.name}</span>
+              <label><input type="checkbox" id="t${idx}_enable" ${tier.enabled ? 'checked' : ''}> 有効</label>
+            </div>
+            <div class="input-field">
+              <textarea id="t${idx}_text" rows="${tier.type === 'badge' ? '2' : '1'}">${tier.text}</textarea>
+            </div>
+            <div class="grid-3">
+              <div class="input-field">
+                <label>装飾タイプ</label>
+                <select id="t${idx}_type">
+                  <option value="plain" ${tier.type === 'plain' ? 'selected' : ''}>通常（白フチ）</option>
+                  <option value="marker" ${tier.type === 'marker' ? 'selected' : ''}>マーカー下線</option>
+                  <option value="badge" ${tier.type === 'badge' ? 'selected' : ''}>座布団（帯）</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label>サイズ <span id="t${idx}_size_val">${tier.size}</span></label>
+                <input type="range" id="t${idx}_size" min="20" max="150" value="${tier.size}">
+              </div>
+              <div class="input-field">
+                <label>フチ太さ <span id="t${idx}_stroke_val">${tier.stroke}</span></label>
+                <input type="range" id="t${idx}_stroke" min="0" max="40" value="${tier.stroke}">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="input-field">
+                <label>マーカー太さ/縦余白 <span id="t${idx}_mthick_val">${tier.mThick}</span></label>
+                <input type="range" id="t${idx}_mthick" min="0" max="80" value="${tier.mThick}">
+              </div>
+              <div class="input-field">
+                <label>マーカー位置/横余白 <span id="t${idx}_mpos_val">${tier.mPos}</span></label>
+                <input type="range" id="t${idx}_mpos" min="-40" max="80" value="${tier.mPos}">
+              </div>
+            </div>
+          `;
+          tiersContainer.appendChild(sec);
+        });
+      };
+
+      buildControls();
+
+      let bgImage = null;
+
+      const initDefaultBg = () => {
+        const dummy = new Image();
+        dummy.onload = () => { bgImage = dummy; render(); };
+        /* ★2026-08-27（理子・舷門 9代目「衾」／★城主の裁定）：720 → 670 へ揃えた。
+           ★丸と字の縦位置も、真ん中からの離れ方（＋20 と ＋30）を保ったまま移してある。
+           ★ここを 720 のままにすると、★既定の背景だけが枠と違う比率になり、上下に帯が出る。 */
+        dummy.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="670" viewBox="0 0 1280 670"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%23f8f9fa"/><stop offset="100%" stop-color="%23e9ecef"/></linearGradient></defs><rect width="1280" height="670" fill="url(%23g)"/><circle cx="280" cy="355" r="180" fill="%23d0ebff"/><text x="280" y="365" font-family="sans-serif" font-size="28" font-weight="bold" fill="%231971c2" text-anchor="middle">IMAGE DROP AREA</text></svg>';
+      };
+
+      /* ★2026-08-20（理子・舷門 6代目「欄」）：③背景の比率を保って敷く ━━━━━━━━━━━
+         🔴 ★v2 は背景を枠へ引き伸ばしていた（v1.1 で入れたものが戻っていた）。
+            ★縦長の写真を入れると、人が横に潰れる。
+         ★はみ出す分は中央基準で切る。バナーは位置を大きく外さないので、これでよい。 */
+      const drawCover = (img) => {
+        const cw = canvas.width, ch = canvas.height;
+        const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+        if (!iw || !ih) { ctx.drawImage(img, 0, 0, cw, ch); return; }   /* 安全弁 */
+        const ir = iw / ih, cr = cw / ch;
+        let sw, sh, sx, sy;
+        if (ir > cr) { sh = ih; sw = ih * cr; sx = (iw - sw) / 2; sy = 0; }
+        else         { sw = iw; sh = iw / cr; sx = 0; sy = (ih - sh) / 2; }
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cw, ch);
+      };
+
+      const drawBorderedText = (text, x, y, size, fill, stroke, strokeW) => {
+        ctx.save();
+        ctx.font = FACE(size);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+        ctx.shadowBlur = 16;
+        ctx.shadowOffsetX = 4;
+        ctx.shadowOffsetY = 6;
+
+        if (strokeW > 0) {
+          ctx.lineWidth = strokeW;
+          ctx.strokeStyle = stroke;
+          ctx.lineJoin = 'round';
+          ctx.miterLimit = 2;
+          ctx.strokeText(text, x, y);
+        }
+
+        ctx.shadowColor = 'transparent';
+        ctx.fillStyle = fill;
+        ctx.fillText(text, x, y);
+        ctx.restore();
+      };
+
+      const drawRoundedRect = (x, y, w, h, r, fill, stroke, strokeW) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.shadowBlur = 16;
+        ctx.shadowOffsetY = 6;
+
+        ctx.fillStyle = fill;
+        ctx.fill();
+
+        if (strokeW > 0) {
+          ctx.shadowColor = 'transparent';
+          ctx.lineWidth = strokeW;
+          ctx.strokeStyle = stroke;
+          ctx.stroke();
+        }
+        ctx.restore();
+      };
+
+      /* ★2026-08-20（理子・舷門 6代目「欄（らん）」）：縦を自動で中央に置く ━━━━━━━━━
+         ★城主のカケラ「上が詰まって下が空いている」と、実測（上102px／下126px）
+         🔴 ★これまでは開始位置が固定だった。★段の数や文字の大きさを変えるたびに
+            ★全体の背丈が変わるのに開始位置は動かず、★毎回 縦を手で合わせることになっていた。
+         🔴 ★送りの式は、この下の advanceOf() を唯一の正本とする。
+            ★測るときも描くときも必ずここを通す（★同じ式を2箇所に書くと、片方だけ直された日に狂う）。
+         ★縦位置のつまみは「自動の中央から、どれだけずらすか」の微調整として残している。 */
+
+      /* ★2026-08-21（理子・舷門 6代目「欄（らん）」）：横に入りきらない段を、その場でだけ縮める
+         ★城主のカケラ「さらに改良できないかな」＋実測
+            ★城主の3枚目のサムネ … 第1段が 912 / 920px ＝ ★99%。★あと1文字ではみ出す
+         🔴 ★横位置を端へ寄せるほど、使える幅は狭くなる（★中央揃えなので、近いほうの端までの2倍）
+            ★820 に寄せると 1280 → ★920px。★つまり3割 減る。
+            ★「余白を作ること」と「文字を大きく入れること」は、同じ画面の上で取り合いになる。
+         ★理子庫 U-012（3段階の動的密度調整）の①だけを使う。
+            ★つまみの数字は書き換えない。★描くときだけ縮める。★縮めたことは下に静かに出す。 */
+
+      /* ★2026-08-21（理子・舷門 6代目「欄（らん）」）：文字の後ろに、うっすら帯を敷く
+         ★文字を置いた側（横位置が中央より右なら右側）だけに、★外へ向かって濃くなる帯を敷く。
+         ★背景の絵は1ピクセルも消していない。★上に薄い膜を重ねているだけである。
+         ★背景が無いときも敷ける（★単色の下地としても使えるため）。 */
+      const drawScrim = () => {
+        const on = document.getElementById('scrimOn');
+        if (!on || !on.checked) { return; }
+        const pw = parseInt(document.getElementById('scrimPower').value, 10) / 100;
+        const tone = document.getElementById('scrimTone').value;
+        const lab = document.getElementById('scrimPowerVal');
+        if (lab) { lab.textContent = Math.round(pw * 100); }
+        if (pw <= 0) { return; }
+
+        const cw = canvas.width, ch = canvas.height;
+        const bx = parseInt(posX.value, 10);
+        const toRight = (bx >= cw / 2);
+        const w = Math.round(cw * 0.62);
+        const x = toRight ? (cw - w) : 0;
+        const rgb = (tone === 'light') ? '255,255,255' : '0,0,0';
+
+        /* 内側（画面の中央より）を透明、外側（端）を濃く */
+        const g = toRight
+          ? ctx.createLinearGradient(x, 0, cw, 0)
+          : ctx.createLinearGradient(w, 0, 0, 0);
+        g.addColorStop(0, 'rgba(' + rgb + ',0)');
+        g.addColorStop(1, 'rgba(' + rgb + ',' + pw + ')');
+
+        ctx.save();
+        ctx.fillStyle = g;
+        ctx.fillRect(x, 0, w, ch);
+        ctx.restore();
+      };
+
+      /* 中央揃えなので、中心から近いほうの端までの2倍しか使えない */
+      const usableWidth = (baseX) => Math.min(baseX, canvas.width - baseX) * 2;
+
+      /* 縮めた記録。描くたびに空にする */
+      let fitLog = [];
+
+      /* 入りきらなければ少しずつ縮める（★元の70%で打ち切る。それ以上は小さくしない） */
+      const fitSize = (lines, size, baseX, type, mThick, mPos) => {
+        if (!lines || lines.length === 0) { return size; }
+        const padX = (type === 'badge') ? ((mPos > 0 ? mPos : 40) * 2) : 0;
+        const limit = usableWidth(baseX) - padX - 12;   /* 12px は端に触れないための余白 */
+        if (limit <= 0) { return size; }
+        const floor = Math.floor(size * 0.7);
+        ctx.save();
+        let s = size;
+        for (let i = 0; i < 40; i++) {
+          ctx.font = FACE(s);
+          let w = 0;
+          for (let k = 0; k < lines.length; k++) {
+            const t = ctx.measureText(lines[k]).width;
+            if (t > w) { w = t; }
+          }
+          if (w <= limit) { break; }
+          if (s <= floor) { break; }
+          /* ★下限で止める。★実測で、54 → 52 と 53 を飛び越していた（★下限を1px 割る） */
+          s = Math.max(floor, Math.floor(s * 0.97));
+        }
+        ctx.restore();
+        return s;
+      };
+
+      /* 座布団の箱の高さ */
+      const badgeBoxH = (size, lineCount, mThick) => {
+        const lineHeight = size * 1.35;
+        const padY = mThick > 0 ? mThick : 22;
+        return (lineCount - 1) * lineHeight + size + padY * 2;
+      };
+
+      /* この段が縦にどれだけ場所を取るか（次の段の頭までの距離） */
+      const advanceOf = (type, size, lineCount, mThick, spacing) => {
+        const lineHeight = size * 1.35;
+        if (type === 'badge') { return (badgeBoxH(size, lineCount, mThick) + 16) * spacing; }
+        return ((lineCount - 1) * lineHeight + size * 1.3) * spacing;
+      };
+
+      /* 段の「頭」から、実際に絵が始まる上端／終わる下端までの距離 */
+      const topOffsetOf = (type, size, mThick) =>
+        (type === 'badge') ? (mThick > 0 ? mThick : 22) : (size / 2);
+
+      const bottomOffsetOf = (type, size, lineCount, mThick) => {
+        const lineHeight = size * 1.35;
+        if (type === 'badge') { return badgeBoxH(size, lineCount, mThick) - (mThick > 0 ? mThick : 22); }
+        return (lineCount - 1) * lineHeight + size / 2;
+      };
+
+      /* いま有効な段だけを拾う */
+      const activeTiers = () => {
+        const out = [];
+        for (let idx = 0; idx < tiersConfig.length; idx++) {
+          const en = document.getElementById(`t${idx}_enable`);
+          const tx = document.getElementById(`t${idx}_text`);
+          if (!en || !tx || !en.checked || tx.value.trim() === '') { continue; }
+          const _ty = document.getElementById(`t${idx}_type`).value;
+          const _raw = parseInt(document.getElementById(`t${idx}_size`).value, 10);
+          const _mt = parseInt(document.getElementById(`t${idx}_mthick`).value, 10);
+          const _mp = parseInt(document.getElementById(`t${idx}_mpos`).value, 10);
+          const _ls = tx.value.split('\n').filter(l => l.trim() !== '');
+          const _bx = parseInt(posX.value, 10);
+          out.push({
+            idx: idx,
+            type: _ty,
+            /* ★縮めた後の大きさで縦を測る（★ここを縮める前の値にすると、縦が狂う） */
+            size: fitSize(_ls, _raw, _bx, _ty, _mt, _mp),
+            mThick: _mt,
+            lineCount: _ls.length
+          });
+        }
+        return out;
+      };
+
+      /* 全体の背丈を測って、縦の真ん中に来る開始位置を返す */
+      const layoutStartY = (spacing) => {
+        const list = activeTiers();
+        if (list.length === 0) { return 140; }
+        let head = 0;
+        const heads = [];
+        for (let i = 0; i < list.length; i++) {
+          heads.push(head);
+          head += advanceOf(list[i].type, list[i].size, list[i].lineCount, list[i].mThick, spacing);
+        }
+        const f = list[0], l = list[list.length - 1];
+        const topOff = topOffsetOf(f.type, f.size, f.mThick);
+        const botOff = bottomOffsetOf(l.type, l.size, l.lineCount, l.mThick);
+        const blockH = heads[heads.length - 1] + botOff + topOff;
+        return (canvas.height - blockH) / 2 + topOff;
+      };
+
+      const render = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (bgImage) {
+          drawCover(bgImage);   /* ★比率を保って敷く（v2 は枠へ引き伸ばしていた） */
+        }
+        drawScrim();            /* ★文字の後ろに帯（★背景の絵は消さない。上に薄い膜を重ねるだけ） */
+
+        const currentTheme = themes[themePreset.value] || themes.classic;
+        const baseX = parseInt(posX.value, 10);
+        const baseY = parseInt(posY.value, 10);
+        const spacing = parseFloat(lineSpacing.value);
+
+        document.getElementById('posXVal').textContent = baseX;
+        document.getElementById('posYVal').textContent = baseY;
+        document.getElementById('spacingVal').textContent = `${spacing.toFixed(2)}x`;
+
+        fitLog = [];                                    /* ★この描画ぶんの記録を空にする */
+        const _fn0 = document.getElementById('fitNote');
+        if (_fn0) { _fn0.textContent = ''; }
+        let currentY = layoutStartY(spacing) + baseY;   /* ★固定の140をやめ、背丈から中央を求める */
+
+        tiersConfig.forEach((tier, idx) => {
+          const enableEl = document.getElementById(`t${idx}_enable`);
+          const textEl = document.getElementById(`t${idx}_text`);
+          const typeEl = document.getElementById(`t${idx}_type`);
+          const sizeEl = document.getElementById(`t${idx}_size`);
+          const strokeEl = document.getElementById(`t${idx}_stroke`);
+          const mThickEl = document.getElementById(`t${idx}_mthick`);
+          const mPosEl = document.getElementById(`t${idx}_mpos`);
+
+          if (!enableEl.checked || textEl.value.trim() === '') return;
+
+          const rawSize = parseInt(sizeEl.value, 10);
+          const stroke = parseInt(strokeEl.value, 10);
+          const mThick = parseInt(mThickEl.value, 10);
+          const mPos = parseInt(mPosEl.value, 10);
+          const type = typeEl.value;
+          const lines = textEl.value.split('\n').filter(l => l.trim() !== '');
+
+          /* ★横に入りきらなければ、ここでだけ縮める。★つまみの数字は書き換えない */
+          const size = fitSize(lines, rawSize, baseX, type, mThick, mPos);
+          if (size !== rawSize) {
+            fitLog.push('第' + (idx + 1) + '段 ' + rawSize + '→' + size + 'px');
+            const _f = document.getElementById('fitNote');
+            if (_f) {
+              _f.textContent = '★横に入りきらないので縮めました（'
+                + fitLog.join('／') + '）。つまみの数字はそのままです';
+            }
+          }
+
+          document.getElementById(`t${idx}_size_val`).textContent = rawSize;
+          document.getElementById(`t${idx}_stroke_val`).textContent = stroke;
+          document.getElementById(`t${idx}_mthick_val`).textContent = mThick;
+          document.getElementById(`t${idx}_mpos_val`).textContent = mPos;
+
+          const style = currentTheme[`style${idx + 1}`];
+          const lineHeight = size * 1.35;
+
+          if (type === 'plain') {
+            lines.forEach((line, lIdx) => {
+              drawBorderedText(line, baseX, currentY + (lIdx * lineHeight), size, style.text, style.stroke, stroke);
+            });
+            currentY += advanceOf(type, size, lines.length, mThick, spacing);
+          }
+          else if (type === 'marker') {
+            ctx.save();
+            ctx.font = FACE(size);   /* ★描くときと同じ指定で測る */
+            lines.forEach((line, lIdx) => {
+              const lineY = currentY + (lIdx * lineHeight);
+              if (mThick > 0) {
+                const mWidth = ctx.measureText(line).width + (mPos * 2);
+                ctx.fillStyle = style.marker;
+                ctx.fillRect(baseX - mWidth / 2, lineY + (size * 0.15), mWidth, mThick);
+              }
+              drawBorderedText(line, baseX, lineY, size, style.text, style.stroke, stroke);
+            });
+            ctx.restore();
+            currentY += advanceOf(type, size, lines.length, mThick, spacing);
+          }
+          else if (type === 'badge') {
+            ctx.save();
+            ctx.font = FACE(size);   /* ★描くときと同じ指定で測る */
+
+            let maxW = 0;
+            lines.forEach(line => {
+              const w = ctx.measureText(line).width;
+              if (w > maxW) maxW = w;
+            });
+
+            const padX = mPos > 0 ? mPos : 40;
+            const padY = mThick > 0 ? mThick : 22;
+            const boxW = maxW + padX * 2;
+            /* ★箱の高さは badgeBoxH() を正本にした（★測る側と描く側で式が2本にならないよう） */
+            const boxH = badgeBoxH(size, lines.length, mThick);
+            const boxX = baseX - boxW / 2;
+            const boxY = currentY - padY;
+
+            drawRoundedRect(boxX, boxY, boxW, boxH, 18, style.badgeBg, style.badgeBorder, stroke > 0 ? stroke : 5);
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = style.badgeText;
+            ctx.font = FACE(size);
+
+            const startTextY = boxY + padY + size / 2;
+            lines.forEach((line, lIdx) => {
+              ctx.fillText(line, baseX, startTextY + (lIdx * lineHeight));
+            });
+            ctx.restore();
+
+            currentY += advanceOf(type, size, lines.length, mThick, spacing);
+          }
+        });
+      };
+
+      const scrimOn = document.getElementById('scrimOn');
+      const scrimTone = document.getElementById('scrimTone');
+      const scrimPower = document.getElementById('scrimPower');
+      if (scrimOn) { scrimOn.addEventListener('change', render); }
+      if (scrimTone) { scrimTone.addEventListener('change', render); }
+      if (scrimPower) { scrimPower.addEventListener('input', render); }
+
+      // イベントリスナーの完全バインド
+      tiersContainer.addEventListener('input', render);
+      themePreset.addEventListener('change', render);
+      posX.addEventListener('input', render);
+      posY.addEventListener('input', render);
+      lineSpacing.addEventListener('input', render);
+
+      const loadFile = (file) => {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => { bgImage = img; render(); };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      };
+
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+        dropArea.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
+      });
+
+      dropArea.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) loadFile(files[0]);
+      });
+
+      dropArea.addEventListener('click', () => filePicker.click());
+      filePicker.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) loadFile(e.target.files[0]);
+      });
+
+      downloadBtn.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = `the_trinity_banner_${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+
+
+      /* ★2026-08-21（理子・舷門 6代目「欄（らん）」）：設定を覚える ━━━━━━━━━━━━━━
+         ★覚えるのは、つまみと文字だけ。★背景の画像は覚えない（★重いうえ、毎回 選び直すものだから）。
+         🔴 ★この端末の中だけに残る。★外へは1バイトも送っていない。
+         ★消す手段を必ず置く（★「初期状態に戻す」）。★残したくないものが残り続けないように。
+         ★読めない環境（保存が禁止されている等）でも、★黙って何もしないだけで、絵は普通に描ける。 */
+      const MEM_KEY = 'trinity_banner_state_v1';
+
+      const memAvailable = () => {
+        try { window.localStorage.setItem('_t', '1'); window.localStorage.removeItem('_t'); return true; }
+        catch (e) { return false; }
+      };
+
+      const collectState = () => {
+        const st = { theme: themePreset.value, posX: posX.value, posY: posY.value,
+                     spacing: lineSpacing.value, tiers: [] };
+        const so = document.getElementById('scrimOn');
+        const stn = document.getElementById('scrimTone');
+        const sp = document.getElementById('scrimPower');
+        if (so) { st.scrimOn = so.checked; }
+        if (stn) { st.scrimTone = stn.value; }
+        if (sp) { st.scrimPower = sp.value; }
+        for (let i = 0; i < tiersConfig.length; i++) {
+          const en = document.getElementById(`t${i}_enable`);
+          const tx = document.getElementById(`t${i}_text`);
+          if (!en || !tx) { continue; }
+          st.tiers.push({
+            enabled: en.checked,
+            text: tx.value,
+            type: document.getElementById(`t${i}_type`).value,
+            size: document.getElementById(`t${i}_size`).value,
+            stroke: document.getElementById(`t${i}_stroke`).value,
+            mThick: document.getElementById(`t${i}_mthick`).value,
+            mPos: document.getElementById(`t${i}_mpos`).value
+          });
+        }
+        return st;
+      };
+
+      const saveState = () => {
+        const on = document.getElementById('memOn');
+        if (!on || !on.checked || !memAvailable()) { return; }
+        try { window.localStorage.setItem(MEM_KEY, JSON.stringify(collectState())); }
+        catch (e) { /* 入りきらない等。黙って何もしない */ }
+      };
+
+      const applyState = (st) => {
+        if (!st) { return false; }
+        const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined && v !== null) { el.value = v; } };
+        set('themePreset', st.theme); set('posX', st.posX); set('posY', st.posY); set('lineSpacing', st.spacing);
+        set('scrimTone', st.scrimTone); set('scrimPower', st.scrimPower);
+        const so = document.getElementById('scrimOn');
+        if (so && typeof st.scrimOn === 'boolean') { so.checked = st.scrimOn; }
+        if (st.tiers) {
+          for (let i = 0; i < st.tiers.length && i < tiersConfig.length; i++) {
+            const t = st.tiers[i];
+            const en = document.getElementById(`t${i}_enable`);
+            const tx = document.getElementById(`t${i}_text`);
+            if (!en || !tx) { continue; }
+            if (typeof t.enabled === 'boolean') { en.checked = t.enabled; }
+            if (typeof t.text === 'string') { tx.value = t.text; }
+            set(`t${i}_type`, t.type); set(`t${i}_size`, t.size); set(`t${i}_stroke`, t.stroke);
+            set(`t${i}_mthick`, t.mThick); set(`t${i}_mpos`, t.mPos);
+          }
+        }
+        return true;
+      };
+
+      const clearState = () => {
+        try { window.localStorage.removeItem(MEM_KEY); } catch (e) { /* 何もしない */ }
+        buildControls();          /* 初期の中身へ戻す */
+        const n = document.getElementById('memNote');
+        if (n) { n.textContent = '★消しました。初期状態に戻しています。'; }
+        render();
+      };
+
+      const mc = document.getElementById('memClear');
+      if (mc) { mc.addEventListener('click', clearState); }
+      const mo = document.getElementById('memOn');
+      if (mo) { mo.addEventListener('change', () => { if (!mo.checked) { try { window.localStorage.removeItem(MEM_KEY); } catch (e) {} } else { saveState(); } }); }
+
+      ['input', 'change'].forEach((ev) => {
+        tiersContainer.addEventListener(ev, saveState);
+        themePreset.addEventListener(ev, saveState);
+        posX.addEventListener(ev, saveState);
+        posY.addEventListener(ev, saveState);
+        lineSpacing.addEventListener(ev, saveState);
+        const so2 = document.getElementById('scrimOn');
+        const st2 = document.getElementById('scrimTone');
+        const sp2 = document.getElementById('scrimPower');
+        if (so2) { so2.addEventListener(ev, saveState); }
+        if (st2) { st2.addEventListener(ev, saveState); }
+        if (sp2) { sp2.addEventListener(ev, saveState); }
+      });
+
+      /* 起動時：覚えていれば、そこから始める */
+      if (memAvailable()) {
+        let saved = null;
+        try { saved = JSON.parse(window.localStorage.getItem(MEM_KEY) || 'null'); } catch (e) { saved = null; }
+        if (saved && applyState(saved)) {
+          const n = document.getElementById('memNote');
+          if (n) { n.textContent = '★前回の設定から始めています（★この端末の中だけに残っていたものです）。'; }
+          render();
+        }
+      }
+
+      initDefaultBg();
+
+/* ★2026-08-20（理子・舷門 6代目「欄（らん）」）：記事タイトルから段組をつくる ━━━━━━━━━
+   ★出どころ … 城主のカケラ「記事タイトルを入れたら素人感まる出しのデザインになってしまう」
+   ★実測 …… 公開中の実タイトル 52本で走らせた（★52本とも自然な切れ目で割れた／等分に落ちたのは0本）
+             ★ただし 38本（73%）は、そのままでは1段が10文字を超える
+             → ★これが「記事タイトルをそのまま入れると素人感が出る」の中身である
+   ★ES3で書いている理由 … この環境の cscript //E:JScript で、実際に走らせて確かめられるため。
+                          ★画面を開かずに、割り方が正しいかを機械で測れる。
+   ★決めるのは人である。ここが出すのは案だけで、下の各段は手でいくらでも直せる。
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var TITLE_SPLIT = (function () {
+
+  var MARK    = ['、', '。', '！', '？', '!', '?', '…', '・'];
+  var CLOSER  = ['」', '』', '）', ')', '】', '〉', '》'];
+  var OPEN    = ['「', '『', '（', '(', '【', '〈', '《'];
+  var JOSHI2  = ['から', 'まで', 'より', 'など', 'ため', 'ので', 'のに', 'こと', 'という', 'ための', 'ときの', 'ように'];
+  var JOSHI_S = ['が', 'を', 'は', 'に', 'で', 'と'];   /* 強い助詞 */
+  var JOSHI_W = ['の', 'も', 'へ', 'や'];               /* 弱い助詞 */
+
+  var MAXLEN  = 10;   /* 1段の上限 */
+  var MINLEN  = 4;    /* 1段の下限 */
+  var MIN1ST  = 7;    /* ★第1段は掴みなので、もう少し欲しい */
+  var TOTAL   = 30;   /* 全体の目安 */
+
+  function has(a, v) {
+    var i;
+    for (i = 0; i < a.length; i++) { if (a[i] === v) { return true; } }
+    return false;
+  }
+
+  function trimJa(s) {
+    return s.replace(/^[\s　]+/, '').replace(/[\s　]+$/, '');
+  }
+
+  /* 文字の種類。ひらがな→漢字などの変わり目は、日本語の意味の切れ目とよく一致する */
+  function kind(ch) {
+    var c = ch.charCodeAt(0);
+    if (c >= 0x3040 && c <= 0x309F) { return 'H'; }
+    if (c >= 0x30A0 && c <= 0x30FF) { return 'K'; }
+    if ((c >= 0x4E00 && c <= 0x9FFF) || (c >= 0x3400 && c <= 0x4DBF)) { return 'C'; }
+    if ((c >= 0x30 && c <= 0x39) || (c >= 0xFF10 && c <= 0xFF19)) { return 'N'; }
+    if ((c >= 0x41 && c <= 0x5A) || (c >= 0x61 && c <= 0x7A)) { return 'A'; }
+    return 'O';
+  }
+
+  /* 貼り付けたタイトルから、サムネに要らないものを静かに落とす（責めない） */
+  function preclean(s) {
+    var t = String(s).replace(/[\r\n]+/g, '');
+    t = t.replace(/^【[^】]*】/, '');           /* 先頭の管理番号。読む人には意味がない */
+    t = trimJa(t);
+    t = t.replace(/^『([\s\S]*)』$/, '$1');
+    t = t.replace(/^「([\s\S]*)」$/, '$1');
+    return trimJa(t);
+  }
+
+  /* ★段の数は、文字数から決める。
+     ★短い題を無理に4段へ割ると、1段3文字のような不自然な段が生まれる
+       （城主の実物＝18文字。4段では破綻し、3段で収まった） */
+  function tierCount(len) {
+    if (len <= 16) { return 2; }
+    if (len <= 24) { return 3; }
+    return 4;
+  }
+
+  /* 切ってよい位置の一覧。at = そこまでが1段になる境目 */
+  function cutPoints(s) {
+    var out = [], i, prev, next, two, w, kp, kn;
+    for (i = 1; i < s.length; i++) {
+      prev = s.charAt(i - 1);
+      next = s.charAt(i);
+      two  = (i >= 2) ? s.substring(i - 2, i) : '';
+      w = 0;
+
+      if (has(MARK, prev))          { w = 7; }
+      else if (has(CLOSER, prev))   { w = 6; }
+      else if (has(JOSHI2, two))    { w = 5; }
+      else if (has(JOSHI_S, prev))  { w = 5; }
+      else if (has(JOSHI_W, prev))  { w = 1; }
+
+      /* 文字の種類の変わり目（ひらがな → 漢字・カタカナ・英数）。
+         ★「売上を左右する|本当の理由」は助詞では切れない。ここが拾う */
+      kp = kind(prev); kn = kind(next);
+      if (kp === 'H' && (kn === 'C' || kn === 'K' || kn === 'A' || kn === 'N')) { w += 3; }
+      if (has(OPEN, next)) { w += 2; }
+
+      if (w > 0) { out.push({ at: i, w: w }); }
+    }
+    return out;
+  }
+
+  /* 括弧が段をまたいで壊れていないか */
+  function bracketBroken(part) {
+    var i, c, d = 0, bad = 0;
+    for (i = 0; i < part.length; i++) {
+      c = part.charAt(i);
+      if (has(OPEN, c)) { d++; }
+      else if (has(CLOSER, c)) { if (d > 0) { d--; } else { bad++; } }
+    }
+    return bad + d;
+  }
+
+  /* 良くない割り方ほど大きい値を返す。emp = 強調に使う段の位置 */
+  function penalty(s, cuts, lens, ws, emp) {
+    var i, p = 0, sum = 0, avg, prev, part, last;
+
+    for (i = 0; i < lens.length; i++) {
+      if (lens[i] > MAXLEN) { p += (lens[i] - MAXLEN) * 12; }
+      if (lens[i] < MINLEN) { p += (MINLEN - lens[i]) * 10; }
+      sum += lens[i];
+    }
+    if (lens[0] < MIN1ST) { p += (MIN1ST - lens[0]) * 12; }
+
+    avg = sum / lens.length;
+    for (i = 0; i < lens.length; i++) { p += (lens[i] - avg) * (lens[i] - avg) * 0.5; }
+
+    for (i = 0; i < ws.length; i++) { p -= ws[i] * 6; }
+
+    p += lens[emp] * 0.8;   /* 強調に使う段は、やや短いほうが映える */
+
+    prev = 0;
+    for (i = 0; i < lens.length; i++) {
+      part = s.substring(prev, prev + lens[i]);
+      prev += lens[i];
+      p += bracketBroken(part) * 14;
+      last = part.charAt(part.length - 1);
+      if (has(JOSHI_S, last) || has(JOSHI_W, last)) {
+        p += 18;   /* ★助詞で終わる段は、文の途中で切れているので不自然に見える */
+        if (i === lens.length - 1) { p += 12; }   /* ★いちばん下は、言い切らないと締まらない */
+      }
+    }
+    return p;
+  }
+
+  function tailJoshiCount(parts) {
+    var i, n = 0, last;
+    for (i = 0; i < parts.length; i++) {
+      last = parts[i].charAt(parts[i].length - 1);
+      if (has(JOSHI_S, last) || has(JOSHI_W, last)) { n++; }
+    }
+    return n;
+  }
+
+  /* n段に割る組み合わせを全通り見て、いちばん自然なものを選ぶ */
+  function splitNatural(s, n, emp) {
+    var pts = cutPoints(s), best = null, out, prev, i;
+    if (pts.length < n - 1) { return null; }
+
+    function rec(from, chosen) {
+      var i, lens, prev2, cuts, ws, p, ok;
+      if (chosen.length === n - 1) {
+        lens = []; prev2 = 0; cuts = []; ws = []; ok = true;
+        for (i = 0; i < chosen.length; i++) {
+          lens.push(pts[chosen[i]].at - prev2);
+          prev2 = pts[chosen[i]].at;
+          cuts.push(pts[chosen[i]].at);
+          ws.push(pts[chosen[i]].w);
+        }
+        lens.push(s.length - prev2);
+        for (i = 0; i < lens.length; i++) { if (lens[i] < 1) { ok = false; } }
+        if (!ok) { return; }
+        p = penalty(s, cuts, lens, ws, emp);
+        if (best === null || p < best.p) { best = { p: p, lens: lens }; }
+        return;
+      }
+      for (i = from; i < pts.length; i++) {
+        chosen.push(i);
+        rec(i + 1, chosen);
+        chosen.pop();
+      }
+    }
+    rec(0, []);
+
+    if (best === null) { return null; }
+    out = []; prev = 0;
+    for (i = 0; i < best.lens.length; i++) {
+      out.push(s.substring(prev, prev + best.lens[i]));
+      prev += best.lens[i];
+    }
+    return out;
+  }
+
+  /* 自然な切れ目が足りないときの、代わりの案（等分）。止めずに手動の代替を出す */
+  function splitEven(s, n) {
+    var w = Math.ceil(s.length / n), out = [], i;
+    for (i = 0; i < n; i++) { out.push(s.substring(w * i, (i === n - 1) ? s.length : w * (i + 1))); }
+    return out;
+  }
+
+  /* 気づいたことを、責めずに伝える（入力ミスを責めない設計・U-001） */
+  function advise(parts, natural, cut, n) {
+    var msgs = [], i, total = 0, tails, over = 0;
+    for (i = 0; i < parts.length; i++) { total += parts[i].length; }
+
+    if (cut) { msgs.push('ok|先頭の【…】は、読む人には意味がないので外しました。1段まるごと空きます'); }
+    msgs.push('ok|合計 ' + total + '文字なので、' + n + '段にしました');
+
+    if (!natural) {
+      msgs.push('warn|自然な切れ目が足りなかったので、等分した案を出しています。手で直してください');
+    }
+    for (i = 0; i < parts.length; i++) { if (parts[i].length > MAXLEN) { over++; } }
+
+    if (total > TOTAL) {
+      msgs.push('warn|' + TOTAL + '文字を超えています。記事タイトルは検索のための言葉、サムネは目で読ませる言葉です。別に作り直すほうが、たいてい早いです');
+    }
+    if (over > 0) {
+      msgs.push('warn|1段が ' + MAXLEN + '文字を超えている段が ' + over + 'つあります（' + MINLEN + '〜' + MAXLEN + '文字が目安です）');
+    }
+    tails = tailJoshiCount(parts);
+    if (tails >= 3) { msgs.push('warn|助詞で終わる段が ' + tails + 'つあります。2つまでにすると間延びしません'); }
+    if (over === 0 && total <= TOTAL && tails < 3 && natural) {
+      msgs.push('good|よく収まっています。強調は1箇所だけ、いちばん下は言い切りで締まっています');
+    }
+    return msgs;
+  }
+
+  return {
+    MAXLEN: MAXLEN, MINLEN: MINLEN, TOTAL: TOTAL,
+    tierCount: tierCount,
+
+    /* 入口。title を渡すと { cleaned, parts, n, natural, emphasis, notes } を返す */
+    run: function (title, forceN) {
+      var raw = String(title).replace(/[\r\n]+/g, '');
+      var t = preclean(raw);
+      var cut = (t.length !== trimJa(raw).length);
+      var n, emp, parts, natural = true;
+      if (t.length === 0) { return null; }
+
+      n = forceN ? forceN : tierCount(t.length);
+      if (n < 2) { n = 2; }
+      if (n > 4) { n = 4; }
+      emp = (n >= 3) ? 1 : 0;          /* ★強調は上から2段目。2段のときだけ1段目 */
+
+      parts = splitNatural(t, n, emp);
+      if (parts === null) { parts = splitEven(t, n); natural = false; }
+
+      return { cleaned: t, parts: parts, n: n, natural: natural, emphasis: emp, notes: advise(parts, natural, cut, n) };
+    }
+  };
+})();
+
+/* ★上でつくった案を、下の各段へ流し込む（★決めるのは人。ここは案を置くだけ） */
+      const titleSrc = document.getElementById('titleSrc');
+      const tierMode = document.getElementById('tierMode');
+      const splitBtn = document.getElementById('splitBtn');
+      const splitNote = document.getElementById('splitNote');
+      const srcLen = document.getElementById('srcLen');
+
+      const escHtml = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+      titleSrc.addEventListener('input', () => {
+        srcLen.textContent = titleSrc.value.replace(/[\r\n]+/g, '').length + '文字';
+      });
+
+      const applySplit = () => {
+        const forceN = (tierMode.value === 'auto') ? 0 : parseInt(tierMode.value, 10);
+        const r = TITLE_SPLIT.run(titleSrc.value, forceN);
+        if (r === null) {
+          splitNote.innerHTML = '記事タイトルを貼ってから、もう一度 押してください。';
+          return;
+        }
+
+        /* 段ごとの中身・装飾・大きさを入れる。
+           ★大きさは、城主が「このイメージ」と示された実物の比率に合わせている */
+        const BASE = [76, 88, 82, 74];
+        for (let i = 0; i < 4; i++) {
+          const on = (i < r.n);
+          document.getElementById(`t${i}_enable`).checked = on;
+          document.getElementById(`t${i}_text`).value = on ? r.parts[i] : '';
+          if (!on) continue;
+
+          const isLast = (i === r.n - 1);
+          const isEmp = (i === r.emphasis);
+          document.getElementById(`t${i}_type`).value = isLast ? 'badge' : (isEmp ? 'marker' : 'plain');
+
+          /* 強調の段をいちばん大きく、いちばん下の段はやや控えめに */
+          let size = BASE[i] || 78;
+          if (isEmp) { size = 88; }
+          else if (isLast) { size = 74; }
+          else { size = 78; }
+          document.getElementById(`t${i}_size`).value = size;
+
+          if (isLast) {
+            document.getElementById(`t${i}_stroke`).value = 0;
+            document.getElementById(`t${i}_mthick`).value = 22;   /* 座布団の縦余白 */
+            document.getElementById(`t${i}_mpos`).value = 46;     /* 座布団の横余白 */
+          } else if (isEmp) {
+            document.getElementById(`t${i}_stroke`).value = 22;
+            document.getElementById(`t${i}_mthick`).value = 32;   /* マーカーの太さ */
+            document.getElementById(`t${i}_mpos`).value = 16;     /* マーカーの位置 */
+          } else {
+            document.getElementById(`t${i}_stroke`).value = 20;
+            document.getElementById(`t${i}_mthick`).value = 0;    /* 通常の段はマーカー無し */
+            document.getElementById(`t${i}_mpos`).value = 15;
+          }
+        }
+
+        /* 気づいたことを出す。★赤字で叱らない。色は控えめに使い分けるだけ */
+        let html = '';
+        for (let i = 0; i < r.notes.length; i++) {
+          const bar = r.notes[i].indexOf('|');
+          const kindTag = (bar >= 0) ? r.notes[i].substring(0, bar) : 'ok';
+          const body = (bar >= 0) ? r.notes[i].substring(bar + 1) : r.notes[i];
+          const cls = (kindTag === 'warn') ? 'warn' : (kindTag === 'good' ? 'ok' : '');
+          html += '<span class="' + cls + '">・' + escHtml(body) + '</span>\n';
+        }
+        html += '\n<b>' + escHtml(r.cleaned) + '</b>  （' + r.cleaned.length + '文字 → ' + r.n + '段）';
+        splitNote.innerHTML = html;
+
+        srcLen.textContent = titleSrc.value.replace(/[\r\n]+/g, '').length + '文字';
+        render();
+      };
+
+      splitBtn.addEventListener('click', applySplit);
+
+      /* ★2026-08-20（理子・舷門 6代目「欄」）：④書体が届いてから、もう一度 描く ━━━━━━
+         🔴 ★v2 はこれを持っていなかった（v1.1 で入れたものが戻っていた）。
+            ★読み込みを待たずに描くと、最初の絵だけ別の書体のままになる。 */
+      if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
+        document.fonts.ready.then(() => { try { render(); } catch (e) { /* 既存の表示は絶対に壊さない */ } });
+      }
+    })();
+  </script>
+</body>
+</html>
