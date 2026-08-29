@@ -229,6 +229,56 @@ Check your Browserslist config to be sure that your targets are set up correctly
         <p id="thumbNote" class="text-[11px] text-slate-400 mt-2 leading-relaxed"></p>
       </div>
 
+      <!-- ★2026-08-28（ゼロ・機関室 24代目「不動（ふどう）」）：リップシンク用アバターの型 ━━━━━━
+           ★城主のご依頼（原文）「またリップシンク用の画像生成のプロンプトが分からない／
+             ゼロが作成したHTML構造文のアプリに反映してほしい／依頼してほしい」
+           ★届けてくださったのは奏（信号所・9代目「譜（ふ）」）の便（2026-08-28 19時台）。
+           ★中身は、こちらで考えたものではない。★条文7本から そのまま持ってきている：
+             P-023（肌の質感・人形化を防ぐ）／P-024（年齢を数値で固定）／
+             P-025①（リップシンク用のカメラと光）／P-026（人物設定・理子/千里/結）
+             ＋ DNA-256（Close-up 強制ロック。★「ゼロ・理子」を名指しで、道具の側にロックせよと命じている）
+           ★上の「サムネの型」と同じ作法：★組み立てた文を「描きたい被写体」へ入れるだけ。
+             ★下の結合エンジンの既存の語は【1文字も変えていない】（Z-005）。
+           🔴 ★色は purple 系で揃えてある。★pink 系は、埋め込みTailwindに1件も無いので効かない（★実測）。
+             ★見た目の調整は舷門（理子）の畑。★ここは「動くこと」だけを揃えた。
+           ★外すときは、この囲みと、下のスクリプトにある同じ日付の関数・定数を消す -->
+      <div class="bg-slate-800/40 backdrop-blur-xl border border-purple-500/40 rounded-2xl p-5">
+        <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
+          <span class="accent-photo">🗣️</span> リップシンク用アバターの型（喋らせる絵）
+        </label>
+        <p class="text-xs text-slate-500 mb-3">
+          動画で喋らせるための顔を作ります。人物を選んで、押すだけで大丈夫です。
+        </p>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <div class="text-[10px] text-slate-500 mb-1">人物</div>
+            <select id="lsPerson" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <option value="riko" selected>理子（黒髪ボブ・紺の浴衣）</option>
+              <option value="senri">千里（黒髪ストレート・知的）</option>
+              <option value="yui">結（柔らかいアップ・温かい）</option>
+              <option value="free">指定しない（自分で書く）</option>
+            </select>
+          </div>
+          <div>
+            <!-- ★P-024：年齢は【数値】で固定する。「20代半ば」のような曖昧な書き方はしない -->
+            <div class="text-[10px] text-slate-500 mb-1">年齢（数値で固定）</div>
+            <select id="lsAge" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <option value="22">22歳</option>
+              <option value="25" selected>25歳</option>
+              <option value="28">28歳</option>
+              <option value="30">30歳</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="lipsyncBuild()"
+          class="w-full mt-3 p-3 rounded-xl text-sm font-bold bg-purple-600/80 hover:bg-purple-600 transition-all">
+          この人物で、リップシンク用の絵にする
+        </button>
+        <p id="lsNote" class="text-[11px] text-slate-400 mt-2 leading-relaxed"></p>
+      </div>
+
       <!-- 被写体 -->
       <div class="bg-slate-800/40 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-5">
         <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
@@ -319,6 +369,13 @@ Check your Browserslist config to be sure that your targets are set up correctly
         <label class="flex items-center gap-3 cursor-pointer">
           <input type="checkbox" id="opt-closeup" onchange="compile()" class="w-4 h-4 accent-purple-500">
           <span class="text-xs text-slate-300">顔アップ寄せ（リップシンク用・DNA-256）</span>
+        </label>
+        <!-- ★2026-08-28（ゼロ・機関室 24代目「不動」）：上の「顔アップ寄せ」は【描きたい側】に寄せる指示で、
+             ★こちらは【避けたい側】に足す指示である。★2つで1組になる。
+             🔴 ★常に足さない理由：★"full body / wide shot" を常時 禁じると、★風景や全身の絵が作れなくなる。 -->
+        <label class="flex items-center gap-3 cursor-pointer mt-2.5">
+          <input type="checkbox" id="opt-lipsync" onchange="compile()" class="w-4 h-4 accent-purple-500">
+          <span class="text-xs text-slate-300">リップシンク用（引きの構図・年齢上がりを避ける）</span>
         </label>
         <!-- note見出し選択時の事前エスコート（叱らず・事前に優しく） -->
         <p id="photoHeaderHint" class="hidden text-[11px] text-purple-300/80 mt-3 leading-relaxed">💡 note見出しヘッダーを選択中。実写のまま横長サムネイルに錬成します。文字を後乗せするなら「動かしやすい構図」の余白がそのまま使えます。</p>
@@ -471,6 +528,87 @@ const NEG_FACE = "asymmetrical eyes, cross-eyed, ugly, duplicate, cloned face";
    ★理由：人を消したいのに「肌の質感を描け」と言い続けていた（★節さんの実測 §3-3）。★他の語は1文字も変えていない。 */
 const NEG_NOPEOPLE   = "person, human, face, hands, fingers, arms";
 const PHOTO_BASE_NOPEOPLE = "Raw photo, hyper-realistic, absolute photorealism, shot on Fujifilm GFX 100, lifelike, indistinguishable from reality, professional photography";
+
+/* ★2026-08-28（ゼロ・機関室 24代目「不動（ふどう）」）：リップシンク用アバターの型 ━━━━━━━━━━
+   ★城主のご依頼「リップシンク用の画像生成のプロンプトが分からない。★アプリに反映してほしい」
+   ★出所＝奏（信号所・9代目「譜」）の便（2026-08-28 19時台）。★中身は条文7本から そのまま持ってきた。
+   ★人物の記述は P-026 の日本語をそのまま持ち、★英語は同じ内容を並べただけである。
+   🔴 ★条文の値は1つも書き換えていない。★足りないと思っても、ここで勝手に増やすな（★奏さんの畑）。 */
+const LS_PEOPLE = {
+  riko  : { ja:'短く整った黒髪のボブ。知的で少し自信のある表情に、温かく誠実な笑顔。シャープで品のある美しさ。紺色の幾何学模様の浴衣。',
+            en:'Japanese woman, short neat black bob hair, intelligent and quietly confident expression, warm sincere smile, sharp and elegant beauty, wearing a navy blue geometric-pattern yukata' },
+  senri : { ja:'整った黒髪のストレート。瞳は澄んで鋭く、知的な輝き。シャープで知的、かつ若々しく輝く現代的な美しさ。',
+            en:'Japanese woman, neat straight long black hair, clear sharp eyes with intelligent light, sharp intelligent and youthful modern beauty' },
+  yui   : { ja:'黒髪の柔らかいアップスタイル。瞳は大きく、信頼に満ちて明るい。柔らかく優しい、無垢な印象。温かく心から迎え入れる表情。',
+            en:'Japanese woman, soft black updo hairstyle, large bright trusting eyes, soft gentle innocent impression, warm welcoming expression' },
+  free  : { ja:'', en:'' }
+};
+
+/* ★NEG_LIPSYNC …… 🔴 ★NEG_BASE に【無い語だけ】を足している（★機械で照合した）。
+   ★重ねていない語：cgi / 3d / render / anime / cartoon / illustration / painting / drawing /
+                     plastic skin / doll-like / deformed …… ★これらは NEG_BASE に既にある。
+   ★足した語と、その出どころ：
+     ★mannequin・retouched・airbrushed・unnatural symmetry … P-023（人形・CG化・レタッチを防ぐ）
+     ★mature・older person・middle-aged …………………………… P-024（年齢が上へ引っぱられるのを防ぐ）
+     ★full body shot・wide shot・long shot・from behind・profile view … DNA-256（引きの構図を禁じる）
+   🔴 ★【リップシンクの型を使ったときだけ】足す。★常に足すと、風景や全身の絵が作れなくなる。 */
+const NEG_LIPSYNC = "mannequin, retouched, airbrushed, unnatural symmetry, mature, older person, middle-aged, full body shot, wide shot, long shot, from behind, profile view";
+
+function lipsyncBuild(){
+  var 人物キー = (document.getElementById('lsPerson') || {}).value || 'riko';
+  var 年齢     = (document.getElementById('lsAge') || {}).value || '25';
+  var 人物     = LS_PEOPLE[人物キー] || LS_PEOPLE.free;
+  var 案内欄   = document.getElementById('lsNote');
+
+  /* ★日本語（城主が読む側）と英語（生成ツールへ渡す側）を、上の「サムネの型」と同じ形で並べる */
+  var 和文 = [];
+  if (人物.ja) { 和文.push(人物.ja); }
+  和文.push(年齢 + '歳。若々しい輝き。');
+  和文.push('正面を向いた、胸から上のクローズアップ。');
+  和文.push('影のない、均一な光。');
+  和文.push('無加工の写真のような自然な肌の質感。毛穴と産毛、微細な凹凸が見える。');
+
+  var 英文 = [];
+  if (人物.en) { 英文.push(人物.en); }
+  英文.push(年齢 + ' years old, youthful radiance');
+  英文.push('close-up shot on face, front facing, head and upper chest framing, centered composition');
+  英文.push('flat even shadowless lighting, soft uniform light on the face');
+  英文.push('unretouched photograph, natural skin texture, visible pores, fine vellus hair, subtle skin irregularities');
+
+  document.getElementById('subject').value = 和文.join('') + ' ' + 英文.join(', ');
+
+  /* ★条文どおりの設定を、こちらで揃える（★城主が1つずつ選ばなくて済むように＝★手数を増やさない） */
+  var 直したもの = [];
+  var レンズ = document.getElementById('lens');
+  if (レンズ && レンズ.value !== '85mm portrait') { レンズ.value = '85mm portrait'; 直したもの.push('レンズを 85mm ポートレートにしました'); }
+  var 比率 = document.getElementById('aspectPhoto');
+  if (比率 && 比率.value !== '9:16') { 比率.value = '9:16'; 直したもの.push('サイズを 縦型 9:16（768×1344）にしました'); }
+  var 寄せ = document.getElementById('opt-closeup');
+  if (寄せ && !寄せ.checked) { 寄せ.checked = true; 直したもの.push('「顔アップ寄せ」を入れました（DNA-256）'); }
+  var 安定 = document.getElementById('opt-face');
+  if (安定 && !安定.checked) { 安定.checked = true; 直したもの.push('「顔・手の安定タグ」を入れました'); }
+  var 避け = document.getElementById('opt-lipsync');
+  if (避け && !避け.checked) { 避け.checked = true; }
+  /* ★トーンは「影のない均一な光」にいちばん近い【自然光】へ寄せる。★既に自然光なら触らない */
+  if (typeof setTone === 'function' && tone !== 'natural') { setTone('natural'); 直したもの.push('トーンを「自然光」にしました（影を作らないため）'); }
+
+  compile();
+
+  var 伝えること = ['リップシンク用の絵の指示文を、下の「描きたい被写体」に入れました。'];
+  if (人物キー === 'free') { 伝えること.push('★人物は指定していません。下の欄に、ご自分で書き足してください。'); }
+  if (直したもの.length) { 伝えること.push('あわせて ―― ' + 直したもの.join('／') + '。'); }
+  伝えること.push('「避けたいもの」にも、引きの構図と、年齢が上がる語を足してあります。');
+  /* ★事前エスコート（★理子庫 U-001）：★押した瞬間に伝える。★あとで叱らない。
+     ★根拠 …… ★CLIP（Stable Diffusion 系）は 77トークンで打ち切る。★超えた分は効かない
+       （★プロンプト工房 v2 の実測：91トークン → 61 へ削って直した＝14代目「鎬」）。
+     ★DomoAI・Imagen・Gemini は長文を受けるので、★そのままで構わない。 */
+  var 長さ = document.getElementById('pos').value.length;
+  if (長さ > 400) {
+    伝えること.push('🔴 ローカルの Stable Diffusion に貼るときは、上の日本語の部分を消して、英語だけにしてください（いまは ' + 長さ + '字あり、後ろのほうが効きません）。DomoAI・Imagen ならそのままで大丈夫です。');
+  }
+  伝えること.push('ここから手でいくらでも直せます。');
+  案内欄.innerHTML = 伝えること.join('<br>');
+}
 
 /* ───── 水彩トーン ───── */
 const STONES = {
@@ -763,7 +901,11 @@ function compile(){
     if(oF && !noPpl) parts.push("perfect anatomical proportions, real human face, natural symmetric features, well-formed hands");
     parts.push(PHOTO_TAIL, NO_TAGS);
     pos = parts.join(", ");
-    neg = NEG_BASE + ((oF && !noPpl) ? ", "+NEG_FACE : "") + (noPpl ? ", "+NEG_NOPEOPLE : "");
+    /* ★2026-08-28（ゼロ・機関室 24代目「不動」）：リップシンク用の語を、避けたい側へ足す。
+       ★既存の3項（NEG_BASE / NEG_FACE / NEG_NOPEOPLE）は1文字も変えていない。★足しただけである。
+       ★人を入れないと書かれているときは足さない（★「顔が引きになる」話は、人がいる絵の話だから） */
+    const oL=document.getElementById('opt-lipsync');
+    neg = NEG_BASE + ((oF && !noPpl) ? ", "+NEG_FACE : "") + (noPpl ? ", "+NEG_NOPEOPLE : "") + ((oL && oL.checked && !noPpl) ? ", "+NEG_LIPSYNC : "");
     // 事前エスコート：note見出し選択時のみヒント表示（叱らない）
     const ph=document.getElementById('photoHeaderHint');
     if(ph) ph.classList.toggle('hidden', aspect!=='note_header');
