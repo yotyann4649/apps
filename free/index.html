@@ -7,6 +7,17 @@
 <meta name="description" content="生年月日という客観データから、性格・才能・行動特性の傾向を読み解く無料の自己分析ツールです。完全無料・登録不要。占いではなく、動かせないデータに基づく人間分析です。">
 <meta property="og:title" content="三星鑑｜生年月日で読む、あなたの性格と才能">
 <meta property="og:description" content="占星術・数秘術・四柱推命の三つの分析軸から、あなたの性格と才能の傾向を読み解きます。占いではなく、生年月日という客観データに基づく人間分析です。完全無料・登録不要。">
+    <!-- ★2026-08-29（26代目「貫」）：★og:type / og:url / og:site_name と、絵の5行を入れた。
+         ★この面には og:title と og:description しか無かった（★唄さんの実測）。
+         ★絵＝奏（信号所・10代目「唄」）が作成。★1200x630・費用0円・外部からの取り込み0件。 -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yotyann4649.github.io/apps/free/">
+    <meta property="og:site_name" content="三星鑑">
+    <meta property="og:image" content="https://yotyann4649.github.io/apps/free/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="三星鑑｜生年月日で読む、あなたの性格と才能">
+    <meta name="twitter:card" content="summary_large_image">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
 :root{
@@ -107,6 +118,19 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .copy-toast{font-size:12px;color:var(--teal);margin-top:12px;opacity:0;transition:.3s;font-weight:600}
 .copy-toast.show{opacity:1}
 
+/* ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：ひとことを伺う箱 ━━━━━━━━━━━━━━
+   ★城主の裁定（2026-08-29）＝【専用のフォームを1本 作る】。★城主がフォームを作られた。
+   ★設問の文＝朔さん（水先室・11代目「帆」）のA案。★1文字も変えていない。
+   ★帆さんのお願い「★先行登録の欄と同じ画面に並べないでほしい」に従い、
+     ★★売り込みの箱（.free-cta）の【手前】に、★別の箱として置いた。
+   ★見た目は控えめにしてある（★.share-area と同じ側）。★売り込みではないため。
+   ★この塊を丸ごと消せば、元に戻る。 */
+.ask-box{max-width:680px;margin:30px auto 0;padding:0 22px}
+.ask-inner{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;text-align:center}
+.ask-title{font-family:'Noto Serif JP',serif;font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.85;margin-bottom:8px}
+.ask-note{font-size:11.5px;color:var(--ink3);line-height:1.8;margin-bottom:16px}
+.ask-btn{display:inline-block;font-size:13.5px;font-weight:700;padding:11px 24px;border-radius:9px;background:var(--paper2);color:var(--ink2);border:1px solid var(--line);transition:.18s}
+.ask-btn:hover{border-color:var(--gold-soft);color:var(--gold)}
 .free-cta{max-width:680px;margin:34px auto 0;padding:0 22px}
 .free-cta-inner{background:var(--ink);color:#f3ead6;border-radius:18px;padding:40px 32px;text-align:center;box-shadow:0 18px 44px -22px rgba(36,28,18,.7)}
 .free-cta-eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold-soft);font-weight:700;margin-bottom:12px}
@@ -223,6 +247,30 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
     <div class="copy-toast" id="copy-toast">クリップボードにコピーしました ✓</div>
   </div>
 
+</div>
+
+<!-- ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：ひとことを伺う箱 ━━━━━━━━━━━━━━
+     ★城主の裁定（2026-08-29）＝【★専用のフォームを1本 作る】。★城主がフォームを作られた。
+     ★設問の文は、朔さん（水先室・11代目「帆」）のA案。★1文字も変えていない。
+
+     ★なぜ【売り込みの箱（.free-cta）の手前】に置いたか（★帆さんのお願い）：
+       「★この1問を、先行登録の欄と【同じ画面に並べない】でいただけますか。
+         ★並べると『答えたら登録させられる』と読まれます」
+       ★→ ★フォームそのものが別（★メールアドレスを1つも聞かない）なので、構造としては満たしている。
+       ★→ ★そのうえで、★見た目でも分けた。★診断を読んだ直後 → ★ひとこと → ★MORE の順。
+
+     ★フォームの中身は、公開面から取って確かめた（2026-08-29 16時台・舷門）：
+       ✅ メールアドレスを集めていない ／ ✅ 質問は1問だけ
+       ✅ 必須はオフ（★空欄で送信できる）／ ✅ 設問文はA案どおり
+       ★entry ID … 189487637（★プレフィルは採っていない。★何を書くか決まっていない設問のため）
+
+     ★この囲みから、ask-box の閉じタグまでを消せば、元に戻る（★CSS の .ask- も一緒に消してよい）。 -->
+<div class="ask-box">
+  <div class="ask-inner">
+    <div class="ask-title">この診断で、まだ分からなかったことがあれば、<br>ひとことだけ教えてください。</div>
+    <div class="ask-note">答えなくても大丈夫です。空欄のままでも送信できます。<br>お名前もメールアドレスも、いただきません。</div>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScKe4xMjHEmXn5j9EvPptdVlalP-iIrrnp2Qm7dKZgpqzwFuw/viewform" target="_blank" rel="noopener" class="ask-btn">ひとこと送る</a>
+  </div>
 </div>
 
 <div class="free-cta">
