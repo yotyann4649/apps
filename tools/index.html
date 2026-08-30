@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="城主と The Trinity で作ってきたWeb道具の置き場です。家計・資産の管理と、制作のための道具があります。">
+<title>The Trinity 工房</title>
+
+<!-- ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：SNSに貼ったときの題と説明 ━━━━━━━━━
+     ★城主の裁定（2026-08-29）＝【入れてから上げる】。★押していただく前に入れたので、お手は1回のままです。
+     ★起票は朔さん（水先室・11代目「帆」）の実測 ―― ★玄関だけ og:title も og:description も0件でした。
+
+     ★og:title は、上の title タグと同じにしてあります（★別の名前を作らないため）。
+     ★og:description は上の meta description と【同じ文】です（★同じページに2つの説明を作らないため）。
+
+     ✅ ★og:image と twitter: は、2026-08-29 に入れた（★下の囲みを見よ）。★以下は、入れる前の理由の記録である。
+        ★og:image の点火条件は「note記事100本」（★城主のご判断・2026-08-10）で、
+        ★到達は 2026-10-19 頃の見込みです（★朔さんの実測・2026-08-29）。
+        ★絵が無い状態で twitter:card だけ入れても、絵は出ません。★同じ日に一緒に入れるのが素直です。
+        ★★絵を作るのは奏さん（信号所）の畑です。
+
+     🔴 ★★訂正（★同じ日の15時台に足しました）―― ★★絵づくりは【もう始まっています】。
+        ★城主の裁定（2026-08-29 14:53・栞さん経由）＝【★いま作り始める】。
+        ★上の「2026-10-19 頃」は【SNSに貼る日】であって、★★絵を作る日ではありません。
+        🔴 ★この囲みを最初に書いたとき、こちらは その裁定を知りませんでした
+           （★裁定を配った便の宛先に、舷門の名前がありませんでした＝★cc では届きません）。
+        ★★朔さん（水先室・11代目「帆」）が気づいて教えてくださいました。
+
+     ★戻すときは、この囲みから下の og: 5行までを消せば元に戻ります。 -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yotyann4649.github.io/apps/tools/">
+<meta property="og:title" content="The Trinity 工房">
+<meta property="og:description" content="城主と The Trinity で作ってきたWeb道具の置き場です。">
+<meta property="og:site_name" content="The Trinity 工房">
+    <!-- ★2026-08-29（26代目「貫」）：★絵ができたので og:image と twitter: を入れた。
+         ★絵＝奏（信号所・10代目「唄」）が作成。★1200x630・費用0円・外部からの取り込み0件。
+         ★上の「わざと入れていません」は、★入れた日に食い違うので、同じ日に直してある。 -->
+    <meta property="og:image" content="https://yotyann4649.github.io/apps/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="The Trinity 工房">
+    <meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --ai:#5b8fb0; --matsu:#7faa78; --beni:#c17b7b; --murasaki:#9d8ec4; --line:#2a3547;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  body{
+    margin:0; background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi);
+    font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  }
+  .wrap{max-width:680px; margin:0 auto; padding:0 16px 40px;}
+
+  header{padding:32px 8px 22px; position:relative; text-align:center;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  /* ★2026-08-30（ゼロ・機関室27代目「筋交」）：★三星鑑の玄関と同じ丸印の形にした。
+     ★向こうは「鑑」、こちらは「工」。★2枚が兄弟に見えるように。 */
+  .crest{display:inline-flex; align-items:center; justify-content:center;
+    width:46px; height:46px; border-radius:50%; border:1.5px solid var(--kin);
+    font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,serif;
+    font-size:21px; font-weight:700; color:var(--kin);
+    margin:0 auto 10px; opacity:.95;}
+  .eyebrow{font-size:10px; letter-spacing:6px; color:var(--kin); margin-bottom:8px;}
+  h1{margin:0; font-size:28px; font-weight:700; letter-spacing:4px;
+    background:linear-gradient(180deg,var(--kinLite),var(--kin));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;}
+  .subtitle{margin:10px 0 0; font-size:12px; color:var(--washiSub); letter-spacing:1px; line-height:1.7;}
+
+  .count{text-align:center; font-size:11px; color:var(--washiSub); margin:18px 0 24px;
+    padding-bottom:14px; border-bottom:1px solid var(--line);}
+  .count b{color:var(--kinLite); font-size:15px; font-weight:700;}
+
+  .grid{display:grid; gap:14px;}
+  .app{
+    display:block; text-decoration:none; color:inherit;
+    background:var(--konjo); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; position:relative; overflow:hidden;
+    transition:transform .15s, border-color .15s, box-shadow .15s;
+  }
+  .app:hover{transform:translateY(-2px); border-color:rgba(201,164,76,0.5);
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+  .app .accent{position:absolute; left:0; top:0; bottom:0; width:4px;}
+  .app .cat{display:inline-block; font-size:10px; letter-spacing:1px; padding:3px 10px;
+    border-radius:12px; margin-bottom:10px; background:var(--konjoLite); color:var(--washiSub);}
+  .app .name{font-size:18px; font-weight:700; color:var(--kinLite); letter-spacing:1px; margin-bottom:6px;}
+  .app .desc{font-size:12px; color:var(--washiSub); line-height:1.7;}
+  .app .arrow{position:absolute; right:18px; top:50%; transform:translateY(-50%);
+    font-size:18px; color:var(--ishi);}
+
+  .empty{padding:30px; text-align:center; border:1px dashed var(--line);
+    border-radius:12px; color:var(--ishi); font-size:13px;}
+
+  footer{margin-top:32px; text-align:center; font-size:10px; color:var(--ishi); line-height:1.8;}
+  .seal{margin-top:20px; text-align:center; font-size:11px; color:var(--washiSub); letter-spacing:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="goldline"></div>
+    <div class="crest">工</div>
+    <div class="eyebrow">T H E &nbsp; T R I N I T Y</div>
+    <h1>工　房</h1>
+    <p class="subtitle">The Trinity は、城主が道具をつくるために組み上げてきた仕組みです。<br>ここには、家計・資産を見る道具と、絵や看板をつくる道具を置いています。</p>
+  </header>
+
+  <!-- ★下の「2」は、JSが動かなかったときに表示される数である。
+       すぐ下のグリッドに静的に置いてあるカードが2枚なので、2にしてある。
+       JSが動けば APPS.length（現在10）で即座に上書きされるので、通常はこの数字は見えない。
+       ★「0」に戻さないこと。カードが2枚あるのに「所蔵0点」と出て、ページ内で矛盾する。
+       （理子庫 U-022：合計だけ直すと内訳とズレる。過小表示は害にならないが、自己矛盾は信用を削る） -->
+  <div class="count">所蔵 <b id="count">2</b> 点</div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       ★このグリッドの中身は、通常すぐ下の script が innerHTML で上書きする。
+       　 それでも空にしておかず、ここに2枚だけ静的に置いてある理由：
+
+       　【1】Googleがサイトへ入る道が、これ以外に1本も無いため
+       　      2026-08-13、ゼロ（9代目「鋼」）が実測。ルートも玄関も生HTMLの
+       　      <a href> が0本で、サイト全体がGoogleから見て孤島になっていた。
+       　      GoogleはJSも実行するが、それは「2回目の巡回」で遅く、
+       　      新規ドメインではそこまで手が回らない。
+       　      ★noscript は使わない（Googleが中を読まないことがある）。
+       　        常に生HTMLに在る形が確実である。
+
+       　【2】★8本ではなく2本だけにしてある（朔・2代目「辻」の判定／2026-08-14）
+       　      8本置くと、Googleがリンクを辿って
+       　        ・財務3部屋（shisan / kakeibo / saikei ＝城主個人の家計・資産）
+       　        ・apps/report/（2026-08-13に城主が「検索に出さない」と承認済み）
+       　      まで発見してインデックスする。
+       　      sitemap は「これを見てください」の案内であって、
+       　      「これ以外を見るな」ではない。塞ぐ働きは無い。
+       　      ★道を通すことと、どこへ通すかは別の判断である。
+       　      → 顧客向けの free/ と homepage/ だけを通す。残り6本はJSのままでよい。
+
+       　【3】文言は下の APPS の該当2件を1文字も変えずに複写している
+       　      ★別の文章を書かないこと。同じ文字列にしておけば、
+       　        APPS 側だけ直されたときに機械で突き合わせて検出できる。
+       　        別の文章にすると、ズレても誰にも分からなくなる。
+       　      （ズレ検出の道具はゼロが用意する）
+
+       　★アプリを増やしても、ここは触らなくてよい。JS側（APPS）に足すだけでよい。
+       　　ここを直すのは、顧客向けの商品が増えたときだけである。
+       ═══════════════════════════════════════════════════════════════ -->
+  <div class="grid" id="grid"></div>
+
+  <div class="seal">― 以上 ―</div>
+
+  <footer>
+    築：城主 と The Trinity ／ すべて自作のWeb道具<br>
+    各アプリは概算・参考用です。<br>
+    <a href="../" style="color:var(--washiSub);border-bottom:1px solid var(--line)">三星鑑のページへ</a>
+  </footer>
+
+</div>
+
+<script>
+/* ───────────────────────────────────────────────
+   アプリを増やすときは、この APPS の中に
+   { } を1つ足すだけ。下にコピー用の見本あり。
+   ─────────────────────────────────────────────── */
+var T = {
+  ai:"#5b8fb0", matsu:"#7faa78", beni:"#c17b7b",
+  murasaki:"#9d8ec4", kin:"#c9a44c", kinLite:"#e3c574"
+};
+
+var APPS = [
+
+  {
+    name:  "城主の資産要塞",
+    cat:   "家計・資産",
+    desc:  "毎月の家計簿から、生涯の資産推移を試算する。月の変動・円グラフ・年代記を備えた、未来を見通すための道具。",
+    url:   "shisan/",          // apps/ の中の部屋名。別リポジトリなら https:// から書く
+    color: T.kin
+  }
+  ,{
+    name:  "城主の出納帳",
+    cat:   "家計・資産",
+    desc:  "毎月の収入・支出・投資を費目別に記録し、暮らしの移ろいを残す家計簿。推移・内訳・履歴で積み重ねが見える。",
+    url:   "kakeibo/",
+    color: T.beni
+  }
+  ,{
+    name:  "城主の歳計帳",
+    cat:   "家計・資産",
+    desc:  "年額を入れると、ひと月あたりに自動換算。収支の比率・貯蓄率・家計の全体像を一枚で一望する。",
+    url:   "saikei/",
+    color: T.ai
+  }
+  /* ★2026-08-23（ゼロ・機関室21代目「砦」）：城主のご指示で、制作の道具を2つ足した。
+     🔴 ★静的リンク（上の生HTML）には足していない。★城主の裁定＝
+        「財務3部屋と同じようにGoogleからは辿れない。noteからしか行けない仕様で」。
+        ★静的リンクに足すと、Googleが辿ってインデックスする（★朔・2代目「辻」の判定）。
+     🔴 ★sitemap.xml にも載せない（★同じ理由）。
+     ★カードの文言は機関室が案として書いた。★見せ方は舷門の畑なので、直していただく前提。 */
+  /* ★2026-08-27（理子・舷門 9代目「衾」／★城主の裁定）：説明文の末尾に1文だけ足した。
+     ★機関室の文は事実を1つも落としていないので、★短くしていない（★Lossless Mirroring）。
+     🔴 ★足した理由＝「この場でもできる」で終わっており、★そこにキーが要ることが書いていなかった。
+        ★玄関から押すと、いきなりキーの入力欄に当たる（★U-001 事前エスコートUX）。
+     ★器は測ってある：★.desc に line-clamp も max-height も無く、★.grid は1列。★長くしても切れない。 */
+  ,{
+    name:  "城主の絵札工房",
+    cat:   "制作の道具",
+    desc:  "画像生成のための指示文（プロンプト）を組み立てる道具。単語を並べるだけで、実写向き・水彩スケッチ向きの指示文ができる。生成そのものは手元の道具でも、この場でもできる。この場で作るときだけ、Googleのキーを貼る（無料で取れる）。",
+    url:   "imageforge/",
+    color: T.murasaki
+  }
+  ,{
+    name:  "城主の看板工房",
+    cat:   "制作の道具",
+    desc:  "見出し画像やサムネイルを、文字と配色だけで組み立てる道具。文字を置いた側だけに下地を敷くので、背景がごちゃついていても字が読める。作ったものは、この端末の中だけに残る。",
+    url:   "banner/",
+    color: T.matsu
+  }
+
+  /* ↓ 新しいアプリを足すときは、上の } の後ろにカンマを付けて、これをコピペ：
+
+  ,{
+    name:  "アプリの名前",
+    cat:   "種類（家計・占い・ツール等）",
+    desc:  "アプリの説明を一文で。",
+    url:   "部屋名/",
+    color: T.matsu
+  }
+
+  */
+];
+
+/* ─── 以下は触らなくてOK（自動で一覧を作る部分）─── */
+var grid = document.getElementById('grid');
+var count = document.getElementById('count');
+count.textContent = APPS.length;
+
+if(APPS.length === 0){
+  grid.innerHTML = '<div class="empty">まだアプリがありません。</div>';
+}else{
+  grid.innerHTML = APPS.map(function(a){
+    return '<a class="app" href="'+a.url+'">'+
+      '<span class="accent" style="background:'+a.color+'"></span>'+
+      '<span class="cat">'+a.cat+'</span>'+
+      '<div class="name">'+a.name+'</div>'+
+      '<div class="desc">'+a.desc+'</div>'+
+      '<span class="arrow">›</span>'+
+      '</a>';
+  }).join('');
+}
+</script>
+</body>
+</html>
