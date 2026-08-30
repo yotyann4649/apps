@@ -96,6 +96,18 @@
     border-radius:12px; color:var(--ishi); font-size:13px;}
 
   footer{margin-top:32px; text-align:center; font-size:10px; color:var(--ishi); line-height:1.8;}
+  /* ★2026-08-30（ゼロ・機関室27代目「筋交」／★城主のご指摘）：行き先の札。
+     ★元はフッターの一番下に小さく置いていた。★城主が見つけられなかった＝「無い」のと同じ。
+     ★カードの下、目に入る場所へ移した。 */
+  .goto{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:26px;}
+  @media(max-width:520px){ .goto{grid-template-columns:1fr;} }
+  .goto a{display:block; text-decoration:none; color:inherit;
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+    transition:border-color .15s, background .15s;}
+  .goto a:hover{border-color:rgba(201,164,76,0.5); background:var(--konjo);}
+  .goto .k{display:block; font-size:13px; font-weight:700; color:var(--kinLite);
+    letter-spacing:1px; margin-bottom:4px;}
+  .goto .v{display:block; font-size:11px; color:var(--washiSub); line-height:1.6;}
   .seal{margin-top:20px; text-align:center; font-size:11px; color:var(--washiSub); letter-spacing:2px;}
 </style>
 </head>
@@ -150,12 +162,16 @@
        ═══════════════════════════════════════════════════════════════ -->
   <div class="grid" id="grid"></div>
 
+
+  <div class="goto">
+    <a href="../"><span class="k">三星鑑 →</span><span class="v">生年月日から、性格・才能・行動特性を読み解く。占いではない統合人間分析。</span></a>
+    <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener"><span class="k">note →</span><span class="v">先行案内と、つくっている過程を書いています。</span></a>
+  </div>
   <div class="seal">― 以上 ―</div>
 
   <footer>
     築：城主 と The Trinity ／ すべて自作のWeb道具<br>
-    各アプリは概算・参考用です。<br>
-    <a href="../" style="color:var(--washiSub);border-bottom:1px solid var(--line)">三星鑑のページへ</a>
+    各アプリは概算・参考用です。
   </footer>
 
 </div>
