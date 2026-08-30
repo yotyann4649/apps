@@ -95,6 +95,18 @@
     border-radius:12px; color:var(--ishi); font-size:13px;}
 
   footer{margin-top:32px; text-align:center; font-size:10px; color:var(--ishi); line-height:1.8;}
+  /* ★2026-08-30（ゼロ・機関室27代目「筋交」／★城主のご指摘）：行き先の札。
+     ★元はフッターの一番下に小さく置いていた。★城主が見つけられなかった＝「無い」のと同じ。
+     ★カードの下、目に入る場所へ移した。 */
+  .goto{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:26px;}
+  @media(max-width:520px){ .goto{grid-template-columns:1fr;} }
+  .goto a{display:block; text-decoration:none; color:inherit;
+    border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+    transition:border-color .15s, background .15s;}
+  .goto a:hover{border-color:rgba(201,164,76,0.5); background:var(--konjo);}
+  .goto .k{display:block; font-size:13px; font-weight:700; color:var(--kinLite);
+    letter-spacing:1px; margin-bottom:4px;}
+  .goto .v{display:block; font-size:11px; color:var(--washiSub); line-height:1.6;}
   .seal{margin-top:20px; text-align:center; font-size:11px; color:var(--washiSub); letter-spacing:2px;}
 </style>
 </head>
@@ -149,12 +161,16 @@
        ═══════════════════════════════════════════════════════════════ -->
   <div class="grid" id="grid"><a class="app" href="free/"><span class="accent" style="background:#5b8fb0"></span><span class="cat">自己分析</span><div class="name">三星鑑 無料版</div><div class="desc">生年月日だけで、性格・才能・気質タイプ・今年の流れをやさしく読み解く無料診断。まず気軽に試したい方へ。</div><span class="arrow">›</span></a><a class="app" href="homepage/"><span class="accent" style="background:#e3c574"></span><span class="cat">ホームページ</span><div class="name">三星鑑 ホームページ</div><div class="desc">三星鑑シリーズの入口。占いではない統合人間分析（性格・才能・行動特性）の世界へ。まずはここから。</div><span class="arrow">›</span></a></div>
 
+
+  <div class="goto">
+    <a href="tools/" rel="nofollow"><span class="k">The Trinity 工房 →</span><span class="v">城主と The Trinity で作ってきた道具。家計・資産と、制作の道具。</span></a>
+    <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener"><span class="k">note →</span><span class="v">先行案内と、つくっている過程を書いています。</span></a>
+  </div>
   <div class="seal"></div>
 
   <footer>
     &copy; 2026 三星鑑（さんせいかん）<br>
-    占星術・四柱推命・数秘術を、占いではなく客観データ分析の手法として用いています。<br>
-    <a href="tools/" style="color:var(--washiSub);border-bottom:1px solid var(--line)">城主と The Trinity で作ってきた道具は、こちら</a>
+    占星術・四柱推命・数秘術を、占いではなく客観データ分析の手法として用いています。
   </footer>
 
 </div>
