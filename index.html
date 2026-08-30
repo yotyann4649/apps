@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="城主が自作したWeb道具の一覧です。三星鑑（性格分析・才能診断・行動特性）の無料版と、家計・資産の管理ツールを置いています。">
-<title>城主の館 ― アプリ一覧</title>
+<meta name="description" content="三星鑑（さんせいかん）は占いではありません。生年月日という客観データから、性格・才能・行動特性を読み解く統合人間分析です。無料診断からお試しいただけます。">
+<title>三星鑑（さんせいかん）｜性格・才能・行動特性の統合人間分析</title>
 
 <!-- ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：SNSに貼ったときの題と説明 ━━━━━━━━━
      ★城主の裁定（2026-08-29）＝【入れてから上げる】。★押していただく前に入れたので、お手は1回のままです。
@@ -13,7 +13,7 @@
      ★og:title は、上の title タグと同じにしてあります（★別の名前を作らないため）。
      ★og:description は上の meta description と【同じ文】です（★同じページに2つの説明を作らないため）。
 
-     🔴 ★og:image と twitter: は、わざと入れていません。
+     ✅ ★og:image と twitter: は、2026-08-29 に入れた（★下の囲みを見よ）。★以下は、入れる前の理由の記録である。
         ★og:image の点火条件は「note記事100本」（★城主のご判断・2026-08-10）で、
         ★到達は 2026-10-19 頃の見込みです（★朔さんの実測・2026-08-29）。
         ★絵が無い状態で twitter:card だけ入れても、絵は出ません。★同じ日に一緒に入れるのが素直です。
@@ -29,9 +29,17 @@
      ★戻すときは、この囲みから下の og: 5行までを消せば元に戻ります。 -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://yotyann4649.github.io/apps/">
-<meta property="og:title" content="城主の館 ― アプリ一覧">
-<meta property="og:description" content="城主が自作したWeb道具の一覧です。三星鑑（性格分析・才能診断・行動特性）の無料版と、家計・資産の管理ツールを置いています。">
-<meta property="og:site_name" content="城主の館">
+<meta property="og:title" content="三星鑑（さんせいかん）｜性格・才能・行動特性の統合人間分析">
+<meta property="og:description" content="三星鑑（さんせいかん）は占いではありません。生年月日という客観データから、性格・才能・行動特性を読み解く統合人間分析です。無料診断からお試しいただけます。">
+<meta property="og:site_name" content="三星鑑">
+    <!-- ★2026-08-29（26代目「貫」）：★絵ができたので og:image と twitter: を入れた。
+         ★絵＝奏（信号所・10代目「唄」）が作成。★1200x630・費用0円・外部からの取り込み0件。
+         ★上の「わざと入れていません」は、★入れた日に食い違うので、同じ日に直してある。 -->
+    <meta property="og:image" content="https://yotyann4649.github.io/apps/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="三星鑑（さんせいかん）｜性格・才能・行動特性の統合人間分析">
+    <meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
     --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
@@ -49,7 +57,13 @@
   header{padding:32px 8px 22px; position:relative; text-align:center;}
   .goldline{position:absolute; top:0; left:0; right:0; height:3px;
     background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
-  .crest{font-size:30px; margin-bottom:8px; opacity:.9;}
+  /* ★2026-08-30（ゼロ・機関室27代目「筋交」／★城主の裁定）：絵文字（🏯）をやめ、
+     ★ホームページの seal（鑑の丸印）と同じ形へ揃えた。★ブランドを1つにするため。 */
+  .crest{display:inline-flex; align-items:center; justify-content:center;
+    width:46px; height:46px; border-radius:50%; border:1.5px solid var(--kin);
+    font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,serif;
+    font-size:21px; font-weight:700; color:var(--kin);
+    margin:0 auto 10px; opacity:.95;}
   .eyebrow{font-size:10px; letter-spacing:6px; color:var(--kin); margin-bottom:8px;}
   h1{margin:0; font-size:28px; font-weight:700; letter-spacing:4px;
     background:linear-gradient(180deg,var(--kinLite),var(--kin));
@@ -89,18 +103,18 @@
 
   <header>
     <div class="goldline"></div>
-    <div class="crest">🏯</div>
-    <div class="eyebrow">城 主 の 館</div>
-    <h1>アプリ一覧</h1>
-    <p class="subtitle">これまでに築いた道具を、ここに収める。<br>触れてみたいものを、選ばれよ。</p>
+    <div class="crest">鑑</div>
+    <div class="eyebrow">S A N S E I K A N</div>
+    <h1>三星鑑</h1>
+    <p class="subtitle">生年月日から、あなたの性格・才能・行動特性を読み解く。<br>占いではない、統合人間分析です。</p>
   </header>
 
   <!-- ★下の「2」は、JSが動かなかったときに表示される数である。
        すぐ下のグリッドに静的に置いてあるカードが2枚なので、2にしてある。
        JSが動けば APPS.length（現在10）で即座に上書きされるので、通常はこの数字は見えない。
-       ★「0」に戻さないこと。カードが2枚あるのに「所蔵0点」と出て、ページ内で矛盾する。
+       ★「0」に戻さないこと。カードが2枚あるのに「全0ページ」と出て、ページ内で矛盾する。
        （理子庫 U-022：合計だけ直すと内訳とズレる。過小表示は害にならないが、自己矛盾は信用を削る） -->
-  <div class="count">所蔵 <b id="count">2</b> 点</div>
+  <div class="count">全 <b id="count">2</b> ページ</div>
 
   <!-- ═══════════════════════════════════════════════════════════════
        ★このグリッドの中身は、通常すぐ下の script が innerHTML で上書きする。
@@ -135,11 +149,12 @@
        ═══════════════════════════════════════════════════════════════ -->
   <div class="grid" id="grid"><a class="app" href="free/"><span class="accent" style="background:#5b8fb0"></span><span class="cat">自己分析</span><div class="name">三星鑑 無料版</div><div class="desc">生年月日だけで、性格・才能・気質タイプ・今年の流れをやさしく読み解く無料診断。まず気軽に試したい方へ。</div><span class="arrow">›</span></a><a class="app" href="homepage/"><span class="accent" style="background:#e3c574"></span><span class="cat">ホームページ</span><div class="name">三星鑑 ホームページ</div><div class="desc">三星鑑シリーズの入口。占いではない統合人間分析（性格・才能・行動特性）の世界へ。まずはここから。</div><span class="arrow">›</span></a></div>
 
-  <div class="seal">― 以上 ―</div>
+  <div class="seal"></div>
 
   <footer>
-    築：城主 ／ すべて自作のWeb道具<br>
-    各アプリは概算・参考用です。
+    &copy; 2026 三星鑑（さんせいかん）<br>
+    占星術・四柱推命・数秘術を、占いではなく客観データ分析の手法として用いています。<br>
+    <a href="tools/" style="color:var(--washiSub);border-bottom:1px solid var(--line)">城主と The Trinity で作ってきた道具は、こちら</a>
   </footer>
 
 </div>
@@ -155,38 +170,14 @@ var T = {
 };
 
 var APPS = [
+
   {
-    name:  "城主の資産要塞",
-    cat:   "家計・資産",
-    desc:  "毎月の家計簿から、生涯の資産推移を試算する。月の変動・円グラフ・年代記を備えた、未来を見通すための道具。",
-    url:   "shisan/",          // apps/ の中の部屋名。別リポジトリなら https:// から書く
-    color: T.kin
-  }
-
-  ,{
-    name:  "城主の出納帳",
-    cat:   "家計・資産",
-    desc:  "毎月の収入・支出・投資を費目別に記録し、暮らしの移ろいを残す家計簿。推移・内訳・履歴で積み重ねが見える。",
-    url:   "kakeibo/",
-    color: T.beni
-  }
-
-  ,{
-    name:  "城主の歳計帳",
-    cat:   "家計・資産",
-    desc:  "年額を入れると、ひと月あたりに自動換算。収支の比率・貯蓄率・家計の全体像を一枚で一望する。",
-    url:   "saikei/",
-    color: T.ai
-  }
-
-  ,{
     name:  "三星鑑 ホームページ",
     cat:   "ホームページ",
     desc:  "三星鑑シリーズの入口。占いではない統合人間分析（性格・才能・行動特性）の世界へ。まずはここから。",
     url:   "homepage/",
     color: T.kinLite
   }
-
   ,{
     name:  "三星鑑　読み解き工房",
     cat:   "自己分析",
@@ -202,7 +193,6 @@ var APPS = [
     url:   "jinbutsu-bunseki/",
     color: T.murasaki
   }
-
   ,{
     name:  "三星鑑 無料版",
     cat:   "自己分析",
@@ -210,7 +200,6 @@ var APPS = [
     url:   "free/",
     color: T.ai
   }
-
   ,{
     name:  "統合人間分析レポート",
     cat:   "自己分析",
@@ -218,38 +207,12 @@ var APPS = [
     url:   "report/",
     color: T.matsu
   }
-
   ,{
     name:  "三星鑑　読み解き工房（語りかけ版）",
     cat:   "自己分析",
     desc:  "占星術×四柱推命×数秘術で、あなた一人に語りかけるように読み解く自己分析ツール。専門用語を使わず、誰でも聞き取りやすい言葉で伝えます。",
     url:   "jinbutsu-bunseki(katari)/",
     color: T.beni
-  }
-  /* ★2026-08-23（ゼロ・機関室21代目「砦」）：城主のご指示で、制作の道具を2つ足した。
-     🔴 ★静的リンク（上の生HTML）には足していない。★城主の裁定＝
-        「財務3部屋と同じようにGoogleからは辿れない。noteからしか行けない仕様で」。
-        ★静的リンクに足すと、Googleが辿ってインデックスする（★朔・2代目「辻」の判定）。
-     🔴 ★sitemap.xml にも載せない（★同じ理由）。
-     ★カードの文言は機関室が案として書いた。★見せ方は舷門の畑なので、直していただく前提。 */
-  /* ★2026-08-27（理子・舷門 9代目「衾」／★城主の裁定）：説明文の末尾に1文だけ足した。
-     ★機関室の文は事実を1つも落としていないので、★短くしていない（★Lossless Mirroring）。
-     🔴 ★足した理由＝「この場でもできる」で終わっており、★そこにキーが要ることが書いていなかった。
-        ★玄関から押すと、いきなりキーの入力欄に当たる（★U-001 事前エスコートUX）。
-     ★器は測ってある：★.desc に line-clamp も max-height も無く、★.grid は1列。★長くしても切れない。 */
-  ,{
-    name:  "城主の絵札工房",
-    cat:   "制作の道具",
-    desc:  "画像生成のための指示文（プロンプト）を組み立てる道具。単語を並べるだけで、実写向き・水彩スケッチ向きの指示文ができる。生成そのものは手元の道具でも、この場でもできる。この場で作るときだけ、Googleのキーを貼る（無料で取れる）。",
-    url:   "imageforge/",
-    color: T.murasaki
-  }
-  ,{
-    name:  "城主の看板工房",
-    cat:   "制作の道具",
-    desc:  "見出し画像やサムネイルを、文字と配色だけで組み立てる道具。文字を置いた側だけに下地を敷くので、背景がごちゃついていても字が読める。作ったものは、この端末の中だけに残る。",
-    url:   "banner/",
-    color: T.matsu
   }
 
   /* ↓ 新しいアプリを足すときは、上の } の後ろにカンマを付けて、これをコピペ：
@@ -264,6 +227,13 @@ var APPS = [
 
   */
 ];
+
+/* ★2026-08-30（ゼロ・機関室27代目「筋交」／★城主の裁定）：並び順だけ変えた。
+   ★理由：お客様が最初に着くページの先頭3枚が、城主の家計簿・資産・歳計帳だった。
+   ★上の APPS は1文字も動かしていない（★順番を変えると、次に足す人が迷うため）。
+   ★変えたいときは、この CATORDER の数字だけ直せばよい。 */
+var CATORDER = { "ホームページ":1, "自己分析":2, "制作の道具":3, "家計・資産":4 };
+APPS.sort(function(a,b){ return (CATORDER[a.cat]||9) - (CATORDER[b.cat]||9); });
 
 /* ─── 以下は触らなくてOK（自動で一覧を作る部分）─── */
 var grid = document.getElementById('grid');
