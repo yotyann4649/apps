@@ -248,11 +248,16 @@
         <div class="input-field">
           <select id="themePreset">
             <option value="classic">王道セールス（濃紺 × 鮮烈赤 × 蛍光黄）</option>
-            <option value="monolith">The Trinity Monolith（漆黒 × サイバーシアン × スレート）</option>
+            <option value="monolith">和・城（藍 × 金 × 和紙）― 三星鑑の色</option>
             <option value="passion">パッション・エンペラー（真紅 × リッチゴールド × 純白）</option>
             <option value="emerald">信頼・ビジネス（ディープフォレスト × ミント × レモン）</option>
             <option value="purple">高貴・エレガンス（ディープバイオレット × ローズピンク × プラチナ）</option>
             <option value="darkneon">ネオン・フューチャー（ミッドナイト × ネオングリーン × サンセットオレンジ）</option>
+            <option value="kinari">淡色・生成り（和紙 × 墨 × 薄藍）― 白っぽい見出し用</option>
+            <option value="mono">モノトーン（白 × 黒 × 灰）― どんな背景にも乗る</option>
+            <option value="asa">朝・やわらかい（生成り × 薄橙 × 濃茶）</option>
+            <option value="shiro">白・清潔（白 × 濃い文字 × 金）― いちばん多く使われている形</option>
+            <option value="yoru">夜・しずか（黒 × 白 × 金）</option>
           </select>
         </div>
       </div>
@@ -334,6 +339,7 @@
         <canvas id="mainCanvas" width="1280" height="670"></canvas>
       </div>
       <p id="fitNote" class="fit-note"></p>
+        <p id="brightNote" style="display:none"></p>
       <div class="action-bar">
         <button id="downloadBtn">プロ仕様バナーをPNG保存（一発出力）</button>
       </div>
@@ -370,14 +376,21 @@
           style4: { text: '#ffea00', stroke: '#0f295a', marker: '#ffea29', badgeBg: '#0b2e75', badgeText: '#ffea00', badgeBorder: '#ffffff' }
         },
         monolith: {
-          /* ★2026-08-21（理子・舷門 6代目「欄（らん）」）：暗いテーマのマーカーを、見える色にした
-             🔴 ★城主の3枚目のサムネで実測 —— ★描いているのに、暗い背景と同化して見えなかった。
-             ★全6テーマを点検した結果、★この暗いテーマの3つだけが暗い色だった（★他5テーマは明るい）。
-             ★marker だけを変えている。★text・stroke・badge は1文字も触っていない。 */
-          style1: { text: '#ffffff', stroke: '#0f0f1a', marker: '#4285f4', badgeBg: '#16213e', badgeText: '#ffffff', badgeBorder: '#4285f4' },
-          style2: { text: '#4285f4', stroke: '#ffffff', marker: '#e8eaed', badgeBg: '#4285f4', badgeText: '#ffffff', badgeBorder: '#8ab4f8' },
-          style3: { text: '#e0e0e0', stroke: '#0f0f1a', marker: '#4285f4', badgeBg: '#16213e', badgeText: '#e0e0e0', badgeBorder: '#4285f4' },
-          style4: { text: '#8ab4f8', stroke: '#0f0f1a', marker: '#4285f4', badgeBg: '#0f0f1a', badgeText: '#8ab4f8', badgeBorder: '#4285f4' }
+          /* ★2026-09-02（理子・舷門 13代目「樋（とい）」）：中身を、いまの商品の色へ入れ替えた
+             🔴 ★入れ替える前は、掟が「もう引くな」と定めた古い配色だった（漆黒・シアン・スレート）。
+                ★その掟には「放置すると、今後の制作で古い指定が誤って参照され、世界観がブレる」と
+                ★書いてあり、★その通りのことが起きていた ―― ★船の名前が付いていたので、
+                ★次に使う人が「これがこの船の色だ」と思う形になっていた（★水先室が検出）。
+             ★色は、三星鑑の商品ページから実物を採った（★藍・金・和紙）。★推測では作っていない。
+             ★選ぶときの値（monolith）は変えていない。★変えると、以前これを選んだ人の設定が外れる。
+             ★下に足した4つと合わせて、明るい見出しも作れるようにしてある。
+
+             ★2026-08-21（6代目「欄」）の実測は、この入れ替えでも守っている ――
+             ★暗い背景の段では、下線の色を明るいほうにしてある（★描いても背景と同化しないため）。 */
+          style1: { text: '#152241', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#152241', badgeText: '#f8f4ea', badgeBorder: '#c9a227' },
+          style2: { text: '#a8862a', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#a8862a', badgeText: '#f8f4ea', badgeBorder: '#f8f4ea' },
+          style3: { text: '#152241', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#152241', badgeText: '#f8f4ea', badgeBorder: '#c9a227' },
+          style4: { text: '#c9a227', stroke: '#0a1226', marker: '#e8d9a8', badgeBg: '#0a1226', badgeText: '#c9a227', badgeBorder: '#c9a227' }
         },
         passion: {
           style1: { text: '#2b0000', stroke: '#ffffff', marker: '#ffe600', badgeBg: '#2b0000', badgeText: '#ffffff', badgeBorder: '#ffe600' },
@@ -402,6 +415,64 @@
           style2: { text: '#10b981', stroke: '#000000', marker: '#f59e0b', badgeBg: '#10b981', badgeText: '#000000', badgeBorder: '#ffffff' },
           style3: { text: '#ffffff', stroke: '#000000', marker: '#10b981', badgeBg: '#000000', badgeText: '#ffffff', badgeBorder: '#10b981' },
           style4: { text: '#f59e0b', stroke: '#000000', marker: '#10b981', badgeBg: '#18181b', badgeText: '#f59e0b', badgeBorder: '#f59e0b' }
+        },
+
+        /* ══════════════════════════════════════════════════════════
+           ★2026-09-02（理子・舷門 13代目「樋（とい）」）：ここから下の4つを足した
+           ★城主のご依頼「色のバリエーションがまだすくないと思うところもある」への答え。
+           ★水先室（13代目「梶」）が方向を5つ挙げ、そのうち1つ目は上の入れ替えで済んでいる。
+
+           🔴 ★足す前は、6つとも【濃い背景 × 鮮やかな文字】だった。
+              ★白っぽい見出しが1枚も作れなかった。★足りなかったのは数ではなく【方向】である。
+           ★上の6つの色は、1文字も触っていない。
+           ══════════════════════════════════════════════════════════ */
+
+        kinari: {
+          /* ★淡色・生成り ―― 白っぽい背景に置く見出し用 */
+          style1: { text: '#211b14', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#211b14', badgeText: '#f8f4ea', badgeBorder: '#e8d9a8' },
+          style2: { text: '#2a3a63', stroke: '#f8f4ea', marker: '#dcd2bd', badgeBg: '#2a3a63', badgeText: '#f8f4ea', badgeBorder: '#f8f4ea' },
+          style3: { text: '#211b14', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#211b14', badgeText: '#f8f4ea', badgeBorder: '#e8d9a8' },
+          style4: { text: '#f8f4ea', stroke: '#211b14', marker: '#e8d9a8', badgeBg: '#211b14', badgeText: '#f8f4ea', badgeBorder: '#e8d9a8' }
+        },
+
+        mono: {
+          /* ★モノトーン ―― どんな背景写真にも乗る。迷ったときの1枚 */
+          style1: { text: '#111111', stroke: '#ffffff', marker: '#d4d4d4', badgeBg: '#111111', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style2: { text: '#555555', stroke: '#ffffff', marker: '#d4d4d4', badgeBg: '#555555', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style3: { text: '#111111', stroke: '#ffffff', marker: '#d4d4d4', badgeBg: '#111111', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style4: { text: '#ffffff', stroke: '#111111', marker: '#9a9a9a', badgeBg: '#111111', badgeText: '#ffffff', badgeBorder: '#ffffff' }
+        },
+
+        asa: {
+          /* ★朝・やわらかい ―― 人の内面をあつかう回に。上の6つは、どれも強すぎた */
+          style1: { text: '#4a3520', stroke: '#fdfaf3', marker: '#f2d9b0', badgeBg: '#4a3520', badgeText: '#fdfaf3', badgeBorder: '#e0a565' },
+          style2: { text: '#c67c3e', stroke: '#fdfaf3', marker: '#f2d9b0', badgeBg: '#c67c3e', badgeText: '#fdfaf3', badgeBorder: '#fdfaf3' },
+          style3: { text: '#4a3520', stroke: '#fdfaf3', marker: '#f2d9b0', badgeBg: '#4a3520', badgeText: '#fdfaf3', badgeBorder: '#e0a565' },
+          style4: { text: '#f2d9b0', stroke: '#4a3520', marker: '#e0a565', badgeBg: '#4a3520', badgeText: '#f2d9b0', badgeBorder: '#e0a565' }
+        },
+
+        yoru: {
+          /* ★夜・しずか ―― 暗い背景に置く見出し用
+             🔴 ★2026-09-02（★同じ日の 20:2x に入れ替え）：★最初は【濃藍 × 銀 × 白】で作った。
+                ★水先室が、城主が実際に使っておられる色を【公開62本】から測ってくださった結果、
+                ★★暗い側で使われていたのは【真っ黒（#000000〜#202020）× 白 × 金】で、★8本あった。
+                ★→ ★濃藍を黒へ、★銀を金へ寄せた。★推測ではなく、実測に合わせている。
+             ★暗い背景なので、下線は明るいほう（金）にしてある（★2026-08-21・6代目「欄」の実測） */
+          style1: { text: '#ffffff', stroke: '#141414', marker: '#c9a227', badgeBg: '#141414', badgeText: '#ffffff', badgeBorder: '#c9a227' },
+          style2: { text: '#e8d9a8', stroke: '#141414', marker: '#c9a227', badgeBg: '#202020', badgeText: '#e8d9a8', badgeBorder: '#c9a227' },
+          style3: { text: '#ffffff', stroke: '#141414', marker: '#c9a227', badgeBg: '#141414', badgeText: '#ffffff', badgeBorder: '#c9a227' },
+          style4: { text: '#c9a227', stroke: '#141414', marker: '#e8d9a8', badgeBg: '#141414', badgeText: '#c9a227', badgeBorder: '#c9a227' }
+        },
+
+        shiro: {
+          /* ★白・清潔 ―― 白い背景に置く見出し用
+             🔴 ★2026-09-02 に足した。★水先室の実測で、★★城主がいちばん多く使っておられた色。
+                ★公開62本のうち【19本】。★それまで、白だけの組み合わせが1つも無かった。
+             ★2段目に藍と金を入れてある（★三星鑑の色。★白地にいちばん映える） */
+          style1: { text: '#1a1a1a', stroke: '#ffffff', marker: '#d9d9d9', badgeBg: '#1a1a1a', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style2: { text: '#152241', stroke: '#ffffff', marker: '#c9a227', badgeBg: '#152241', badgeText: '#ffffff', badgeBorder: '#c9a227' },
+          style3: { text: '#1a1a1a', stroke: '#ffffff', marker: '#d9d9d9', badgeBg: '#1a1a1a', badgeText: '#ffffff', badgeBorder: '#ffffff' },
+          style4: { text: '#c9a227', stroke: '#1a1a1a', marker: '#d9d9d9', badgeBg: '#1a1a1a', badgeText: '#c9a227', badgeBorder: '#c9a227' }
         }
       };
 
@@ -599,10 +670,25 @@
       /* 縮めた記録。描くたびに空にする */
       let fitLog = [];
 
+      /* ★2026-09-02（理子・舷門 13代目「樋（とい）」）：縮めても入りきらなかった段の記録
+         ★城主のお言葉「★文字の横幅を変えたとき、3段、4段目の文字がしっかり調整されない」
+         🔴 ★下限（元の7割）まで縮めても入らないとき、これまでは【はみ出したまま】返していた。
+            ★しかも画面には「縮めました」と出るので、★直ったように見えていた。
+         ★入りきらなかったことを、その場で知らせる。★勝手に下限を下げると、文字が読めなくなる。 */
+      let fitOver = [];
+
       /* 入りきらなければ少しずつ縮める（★元の70%で打ち切る。それ以上は小さくしない） */
       const fitSize = (lines, size, baseX, type, mThick, mPos) => {
+        fitOverflow = false;
         if (!lines || lines.length === 0) { return size; }
-        const padX = (type === 'badge') ? ((mPos > 0 ? mPos : 40) * 2) : 0;
+        /* ★2026-09-02（理子・舷門 13代目「樋」）：帯の横の広がりを、縮める側でも引く
+           🔴 ★下線つきの段は、描くとき ★文字幅 ＋（横余白 × 2）★の帯を敷いている。
+              ★ところが、この計算では帯ぶんを引いていなかった（★座布団のときだけ引いていた）。
+           ★→ ★文字は入っているのに、★帯だけが横へはみ出す形になっていた。
+           ★横余白は負の値も取れる（★帯が文字より狭くなる）ので、そのときは引かない。 */
+        const padX = (type === 'badge') ? ((mPos > 0 ? mPos : 40) * 2)
+                   : (type === 'marker') ? (Math.max(mPos, 0) * 2)
+                   : 0;
         const limit = usableWidth(baseX) - padX - 12;   /* 12px は端に触れないための余白 */
         if (limit <= 0) { return size; }
         const floor = Math.floor(size * 0.7);
@@ -616,13 +702,15 @@
             if (t > w) { w = t; }
           }
           if (w <= limit) { break; }
-          if (s <= floor) { break; }
+          if (s <= floor) { fitOverflow = true; break; }   /* ★縮めきっても入らなかった */
           /* ★下限で止める。★実測で、54 → 52 と 53 を飛び越していた（★下限を1px 割る） */
           s = Math.max(floor, Math.floor(s * 0.97));
         }
         ctx.restore();
         return s;
       };
+      /* ★fitSize が「縮めても入らなかった」ときに true になる。★呼んだ直後に読むこと */
+      let fitOverflow = false;
 
       /* 座布団の箱の高さ */
       const badgeBoxH = (size, lineCount, mThick) => {
@@ -690,6 +778,62 @@
         return (canvas.height - blockH) / 2 + topOff;
       };
 
+      /* ══════════════════════════════════════════════════════════
+         ★2026-09-02（理子・舷門 13代目「樋（とい）」）：いまの明るさを測って、その場で知らせる
+
+         ★出所：水先室〔13代目「梶」〕が、公開62本の見出し画像を1枚ずつ落として測った実データ
+            ★明るい（明度200以上） 5本 … 1本あたり 1.60  ← いちばん強い
+            ★中間（120〜199）    43本 … 1本あたり 0.44  ← ★★いちばん弱い
+            ★暗い（120未満）     14本 … 1本あたり 0.93
+
+         🔴 ★62本のうち43本が【中間】に落ちていた。★振り切ったほうが 3.6倍 強い。
+         ★→ ★作っている最中に、いまどこに居るかが分かれば、その場で振り切れる。
+
+         ★測り方は、水先室と【同じ】にしてある（★12×12 に縮めて明度の平均）。
+            ★→ ★そうしないと、出た数字を実データと突き合わせられない。
+         ★外から来た絵を敷いていると読めないことがある。★そのときは黙って何も出さない
+            （★責めない。★城主の手を止めない）。
+         ══════════════════════════════════════════════════════════ */
+      const measureBrightness = () => {
+        try {
+          const N = 12;                      /* ★水先室と同じ 12×12 */
+          const c2 = document.createElement('canvas');
+          c2.width = N; c2.height = N;
+          const x2 = c2.getContext('2d');
+          if (!x2) { return null; }
+          x2.drawImage(canvas, 0, 0, N, N);
+          const d = x2.getImageData(0, 0, N, N).data;
+          let sum = 0;
+          for (let i = 0; i < d.length; i += 4) {
+            sum += (d[i] * 299 + d[i + 1] * 587 + d[i + 2] * 114) / 1000;
+          }
+          return Math.round(sum / (N * N));
+        } catch (e) {
+          return null;                       /* ★読めなくても、画面は普通に動く */
+        }
+      };
+
+      const showBrightness = () => {
+        const el = document.getElementById('brightNote');
+        if (!el) { return; }
+        const v = measureBrightness();
+        if (v === null) { el.textContent = ''; el.style.display = 'none'; return; }
+        el.style.display = '';
+        const base = 'margin:6px 0 0;padding:8px 11px;border-radius:4px;font-size:11px;line-height:1.75;';
+        if (v >= 200) {
+          el.style.cssText = base + 'background:#12301f;border-left:3px solid #4caf7d;color:#cfe8da;';
+          el.textContent = 'いまの明るさ ' + v + '（明るい）。公開62本では、この形がいちばん反応が強いです（1本あたり 1.60）';
+        } else if (v < 120) {
+          el.style.cssText = base + 'background:#12301f;border-left:3px solid #4caf7d;color:#cfe8da;';
+          el.textContent = 'いまの明るさ ' + v + '（暗い）。公開62本では、この形も強いほうです（1本あたり 0.93）';
+        } else {
+          el.style.cssText = base + 'background:#33240f;border-left:3px solid #d9a441;color:#f0dcb4;';
+          el.textContent = 'いまの明るさ ' + v + '（中間）。公開62本のうち 43本 がここに落ちていて、'
+            + 'いちばん反応が弱い形です（1本あたり 0.44）。'
+            + '下の「うっすら帯を敷く」で明るいほうか暗いほうへ振り切ると、実データでは 2〜3.6倍 変わります';
+        }
+      };
+
       const render = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -708,6 +852,7 @@
         document.getElementById('spacingVal').textContent = `${spacing.toFixed(2)}x`;
 
         fitLog = [];                                    /* ★この描画ぶんの記録を空にする */
+        fitOver = [];                                   /* ★入りきらなかった段の記録も空にする */
         const _fn0 = document.getElementById('fitNote');
         if (_fn0) { _fn0.textContent = ''; }
         let currentY = layoutStartY(spacing) + baseY;   /* ★固定の140をやめ、背丈から中央を求める */
@@ -732,12 +877,25 @@
 
           /* ★横に入りきらなければ、ここでだけ縮める。★つまみの数字は書き換えない */
           const size = fitSize(lines, rawSize, baseX, type, mThick, mPos);
-          if (size !== rawSize) {
-            fitLog.push('第' + (idx + 1) + '段 ' + rawSize + '→' + size + 'px');
+          /* ★2026-09-02（理子・舷門 13代目「樋」）：縮めても入らなかった段を、別に数える */
+          if (fitOverflow) { fitOver.push('第' + (idx + 1) + '段'); }
+          if (size !== rawSize || fitOverflow) {
+            if (size !== rawSize) {
+              fitLog.push('第' + (idx + 1) + '段 ' + rawSize + '→' + size + 'px');
+            }
             const _f = document.getElementById('fitNote');
             if (_f) {
-              _f.textContent = '★横に入りきらないので縮めました（'
-                + fitLog.join('／') + '）。つまみの数字はそのままです';
+              /* ★入りきらなかった段があるときは、そちらを先に出す。
+                 ★「縮めました」だけだと、直ったように読めてしまう */
+              if (fitOver.length > 0) {
+                _f.textContent = '🔴 ' + fitOver.join('・')
+                  + ' は、縮めても横に入りきりませんでした。'
+                  + '文字を減らすか、横位置を中央へ寄せるか、余白のつまみを小さくしてください'
+                  + (fitLog.length > 0 ? '（縮めた段：' + fitLog.join('／') + '）' : '');
+              } else {
+                _f.textContent = '★横に入りきらないので縮めました（'
+                  + fitLog.join('／') + '）。つまみの数字はそのままです';
+              }
             }
           }
 
@@ -804,6 +962,8 @@
             currentY += advanceOf(type, size, lines.length, mThick, spacing);
           }
         });
+
+        showBrightness();   /* ★2026-09-02（13代目「樋」）：描き終わりに、いまの明るさを知らせる */
       };
 
       const scrimOn = document.getElementById('scrimOn');
