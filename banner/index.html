@@ -12,22 +12,99 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;900&display=swap" rel="stylesheet">
+  <!-- ★入口の言葉データ：ここから★（機関室が自動で書き換える欄です。手で触らないでください）
+       ★城主・他の部屋の方へ：★ここは機械が上書きします。★書いても次の更新で消えます。
+       ★城主が手で入れたいときは、画面の「新しい紙を貼る」から貼ってください。 -->
+  <script>
+  /* ★この欄は『入口の言葉をバナーへ流す.ps1』が書きました。★手で直さないでください */
+  window.TRINITY_IRIGUCHI = {
+    つくった日: "2026-09-21 13:27",
+    出どころ: "04_運用ツール\\入口の言葉.md",
+    行: [
+      "手紙.016｜6割｜1｜「そこまで怒ることか」／言われて／返せませんでした｜見出し ―― 「そこまで怒ることか」と言われた ／ 正直に言います。言われて、返せませんでした。",
+      "手紙.017｜4割｜2｜黙るか／あふれるか｜黙るか、あふれるか。",
+      "手紙.018｜6割｜1｜言えば「細かい」と言われる／黙れば／あとで自分が直すことになる｜言えば「細かい」と言われる。 ／ 黙れば、あとで自分が直すことになる。",
+      "手紙.019｜6割｜1｜ここから出たい｜ある日、机の前で、ふいに思う。ここから出たい。",
+      "手紙.020｜6割｜2｜どこまでが自分のもので／どこからが借りものなのか｜どこまでが自分のもので、どこからが借りものなのか。",
+      "手紙.021｜6割｜1｜手を叩く速さだけは／合わせています｜正直に言います。手を叩く速さだけは、合わせています。",
+      "手記.37｜6割｜2｜「整理している自分」が／好きだっただけだった｜見出し ―― 「整理している自分」が、好きだっただけだった",
+      "手記.38｜6割｜3｜私が禁止したはずの言葉が／全面に並んでいました／本当に 見事に全部です｜私が禁止したはずの言葉が、全面に並んでいました。本当に、見事に全部です。",
+      "手記.39｜6割｜3｜組んでみたら／一瞬で終わった／本当に 笑えない｜見出し ―― 組んでみたら、一瞬で終わった ／ 7年を何に使っていたんだろうと思いました。本当に、笑えない。",
+      "手記.40｜6割｜1｜古いものは消すな／歴史だから｜「古いものは消すな。歴史だから」",
+      "手記.41｜6割｜2｜それは／物差しを他人に預けていない／ということです｜「それは、物差しを他人に預けていない、ということです」",
+      "手記.42｜6割｜2｜自分の理解力のなさに／そのときはかなり凹みました｜正直に言います。自分の理解力のなさに、そのときはかなり凹みました。",
+      "やってみた.003｜4割｜2｜いいことしか／書いていない｜いいことしか書いていません。",
+      "やってみた.004｜6割｜3｜悪くないんです／悪くないのに／送る手前で止まっている｜悪くないんです。悪くないのに、送る手前で止まっている。",
+      "やってみた.005｜6割｜2｜分かったふりのほうが／その場は楽なので｜聞くのは、いまだに少し気が重い。分かったふりのほうが、その場は楽なので。",
+      "やってみた.006｜6割｜2｜動いてはいます／ただ 増えていなかった｜動いてはいます。ただ、増えていなかった。",
+      "やってみた.007｜6割｜2｜うまく言葉になりませんでした／「なんか違う」／としか言えない｜うまく言葉になりませんでした。「なんか違う」としか言えない。",
+      "やってみた.008｜6割｜2｜正直に言うと／自慢したい気持ちが／少しありました｜正直に言うと、自慢したい気持ちが少しありました。",
+      "気まぐれ.008｜6割｜3｜その朝ちゃんと起きられた日なら／「はい」を押すと思うのです／寝坊した日は「いいえ」｜その朝ちゃんと起きられた日なら「はい」を押すと思うのです。寝坊した日は「いいえ」。",
+      "気まぐれ.009｜6割｜2｜でも言うと浮きそうだから／黙ってお茶を飲んでる｜番組のセリフ ―― でも言うと浮きそうだから、黙ってお茶を飲んでる。",
+      "気まぐれ.010｜6割｜3｜たしかに／失礼なぶん／正直にいきます｜解説役のセリフ ―― たしかに。失礼なぶん、正直にいきます",
+      "気まぐれ.011｜6割｜3｜事実を反映する版なのに／事実が無いまま／1本 焼いていた／ことになります｜事実を反映する版なのに、事実が無いまま1本 焼いていたことになります。",
+      "気まぐれ.012｜6割｜1｜はぁ……／開始一分で／主役の誕生日を間違えます？／付箋 何のために貼ったんですか｜はぁ……開始一分で、主役の誕生日を間違えます？ 付箋、何のために貼ったんですか"
+    ],
+    /* ★回ごとの予定日。★予約表の日付だけで判じています（★note へは問い合わせていません） */
+    回: {
+      "手紙.016": { "日": "2026-09-23", "済": false },
+      "手紙.017": { "日": "2026-09-30", "済": false },
+      "手紙.018": { "日": "2026-10-07", "済": false },
+      "手紙.019": { "日": "2026-10-14", "済": false },
+      "手紙.020": { "日": "2026-10-21", "済": false },
+      "手紙.021": { "日": "2026-10-28", "済": false },
+      "手記.37": { "日": "2026-09-26", "済": false },
+      "手記.38": { "日": "2026-10-03", "済": false },
+      "手記.39": { "日": "2026-10-10", "済": false },
+      "手記.40": { "日": "2026-10-17", "済": false },
+      "手記.41": { "日": "2026-10-24", "済": false },
+      "手記.42": { "日": "2026-10-31", "済": false },
+      "やってみた.003": { "日": "2026-09-20", "済": true },
+      "やってみた.004": { "日": "2026-09-27", "済": false },
+      "やってみた.005": { "日": "2026-10-04", "済": false },
+      "やってみた.006": { "日": "2026-10-11", "済": false },
+      "やってみた.007": { "日": "2026-10-18", "済": false },
+      "やってみた.008": { "日": "2026-10-25", "済": false },
+      "気まぐれ.008": { "日": "2026-09-25", "済": false },
+      "気まぐれ.009": { "日": "2026-10-02", "済": false },
+      "気まぐれ.010": { "日": "2026-10-09", "済": false },
+      "気まぐれ.011": { "日": "2026-10-16", "済": false },
+      "気まぐれ.012": { "日": "2026-10-23", "済": false }
+    }
+  };
+  </script>
+  <!-- ★入口の言葉データ：ここまで★ -->
   <style>
+    /* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：操作盤の色を DNA-385 へ寄せた ━━━━━━
+       🔴 ★直す前は #0f0f1a（漆黒）× #16213e × #4285f4（青）だった。
+          ★この3色は、DNA-385 が「もう引くな」と名指しした ★旧 DNA-187 のサイバー配色そのものである
+          （★掟データ4 の DNA-385 本文に「ダークスレート #0f0f1a・ネイビー・ネオンブルー」と実名で出る）。
+       ★色は推測で選んでいない ―― ★この画面を包んでいる【城主の館の帯】から、実物の値を採った
+          （★04_運用ツール\道具\_映像工房\ラジオ工房サーバー.py の /yakata が出している帯）。
+          ★帯が 藍 #0d1b2a ／ 金 #c9a227・#e8c44a ／ 和紙 #f3efe6 ／ 罫 #2b3542 である。
+          ★★館の中に居るのに、この画面だけ別世界だった。★帯と同じ色にすれば、継ぎ目が消える。
+       ★変数の名前も変えた（--accent-blue に金を入れると、次に読む人が青だと思う）。
+       ★書体は明朝体（DNA-385）。★ただし Windows に既に在るものだけを使う ――
+          🔴 ★新しい外部読み込みは1本も足していない。★ネットが無くても、この画面は開く。 */
     :root {
-      --bg-dark: #0f0f1a;
-      --card-bg: #16213e;
-      --accent-blue: #4285f4;
-      --text-main: #ffffff;
-      --text-muted: #8e9aaf;
-      --border-line: #2a3b66;
+      --ai-jimi:  #0d1b2a;   /* 藍（地）      ― 館の帯と同じ */
+      --ai-ban:   #142434;   /* 藍（操作盤）  ― 地より少し明るい */
+      --kin:      #c9a227;   /* 金（金箔）    ― 三星鑑・館の帯と同じ */
+      --kin-akaru:#e8c44a;   /* 金（見出し用・明るいほう） */
+      --washi:    #f3efe6;   /* 和紙（生成り）― 本文の字 */
+      --washi-usu:#9fb0c0;   /* 控えめな字 */
+      --sen:      #2b3542;   /* 罫 */
+      --mincho: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "MS PMincho", serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: "Google Sans", "Noto Sans JP", -apple-system, sans-serif;
+      background-color: var(--ai-jimi);
+      color: var(--washi);
+      /* ★"Google Sans" を先頭から外した（★他社の名前が、この船の既定になっていた）。
+         ★小さな操作の字はゴシックのまま。★明朝は見出しへ当てる（★11px の明朝は読みにくい） */
+      font-family: "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif;
       min-height: 100vh;
       padding: 20px;
       display: flex;
@@ -37,8 +114,11 @@
     }
 
     .header-panel { text-align: center; }
-    .header-panel h1 { font-size: 20px; color: var(--accent-blue); letter-spacing: 0.05em; margin-bottom: 4px; }
-    .header-panel p { font-size: 12px; color: var(--text-muted); }
+    /* ★2026-09-21（14代目「濾」）：見出しを明朝体へ（DNA-385）。
+       ★名前そのもの（MASTER VISUAL SYNTHESIZER）は城主がお呼びの名なので、1文字も変えていない */
+    .header-panel h1 { font-family: var(--mincho); font-size: 21px; color: var(--kin-akaru);
+                       letter-spacing: 0.06em; margin-bottom: 5px; font-weight: 600; }
+    .header-panel p { font-size: 12px; color: var(--washi-usu); }
 
     .app-layout {
       display: grid;
@@ -53,8 +133,8 @@
     }
 
     .controls-container {
-      background: var(--card-bg);
-      border: 1px solid var(--border-line);
+      background: var(--ai-ban);
+      border: 1px solid var(--sen);
       border-radius: 12px;
       padding: 16px;
       display: flex;
@@ -66,10 +146,10 @@
     }
 
     .controls-container::-webkit-scrollbar { width: 6px; }
-    .controls-container::-webkit-scrollbar-thumb { background: var(--border-line); border-radius: 3px; }
+    .controls-container::-webkit-scrollbar-thumb { background: var(--sen); border-radius: 3px; }
 
     .control-section {
-      border-bottom: 1px solid var(--border-line);
+      border-bottom: 1px solid var(--sen);
       padding-bottom: 12px;
       display: flex;
       flex-direction: column;
@@ -83,18 +163,20 @@
     }
 
     .section-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--accent-blue);
-      text-transform: uppercase;
+      /* ★text-transform:uppercase をやめた —— ★日本語には効かず、混ざった英字だけが大文字になる */
+      font-family: var(--mincho);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--kin-akaru);
+      letter-spacing: 0.04em;
     }
 
     .input-field { display: flex; flex-direction: column; gap: 4px; }
-    label { font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
+    label { font-size: 11px; color: var(--washi-usu); display: flex; justify-content: space-between; }
 
     input[type="text"], textarea, select {
-      background: #0f0f1a;
-      border: 1px solid var(--border-line);
+      background: #0a1622;      /* ★旧 #0f0f1a（DNA-187 の漆黒）から藍へ */
+      border: 1px solid var(--sen);
       border-radius: 6px;
       padding: 8px 10px;
       color: #fff;
@@ -110,7 +192,7 @@
     }
 
     input[type="text"]:focus, textarea:focus, select:focus {
-      border-color: var(--accent-blue);
+      border-color: var(--kin);
     }
 
     .grid-2 {
@@ -125,7 +207,7 @@
       gap: 6px;
     }
 
-    input[type="range"] { accent-color: var(--accent-blue); cursor: pointer; }
+    input[type="range"] { accent-color: var(--kin); cursor: pointer; }
 
     .preview-stage {
       display: flex;
@@ -147,7 +229,7 @@
       background: #000;
       border-radius: 12px;
       overflow: hidden;
-      border: 2px solid var(--border-line);
+      border: 2px solid var(--sen);
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
       cursor: pointer;
     }
@@ -155,21 +237,22 @@
     canvas { width: 100%; height: 100%; object-fit: contain; display: block; }
     .action-bar { width: 100%; display: flex; gap: 12px; }
     /* ★2026-08-21（理子・舷門 6代目「欄」）：縮めたことを静かに知らせる欄 */
-    .text-note { font-size: 10.5px; line-height: 1.55; color: var(--text-muted); }
-    .fit-note { width: 100%; font-size: 11px; line-height: 1.6; color: #ffd76a;
+    .text-note { font-size: 10.5px; line-height: 1.55; color: var(--washi-usu); }
+    .fit-note { width: 100%; font-size: 11px; line-height: 1.6; color: var(--kin-akaru);
                 min-height: 1.2em; text-align: center; }
 
     button {
       flex: 1;
-      background: var(--accent-blue);
-      color: #fff;
+      background: var(--kin);
+      color: #0d1b2a;           /* ★金の地には、藍の字がいちばん読める */
       border: none;
       border-radius: 8px;
       padding: 14px;
       font-size: 15px;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(66, 133, 244, 0.4);
+      /* ★青い発光（rgba(66,133,244)）をやめた —— ★これも旧 DNA-187 の側の色である */
+      box-shadow: 0 4px 14px rgba(201, 162, 39, 0.28);
       transition: opacity 0.2s;
     }
     button:hover { opacity: 0.9; }
@@ -177,8 +260,8 @@
     /* ★2026-08-20（理子・舷門 6代目「欄」）：②記事タイトルから段組をつくる欄 ━━━━━━━━
        ★既存のクラスは1つも書き換えていない。ここで新しい名前だけを足している。 */
     .title-src {
-      background: #0b1633;
-      border: 1px solid var(--accent-blue);
+      background: #0a1622;
+      border: 1px solid var(--sen);
       border-radius: 8px;
       padding: 12px;
       display: flex;
@@ -192,29 +275,117 @@
       border-radius: 6px;
     }
     .split-note {
-      font-size: 11px;
-      line-height: 1.65;
-      color: #cfe0ff;
-      background: #0f0f1a;
-      border-left: 3px solid var(--accent-blue);
+      font-size: 11.5px;
+      line-height: 1.7;
+      color: #dcd6c6;           /* ★旧 #cfe0ff（青みの白）から和紙寄りへ */
+      background: #0a1622;
+      border-left: 3px solid var(--kin);
       border-radius: 4px;
       padding: 9px 10px;
       white-space: pre-wrap;
     }
-    .split-note b { color: #ffd76a; }
+    .split-note b { color: var(--kin-akaru); }
     .split-note .warn { color: #ffb4b4; }
     .split-note .ok { color: #8ef0b8; }
+
+    /* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：入口の言葉の欄に要る分だけ足した */
+    .igu-chks { display: flex; flex-direction: column; gap: 5px; }
+    /* 🔴 ★絵で見つけた（2026-09-21）… ★上の label に justify-content: space-between が掛かっており、
+       ★★しるし（□）が左端、字が右端へ飛んでいた。★ここで打ち消す。 */
+    .igu-chk { font-size: 11.5px; color: var(--washi-usu); display: flex; align-items: center;
+               justify-content: flex-start; gap: 6px; cursor: pointer; }
+    .igu-chk input { margin: 0; }
+    .igu-more { margin-top: 2px; }
+    .igu-more > summary { font-size: 11px; color: var(--kin); cursor: pointer; padding: 5px 0;
+                          list-style: none; }
+    .igu-more > summary::-webkit-details-marker { display: none; }
+    .igu-more > summary::before { content: "▸ "; }
+    .igu-more[open] > summary::before { content: "▾ "; }
+    .igu-more textarea { width: 100%; min-height: 96px; font-size: 11.5px; }
+    .igu-src { font-size: 10.5px; color: var(--washi-usu); line-height: 1.6; }
+
+    /* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：配色を【見本】で選ぶ ━━━━━━━━━━
+       ★城主のお言葉「似たような配色・暗い系が多い、見た目のインパクトを与えるものも少ない」
+       ★→ ★いままでは名前だけだった。★開かないと、どんな色か分からなかった。
+       ★見本の色は、実際に描くときと同じ値を使う（★下の JS が themes から直に取る）。
+          ★★ここで色を書き写すと、themes を直した日に見本だけが嘘になる。★写さない。
+       ★見本の地を【左半分が明るい／右半分が暗い】にしてある理由 ――
+          ★★この画面の文字は「写真の上に乗る」ものである。
+             ★明るい写真で映える組と、暗い写真で映える組を、1つの見本で見分けられる。 */
+    .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    button.theme-btn {
+      display: flex; align-items: center; gap: 8px; text-align: left;
+      flex: none; background: #0a1622; color: var(--washi);
+      border: 1px solid var(--sen); border-radius: 8px;
+      padding: 6px 7px; font-size: 11.5px; font-weight: 400;
+      font-family: inherit; box-shadow: none; transition: border-color 0.15s;
+    }
+    button.theme-btn:hover { opacity: 1; border-color: var(--kin); }
+    button.theme-btn[aria-pressed="true"] {
+      border-color: var(--kin-akaru); background: #16283a;
+      box-shadow: inset 0 0 0 1px var(--kin-akaru);
+    }
+    .theme-mihon { flex: 0 0 54px; width: 54px; height: 34px; border-radius: 4px;
+                   position: relative; overflow: hidden; border: 1px solid #06101a; }
+    .theme-mihon i { position: absolute; display: block; border-radius: 1px; }
+    .theme-name { line-height: 1.3; min-width: 0; }
+    .theme-name b { display: block; font-weight: 700; font-size: 12px; color: var(--washi); }
+    .theme-name span { display: block; font-size: 9.5px; color: var(--washi-usu); }
+    details.theme-more { margin-top: 8px; }
+    details.theme-more > summary { font-size: 11px; color: var(--kin); cursor: pointer;
+                                   padding: 5px 0; list-style: none; }
+    details.theme-more > summary::-webkit-details-marker { display: none; }
+    details.theme-more > summary::before { content: "▸ "; }
+    details.theme-more[open] > summary::before { content: "▾ "; }
+    details.theme-more .text-note { margin: 2px 0 6px; }
   </style>
 </head>
 <body>
 
   <div class="header-panel">
     <h1>THE TRINITY // MASTER VISUAL SYNTHESIZER</h1>
-    <p>全段完全自律型装甲・プロフェッショナル配色パレット搭載</p>
+    <!-- ★2026-09-21（14代目「濾」）：副題を、何ができる道具かの1行へ。
+         ★直す前は「全段完全自律型装甲・プロフェッショナル配色パレット搭載」。
+         ★これは中身の説明になっていない（★城主の裁定 2026-08-22「城主が読むものは平易に」）。 -->
+    <p>note の見出し画像をつくる ― 入口の言葉、または記事の題から</p>
   </div>
 
   <div class="app-layout">
     <div class="controls-container">
+
+      <!-- ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：入口の言葉から作る ━━━━━━━━━━
+           ★城主のお言葉（2026-09-20）「見出し画像に載せる文字は、タイトルをそのまま載せるのでなく、
+             キャッチコピーというかつかみの文字を入れる」
+           🔴 ★城主のお言葉（2026-09-21）「★★題をそのまま入れる要素は残したほうがいい」
+              ★→ ★下の「記事タイトルから段組をつくる」は【1文字も消していない】。★これは足したものである。
+           ★言葉の出どころ … 04_運用ツール\入口の言葉.md（朔さん・結さんが書いておられる23本）
+           🔴 ★この画面は外へ出られない。★紙を直接は読めない。★だから渡し口を3つ用意した（★下のJSに書いてある）。
+           ★外すときは、この節と、下のスクリプト内の同じ日付のブロックを消す -->
+      <div class="control-section">
+        <span class="section-title">🌸 入口の言葉から作る</span>
+        <div class="title-src">
+          <div class="input-field">
+            <!-- ★2026-09-21（14代目「濾」）：棚を、公開の日で分けた ━━━━━━━━━━━━━━
+                 ★城主のお言葉「これは増えて行くの？ 増えていくだけでは…
+                   既存の投稿済みのものがあったら、ごちゃごちゃする」
+                 ★→ ★①これから出る回を上に、日の早い順　★②もう出た回は、既定では出さない
+                      ★③日付と曜日を頭に出す　★④開いた時点で「次に出る回」が選ばれている
+                 🔴 ★日付は【予約表】のものである。★note へは問い合わせていない（下の断り書き）。 -->
+            <label>どの回の言葉を載せますか</label>
+            <select id="iguPick"><option value="">（まだ読み込んでいません）</option></select>
+          </div>
+          <div class="igu-chks">
+            <label class="igu-chk"><input type="checkbox" id="iguSumi"> <span id="iguSumiN">もう出た回も、棚に出す</span></label>
+            <label class="igu-chk"><input type="checkbox" id="iguYohaku" checked> 余白のとおりに横位置も動かす</label>
+            <label class="igu-chk"><input type="checkbox" id="iguKazari" checked> 強調の段にマーカーを引く</label>
+          </div>
+          <button class="split-btn" id="iguBtn">この言葉を、段へ流し込む</button>
+          <div class="split-note" id="iguNote">上から回を選んで、ボタンを押すと、下の各段へ流し込みます。
+段の数・余白・強調の段は、紙に書いてあるとおりに当てます。押したあと、下の段は手でいくらでも直せます。</div>
+          <p class="text-note" id="iguHizuke">日付は note予約表のものです。note には問い合わせていません（この画面はネットの外で開きます）。実際の公開とずれていることがあります。</p>
+          <p class="igu-src" id="iguSrc"></p>
+        </div>
+      </div>
 
       <!-- ★2026-08-20（理子・舷門 6代目「欄」）：記事タイトルから段組をつくる ━━━━━━━━
            ★城主のカケラ「記事タイトルを入れたら素人感まる出しのデザインになってしまう」
@@ -236,6 +407,7 @@
               <option value="4">4段</option>
             </select>
           </div>
+          <p class="text-note">★2026-09-20 に「題をそのまま載せない」と決まりました。ここは、題から案を起こしたいときに使ってください。ふだんは上の「入口の言葉から作る」のほうです。</p>
           <button class="split-btn" id="splitBtn">この題を段に割る</button>
           <div class="split-note" id="splitNote">記事タイトルを貼って、上のボタンを押すと、下の各段へ流し込みます。
 気になるところがあれば、ここに出します。押しても、下の段は手でいくらでも直せます。</div>
@@ -244,20 +416,82 @@
 
       <!-- 配色プリセット -->
       <div class="control-section">
-        <span class="section-title">🎨 プロフェッショナル配色テーマ</span>
-        <div class="input-field">
+        <span class="section-title">🎨 配色</span>
+        <!-- ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：見本を付け、主力を7つに絞った ━━━━━
+             ★城主のお言葉（2026-09-21）
+               「プロフェッショナル配色テーマ →見直してほしい
+                 似たような配色・暗い系が多い、見た目のインパクトを与えるものも少ない」
+
+             ★感想ではなく、機械で測ってから直した（★11個ぜんぶ・2026-09-21）。★結果：
+                ・地の字が はっきり暗い（輝度0.12未満）…… ★9 / 11 個
+                ・似ている組（ΔE 45未満）……………………… ★18 / 55 組
+                  ★いちばん近い3組 … 淡色・生成り←→モノトーン 14.2／
+                     淡色・生成り←→白・清潔 19.8／ネオン←→夜・しずか 20.3
+                ・見せ場の段が立っていない（ΔE 30未満）… ★3 個
+             ★★城主のお言葉は、3つとも数字で当たっていた。
+
+             ✅ ★やったこと
+                ① 見本（小さな絵）を付けた —— ★開かずに、どんな色か分かる
+                ② 主力を7つにし、★残り6つは下の「そのほか」へ【たたんだ】
+                ③ 明るい側・強い側を2つ足した（金・面／藍・面）
+                   ★DNA-385（城・藍 × 金 × 和紙）の中で作っている。★外していない
+                ④ 既定を「和・城」から「白・清潔」へ移した（★理由は下の <select> の中に書いた）
+
+             🔴🔴 ★★測っただけでは足りなかった（★これを消すな）
+                ★上の「見せ場が立っているか」は、★【字の色どうしの差】で測っていた。
+                ★★その物差しでは、白・清潔 は 11個中10番目（ΔE 22.7）＝ほぼ最下位である。
+                ★ところが 2026-09-21、★7つを実際に絵にして並べたら ――
+                ★★白・清潔 が、いちばん強く、いちばん読めた。
+                ★理由は簡単で、★この画面の見せ場は【字の色】ではなく【帯】で作られているからである。
+                   ★白・清潔 は、濃い藍の字を、金の帯の上に置く。★帯と字の差が 6.49 ある。
+                ★★物差しが、見ているところを外していた。★数字は当たっていたが、狭かった。
+                ★次に配色を触る者へ ―― ★字の色だけで判じるな。★必ず絵にして、並べて見よ。
+             🔴 ★値は1つも消していない。★選ぶときの値（classic など）も1文字も変えていない
+                —— ★変えると、以前その色を選んだ人の設定が外れる。
+                ★下の <select> に13個ぜんぶ残してある。★たたんだ色も、そのまま選べる。 -->
+        <div class="theme-grid" id="themeGrid"></div>
+        <details class="theme-more" id="themeMore">
+          <summary>そのほかの配色（たたんであります・消していません）</summary>
+          <p class="text-note">この6つは、上の7つと似ているか、この船の色（藍 × 金 × 和紙）から外れているものです。消していないので、そのまま選べます。</p>
+          <div class="theme-grid" id="themeGridMore"></div>
+        </details>
+        <!-- 🔴 ★この <select> は、画面には出しません。★値を持っておくためだけのものです。
+             ★覚えた設定（localStorage）を戻すとき、★たたんだ色でも受けられるように、13個ぜんぶ残してあります。
+             ★上の見本を押すと、ここの値が変わり、change を出します。
+             ★★つまり、描き直しも保存も、いままでと同じ経路を通ります（新しい配線は足していません）。 -->
+        <div class="input-field" style="display:none">
           <select id="themePreset">
-            <option value="classic">王道セールス（濃紺 × 鮮烈赤 × 蛍光黄）</option>
-            <option value="monolith">和・城（藍 × 金 × 和紙）― 三星鑑の色</option>
-            <option value="passion">パッション・エンペラー（真紅 × リッチゴールド × 純白）</option>
-            <option value="emerald">信頼・ビジネス（ディープフォレスト × ミント × レモン）</option>
-            <option value="purple">高貴・エレガンス（ディープバイオレット × ローズピンク × プラチナ）</option>
-            <option value="darkneon">ネオン・フューチャー（ミッドナイト × ネオングリーン × サンセットオレンジ）</option>
-            <option value="kinari">淡色・生成り（和紙 × 墨 × 薄藍）― 白っぽい見出し用</option>
-            <option value="mono">モノトーン（白 × 黒 × 灰）― どんな背景にも乗る</option>
-            <option value="asa">朝・やわらかい（生成り × 薄橙 × 濃茶）</option>
-            <option value="shiro">白・清潔（白 × 濃い文字 × 金）― いちばん多く使われている形</option>
-            <option value="yoru">夜・しずか（黒 × 白 × 金）</option>
+            <optgroup label="この船の色（DNA-385：城・藍 × 金 × 和紙）">
+              <option value="kin">金・面（藍の字に、金を面で）</option>
+              <option value="ai">藍・面（和紙の字に、藍を面で）</option>
+              <option value="monolith">和・城（藍 × 金 × 和紙）― 三星鑑の色</option>
+              <!-- 🔴 ★2026-09-21（14代目「濾」）：★既定は、ここ（白・清潔）である。
+                   ★★「いちばん上が既定」という形をやめ、★selected で名指しした。
+                      ★理由 … ★上の2つ（金・面・藍・面）は【強い側】として一覧の先頭に置きたい。
+                               ★だが、★開いた瞬間に当たっているべき色は、それとは別である。
+                   ★なぜ 白・清潔 か（★2つとも実測）
+                     ① ★水先室の実測 … ★城主が公開62本でいちばん多く使われたのが この形（19本）
+                     ② ★2026-09-21 に7つを絵にして並べた … ★明るい写真でいちばん読めたのが これ
+                   🔴 ★直す前の既定は「和・城」だった。★絵にしたら、7つでいちばん弱かった ――
+                      ★見せ場の字（#a8862a）と、その下の帯（#e8d9a8）が近すぎて、★帯が効いていない
+                      （★帯と字のコントラスト比 2.44。★白・清潔 は 6.49）。
+                      ★★和・城 の値そのものは1文字も触っていない（★以前 選んだ人の設定が外れるため）。
+                      ★直すかどうかは、城主のご判断である。
+                   ✅ ★2026-09-26 城主の裁定 K-09260702【A】で直した ―― ★強調の字だけ #6b5214 へ。★差は 5.25
+                      （★選ぶときの値 monolith は変えていない。★詳しくは themes.monolith の注記） -->
+              <option value="shiro" selected>白・清潔（白 × 濃い文字 × 金）― いちばん多く使われている形</option>
+              <option value="yoru">夜・しずか（黒 × 白 × 金）</option>
+              <option value="kinari">淡色・生成り（和紙 × 墨 × 薄藍）― 白っぽい見出し用</option>
+            </optgroup>
+            <optgroup label="そのほか（前から入っているもの・消していません）">
+              <option value="asa">朝・やわらかい（生成り × 薄橙 × 濃茶）</option>
+              <option value="mono">モノトーン（白 × 黒 × 灰）― どんな背景にも乗る</option>
+              <option value="classic">王道セールス（濃紺 × 鮮烈赤 × 蛍光黄）</option>
+              <option value="passion">パッション・エンペラー（真紅 × リッチゴールド × 純白）</option>
+              <option value="emerald">信頼・ビジネス（ディープフォレスト × ミント × レモン）</option>
+              <option value="purple">高貴・エレガンス（ディープバイオレット × ローズピンク × プラチナ）</option>
+              <option value="darkneon">ネオン・フューチャー（ミッドナイト × ネオングリーン × サンセットオレンジ）</option>
+            </optgroup>
           </select>
         </div>
       </div>
@@ -291,8 +525,11 @@
       <div class="control-section">
         <span class="section-title">📐 全体レイアウト＆座標</span>
         <div class="input-field">
-          <label>横位置 (X座標) <span id="posXVal">820</span></label>
-          <input type="range" id="posX" min="200" max="1100" value="820">
+          <!-- ★2026-09-21（14代目「濾」）：既定を 820 → 896 へ。
+               ★896 は「余白6割」にあたる（★文字に使える幅 ＝ 中心から近い端までの2倍 ＝ 768px ＝ 画面の6割）。
+               ★入口の言葉.md の23本は、18本が6割である。★開いた時点で、いちばん多い形に合っている。 -->
+          <label>横位置 (X座標) <span id="posXVal">896</span></label>
+          <input type="range" id="posX" min="200" max="1100" value="896">
         </div>
         <div class="input-field">
           <label>縦位置の微調整（★ 0 ＝自動で中央）<span id="posYVal">0</span></label>
@@ -318,7 +555,8 @@
         </div>
         <button class="split-btn" id="memClear"
           style="background:#3a2233;color:#ffb4b4;border:1px solid #6b3450;">覚えたものを消して、初期状態に戻す</button>
-        <p class="text-note" id="memNote">★この端末の中だけに残ります。どこへも送っていません。</p>
+        <p class="text-note" id="memNote">★この端末の中だけに残ります。どこへも送っていません。<br>
+          ★2026-09-21：見本の文言と配色を入れ替えたので、前の版で覚えていた設定は、いちど消えています。</p>
       </div>
 
       <!-- 背景画像 -->
@@ -328,6 +566,34 @@
           <label>※ キャンバスへのD&D または クリックで差し替え</label>
           <input type="file" id="filePicker" accept="image/*" style="display:none;">
         </div>
+      </div>
+
+      <!-- ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：予備の口 ━━━━━━━━━━━━━━━━
+           ★城主のお言葉（2026-09-21）
+             「新しい紙を貼る（入口の言葉.md を、まるごと貼って構いません）
+               …これ、使う時があるかな？ 保険で設置したと思うけど」
+
+           ★★残しました。★ただし、いちばん上から【いちばん下】へ移しました。
+           ★城主の読みは当たっています ―― ★これは保険です。
+              ★作った日（2026-09-21 朝）は、言葉の入り口が【この口だけ】でした。
+              ★その日のうちに機関室が「外の紙」を流し込み、夜の輪にも登録しました。
+              ★★いまは、棚は毎朝ひとりでに新しくなります。★この口の出番は、それが止まった日だけです。
+
+           ★消さない理由は2つです。
+             ① ★ここは商品で、城主以外も開きます。★流し込みが止まった日に、手が完全に止まります
+             ② ★消すのは1分ですが、★止まった日に作り直すのは、その日のうちには終わりません
+           ★★保険を、いちばん目立つ場所に置いていたのが間違いでした。★消すことではありません。
+
+           ✅ ★同梱の写しで動いている（＝外の紙が届いていない）ときだけ、
+              ★この欄は【自分から開きます】。★保険が要る日だけ、前に出る形です。 -->
+      <div class="control-section">
+        <details class="igu-more" id="iguYobi">
+          <summary>予備の口：新しい紙を、手で貼る（ふだんは使いません）</summary>
+          <p class="text-note">上の棚は、毎朝ひとりでに新しくなります（機関室が入れています）。ここは、それが止まった日のための口です。<br>
+            04_運用ツール\入口の言葉.md を開いて、全部を貼って、下のボタンを押してください。いる行だけ拾います。</p>
+          <textarea id="iguPaste" rows="5" placeholder="入口の言葉.md を開いて、全部選んで貼ってください。いる行だけ拾います。"></textarea>
+          <button class="split-btn" id="iguRead">貼ったものを読み取る</button>
+        </details>
       </div>
 
     </div>
@@ -386,9 +652,14 @@
              ★下に足した4つと合わせて、明るい見出しも作れるようにしてある。
 
              ★2026-08-21（6代目「欄」）の実測は、この入れ替えでも守っている ――
-             ★暗い背景の段では、下線の色を明るいほうにしてある（★描いても背景と同化しないため）。 */
+             ★暗い背景の段では、下線の色を明るいほうにしてある（★描いても背景と同化しないため）。
+
+             ★2026-09-26（理子・舷門 14代目「濾（ろ）」／★城主の裁定 K-09260702【A】）：
+             ★強調の段（style2）の字だけを #a8862a → #6b5214（古金・金茶）へ沈めた。
+             ★帯（#e8d9a8）との差が 2.44 → 5.25（★読める目安 4.5 を超える）。
+             ★帯・フチ・座布団の色は1文字も触っていない。★藍 × 金 × 和紙 のまま。 */
           style1: { text: '#152241', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#152241', badgeText: '#f8f4ea', badgeBorder: '#c9a227' },
-          style2: { text: '#a8862a', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#a8862a', badgeText: '#f8f4ea', badgeBorder: '#f8f4ea' },
+          style2: { text: '#6b5214', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#a8862a', badgeText: '#f8f4ea', badgeBorder: '#f8f4ea' },
           style3: { text: '#152241', stroke: '#f8f4ea', marker: '#e8d9a8', badgeBg: '#152241', badgeText: '#f8f4ea', badgeBorder: '#c9a227' },
           style4: { text: '#c9a227', stroke: '#0a1226', marker: '#e8d9a8', badgeBg: '#0a1226', badgeText: '#c9a227', badgeBorder: '#c9a227' }
         },
@@ -464,6 +735,52 @@
           style4: { text: '#c9a227', stroke: '#141414', marker: '#e8d9a8', badgeBg: '#141414', badgeText: '#c9a227', badgeBorder: '#c9a227' }
         },
 
+        /* ══════════════════════════════════════════════════════════
+           ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：ここから下の2つを足した
+           ★城主のお言葉「似たような配色・暗い系が多い、見た目のインパクトを与えるものも少ない」
+
+           🔴 ★足す前を、機械で測った（11個ぜんぶ）。★城主のお言葉は当たっていた ――
+              ★地の段の字が はっきり暗い（輝度0.12未満）… ★9 / 11 個
+              ★明るい（輝度0.5超）のは2個だけで、★その2個は互いに ΔE 20.3（かなり似ている）
+
+           ★★足りていなかったのは【地の段が明るい組】と【色を面で置く組】である。
+              ★この画面は、ほとんどの段を style1 で描く（★強調の1段だけが style2）。
+              ★だから style1 が暗いと、★出来た絵ぜんたいが暗く見える。
+              ★そして小さく並んだとき、目に留まるのは【線】ではなく【面】である
+                 —— ★マーカーの帯と、座布団の地。★そこを saturated な色で埋める。
+
+           🔴 ★DNA-385（城・藍 × 金 × 和紙）からは外していない。★使った値は4つだけ：
+                藍 #0d1b2a ／ 金 #e8c44a ／ 金（濃） #c9a227 ／ 和紙 #f3efe6
+              ★すべて【城主の館の帯】と三星鑑から採った実物である。★推測では作っていない。
+           ★上の色は、1文字も触っていない。
+           ══════════════════════════════════════════════════════════ */
+
+        kin: {
+          /* ★金・面 ―― 金を【面】で使う。★いちばん目に留まる組。
+             ★地の段は和紙の字＋藍のフチ（★明るい）。★強調の段だけ、金の帯に藍の字を置く。
+             ★測った値（★2026-09-21・足したあとに測り直した実測）
+                          地の字の輝度 0.865 ／ 見せ場と地の差 ΔE 86.9
+                          帯の彩度 77% ／ 帯と、その上の字のコントラスト比 10.29
+                          座布団の地の彩度 77% */
+          style1: { text: '#f3efe6', stroke: '#0d1b2a', marker: '#e8c44a', badgeBg: '#0d1b2a', badgeText: '#f3efe6', badgeBorder: '#e8c44a' },
+          style2: { text: '#0d1b2a', stroke: '#f3efe6', marker: '#e8c44a', badgeBg: '#e8c44a', badgeText: '#0d1b2a', badgeBorder: '#0d1b2a' },
+          style3: { text: '#f3efe6', stroke: '#0d1b2a', marker: '#e8c44a', badgeBg: '#0d1b2a', badgeText: '#f3efe6', badgeBorder: '#e8c44a' },
+          style4: { text: '#0d1b2a', stroke: '#e8c44a', marker: '#e8c44a', badgeBg: '#e8c44a', badgeText: '#0d1b2a', badgeBorder: '#0d1b2a' }
+        },
+
+        ai: {
+          /* ★藍・面 ―― 紙の白を大きく取り、強調の段だけ藍で塗りつぶす。
+             ★金・面 と逆の組み立てである（★向こうは金の面、★こちらは藍の面に金の字）。
+             ★明るい写真・白っぽい写真のときに、いちばん強い。
+             ★測った値（★2026-09-21・足したあとに測り直した実測）
+                          地の字の輝度 0.865 ／ 見せ場と地の差 ΔE 60.4
+                          ★帯（藍）と、その上の字（金）のコントラスト比 10.29（★はっきり読める） */
+          style1: { text: '#f3efe6', stroke: '#0d1b2a', marker: '#0d1b2a', badgeBg: '#0d1b2a', badgeText: '#f3efe6', badgeBorder: '#c9a227' },
+          style2: { text: '#e8c44a', stroke: '#0d1b2a', marker: '#0d1b2a', badgeBg: '#0d1b2a', badgeText: '#e8c44a', badgeBorder: '#e8c44a' },
+          style3: { text: '#f3efe6', stroke: '#0d1b2a', marker: '#0d1b2a', badgeBg: '#0d1b2a', badgeText: '#f3efe6', badgeBorder: '#c9a227' },
+          style4: { text: '#e8c44a', stroke: '#0d1b2a', marker: '#0d1b2a', badgeBg: '#0d1b2a', badgeText: '#e8c44a', badgeBorder: '#e8c44a' }
+        },
+
         shiro: {
           /* ★白・清潔 ―― 白い背景に置く見出し用
              🔴 ★2026-09-02 に足した。★水先室の実測で、★★城主がいちばん多く使っておられた色。
@@ -476,12 +793,121 @@
         }
       };
 
+      /* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：配色を【見本】で選ぶ ━━━━━━━━━━
+         ★城主のお言葉「プロフェッショナル配色テーマ →見直してほしい。
+           似たような配色・暗い系が多い、見た目のインパクトを与えるものも少ない」
+
+         ★色は themes から直に取る。★ここで書き写さない
+            —— ★★写すと、themes を直した日に、★見本だけが嘘になる。
+         ★押したときにやるのは2つだけ … ①隠した <select> の値を変える ②change を出す。
+            ★★描き直しも保存も、いままでの配線をそのまま通る。★新しい経路は1本も足していない。
+         🔴 ★値が無い色（themes に無い k）は、棚にも出さない。★名前だけの札は作らない。 */
+      const THEME_TANA = [
+        { k: 'kin',      名: '金・面',             説: '藍の字に、金を面で',     主: true },
+        { k: 'ai',       名: '藍・面',             説: '和紙の字に、藍を面で',   主: true },
+        { k: 'monolith', 名: '和・城',             説: '藍 × 金 × 和紙',         主: true },
+        { k: 'shiro',    名: '白・清潔',           説: '白 × 濃い字 × 金',       主: true },
+        { k: 'yoru',     名: '夜・しずか',         説: '黒 × 白 × 金',           主: true },
+        { k: 'asa',      名: '朝・やわらかい',     説: '生成り × 薄橙 × 濃茶',   主: true },
+        { k: 'mono',     名: 'モノトーン',         説: '白 × 黒 × 灰',           主: true },
+        { k: 'kinari',   名: '淡色・生成り',       説: '和紙 × 墨 × 薄藍',       主: false },
+        { k: 'classic',  名: '王道セールス',       説: '濃紺 × 鮮烈赤 × 蛍光黄', 主: false },
+        { k: 'passion',  名: 'パッション',         説: '真紅 × 金 × 純白',       主: false },
+        { k: 'emerald',  名: '信頼・ビジネス',     説: '深緑 × ミント × レモン', 主: false },
+        { k: 'purple',   名: '高貴・エレガンス',   説: '紫 × 桃 × 白',           主: false },
+        { k: 'darkneon', 名: 'ネオン・フューチャー', 説: '黒 × 蛍光緑 × 橙',     主: false }
+      ];
+
+      /* ★見本の中身 …… ★実際に描かれる形をそのまま小さくしたもの。
+         ★ふつうの段（style1）が2本、★強調の帯（style2.marker）の上に強調の段（style2）が1本。
+         ★フチの色も付ける（★この画面は、文字にフチを描くので、フチまで見せないと嘘になる）。 */
+      const theme見本 = (k) => {
+        const box = document.createElement('span');
+        box.className = 'theme-mihon';
+        box.style.background = 'linear-gradient(90deg,#edeae3 0 50%,#20262e 50% 100%)';
+        const t = themes[k];
+        if (!t) { return box; }
+        const 棒 = (top, left, w, h, bg, ring) => {
+          const i = document.createElement('i');
+          i.style.top = top + 'px'; i.style.left = left + 'px';
+          i.style.width = w + 'px'; i.style.height = h + 'px';
+          i.style.background = bg;
+          if (ring) { i.style.boxShadow = '0 0 0 1px ' + ring; }
+          box.appendChild(i);
+        };
+        棒(6,  5, 44, 4, t.style1.text,   t.style1.stroke);
+        棒(15, 5, 44, 9, t.style2.marker, null);
+        棒(17, 8, 38, 5, t.style2.text,   t.style2.stroke);
+        棒(27, 5, 30, 4, t.style1.text,   t.style1.stroke);
+        return box;
+      };
+
+      const themeGridSync = () => {
+        const v = themePreset.value;
+        const all = document.querySelectorAll('button.theme-btn');
+        for (let i = 0; i < all.length; i++) {
+          all[i].setAttribute('aria-pressed', all[i].getAttribute('data-k') === v ? 'true' : 'false');
+        }
+        /* 🔴 ★たたんだ中の色が選ばれていたら、★黙って隠さない。★開いて見せる。
+           ★★「いま何が選ばれているか」が見えない画面にはしない。 */
+        const more = document.getElementById('themeMore');
+        if (more) {
+          for (let i = 0; i < THEME_TANA.length; i++) {
+            if (THEME_TANA[i].k === v && !THEME_TANA[i].主) { more.open = true; break; }
+          }
+        }
+      };
+
+      const themeGridBuild = () => {
+        const 主 = document.getElementById('themeGrid');
+        const 他 = document.getElementById('themeGridMore');
+        if (!主 || !他) { return; }
+        主.innerHTML = ''; 他.innerHTML = '';
+        THEME_TANA.forEach((row) => {
+          if (!themes[row.k]) { return; }
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'theme-btn';
+          b.setAttribute('data-k', row.k);
+          b.setAttribute('aria-pressed', 'false');
+          b.title = row.名 + '（' + row.説 + '）';
+          b.appendChild(theme見本(row.k));
+          const n = document.createElement('span');
+          n.className = 'theme-name';
+          const bb = document.createElement('b'); bb.textContent = row.名;
+          const ss = document.createElement('span'); ss.textContent = row.説;
+          n.appendChild(bb); n.appendChild(ss);
+          b.appendChild(n);
+          b.addEventListener('click', () => {
+            themePreset.value = row.k;
+            themePreset.dispatchEvent(new Event('change'));
+            themeGridSync();
+          });
+          (row.主 ? 主 : 他).appendChild(b);
+        });
+        themeGridSync();
+      };
+      themePreset.addEventListener('change', themeGridSync);
+      themeGridBuild();
+
       // 4つの段の初期構成（全段独立・完全カスタマイズ対応）
+      /* ★★2026-09-21（理子・舷門 14代目「濾（ろ）」）：見本の文言を、当船のものへ入れ替えた
+         🔴 ★直す前は「noteの無料記事が／有料記事の／売上を左右する／本当の理由✨」だった。
+            ★これは【結果の約束】である —— ★朔さんの歯止め（S-104・2026-09-13）
+              「★入口の言葉にも、金額と、結果の約束は入れない」に正面から当たる。
+            ★✨ も付いていた。★見出し画像は、この船のいちばん外側の面である。
+         ★入れ替えた先は EP37（04_運用ツール\入口の言葉.md より・★2026-09-21 10:16 の版）。
+         ★段は2つ。★★3段目・4段目は、文字を空にして切ってある
+            —— ★「段の数は本ごとに決める。4段に揃えない」（★入口の言葉.md の歯止め4）。
+         🔴 ★★ここは【見本】である。★紙が書き直されても、ここは自動では変わらない。
+            ★実際、この作業の最中（2026-09-21 10:16）に紙が書き直され、
+            ★★はじめ見本に置いた HU.016 は、2段から3段に変わった。
+            ★★いま書いてある言葉を、そのまま使わないこと。★上の棚から選び直してください。 */
       const tiersConfig = [
-        { id: 1, name: '第1段', text: 'noteの無料記事が', type: 'plain', size: 76, stroke: 20, mThick: 30, mPos: 15, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
-        { id: 2, name: '第2段', text: '有料記事の', type: 'marker', size: 88, stroke: 22, mThick: 32, mPos: 16, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
-        { id: 3, name: '第3段', text: '売上を左右する', type: 'plain', size: 82, stroke: 20, mThick: 30, mPos: 15, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
-        { id: 4, name: '第4段', text: '本当の理由✨', type: 'badge', size: 74, stroke: 0, mThick: 22, mPos: 46, padX: 42, padY: 22, lineGap: 1.35, enabled: true }
+        { id: 1, name: '第1段', text: '「整理している自分」が', type: 'plain', size: 58, stroke: 20, mThick: 0, mPos: 15, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
+        { id: 2, name: '第2段', text: '好きだっただけだった', type: 'marker', size: 67, stroke: 22, mThick: 32, mPos: 16, padX: 40, padY: 20, lineGap: 1.3, enabled: true },
+        { id: 3, name: '第3段', text: '', type: 'plain', size: 66, stroke: 20, mThick: 0, mPos: 15, padX: 40, padY: 20, lineGap: 1.3, enabled: false },
+        { id: 4, name: '第4段', text: '', type: 'plain', size: 66, stroke: 20, mThick: 0, mPos: 15, padX: 42, padY: 22, lineGap: 1.35, enabled: false }
       ];
 
       // コントロールUIを動的生成（DNA-149: 自己増殖型UI）
@@ -534,6 +960,12 @@
       buildControls();
 
       let bgImage = null;
+
+      /* 🔴 ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：どの段が強調かを覚えておく箱
+         ★★ここに置く理由 —— ★下のほう（入口の言葉の節）で let すると、
+            ★起動のときの render() が、まだ出来ていない名前を読みに行って落ちる。
+         ★-1 は「入口の言葉からは流し込んでいない」という意味。★そのときは今までどおり段の順で色が付く。 */
+      let IGU強調段 = -1;
 
       const initDefaultBg = () => {
         const dummy = new Image();
@@ -904,7 +1336,21 @@
           document.getElementById(`t${idx}_mthick_val`).textContent = mThick;
           document.getElementById(`t${idx}_mpos_val`).textContent = mPos;
 
-          const style = currentTheme[`style${idx + 1}`];
+          /* 🔴 ★2026-09-21（14代目「濾」）：★★絵にして見つけた。
+             ★配色は style1〜4 を【段の順番】で当てていた。★見せ場の色（style2）は、いつも2段目である。
+             ★これは、題から割るときに強調が必ず2段目だったころの形である（★下の TITLE_SPLIT）。
+             ★★ところが入口の言葉は、強調が1段目や3段目のこともある。
+                ★すると【強調の段には下線】【2段目には見せ場の色】となり、★強調が2箇所になる。
+                ★紙の決まりは「強調は1箇所だけ」である。
+             ✅ ★入口の言葉から流し込んだときだけ、見せ場の色を強調の段へ回す。
+             ★それ以外の段は style1 を使う —— ★11ある配色のうち10個で style1 と style3 は
+                まったく同じ値であり、★残る passion も違うのは座布団の枠色だけ
+                （★通常の段は座布団を描かないので使われない）。★2026-09-21 に機械で全部 数えた。
+             ★手で「座布団」を選んだ段は、座布団用の色（style4）をそのまま使う。
+             ★IGU強調段 が -1 のとき（＝題から割ったとき）は、★1文字も挙動が変わらない。 */
+          let _sn = idx + 1;
+          if (IGU強調段 >= 0) { _sn = (type === 'badge') ? 4 : ((idx === IGU強調段) ? 2 : 1); }
+          const style = currentTheme['style' + _sn];
           const lineHeight = size * 1.35;
 
           if (type === 'plain') {
@@ -1018,7 +1464,15 @@
          🔴 ★この端末の中だけに残る。★外へは1バイトも送っていない。
          ★消す手段を必ず置く（★「初期状態に戻す」）。★残したくないものが残り続けないように。
          ★読めない環境（保存が禁止されている等）でも、★黙って何もしないだけで、絵は普通に描ける。 */
-      const MEM_KEY = 'trinity_banner_state_v1';
+      /* 🔴 ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：覚える鍵を v1 → v2 へ上げた。
+         ★★これをやらないと、★以前この画面を使った端末では
+            ★覚えていた【古い見本の文言】と【古い配色】が、そのまま戻ってくる。
+            ★城主のお言葉「★古い設定のままで、今の状況に合わせられるように改良を加えないといけないのでは？」
+              —— ★その「古い設定」の一部は、★★この端末の中に残っていたものである。
+         ★v1 の中身は、起動のときに消す（★DNA-377：残したくないものが残り続けないように）。
+         ★覚える仕組みそのものは、1文字も変えていない。 */
+      const MEM_KEY = 'trinity_banner_state_v2';
+      try { window.localStorage.removeItem('trinity_banner_state_v1'); } catch (e) { /* 何もしない */ }
 
       const memAvailable = () => {
         try { window.localStorage.setItem('_t', '1'); window.localStorage.removeItem('_t'); return true; }
@@ -1027,7 +1481,7 @@
 
       const collectState = () => {
         const st = { theme: themePreset.value, posX: posX.value, posY: posY.value,
-                     spacing: lineSpacing.value, tiers: [] };
+                     spacing: lineSpacing.value, 強調段: IGU強調段, tiers: [] };
         const so = document.getElementById('scrimOn');
         const stn = document.getElementById('scrimTone');
         const sp = document.getElementById('scrimPower');
@@ -1063,6 +1517,7 @@
         const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined && v !== null) { el.value = v; } };
         set('themePreset', st.theme); set('posX', st.posX); set('posY', st.posY); set('lineSpacing', st.spacing);
         set('scrimTone', st.scrimTone); set('scrimPower', st.scrimPower);
+        if (typeof st.強調段 === 'number') { IGU強調段 = st.強調段; }
         const so = document.getElementById('scrimOn');
         if (so && typeof st.scrimOn === 'boolean') { so.checked = st.scrimOn; }
         if (st.tiers) {
@@ -1083,6 +1538,7 @@
       const clearState = () => {
         try { window.localStorage.removeItem(MEM_KEY); } catch (e) { /* 何もしない */ }
         buildControls();          /* 初期の中身へ戻す */
+        IGU強調段 = -1;
         const n = document.getElementById('memNote');
         if (n) { n.textContent = '★消しました。初期状態に戻しています。'; }
         render();
@@ -1114,6 +1570,10 @@
         if (saved && applyState(saved)) {
           const n = document.getElementById('memNote');
           if (n) { n.textContent = '★前回の設定から始めています（★この端末の中だけに残っていたものです）。'; }
+          /* ★2026-09-21（14代目「濾」）：覚えていた配色を、見本の棚にも映す。
+             🔴 ★applyState は <select> の値を直に入れるだけで、change を出さない。
+                ★★ここで呼ばないと、★中身は前回の色なのに、見本はどれも押されていない状態になる。 */
+          themeGridSync();
           render();
         }
       }
@@ -1428,10 +1888,529 @@ var TITLE_SPLIT = (function () {
         splitNote.innerHTML = html;
 
         srcLen.textContent = titleSrc.value.replace(/[\r\n]+/g, '').length + '文字';
+        /* ★題から割ったときは、色の付け方を元（段の順）へ戻す。
+           ★この割り方は、強調をいつも2段目に置くので、それで合っている。 */
+        IGU強調段 = -1;
         render();
       };
 
       splitBtn.addEventListener('click', applySplit);
+
+
+/* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：入口の言葉から作る ━━━━━━━━━━━━━
+   ★出どころ … 04_運用ツール\入口の言葉.md（朔さん・結さんが書いておられる23本）
+   ★城主のお言葉（2026-09-20）「見出し画像に載せる文字は、タイトルをそのまま載せるのでなく、
+     キャッチコピーというかつかみの文字を入れる」
+   🔴 ★城主のお言葉（2026-09-21）「★題をそのまま入れる要素は残したほうがいい」
+      ★→ ★上の TITLE_SPLIT は1文字も触っていない。★これは足したものである。
+
+   🔴 ★この画面は、外の紙を自分では読めない。★調べた結果、こうだった ——
+      ★★館（/yakata）は【.html しか配らない】。★隣に .js を置いても、この画面からは読めない
+        （★04_運用ツール\道具\_映像工房\ラジオ工房サーバー.py …
+          `if … or (not 名.lower().endswith('.html')): 館へ戻す` と書いてある）。
+      ★fetch も使えない（★file:// で開いたときに落ちる。★外の読み込みも増やさない約束である）。
+   ★→ ★だから、言葉の入り口を3つにした。★上ほど強い：
+
+     ① 外の紙 …… window.TRINITY_IRIGUCHI（★head の「入口の言葉データ」の欄。★機関室が書き込む）
+     ② 貼ったもの … 城主が入口の言葉.md をそのまま貼って「読み取る」を押したもの
+     ③ 同梱の写し … 2026-09-21 時点の23本（★この下に持っている）
+
+   ★★どれを使ったかは、必ず画面に出す。★通さなかった行も出す。
+      ★黙って通すのは素通しであり、★黙って抜くのは検閲である。★どちらもしない。
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+      const IGUCHI = (() => {
+        /* ★行頭の一覧 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+           🔴 ★正本は 04_運用ツール\道具\_note共通.ps1 の $系列の呼び名 である。
+              ★★次に呼び名が変わる方は、まずそこを直し、★それからここへ写してください。
+              ★いまの表（2026-09-21・城主の裁定）：
+                 ★EP＝手記 ／ HU＝手紙 ／ KN＝やってみた ／ TK＝解説 ／ KG＝書き起こし ／ 気まぐれ＝そのまま
+           ★2026-09-21（14代目「濾」）：★呼び名を足した。★見つけたのは結さんである。
+              ★★古い記号（HU. EP KN.）は消していない —— ★古い紙を貼られても読めるようにするためである。
+              ★船の中の記号は1文字も変わっていない（★変わったのは、読者に見せる題と、紙の印だけ）。
+           ★ここが古くなったときの備えは、下の 読む() に入れてある（★0本なら、行頭を見ずに数え直して知らせる）。 */
+        const ATAMA = [
+          '手紙.', '手記.', 'やってみた.', '解説.', '書き起こし.', '気まぐれ.',
+          '手紙', '手記', 'やってみた', '解説', '書き起こし',
+          'HU.', 'EP.', 'KN.', 'TK.', 'KG.',
+          'HU', 'EP', 'KN', 'TK', 'KG'
+        ];
+        /* ★ドットが無い形（手記37／EP37）も入れてある —— ★機関室の道具と同じ物差しにするためである
+           （★04_運用ツール\道具\入口の言葉をバナーへ流す.ps1 が $系列の呼び名 から同じ2通りを作っている）。
+           ★区切りが5つ、という条件が別に効くので、★ドットを外しても紙の説明文は通らない（★実測で確かめた）。 */
+        const TATE  = '｜';   /* ★全角の縦棒（U+FF5C）。★半角の | ではない */
+        const SLA   = '／';   /* ★段の区切りは全角スラッシュ（U+FF0F） */
+
+        const 削る = (s) => String(s).replace(/^[\s\u3000]+/, '').replace(/[\s\u3000]+$/, '');
+
+        const 頭が合うか = (s) => {
+          for (let i = 0; i < ATAMA.length; i++) { if (s.indexOf(ATAMA[i]) === 0) { return true; } }
+          return false;
+        };
+
+        /* ★見分け方は、紙の「紙の形（機関室へ）」に書いてあるものを、そのまま写した ——
+           ★① 行頭が 手紙. / 手記. / やってみた. / 気まぐれ.（★古い記号 HU. EP KN. も通す）
+           ★② 全角の縦棒で5つに区切れること。
+           ★紙の中の表（| 手紙.016 | …）は半角の縦棒なので、★どちらの条件でも落ちる。 */
+        const 一度読む = (text, 頭を見るか) => {
+          const 本 = [], 抜いた = [];
+          const 行 = String(text === null || text === undefined ? '' : text).split(/\r?\n/);
+          for (let i = 0; i < 行.length; i++) {
+            const s = 削る(行[i]);
+            if (s === '' || (頭を見るか && !頭が合うか(s))) { continue; }
+            const c = s.split(TATE);
+            if (c.length !== 5) {
+              /* ★縦棒が1本も無い行は、ただの説明文である。★黙って見送る（★責めない） */
+              if (s.indexOf(TATE) >= 0) { 抜いた.push(削る(c[0]) + '（区切りが' + (c.length - 1) + '本）'); }
+              continue;
+            }
+            const 印 = 削る(c[0]);
+            const 言葉 = 削る(c[3]);
+            const 段 = [], 生 = 言葉.split(SLA);
+            for (let k = 0; k < 生.length; k++) { const d = 削る(生[k]); if (d !== '') { 段.push(d); } }
+            if (言葉 === 'まだ' || 段.length === 0) { 抜いた.push(印 + '（まだ書かれていません）'); continue; }
+            /* ★この画面は4段までしか持っていない。★超えたぶんは通さない —— ★そして、そう言う */
+            let 切った = 0;
+            if (段.length > 4) { 切った = 段.length - 4; 段.length = 4; }
+            const y = 削る(c[1]);
+            const 余白 = (y.indexOf('3') >= 0) ? 3 : (y.indexOf('4') >= 0) ? 4 : 6;
+            let 強調 = parseInt(c[2].replace(/[^0-9]/g, ''), 10);
+            if (!(強調 >= 1 && 強調 <= 段.length)) { 強調 = 段.length; }   /* ★外れていたら最後の段 */
+            本.push({ 印: 印, 余白: 余白, 強調: 強調, 段: 段, 出所: 削る(c[4]), 切った: 切った });
+          }
+          return { 本: 本, 抜いた: 抜いた, 頭を外した: false };
+        };
+
+        /* 🔴 ★2026-09-21（14代目「濾」）：★上の一覧が古くなった日のための備え ━━━━━━━━
+           ★この日、まさにそれが起きた —— ★紙の印が呼び名に変わり、★この画面は0本と数えた。
+             ★画面は壊れなかった。★★壊れないまま、古い棚を出し続けた。★それがいちばん悪い形である。
+           ★だから、1本も通らなかったときだけ、★行頭を見ずにもう一度 数える。
+           ★★ただし黙って通さない —— ★通したときは、画面に「一覧が古いようです」と必ず出す
+              （★igu棚を作る が出す）。★黙って通すのは素通しであり、★黙って抜くのは検閲である。
+           ★区切りが5つ、という条件は外していない。★外すと、紙の説明文まで拾い始める。 */
+        const 読む = (text) => {
+          const r = 一度読む(text, true);
+          if (r.本.length > 0) { return r; }
+          const r2 = 一度読む(text, false);
+          if (r2.本.length === 0) { return r; }   /* ★それでも0本なら、素直に0本と言う */
+          r2.頭を外した = true;
+          return r2;
+        };
+
+        /* ★2026-09-21（14代目「濾」）：公開の日を拾う ━━━━━━━━━━━━━━━━━━━
+           ★紙の末尾に「どの日のものか（予約表との対応）」という表がある。
+             | 2026-09-23 | HU.016 | 「そこまで怒ることか」 |
+           🔴 ★その表は【半角の縦棒】で書かれている。★言葉のほう（上の 読む）は全角しか見ない。
+              ★★だから同じ行を二度 読むことはない。★役目が違うので、別の関数にしてある。
+           ★これは【貼ったもの】から日を拾うための口である。
+              ★外の紙（head の欄）には、機関室が「回」として日を入れてくれている。 */
+        const 日表を読む = (text, 頭を見るか) => {
+          const 表 = {};
+          const 見る = (頭を見るか === undefined) ? true : !!頭を見るか;
+          const 行 = String(text === null || text === undefined ? '' : text).split(/\r?\n/);
+          for (let i = 0; i < 行.length; i++) {
+            const c = 行[i].split('|');
+            if (c.length < 4) { continue; }
+            const d = 削る(c[1]), p = 削る(c[2]);
+            if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(d)) { continue; }
+            if (p === '' || (見る && !頭が合うか(p))) { continue; }
+            表[p] = { 日: d };
+          }
+          return 表;
+        };
+
+        return { 読む: 読む, 日表を読む: 日表を読む, 頭の一覧: ATAMA };
+      })();
+
+      /* ★同梱の写し —— ★2026-09-21 に、入口の言葉.md から【機械で】写した23本。
+         ★手で打ち直していない。★紙が新しくなったら、①か②で上書きされる。 */
+      const IGU_UTSUSHI = {
+        つくった日: '2026-09-21 13:27',   /* ★紙そのものが最後に書かれた時刻。★写した時刻ではない */
+        出どころ: '04_運用ツール\\入口の言葉.md',
+        行: [
+        '手紙.016｜6割｜1｜「そこまで怒ることか」／言われて／返せませんでした｜見出し ―― 「そこまで怒ることか」と言われた ／ 正直に言います。言われて、返せませんでした。',
+        '手紙.017｜4割｜2｜黙るか／あふれるか｜黙るか、あふれるか。',
+        '手紙.018｜6割｜1｜言えば「細かい」と言われる／黙れば／あとで自分が直すことになる｜言えば「細かい」と言われる。 ／ 黙れば、あとで自分が直すことになる。',
+        '手紙.019｜6割｜1｜ここから出たい｜ある日、机の前で、ふいに思う。ここから出たい。',
+        '手紙.020｜6割｜2｜どこまでが自分のもので／どこからが借りものなのか｜どこまでが自分のもので、どこからが借りものなのか。',
+        '手紙.021｜6割｜1｜手を叩く速さだけは／合わせています｜正直に言います。手を叩く速さだけは、合わせています。',
+        '手記.37｜6割｜2｜「整理している自分」が／好きだっただけだった｜見出し ―― 「整理している自分」が、好きだっただけだった',
+        '手記.38｜6割｜3｜私が禁止したはずの言葉が／全面に並んでいました／本当に 見事に全部です｜私が禁止したはずの言葉が、全面に並んでいました。本当に、見事に全部です。',
+        '手記.39｜6割｜3｜組んでみたら／一瞬で終わった／本当に 笑えない｜見出し ―― 組んでみたら、一瞬で終わった ／ 7年を何に使っていたんだろうと思いました。本当に、笑えない。',
+        '手記.40｜6割｜1｜古いものは消すな／歴史だから｜「古いものは消すな。歴史だから」',
+        '手記.41｜6割｜2｜それは／物差しを他人に預けていない／ということです｜「それは、物差しを他人に預けていない、ということです」',
+        '手記.42｜6割｜2｜自分の理解力のなさに／そのときはかなり凹みました｜正直に言います。自分の理解力のなさに、そのときはかなり凹みました。',
+        'やってみた.003｜4割｜2｜いいことしか／書いていない｜いいことしか書いていません。',
+        'やってみた.004｜6割｜3｜悪くないんです／悪くないのに／送る手前で止まっている｜悪くないんです。悪くないのに、送る手前で止まっている。',
+        'やってみた.005｜6割｜2｜分かったふりのほうが／その場は楽なので｜聞くのは、いまだに少し気が重い。分かったふりのほうが、その場は楽なので。',
+        'やってみた.006｜6割｜2｜動いてはいます／ただ 増えていなかった｜動いてはいます。ただ、増えていなかった。',
+        'やってみた.007｜6割｜2｜うまく言葉になりませんでした／「なんか違う」／としか言えない｜うまく言葉になりませんでした。「なんか違う」としか言えない。',
+        'やってみた.008｜6割｜2｜正直に言うと／自慢したい気持ちが／少しありました｜正直に言うと、自慢したい気持ちが少しありました。',
+        '気まぐれ.008｜6割｜3｜その朝ちゃんと起きられた日なら／「はい」を押すと思うのです／寝坊した日は「いいえ」｜その朝ちゃんと起きられた日なら「はい」を押すと思うのです。寝坊した日は「いいえ」。',
+        '気まぐれ.009｜6割｜2｜でも言うと浮きそうだから／黙ってお茶を飲んでる｜番組のセリフ ―― でも言うと浮きそうだから、黙ってお茶を飲んでる。',
+        '気まぐれ.010｜6割｜3｜たしかに／失礼なぶん／正直にいきます｜解説役のセリフ ―― たしかに。失礼なぶん、正直にいきます',
+        '気まぐれ.011｜6割｜3｜事実を反映する版なのに／事実が無いまま／1本 焼いていた／ことになります｜事実を反映する版なのに、事実が無いまま1本 焼いていたことになります。',
+        '気まぐれ.012｜6割｜1｜はぁ……／開始一分で／主役の誕生日を間違えます？／付箋 何のために貼ったんですか｜はぁ……開始一分で、主役の誕生日を間違えます？ 付箋、何のために貼ったんですか'
+        ],
+        /* ★同梱の写しにも、公開の日を持たせた（★紙の「どの日のものか」の表から機械で写した）。
+           🔴 ★これは 2026-09-21 時点の予約表である。★外の紙が届いていれば、そちらが勝つ。 */
+        回: {
+          'やってみた.003': { 日: '2026-09-20' },
+          '手紙.016': { 日: '2026-09-23' },
+          '気まぐれ.008': { 日: '2026-09-25' },
+          '手記.37': { 日: '2026-09-26' },
+          'やってみた.004': { 日: '2026-09-27' },
+          '手紙.017': { 日: '2026-09-30' },
+          '気まぐれ.009': { 日: '2026-10-02' },
+          '手記.38': { 日: '2026-10-03' },
+          'やってみた.005': { 日: '2026-10-04' },
+          '手紙.018': { 日: '2026-10-07' },
+          '気まぐれ.010': { 日: '2026-10-09' },
+          '手記.39': { 日: '2026-10-10' },
+          'やってみた.006': { 日: '2026-10-11' },
+          '手紙.019': { 日: '2026-10-14' },
+          '気まぐれ.011': { 日: '2026-10-16' },
+          '手記.40': { 日: '2026-10-17' },
+          'やってみた.007': { 日: '2026-10-18' },
+          '手紙.020': { 日: '2026-10-21' },
+          '気まぐれ.012': { 日: '2026-10-23' },
+          '手記.41': { 日: '2026-10-24' },
+          'やってみた.008': { 日: '2026-10-25' },
+          '手紙.021': { 日: '2026-10-28' },
+          '手記.42': { 日: '2026-10-31' }
+        }
+      };
+
+      let IGU一覧 = [];
+      let IGU出どころ = '';
+      let IGU日表 = {};
+
+      const igu外の紙 = () => {
+        const g = (typeof window !== 'undefined') ? window.TRINITY_IRIGUCHI : null;
+        if (!g) { return null; }
+        /* ★配列でも、1本の文字列でも受ける（★渡す側に形を合わせさせない） */
+        const 生 = (g.行 && g.行.join) ? g.行.join('\n') : ((typeof g.紙 === 'string') ? g.紙 : '');
+        if (!生) { return null; }
+        const r = IGUCHI.読む(生);
+        if (r.本.length === 0) { return null; }
+        /* ★「回」を持っていない版の外の紙もあり得る。★そのときは日付なしとして、素直に並べる */
+        return { r: r, 名: '外の紙（' + (g.つくった日 || '日付なし') + '・' + r.本.length + '本）', 日表: g.回 || {} };
+      };
+
+      /* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：公開の日で棚を分ける ━━━━━━━━━
+         ★城主のお言葉「これは増えて行くの？ 増えていくだけでは…
+           既存の投稿済みのものがあったら、ごちゃごちゃする」
+
+         🔴 ★日付の出どころは【note予約表】である。★note へは問い合わせていない
+            （★この画面はネットの外で開く。★外の読み込みは1本も増やさない約束である）。
+            ★だから画面にも、そう書いてある。★城主が、実際の公開とずれたときに気づけるように。
+
+         🔴 ★「もう出た」は、こちらで日付から判じ直す ―― ★機関室が書き込む「済」は使わない。
+            ★★あれは【書き込んだ日】の判定である。★この画面は何日も開かれないことがあるので、
+            ★開いた日で数え直さないと、★昨日 出た回が「これから出る」の側に残り続ける。 */
+      const IGU曜 = ['日', '月', '火', '水', '木', '金', '土'];
+      const igu日をほどく = (s) => {
+        return /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(
+          String(s === null || s === undefined ? '' : s).replace(/[\s　]/g, '')
+        );
+      };
+      const igu日を数に = (s) => {
+        const m = igu日をほどく(s);
+        return m ? (parseInt(m[1], 10) * 10000 + parseInt(m[2], 10) * 100 + parseInt(m[3], 10)) : 0;
+      };
+      const igu今日 = () => {
+        const d = new Date();
+        return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+      };
+      const igu日の見出し = (s) => {
+        const m = igu日をほどく(s);
+        if (!m) { return ''; }
+        /* ★年・月・日を数で渡す（★文字列のまま new Date すると、環境によって時差ぶんずれる） */
+        const d = new Date(parseInt(m[1], 10), parseInt(m[2], 10) - 1, parseInt(m[3], 10));
+        return parseInt(m[2], 10) + '/' + parseInt(m[3], 10) + '（' + IGU曜[d.getDay()] + '）';
+      };
+
+      const igu棚を描く = () => {
+        const sel = document.getElementById('iguPick');
+        if (!sel) { return; }
+        const 済も = document.getElementById('iguSumi');
+        const 見せる = !!(済も && 済も.checked);
+        const 今 = igu今日();
+
+        const 前 = [], 無 = [], 済 = [];
+        for (let i = 0; i < IGU一覧.length; i++) {
+          const b = IGU一覧[i];
+          const j = IGU日表 ? IGU日表[b.印] : null;
+          const n = j ? igu日を数に(j.日) : 0;
+          const 行 = { i: i, b: b, n: n, 見: j ? igu日の見出し(j.日) : '' };
+          if (!n) { 無.push(行); } else if (n < 今) { 済.push(行); } else { 前.push(行); }
+        }
+        前.sort((x, y) => x.n - y.n);   /* ★近い順。★いちばん上が「次に出る回」になる */
+        済.sort((x, y) => y.n - x.n);   /* ★新しく出たものから */
+
+        const 前の値 = sel.value;
+        sel.innerHTML = '';
+        const 群 = (ラベル) => {
+          const g = document.createElement('optgroup');
+          g.label = ラベル;
+          sel.appendChild(g);
+          return g;
+        };
+        /* ★文字は textContent で入れる（★貼られたものを、そのまま絵にしない） */
+        const 足す = (親, 行) => {
+          const o = document.createElement('option');
+          o.value = String(行.i);
+          o.textContent = (行.見 ? 行.見 + '　' : '') + 行.b.印 + '　' + 行.b.段.join('／');
+          親.appendChild(o);
+        };
+        if (前.length > 0) { const g = 群('これから出る回（' + 前.length + '本）'); for (let k = 0; k < 前.length; k++) { 足す(g, 前[k]); } }
+        if (無.length > 0) { const g = 群('予約表に日付が無い回（' + 無.length + '本）'); for (let k = 0; k < 無.length; k++) { 足す(g, 無[k]); } }
+        if (済.length > 0 && 見せる) { const g = 群('もう出た回（' + 済.length + '本）'); for (let k = 0; k < 済.length; k++) { 足す(g, 済[k]); } }
+        if (sel.options.length === 0) {
+          const o = document.createElement('option');
+          o.value = '';
+          o.textContent = (IGU一覧.length === 0)
+            ? '（1本も読み取れませんでした）'
+            : '（これから出る回は、いまありません。上の「もう出た回も、棚に出す」に印を付けてください）';
+          sel.appendChild(o);
+        }
+
+        /* ★既定 ＝ いちばん上 ＝ 次に出る回。
+           ★ただし、さっきまで選んでいたものが棚に残っているなら、そちらを保つ
+              —— ★「もう出た回も出す」に印を付けただけで、選び直しになるのは おかしい */
+        sel.selectedIndex = 0;
+        if (前の値 !== '' && 前の値 !== null && 前の値 !== undefined) {
+          for (let k = 0; k < sel.options.length; k++) {
+            if (sel.options[k].value === 前の値) { sel.selectedIndex = k; break; }
+          }
+        }
+
+        const sn = document.getElementById('iguSumiN');
+        if (sn) { sn.textContent = 'もう出た回も、棚に出す（' + 済.length + '本）'; }
+
+        const h = document.getElementById('iguHizuke');
+        if (h) {
+          if (前.length + 済.length === 0) {
+            h.textContent = 'この一覧には、公開の日が付いていません（予約表の対応表が見つかりませんでした）。そのまま並べています。';
+          } else {
+            const d = new Date();
+            h.textContent = '日付は note予約表のものです。note には問い合わせていません（この画面はネットの外で開きます）。'
+              + '実際の公開とずれていることがあります。「もう出た」は、今日（'
+              + (d.getMonth() + 1) + '/' + d.getDate() + '）より前かどうかで判じています。';
+          }
+        }
+      };
+
+      /* ★棚に並べる（★中身の並べ方は、すぐ上の igu棚を描く が持っている） */
+      const igu棚を作る = (r, 名, 日表) => {
+        IGU一覧 = r.本;
+        IGU出どころ = 名;
+        IGU日表 = 日表 || {};
+        igu棚を描く();
+        const p0 = document.getElementById('iguSrc');
+        if (p0) {
+          let m0 = '出どころ：' + 名;
+          /* 🔴 ★行頭の一覧が古いまま通したときは、必ずここに出す（★黙って通さない） */
+          if (r.頭を外した) {
+            m0 += '　／　⚠ この画面が持っている行頭の一覧（手紙. 手記. やってみた. 気まぐれ. ほか）に'
+                + '当てはまる行が1本もありませんでした。行頭を見ずに読み直しています。'
+                + '呼び名が変わったと思われます —— 正本は 04_運用ツール\\道具\\_note共通.ps1 の $系列の呼び名 です';
+          }
+          if (r.抜いた.length > 0) { m0 += '　／　通さなかった行：' + r.抜いた.join('、'); }
+          p0.textContent = m0;
+        }
+      };
+
+      /* ★余白 ＝ 文字に使う幅の割合。★ImageForge と同じ物差しである
+         （★3割＝4字ほど／4割＝5〜6字／6割＝8〜9字。★入口の言葉.md「余白について」）。
+         ★この画面の文字は中央揃えなので、使える幅は「中心から近いほうの端までの2倍」。
+         ★→ ★使える幅 ＝ 1280 × 割/10　★横位置 ＝ 1280 − 使える幅/2
+              ★6割→896 ／ ★4割→1024 ／ ★3割→1088 */
+      const igu横位置 = (余白) => {
+        const w = canvas.width * (余白 / 10);
+        let x = Math.round(canvas.width - w / 2);
+        const lo = parseInt(posX.min, 10), hi = parseInt(posX.max, 10);
+        if (x < lo) { x = lo; }
+        if (x > hi) { x = hi; }
+        return x;
+      };
+
+      /* ★その段が、いまの幅に収まる大きさを返す（★描く前に決める）。
+         🔴 ★これをやらないと、描いてから fitSize が縮めることになり、
+            ★つまみの数字と、実際に出る大きさが食い違ったままになる
+            （★画面に「縮めました」と出続ける。★直っていないのではなく、最初から合わせていないだけ）。 */
+      const igu収まる大きさ = (行, 上限, 使える幅, 横余白) => {
+        ctx.save();
+        ctx.font = FACE(100);
+        let w = 0;
+        for (let i = 0; i < 行.length; i++) {
+          const t = ctx.measureText(行[i]).width;
+          if (t > w) { w = t; }
+        }
+        ctx.restore();
+        /* 🔴 ★2026-09-21：★はじめ ここを 12 にしていた（★描くときの fitSize と同じ数）。
+           ★★絵にして見たら、文字が画面の右端まで 13px のところに来ていた。
+           ★中央揃えなので、右へ 32px 空けたければ、幅から 64 を引く必要がある（左右ぶん）。
+           ★★これはコードを読んでも気づけなかった。★絵にして初めて見えた。 */
+        const 枠 = 使える幅 - 横余白 * 2 - 64;
+        if (w <= 0 || 枠 <= 0) { return 上限; }
+        return Math.max(30, Math.min(上限, Math.floor(100 * 枠 / w)));
+      };
+
+      const igu流し込む = () => {
+        const sel = document.getElementById('iguPick');
+        const note = document.getElementById('iguNote');
+        const i = parseInt(sel.value, 10);
+        if (!(i >= 0) || !IGU一覧[i]) {
+          note.textContent = '上から回を選んでから、もう一度 押してください。';
+          return;
+        }
+        const b = IGU一覧[i];
+        const 飾る = document.getElementById('iguKazari').checked;
+        const 動かす = document.getElementById('iguYohaku').checked;
+
+        if (動かす) {
+          posX.value = igu横位置(b.余白);
+          document.getElementById('posXVal').textContent = posX.value;
+        }
+        const bx = parseInt(posX.value, 10);
+        const 使える幅 = Math.min(bx, canvas.width - bx) * 2;
+
+        /* 🔴 ★★強調の段を、先に測る（★2026-09-21 に、実際に踏んだ穴である）。
+           ★はじめは、段ごとに独立して「上限92（強調）／上限76（その他）」で詰めていた。
+           ★★ところが、強調の段が長いと そこだけ大きく縮み、
+              ★短い他の段が上限76のまま残って、★★強調のほうが小さくなる。★上下が逆になる。
+              ★実測（2026-09-21・23本を機械で押して確かめた）… ★★23本のうち 11本 が逆だった。
+                 例：HU.016 … 強調段「「そこまで怒ることか」」11字 → 61px、
+                     その他「言われて」4字 → 76px。★強調が 15px 小さい。
+           ✅ ★だから順番を変えた —— ★①強調を測る ★②他の段の上限を、それより下に置く。
+              ★長い段があると全体が小さくなるが、★それは その段が長いという事実である。
+              ★勝手に余白をはみ出して大きくしない。★代わりに、下の知らせで「何字あるか」を言う。 */
+        const em = Math.min(Math.max(b.強調 - 1, 0), b.段.length - 1);
+        const s強調 = igu収まる大きさ([b.段[em]], 92, 使える幅, 飾る ? 16 : 0);
+        const 他上限 = Math.max(30, Math.min(76, Math.floor(s強調 * 0.85)));
+
+        /* ★余白ごとの、1段に入る字数の目安（★入口の言葉.md「余白について」の表そのもの）。
+           ★超えていても止めない。★小さくして通し、★何字あるかを言う。 */
+        const 目安 = (b.余白 === 3) ? 4 : (b.余白 === 4) ? 6 : 9;
+        const 長い = [];
+
+        const 大きさ表 = [];
+        for (let k = 0; k < 4; k++) {
+          const on = (k < b.段.length);
+          document.getElementById('t' + k + '_enable').checked = on;
+          document.getElementById('t' + k + '_text').value = on ? b.段[k] : '';
+          if (!on) { continue; }
+
+          /* 🔴 ★強調は1箇所だけ（★入口の言葉.md「強調は1箇所だけ」）。
+             ★★だから、いちばん下の段へ自動で座布団は敷かない
+                —— ★下線と座布団を同時に当てると、強調が2箇所になる。
+             ★題から割るほう（下の TITLE_SPLIT）は、いまも「最後は座布団」のままである。
+                ★あちらは題を割るための形であり、★紙の決まりとは別の話なので触っていない。
+             ★座布団にしたいときは、下の「装飾タイプ」で選べます。 */
+          const これが強調 = 飾る && (k === em);
+          const 大きさ = (k === em) ? s強調
+                       : igu収まる大きさ([b.段[k]], 他上限, 使える幅, 0);
+          if (b.段[k].length > 目安) { 長い.push('第' + (k + 1) + '段 ' + b.段[k].length + '字'); }
+
+          document.getElementById('t' + k + '_type').value = これが強調 ? 'marker' : 'plain';
+          document.getElementById('t' + k + '_size').value = 大きさ;
+          document.getElementById('t' + k + '_stroke').value = これが強調 ? 22 : 20;
+          document.getElementById('t' + k + '_mthick').value = これが強調 ? 32 : 0;
+          document.getElementById('t' + k + '_mpos').value = これが強調 ? 16 : 15;
+          大きさ表.push('第' + (k + 1) + '段 ' + 大きさ + 'px');
+        }
+
+        let 文 = '・' + b.印 + '　' + b.段.length + '段／余白' + b.余白 + '割／強調は' + b.強調 + '段目\n';
+        文 += 動かす
+          ? ('・横位置を ' + posX.value + ' にしました（文字に使える幅 ' + 使える幅 + 'px ＝ 画面の' + b.余白 + '割）\n')
+          : ('・横位置は動かしていません（いまのまま ' + posX.value + '）\n');
+        文 += 飾る
+          ? ('・マーカーは ' + b.強調 + '段目だけです。ほかの段は飾っていません（強調は1箇所だけ、という紙の決まりです）\n')
+          : '・飾りは当てていません（全部 通常の白フチです）\n';
+        文 += '・大きさ：' + 大きさ表.join('／') + '（横に収まる大きさへ、こちらで合わせました）\n';
+        if (長い.length > 0) {
+          文 += '・' + 長い.join('／') + ' あります。余白' + b.余白 + '割の目安は' + 目安
+              + '字までなので、そのぶん小さくしました（紙の「余白について」の表）\n';
+        }
+        if (b.切った > 0) {
+          文 += '・この回は段が ' + (b.段.length + b.切った) + 'つありました。この画面は4段までなので、'
+              + b.切った + 'つ 通していません\n';
+        }
+        文 += '・ここから下の段は、手でいくらでも直せます';
+        note.textContent = 文;
+
+        const p = document.getElementById('iguSrc');
+        if (p) { p.textContent = '出どころ：' + IGU出どころ + '　／　この言葉を採った一文：' + b.出所; }
+
+        IGU強調段 = em;   /* ★この絵は、入口の言葉から作ったもの。★強調はこの段である */
+        render();
+        saveState();
+      };
+
+      const igu読み取る = () => {
+        const box = document.getElementById('iguPaste');
+        const note = document.getElementById('iguNote');
+        const r = IGUCHI.読む(box.value);
+        if (r.本.length === 0) {
+          /* ★責めない。★何を探しているかだけを伝えて、いまの一覧は壊さない */
+          note.textContent = '貼っていただいたものから、入口の言葉が1本も見つかりませんでした。\n'
+            + '探しているのは、全角の縦棒（｜）で5つに区切れる行です。\n'
+            + 'いまの一覧は、そのままにしてあります。';
+          return;
+        }
+        const い = new Date();
+        const 時 = ('0' + い.getHours()).slice(-2) + ':' + ('0' + い.getMinutes()).slice(-2);
+        /* ★2026-09-21（14代目「濾」）：貼られた紙からも、公開の日を拾う。
+           ★紙の末尾に「どの日のものか（予約表との対応）」の表がある。★そこから読む。
+           ★無ければ空のまま返るだけで、★棚は日付なしとして素直に並ぶ。 */
+        const 日表 = IGUCHI.日表を読む(box.value, !r.頭を外した);
+        let 日数 = 0;
+        for (const k in 日表) { if (Object.prototype.hasOwnProperty.call(日表, k)) { 日数++; } }
+        igu棚を作る(r, '貼ったもの（' + 時 + '・' + r.本.length + '本）', 日表);
+        note.textContent = r.本.length + '本 読み取りました。上から回を選んで、流し込んでください。'
+          + (日数 > 0
+              ? ('\n公開の日も ' + 日数 + '本ぶん 読み取りました（紙の「どの日のものか」の表から）。')
+              : '\n公開の日は見つかりませんでした。日で分けずに、そのまま並べています。')
+          + (r.抜いた.length > 0 ? ('\n通さなかった行が ' + r.抜いた.length + '行 あります（すぐ下に出しています）。') : '');
+      };
+
+      /* ★起動時 —— ★外の紙があればそちら、無ければ同梱の写し。★どちらを使ったかは必ず出す */
+      (() => {
+        const 外 = igu外の紙();
+        if (外) {
+          igu棚を作る(外.r, 外.名, 外.日表);
+        } else {
+          const r = IGUCHI.読む(IGU_UTSUSHI.行.join('\n'));
+          igu棚を作る(r, '同梱の写し（' + IGU_UTSUSHI.つくった日 + '・' + r.本.length + '本）', IGU_UTSUSHI.回);
+          const p = document.getElementById('iguSrc');
+          if (p) {
+            p.textContent = p.textContent + '　／　これは ' + IGU_UTSUSHI.つくった日
+              + ' 時点の写しです。新しい紙は ' + IGU_UTSUSHI.出どころ
+              + ' にあります（いちばん下の「予備の口」から貼れば、そちらが勝ちます）';
+          }
+          /* 🔴 ★この知らせは落とさないこと —— ★この画面を作っている最中（2026-09-21）に、
+             ★紙そのものが書き直された。★★写しは、思っているより早く古くなる。 */
+          const n0 = document.getElementById('iguNote');
+          if (n0) {
+            n0.textContent = 'いま並んでいるのは ' + IGU_UTSUSHI.つくった日 + ' 時点の写しです（'
+              + IGU一覧.length + '本）。'
+              + '紙は日に何度も書き直されることがあります。言葉が古いと思われたら、'
+              + 'いちばん下の「予備の口」から貼り直してください。'
+              + '\n上から回を選んで、ボタンを押すと、下の各段へ流し込みます。';
+          }
+          /* ✅ ★2026-09-21（14代目「濾」）：★保険が要る日だけ、予備の口が自分から前に出る。
+             ★★ふだんは たたんだまま。★外の紙が届いていない日だけ、開いた状態で迎える。 */
+          const y = document.getElementById('iguYobi');
+          if (y) { y.open = true; }
+        }
+        const b1 = document.getElementById('iguBtn');
+        const b2 = document.getElementById('iguRead');
+        if (b1) { b1.addEventListener('click', igu流し込む); }
+        if (b2) { b2.addEventListener('click', igu読み取る); }
+        /* ★「もう出た回も、棚に出す」を押したら、棚を並べ直す（★読み込みはしない） */
+        const s1 = document.getElementById('iguSumi');
+        if (s1) { s1.addEventListener('change', igu棚を描く); }
+      })();
 
       /* ★2026-08-20（理子・舷門 6代目「欄」）：④書体が届いてから、もう一度 描く ━━━━━━
          🔴 ★v2 はこれを持っていなかった（v1.1 で入れたものが戻っていた）。
