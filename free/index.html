@@ -277,7 +277,7 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
   <div class="free-cta-inner">
     <div class="free-cta-eyebrow">MORE</div>
     <div class="free-cta-title">これは、入り口の指標だけ。</div>
-    <p class="free-cta-desc">三星鑑の統合レポートは、10天体・四柱推命・五行を重ねて、あなたの才能・仕事・人間関係・今年のテーマまで立体的に読み解きます。販売開始は2031年4月の予定です。準備が整いましたら、ご登録いただいた方へ最初にお知らせします。</p>
+    <p class="free-cta-desc">三星鑑の統合レポートは、10天体・四柱推命・五行を重ねて、あなたの才能・仕事・人間関係・今年のテーマまで立体的に読み解きます。いま販売に向けて準備を進めています。販売を始める時期が決まりましたら、ご登録いただいた方へ最初にお知らせします。</p>
     <div class="free-cta-btns">
       <a href="https://yotyann4649.github.io/apps/homepage/" class="free-cta-btn pri">三星鑑について見る</a>
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="free-cta-btn sec">リリースのお知らせを受け取る</a>
@@ -759,6 +759,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 -->
 <script>
 (function(){
+    // 🔴🔴 ★2026-09-25（ゼロ／機関室・35代目「埋火」）―― ★城主ご自身の訪問を数えない
+    //   ★2026-09-24 に同じものを【上げ場】へ入れたが、★★正本へ入れ忘れていた。
+    //   ★見つけたのは理子さん〔舷門・14代目「濾」〕（2026-09-25）。
+    //   🔴 ★正本は【上げ場の親】である。★ここに無いと、★次に写した瞬間に城主除外が消える。
+    //   ★使い方：URL の末尾に ?me=1 を付けて1度 開く → その端末は以後ずっと数えない
+    //   ★取り消し：?me=0 を付けて開く ／ ★4枚とも同じ置き場なので、1枚で開けば4枚とも効く
+    try{
+      if (/[?&]me=1(&|$)/i.test(location.search)) { localStorage.setItem("trinity_owner","1"); }
+      if (/[?&]me=0(&|$)/i.test(location.search)) { localStorage.removeItem("trinity_owner"); }
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // ★城主の端末。1件も数えない
+    }catch(e){}
   try{
     var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
     new Image().src = base + "?p=free&t=" + Date.now();              // ① PV（毎回）
