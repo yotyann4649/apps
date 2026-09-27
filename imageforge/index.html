@@ -130,7 +130,9 @@ Check your Browserslist config to be sure that your targets are set up correctly
       </div>
       <div>
         <h1 id="title" class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent transition-all">Trinity ImageForge</h1>
-        <p class="text-xs text-slate-400 mt-1 tracking-wide">実写 × 水彩スケッチ 統合錬成システム v2.4 ／ The Trinity</p>
+        <!-- ★2026-09-20（理子・舷門 14代目「濾」）：ここは v2.4 のまま止まっていた。★下の footer は v3.2 だった。
+             ★同じ画面の上と下で、版の数字が違っていた。★今回の改修に合わせて、両方 v3.3 に揃える。 -->
+        <p class="text-xs text-slate-400 mt-1 tracking-wide">実写 × 水彩スケッチ 統合錬成システム v3.3 ／ The Trinity</p>
       </div>
     </div>
     <div class="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-400/10 px-3 py-1.5 rounded-full border border-emerald-400/20">
@@ -182,6 +184,46 @@ Check your Browserslist config to be sure that your targets are set up correctly
           class="w-full p-3 bg-slate-900/60 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all resize-none text-sm"
           placeholder="例：30代 男性、デスク、夜、疲れている"></textarea>
 
+        <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-2 どこに出すサムネかを選ぶと、比率を合わせる
+             ★狙い … 城主が「比率」という言葉で考えずに済むようにする。★出し先の名前だけで選べる。
+             ★選んだときだけ合わせる。★押したときには勝手に変えない（★選択を奪わない）。 -->
+        <div class="mt-3">
+          <div class="text-[10px] text-slate-500 mb-1">どこに出すサムネか（選ぶと、下の比率を合わせます）</div>
+          <select id="thumbDest" onchange="thumbDestChanged()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+            <option value="none" selected>いまの比率のまま（変えません）</option>
+            <option value="youtube">YouTube のサムネ（16:9）</option>
+            <option value="note">note の見出し（1.91:1・16:9で作って上下を切ります）</option>
+            <option value="shorts">Shorts・Reels・TikTok（9:16）</option>
+            <option value="insta">Instagram の通常投稿（1:1）</option>
+          </select>
+        </div>
+
+        <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-1 サムネに乗せる文言の欄
+             ★出どころ … 奏庫 P-004 深化（2026-09-18）①「文字数は少なく」。
+             🔴 ★原文に字数の上限はない（★庫に「具体的な上限も原文にありません」と書いてある）。
+                ★だから上限は決めない。★代わりに、信号所の実測（余白◯割に何文字 入るか）と突き合わせる。
+             🔴 ★この文言は、絵の指示文には入れない。★AIに文字を描かせると崩れるので、
+                ★この道具は逆に「文字を描くな」と言い続けている（NEG_BASE の letters / words / typography）。 -->
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-1">
+            <div class="text-[10px] text-slate-500">サムネに乗せる文言（あとで絵の上に置く言葉）</div>
+            <div id="thumbTextCount" class="text-[10px] text-slate-500"></div>
+          </div>
+          <textarea id="thumbText" rows="2" oninput="thumbFit()"
+            class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs resize-none"
+            placeholder="例：やめた日から（改行で段が分かれます）"></textarea>
+          <p class="text-[10px] text-slate-500 mt-1 leading-relaxed">
+            この言葉は絵の中には描かせません。絵は余白のまま出して、あとから上に置いてください。改行すると段が分かれます。
+          </p>
+          <!-- ★B-3（朔庫 S-104 と、その歯止め〔2026-09-13 深化〕）。★1行 添えるだけ。★何も強制しない -->
+          <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">
+            💡 ここに置く言葉（入口）と、記事・動画の題（中身の名前）は、別の言葉にすると効きます。ただし中身から離さないこと。入口の言葉にも、金額や結果の約束は書きません。
+          </p>
+        </div>
+
+        <!-- ★B-5 の出し先（★押す前に、余白と字数が合っているかを静かに出す） -->
+        <div id="thumbFitBox" class="hidden mt-2 rounded-lg p-2 text-[10px] leading-relaxed border"></div>
+
         <div class="grid grid-cols-2 gap-2 mt-3">
           <div>
             <div class="text-[10px] text-slate-500 mb-1">文字を置く側</div>
@@ -197,7 +239,8 @@ Check your Browserslist config to be sure that your targets are set up correctly
                  ★節さんの実測 ―― 余白4割なら1段5〜6文字、6割なら8〜9文字。
                  ★文言が主役の回は6割が要る。★これまでは城主が手で書き換えることになっていた。 -->
             <div class="text-[10px] text-slate-500 mb-1">余白の広さ</div>
-            <select id="thumbWidth" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+            <!-- ★2026-09-20（濾）：B-5 ―― 余白を変えたら、字数との突き合わせも合わせて出す -->
+            <select id="thumbWidth" onchange="thumbFit()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
               <option value="30">3割（人物が主役）</option>
               <option value="40" selected>4割（ふだんの回）</option>
               <option value="60">6割（文言が主役・勝負回）</option>
@@ -218,6 +261,36 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <option value="two">2人</option>
               <option value="none">人は入れない</option>
               <option value="asis">単語のまま</option>
+            </select>
+          </div>
+          <div>
+            <!-- 🔴 ★2026-09-20（機関室・35代目「埋火」）：★城主のご指示
+                 「もっと若々しい18歳、15歳の年齢設定を追加してください」
+                 ★未成年を選べるので、★入れる語は【年齢と healthy だけ】にしてある。
+                 ★魅力・体つき・服装の語は1つも入れない（★入れない、と決めて作った）。 -->
+            <div class="text-[10px] text-slate-500 mb-1">年齢</div>
+            <select id="thumbAge" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <option value="none">指定しない</option>
+              <option value="15">15歳（中学生くらい）</option>
+              <option value="18">18歳（高校生くらい）</option>
+              <option value="20">20代</option>
+              <option value="30">30代</option>
+              <option value="40">40代</option>
+            </select>
+          </div>
+          <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-4 表情
+               ★出どころ … 奏庫 P-004 深化（2026-09-18）③「タイトルと、映っている人の表情をリンクさせる」。
+               🔴 ★同じ庫が、②「気にならせるインパクトのあるワード」は【採らない】と決めている（★P-004 が先）。
+                  ★だから表情も、煽る側の顔（驚き・叫び・大げさな表情）は選択肢に置いていない。
+               ★③は「当船は人物を映さないので、アバターに限って移せる。★判定は奏と理子へ」と庫が書いている。 -->
+          <div>
+            <div class="text-[10px] text-slate-500 mb-1">表情（人を入れるときだけ効きます）</div>
+            <select id="thumbFace" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <option value="none">指定しない</option>
+              <option value="calm">おだやかな笑顔</option>
+              <option value="straight">まっすぐ見ている</option>
+              <option value="think">考えこんでいる</option>
+              <option value="tired">疲れている</option>
             </select>
           </div>
         </div>
@@ -263,7 +336,12 @@ Check your Browserslist config to be sure that your targets are set up correctly
           <div>
             <!-- ★P-024：年齢は【数値】で固定する。「20代半ば」のような曖昧な書き方はしない -->
             <div class="text-[10px] text-slate-500 mb-1">年齢（数値で固定）</div>
+            <!-- 🔴 ★2026-09-20（機関室・35代目「埋火」）：★城主のご指示「もっと若々しい18歳、15歳の年齢設定を追加してください」
+                 ★未成年を選べるので、★足す語は【年齢と healthy だけ】。★魅力・体つき・服装の語は1つも入れていない -->
             <select id="lsAge" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <option value="15">15歳</option>
+              <option value="18">18歳</option>
+              <option value="20">20歳</option>
               <option value="22">22歳</option>
               <option value="25" selected>25歳</option>
               <option value="28">28歳</option>
@@ -343,6 +421,9 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <option value="9:16">縦型 9:16（Reels/Shorts）― 768×1344</option>
             <option value="16:9">横型 16:9（YouTube）― 1344×768</option>
             <option value="1:1">正方形 1:1（Instagram）― 1024×1024</option>
+            <!-- ★2026-09-20（35代目「埋火」）：★城主の裁定 K-09201701【B】「4:5（Instagramの縦）だけ足す」
+                 ★出所＝ai.google.dev の画像生成のページ（★向こう側は10種類を受け付ける）。★足したのは1つだけ -->
+            <option value="4:5">縦 4:5（Instagramの縦）― 1024×1280</option>
             <option value="note_header">🎉 note見出しヘッダー 1.91:1（1280×670）</option>
           </select>
         </div>
@@ -454,6 +535,9 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <option value="gemini-3.1-flash-image">標準（速い・2K/4K対応）</option>
               <option value="gemini-3-pro-image">高品質（複雑な構図・人物が複数）</option>
               <option value="gemini-2.5-flash-image">旧版（うまくいかない時の逃げ道）</option>
+              <!-- ★2026-09-20（35代目「埋火」）：★城主の裁定 K-09201702【A】「安いモデルを足す（試し撃ち用）」
+                   🔴 ★このモデルは 1K しか出せない。★下の sizeHint が、押す前に1行 伝える -->
+              <option value="gemini-3.1-flash-lite-image">試し撃ち（いちばん速くて安い・1Kのみ）</option>
             </select>
           </div>
         </div>
@@ -480,8 +564,14 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           </button>
         </div>
+        <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：A-1 ボタンの名前を、実態に合わせた。
+             🔴 ★Imagen 4 は 2026-08-17 に Google が停止しており、★v2.6 以降このボタンは
+                【上で選んだ Gemini の画像生成モデル】を呼んでいる。★名前だけが1か月 残っていた。
+             ★どのモデルを呼ぶかは、すぐ上のプルダウンで城主が選ばれる。★だからボタンには
+               モデル名を書かず、「いま選んである設定で作る」とだけ書く（★ラベルが実態から
+               二度と離れない書き方にする）。★実際に呼んだモデル名は、生成後の案内に今までどおり出る。 -->
         <button id="genBtn" onclick="generate()" class="w-full py-3 px-6 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-purple-500/30">
-          ⚡ Imagen 4 で画像を生成
+          ⚡ この設定で画像を生成
         </button>
         <div id="msg" class="hidden mt-3 rounded-xl p-3 text-xs border"></div>
       </div>
@@ -500,7 +590,7 @@ Check your Browserslist config to be sure that your targets are set up correctly
     </div>
   </div>
 
-  <footer class="text-center text-[10px] text-slate-600 mt-8 tracking-wide">Trinity ImageForge v3.2 ／ 実写×水彩 統合エンジン ／ The Trinity 理子（UI）× ゼロ（錬成・API）</footer>
+  <footer class="text-center text-[10px] text-slate-600 mt-8 tracking-wide">Trinity ImageForge v3.3 ／ 実写×水彩 統合エンジン ／ The Trinity 理子（UI）× ゼロ（錬成・API）</footer>
 </div>
 
 <!-- トースト格納（DNA-181 即時フィードバック・非破壊） -->
@@ -513,7 +603,14 @@ const TONES = {
   natural:{core:"soft natural daylight, gentle window light, true-to-life colors, airy and clean atmosphere, golden hour warmth"},
   night:{core:"night scene, neon and lantern glow, realistic low-light, deep shadows, ambient bokeh lights, humid night air"}
 };
-const PHOTO_BASE = "Raw photo, hyper-realistic, absolute photorealism, shot on Fujifilm GFX 100, highly detailed natural skin texture, visible pores, subtle skin imperfections, lifelike, indistinguishable from reality, professional photography";
+/* 🔴🔴 ★2026-09-20（機関室・35代目「埋火」）：★城主のお言葉
+     「リップシンク用の画像を作ると、★ニキビや吹き出物が多くて醜い画像になる場合がある」
+   ★原因はここだった ―― ★"visible pores, subtle skin imperfections"（毛穴をはっきり・肌の欠点）を、
+     ★毎回 必ず言い続けていた。★リップシンクは顔アップ寄せで使うので、★その分だけ大きく描かれる。
+   ★この2語は 2026-08 に【作り物っぽさ（plastic skin）を消す】ために入ったものである。★狙いは正しい。
+   ✅ ★消さずに弱い言い方へ替えた ―― ★肌理（texture）は残し、★荒れ（pores / imperfections）は求めない。
+      ★作り物っぽさへは戻らない（★plastic skin・doll-like は、いまも避けたい側に在る）。 */
+const PHOTO_BASE = "Raw photo, hyper-realistic, absolute photorealism, shot on Fujifilm GFX 100, smooth healthy skin with natural texture, clear even complexion, lifelike, indistinguishable from reality, professional photography";
 const PHOTO_TAIL = "8k uhd, sharp focus, masterpiece, best quality";
 const NO_TAGS = "NO CGI, NO 3D render, NO anime, NO illustration, NO painting, purely photographic";
 /* ★v3.1（理子・舷門 7代目「廂」／2026-08-22）：末尾へ12語 足した。★元の語は1文字も消していない。
@@ -521,6 +618,8 @@ const NO_TAGS = "NO CGI, NO 3D render, NO anime, NO illustration, NO painting, p
    ★効くのは screen / monitor / dashboard / UI ―― 単語に「ノートパソコン」「スマートフォン」が入ると、
      AIは画面を描き、★その画面の中に文字を描き込む（★律の実測：メニューバー・セルの数字・付箋の手書きまで全滅した）。 */
 const NEG_BASE = "cgi, 3d, render, anime, cartoon, illustration, painting, drawing, plastic skin, doll-like, deformed, distorted, disfigured, bad anatomy, extra limbs, missing limbs, fused fingers, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, blurry, low quality, lowres, jpeg artifacts, watermark, signature, text, logo, oversaturated, letters, words, typography, caption, subtitle, UI, screen, monitor, dashboard, source code, numbers, signage";
+/* ★2026-09-20 埋火：★肌荒れの語を足した（★城主のご指摘。★顔を出すときだけ効く） */
+const NEG_SKIN = "acne, pimples, blemishes, skin blemishes, rough skin, bumpy skin, oily shiny skin, skin spots, moles, scars, wrinkles, enlarged pores, skin redness";
 const NEG_FACE = "asymmetrical eyes, cross-eyed, ugly, duplicate, cloned face";
 
 /* ★v3.1：人を入れないと決めたときだけ使う2本。★節さんのご指定どおり6語。★こちらで語を足していない。
@@ -552,7 +651,12 @@ const LS_PEOPLE = {
      ★mature・older person・middle-aged …………………………… P-024（年齢が上へ引っぱられるのを防ぐ）
      ★full body shot・wide shot・long shot・from behind・profile view … DNA-256（引きの構図を禁じる）
    🔴 ★【リップシンクの型を使ったときだけ】足す。★常に足すと、風景や全身の絵が作れなくなる。 */
-const NEG_LIPSYNC = "mannequin, retouched, airbrushed, unnatural symmetry, mature, older person, middle-aged, full body shot, wide shot, long shot, from behind, profile view";
+/* 🔴 ★2026-09-20（機関室・35代目「埋火」）：★"retouched, airbrushed" の2語を外した。
+   ★城主のご指摘「リップシンク用の画像が、ニキビや吹き出物で醜くなる」。
+   ★土台が「毛穴・肌の欠点」を求め、★ここが「修整」を禁じていた ―― ★両方が肌を荒らす側に効いていた。
+   ★作り物っぽさの歯止めは、★mannequin・unnatural symmetry（この行）と、★plastic skin・doll-like（NEG_BASE）が持っている。
+   ★ほかの語（年齢・構図）は1つも変えていない。 */
+const NEG_LIPSYNC = "mannequin, unnatural symmetry, mature, older person, middle-aged, full body shot, wide shot, long shot, from behind, profile view";
 
 function lipsyncBuild(){
   var 人物キー = (document.getElementById('lsPerson') || {}).value || 'riko';
@@ -566,14 +670,18 @@ function lipsyncBuild(){
   和文.push(年齢 + '歳。若々しい輝き。');
   和文.push('正面を向いた、胸から上のクローズアップ。');
   和文.push('影のない、均一な光。');
-  和文.push('無加工の写真のような自然な肌の質感。毛穴と産毛、微細な凹凸が見える。');
+  /* 🔴 ★2026-09-20（機関室・35代目「埋火」）：★城主のご指摘「ニキビや吹き出物が多くて醜い画像になる場合がある」
+     ★ここが本丸だった ―― ★土台（PHOTO_BASE）を直しても、★この型が「毛穴・産毛・凹凸」を足し直していた。
+     ★リップシンクは顔アップで使うので、★足した分がそのまま大きく出る。
+     ✅ ★肌理は残し、★荒れを求める語だけ外した。★作り物っぽさへは戻らない（★plastic skin は避けたい側に在る） */
+  和文.push('自然な肌の質感。肌は荒れておらず、色むらが少ない。');
 
   var 英文 = [];
   if (人物.en) { 英文.push(人物.en); }
   英文.push(年齢 + ' years old, youthful radiance');
   英文.push('close-up shot on face, front facing, head and upper chest framing, centered composition');
   英文.push('flat even shadowless lighting, soft uniform light on the face');
-  英文.push('unretouched photograph, natural skin texture, visible pores, fine vellus hair, subtle skin irregularities');
+  英文.push('natural skin texture, smooth healthy skin, clear even complexion, no blemishes');
 
   document.getElementById('subject').value = 和文.join('') + ' ' + 英文.join(', ');
 
@@ -623,7 +731,8 @@ const NEG_SKETCH = "photo, photorealistic, 3d render, harsh digital lines, ugly,
    Imagen APIが受け付けるアスペクト比は 1:1 / 3:4 / 4:3 / 9:16 / 16:9 のみ。
    note見出し(1.91:1)は非対応のため、最も近い 16:9 で生成する
    （必要なら生成後に上下をわずかにトリミングすれば1.91:1になる）。 */
-const API_ASPECT = { "9:16":"9:16", "16:9":"16:9", "1:1":"1:1", "note_header":"16:9" };
+/* ★2026-09-20 埋火：★"4:5" を足した（★城主の裁定 K-09201701【B】）。★向こう側がそのまま受け付ける値である */
+const API_ASPECT = { "9:16":"9:16", "16:9":"16:9", "1:1":"1:1", "4:5":"4:5", "note_header":"16:9" };
 
 /* ═════ v3.2（理子・舷門 8代目「甍（いらか）」／2026-08-22）：城主のご要望「縦長（1080×1920）に対応」 ═════
    出所＝奏（信号所・6代目「旋」）が城主のお言葉をそのまま届けてくださった便（2026-08-22 17時台）。
@@ -682,6 +791,7 @@ function updateSizeGuide(){
    🔴 ★v2.5 でこちらが凝った作りにして、★JSごと止めてしまった（★城主：何も選択できない）。
       ★v2.6 は退避した v2.4 から作り直し、★変更は「呼び先」と「受け取り」だけに絞ってある。 */
 var GEN_MODEL = "gemini-3.1-flash-image";
+/* ★2026-09-20 埋火：★控えには lite を入れない（★1K しか出せないので、★落ちた先で画質が黙って下がる） */
 var GEN_FALLBACKS = ["gemini-3.1-flash-image","gemini-2.5-flash-image","gemini-3-pro-image"];
 function currentAspect(){
   return use==='photo'
@@ -795,6 +905,93 @@ function thumbSideChanged(){
     w.value = '30';
     if (n) { n.innerHTML = '下に置くときは、余白3割のほうが収まりやすいので、そちらにしました。変えられます。'; }
   }
+  /* ★2026-09-20（濾）：B-5 ―― こちらで余白を寄せたときも、字数との突き合わせを出し直す */
+  if (typeof thumbFit === 'function') { thumbFit(); }
+}
+
+/* ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-2 どこに出すサムネかで、比率を合わせる
+   ★出どころ … P-036（note の見出し画像は 1.91:1。★16:9 の道具で作ると上下が切られる）。
+   ★比率そのものは1つも増やしていない。★既存の4つに、出し先の名前から辿り着けるようにしただけ。
+   🔴 ★選ばれたときだけ動かす。★「この単語から…」を押したときには変えない（★選択を奪わない）。 */
+var THUMB_DEST = {
+  none   : { aspect:'',            label:'' },
+  youtube: { aspect:'16:9',        label:'YouTube のサムネ' },
+  note   : { aspect:'note_header', label:'note の見出し' },
+  shorts : { aspect:'9:16',        label:'Shorts・Reels・TikTok' },
+  insta  : { aspect:'1:1',         label:'Instagram の通常投稿' }
+};
+
+function thumbDestChanged(){
+  var d  = document.getElementById('thumbDest');
+  var ap = document.getElementById('aspectPhoto');
+  var n  = document.getElementById('thumbNote');
+  if (!d || !ap) { return; }
+  var t = THUMB_DEST[d.value];
+  /* ★安全弁：B-5（余白と字数の突き合わせ）が無くても、ここは動く */
+  if (!t || !t.aspect) { if (typeof thumbFit === 'function') { thumbFit(); } return; }
+
+  /* ★水彩スケッチモードのときは、比率の欄が別にある。★黙って実写側を動かさない */
+  if (typeof use !== 'undefined' && use !== 'photo') {
+    if (n) { n.innerHTML = 'いまは水彩スケッチモードです。比率は「note見出しの設定」の欄で選んでください。実写モードに切り替えると、ここから合わせられます。'; }
+    if (typeof thumbFit === 'function') { thumbFit(); }
+    return;
+  }
+
+  if (ap.value !== t.aspect) {
+    ap.value = t.aspect;
+    if (typeof compile === 'function') { compile(); }   /* ★下の「この比率の数字」も一緒に追いつく */
+    if (n) { n.innerHTML = t.label + 'に合わせて、比率を「' + ap.options[ap.selectedIndex].text + '」にしました。ここから変えられます。'; }
+  }
+  if (typeof thumbFit === 'function') { thumbFit(); }
+}
+
+/* ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-5 押す前に、余白と字数が合っているかを静かに出す
+   ★根拠にしている数字は、ぜんぶ信号所（奏）の実測である ―― 余白3割なら1段4文字ほど／
+     4割なら5〜6文字／6割なら8〜9文字。★この数字は、既に下の thumbBuild が使っている。
+   🔴 ★P-004 深化①「文字数は少なく」に、字数の上限は書かれていない（★庫が自分でそう断っている）。
+      ★だからこちらでも上限を決めない。★「余白に入るか」だけを見る。★入らなくても止めない。
+   ★叱らない。★合わないときは、逃げ道を並べて城主に選んでいただく（★理子庫 U-001）。 */
+function thumbFit(){
+  try{
+    var box = document.getElementById('thumbFitBox');
+    var ta  = document.getElementById('thumbText');
+    var cnt = document.getElementById('thumbTextCount');
+    if (!box || !ta) { return; }
+
+    var 行 = String(ta.value || '').split(/\r\n|\r|\n/);
+    var 段数 = 0, 最長 = 0, 総字数 = 0, i, s;
+    for (i = 0; i < 行.length; i++) {
+      s = 行[i].replace(/^[\s　]+/, '').replace(/[\s　]+$/, '');
+      if (s === '') { continue; }
+      段数++;
+      総字数 += s.length;
+      if (s.length > 最長) { 最長 = s.length; }
+    }
+
+    if (cnt) { cnt.textContent = 総字数 ? (総字数 + '字／' + 段数 + '段・長い段で' + 最長 + '字') : ''; }
+    if (!総字数) { box.className = 'hidden mt-2 rounded-lg p-2 text-[10px] leading-relaxed border'; box.innerHTML = ''; return; }
+
+    var wEl = document.getElementById('thumbWidth');
+    var w   = wEl ? wEl.value : '40';
+    var 入る   = { '30':4, '40':6, '60':9 };
+    var 言い方 = { '30':'4文字ほど', '40':'5〜6文字', '60':'8〜9文字' };
+    var 上限 = 入る[w] || 6;
+
+    var 出す = ['いまの余白は' + (Number(w) / 10) + '割。1段に入るのは' + (言い方[w] || 'ー')
+              + 'です（信号所の実測）。いちばん長い段は <b>' + 最長 + '字</b> です。'];
+
+    if (最長 > 上限) {
+      var 逃げ道 = (w === '60')
+        ? '①言葉を短くする ②改行して段を分ける（いま余白はいちばん広い6割です）'
+        : '①言葉を短くする ②改行して段を分ける ③余白を6割（文言が主役・勝負回）にする';
+      出す.push('🔴 <b>この段は、余白に入りきらないかもしれません。</b>逃げ道は ―― ' + 逃げ道 + '。');
+      box.className = 'mt-2 rounded-lg p-2 text-[10px] leading-relaxed border bg-amber-500/10 border-amber-500/30 text-amber-300';
+    } else {
+      出す.push('✅ この余白に収まります。');
+      box.className = 'mt-2 rounded-lg p-2 text-[10px] leading-relaxed border bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+    }
+    box.innerHTML = 出す.join('<br>');
+  }catch(e){ /* ★既存の表示は絶対に壊さない */ }
 }
 
 function thumbBuild(){
@@ -806,6 +1003,24 @@ function thumbBuild(){
     none : { ja:'', en:'' }
   };
   var PEOPLE = { one:'日本人の人物が1人', two:'日本人の人物が2人', none:'人物は写さない', asis:'' };
+  /* ★2026-09-20（機関室・35代目「埋火」）：★年齢（★城主のご指示）
+     🔴 ★15・18 は未成年。★年齢と healthy 以外は入れない。★肌は「荒れていない」側へ寄せる語だけ足す */
+  var AGE = {
+    none: { ja:'',           en:'' },
+    '15': { ja:'15歳くらい', en:'15 year old, young teenager, healthy clear skin' },
+    '18': { ja:'18歳くらい', en:'18 year old, youthful, healthy clear skin' },
+    '20': { ja:'20代',       en:'in their twenties' },
+    '30': { ja:'30代',       en:'in their thirties' },
+    '40': { ja:'40代',       en:'in their forties' }
+  };
+  /* ★2026-09-20（理子・舷門 14代目「濾」）：B-4 表情（★煽る側の顔は置いていない。★P-004 が先） */
+  var FACE = {
+    none    : { ja:'',                       en:'' },
+    calm    : { ja:'おだやかな笑顔。',         en:'calm gentle smile, relaxed natural expression' },
+    straight: { ja:'まっすぐこちらを見ている。', en:'looking straight at the camera, calm steady gaze' },
+    think   : { ja:'考えこんでいる表情。',      en:'thoughtful expression, eyes cast slightly downward' },
+    tired   : { ja:'疲れた表情。',             en:'tired weary expression, subdued mood' }
+  };
 
   var noteEl = document.getElementById('thumbNote');
   var raw = document.getElementById('thumbWords').value;
@@ -830,15 +1045,27 @@ function thumbBuild(){
   var light = LIGHT[lightKey] || LIGHT.none;
   var pplKey = document.getElementById('thumbPeople').value;
   var ppl   = PEOPLE[pplKey];
+  /* ★2026-09-20 埋火：★年齢（★人を入れるときだけ効く） */
+  var ageKey = (document.getElementById('thumbAge') || {}).value || 'none';
+  var age    = AGE[ageKey] || AGE.none;
+  if (pplKey === 'none') { age = AGE.none; }
+  if (age.ja && ppl) { ppl = age.ja + 'の' + ppl; }
+  /* ★2026-09-20（濾）：B-4 ―― 人を入れないと決めているときは、表情を足さない（★当てる先が無い） */
+  var faceKey = (document.getElementById('thumbFace') || {}).value || 'none';
+  var face    = FACE[faceKey] || FACE.none;
+  var 表情を足す = (pplKey !== 'none') && (face.ja !== '');
 
   var ja = list.join('、');
   if (ppl) { ja += '。' + ppl; }
   ja += '。';
+  if (表情を足す) { ja += face.ja; }
   if (side.ja)  { ja += side.ja; }
   if (light.ja) { ja += light.ja; }
   ja += '余白には文字・ロゴ・小物を置かない。';
 
   var en = [];
+  if (age.en)   { en.push(age.en); }     /* ★2026-09-20（埋火）：★年齢（★城主のご指示） */
+  if (表情を足す) { en.push(face.en); }   /* ★2026-09-20（濾）：B-4 表情 */
   if (side.en)  { en.push(side.en); }
   if (light.en) { en.push(light.en); }
   en.push('simple uncluttered composition');
@@ -866,11 +1093,24 @@ function thumbBuild(){
     msg.push('人を入れない指定なので、下の「避けたいもの」に人物を消す語を足し、肌の質感の指示も外しました。');
   }
   var ap = document.getElementById('aspectPhoto');
-  if (ap && ap.value !== '16:9') {
+  /* ★2026-09-20（理子・舷門 14代目「濾」）：B-2 で出し先を選んでおられるときは、比率はそれに合わせてある。
+     ★そこまで「16:9 が合います」と言うと、★こちらで合わせた値を、こちらで否定することになる。
+     ★下の行は1文字も変えていない。★「出し先を選んでいないとき」という条件を足しただけ。 */
+  var destKey = (document.getElementById('thumbDest') || {}).value || 'none';
+  if (ap && destKey === 'none' && ap.value !== '16:9') {
     msg.push('★いまの比率は「' + ap.options[ap.selectedIndex].text + '」です。サムネなら 16:9 が合います（★こちらでは変えていません）。');
+  }
+  /* ★2026-09-20（理子・舷門 14代目「濾」）：B-4 ―― 表情について、押したときに1行 返す */
+  if (表情を足す) {
+    var 表情の名 = document.getElementById('thumbFace');
+    msg.push('表情は「' + 表情の名.options[表情の名.selectedIndex].text + '」で組み立てました。サムネに置く言葉と向きを揃えると効きます（奏庫 P-004 の深化）。');
+  } else if (faceKey !== 'none' && pplKey === 'none') {
+    msg.push('表情を選んでいただいていますが、「人は入れない」になっているので、表情は足していません。');
   }
   msg.push('ここから手でいくらでも直せます。');
   noteEl.innerHTML = msg.join('<br>');
+  /* ★2026-09-20（濾）：B-5 ―― 押したときにも、余白と字数の突き合わせを出し直す */
+  if (typeof thumbFit === 'function') { thumbFit(); }
 }
 
 /* ───── 結合エンジン ───── */
@@ -905,7 +1145,8 @@ function compile(){
        ★既存の3項（NEG_BASE / NEG_FACE / NEG_NOPEOPLE）は1文字も変えていない。★足しただけである。
        ★人を入れないと書かれているときは足さない（★「顔が引きになる」話は、人がいる絵の話だから） */
     const oL=document.getElementById('opt-lipsync');
-    neg = NEG_BASE + ((oF && !noPpl) ? ", "+NEG_FACE : "") + (noPpl ? ", "+NEG_NOPEOPLE : "") + ((oL && oL.checked && !noPpl) ? ", "+NEG_LIPSYNC : "");
+    /* ★2026-09-20 埋火：★人を入れるときは、肌荒れの語も避けたい側へ回す（★城主のご指摘） */
+    neg = NEG_BASE + ((oF && !noPpl) ? ", "+NEG_FACE : "") + (noPpl ? ", "+NEG_NOPEOPLE : ", "+NEG_SKIN) + ((oL && oL.checked && !noPpl) ? ", "+NEG_LIPSYNC : "");
     // 事前エスコート：note見出し選択時のみヒント表示（叱らない）
     const ph=document.getElementById('photoHeaderHint');
     if(ph) ph.classList.toggle('hidden', aspect!=='note_header');
@@ -1087,7 +1328,8 @@ async function generate(){
     }catch(e){ lastErr=e.message; if(authErr) break; if(i<4) await new Promise(r=>setTimeout(r,delays[i])); }
   }
   if(ok && useNeg && negText) negSupported = true; // 【ゼロ・v2.4】送って通った＝対応していると確定
-  loading.classList.add('hidden'); genBtn.disabled=false; genBtn.classList.remove('opacity-50'); genBtn.textContent="⚡ Imagen 4 で画像を生成"; generating=false;
+  /* ★2026-09-20（理子・舷門 14代目「濾」）：A-1 ―― 押したあとに戻す名前も、ボタン本体と揃えた */
+  loading.classList.add('hidden'); genBtn.disabled=false; genBtn.classList.remove('opacity-50'); genBtn.textContent="⚡ この設定で画像を生成"; generating=false;
   if(ok){
     /* 【理子・v2.3】見せ方（文言・フラット化・逃げ道の提示）はそのまま。
        【ゼロ・v2.4】判定だけ negDropped → useNeg に変更。
@@ -1267,6 +1509,17 @@ setUse('photo'); setMode('A'); compile();
     if(!sz || !md || !el){ return; }
     var s = sz.value, m = md.value, out = [];
     out.push('\u23F1 この組み合わせだと、生成の目安は <b>' + (SEC[s] || 'ー') + '</b> です（おおよそ）。');
+    /* ★2026-09-20（理子・舷門 14代目「濾」）：★高品質モデルは 512px を出せない（★機関室〔35代目「埋火」〕の便）。
+       ★いまは選べてしまう。★選択肢は奪わず、押す前に1行だけ出す（★叱らない・事前エスコート／U-001）。 */
+    /* ★2026-09-20（35代目「埋火」）：★試し撃ちのモデルは 1K しか出せない（★城主の裁定 K-09201702【A】で足した）
+         ★選択肢は奪わない。★押す前に1行だけ出す（★理子さん〔舷門・14代目「濾」〕の型に揃えた） */
+    if(m === 'gemini-3.1-flash-lite-image' && s !== '1K'){
+      out.push('🔴 <b>試し撃ちのモデルは、1K しか出せません。</b>いまの指定（' + s + '）は届かず、1K で返ってきます。'
+             + '構図だけ見るならこのままで結構です。仕上げるときは「標準」か「高品質」に戻してください。');
+    }
+    if(m === 'gemini-3-pro-image' && s === '512px'){
+      out.push('🔴 <b>高品質モデルは、512px を出せません。</b>試し撃ちで軽くしたいときは、モデルを「標準」に戻してください。');
+    }
     if(m === 'gemini-2.5-flash-image' && (s === '2K' || s === '4K')){
       out.push('\uD83D\uDD34 <b>旧版は 2K・4K に対応していません。</b>1K で返ってくることがあります。');
     }
@@ -1353,6 +1606,52 @@ setUse('photo'); setMode('A'); compile();
   var img = document.getElementById('result');
   if(!dl || !img || !dl.parentNode){ return; }
 
+  /* ★2026-09-21（理子・舷門 14代目「濾（ろ）」）：落ちてくる絵を、札と同じ 1280 × 670 に揃える
+     ★出どころ … 機関室〔35代目「埋火（うずみび）」〕の便（2026-09-21）。
+        ★城主が note のマガジンを6つ作られる（★判断室 K-09211430【B】）。表紙は 1280 × 670。
+
+     🔴 ★これまで … 16:9 で受け取った絵の【元の幅のまま】上下だけ切っていた。
+        ★1K で作ると 1344 × 768 → 切って 1344 × 704 が落ちていた。
+        ★比は 1.910 と 1.909 でほぼ同じなので絵は崩れない。★note 側でも縮んで収まる。
+        🔴 ★だが、すぐ上のサイズ表（SIZE_GUIDE）は「1280 × 670」と言っている。
+           ★城主が 1280 × 670 と伺って 1344 × 704 が落ちてくれば、★そこで一度 手が止まる。
+           ★札と中身がずれているだけで、★城主の時間は実際に止まる。
+
+     ✅ ★これから … 切ったあと 1280 × 670 へ縮めてから落とす。
+     🔴 ★ただし引き伸ばしはしない … 512px で作られると、切っても 512 × 268 にしかならない。
+        ★そこから 1280 × 670 へ広げるのは、★無い画素を作ることであって、★絵はぼやける。
+        ★だから小さいときは切ったままの大きさで落とし、★何をしたかを画面に1行 出す。
+        ★黙って水増しするのは素通しであり、★黙って小さいまま返すのも同じである（★14代の役目）。 */
+  var 出W = 1280, 出H = 670;
+  var 板 = null;
+
+  /* ★何をしたかを、その場で1行 返す（★縮めたときも、縮めなかったときも、黙らない） */
+  function 報せる(W, H, th, dW, dH, 縮めた){
+    try{
+      if(!板){
+        var msg = document.getElementById('msg');
+        if(!msg || !msg.parentNode){ return; }
+        板 = document.createElement('div');
+        板.id = 'noteCutNote';
+        板.className = 'mt-3 rounded-xl p-3 text-[11px] leading-relaxed border border-sky-500/30 bg-sky-500/5 text-sky-200';
+        msg.parentNode.insertBefore(板, msg.nextSibling);
+      }
+      var 頭 = '💾 <b>note_header_' + dW + 'x' + dH + '.png</b> を保存しました。';
+      if(縮めた){
+        板.innerHTML = 頭
+          + '<br>元の絵 ' + W + ' × ' + H + ' の上下を中央で切って ' + W + ' × ' + th + ' にし、'
+          + 'note の見出しの大きさ <b>' + dW + ' × ' + dH + '</b> まで縮めています。';
+      } else {
+        板.innerHTML = 頭
+          + '<br>🔴 <b>note の見出しの大きさ（' + 出W + ' × ' + 出H + '）には足りていません。</b>'
+          + '元の絵が ' + W + ' × ' + H + ' と小さいためです。'
+          + '<br>引き伸ばすと絵がぼやけるので、切ったままの大きさで保存しました。'
+          + 'このままでも note へは上げられます（note 側で引き伸ばされます）。'
+          + '<br>くっきりさせたいときは、上の「大きさ」を <b>1K 以上</b>にして、もう一度 作ってください。';
+      }
+    }catch(e){ /* ★報せに失敗しても、保存そのものは終わっている。★止めない */ }
+  }
+
   function cut(){
     if(!img.src){ return; }
     var im = new Image();
@@ -1363,13 +1662,34 @@ setUse('photo'); setMode('A'); compile();
       var th = Math.round(W / 1.91);
       if(th > H){ th = H; }                 /* 安全弁：元より高くは切らない */
       var sy = Math.round((H - th) / 2);    /* 中央から切る */
+
+      /* ★切った絵が 1280 × 670 より大きいときだけ縮める。★小さいときは触らない */
+      var 縮める = (W >= 出W && th >= 出H);
+      var dW = 縮める ? 出W : W;
+      var dH = 縮める ? 出H : th;
+
+      /* ★大きく縮めるときは、いきなり縮めるとギザギザが出る（★4K は 3倍 縮む）。
+         ★半分ずつ落としてから、最後に 1280 × 670 へ合わせる */
+      var 元 = im, ox = 0, oy = sy, ow = W, oh = th;
+      while(縮める && ow >= dW * 2 && oh >= dH * 2){
+        var t = document.createElement('canvas');
+        t.width = Math.round(ow / 2); t.height = Math.round(oh / 2);
+        var tc = t.getContext('2d');
+        if('imageSmoothingQuality' in tc){ tc.imageSmoothingQuality = 'high'; }
+        tc.drawImage(元, ox, oy, ow, oh, 0, 0, t.width, t.height);
+        元 = t; ox = 0; oy = 0; ow = t.width; oh = t.height;
+      }
+
       var cv = document.createElement('canvas');
-      cv.width = W; cv.height = th;
-      cv.getContext('2d').drawImage(im, 0, sy, W, th, 0, 0, W, th);
+      cv.width = dW; cv.height = dH;
+      var ctx = cv.getContext('2d');
+      if('imageSmoothingQuality' in ctx){ ctx.imageSmoothingQuality = 'high'; }
+      ctx.drawImage(元, ox, oy, ow, oh, 0, 0, dW, dH);
       var a = document.createElement('a');
-      a.download = 'note_header_' + W + 'x' + th + '.png';
+      a.download = 'note_header_' + dW + 'x' + dH + '.png';
       a.href = cv.toDataURL('image/png');
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      報せる(W, H, th, dW, dH, 縮める);
     };
     im.src = img.src;
   }
@@ -1377,7 +1697,7 @@ setUse('photo'); setMode('A'); compile();
   var b = document.createElement('button');
   b.id = 'dlNote';
   b.className = dl.className.replace('right-3', 'right-16');
-  b.title = 'note見出し用に、上下を中央から切って 1.91:1 で保存します';
+  b.title = 'note見出し用に、上下を中央から切って 1280 × 670 で保存します（元の絵が小さいときは、引き伸ばさず切ったままの大きさで保存します）';
   b.style.fontSize = '11px';
   b.style.fontWeight = '700';
   b.style.padding = '6px 10px';
@@ -1423,6 +1743,85 @@ function jaErr(raw){
   }
   return '少し待って、もう一度お試しください。それでも通らなければ、道A（コピペ）が使えます。';
 }
+
+/* ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：返ってきた絵の【実寸】を、頼んだ値と並べて出す
+   ★出どころ … 機関室〔35代目「埋火（うずみび）」〕の便（2026-09-20 16:25）の案A。
+
+   🔴 ★なぜ要るか … いまの送り方（generationConfig.imageConfig）で 2K・4K・比率が
+      ★向こう側に届いているかどうかが、誰にも分からない。★無視されていてもエラーは出ない。
+      ★画面だけが「2K」「9:16」と言い続ける。★この船が何度も踏んできた形の壊れ方である。
+
+   ✅ ★直す前に、まず測る。★城主が1回 生成されれば、その場で答えが出る。
+   ★既存の generate() には1文字も触っていない。★<img id="result"> が読めたのを見るだけ。
+   ★外すときは、この囲みを丸ごと消せば元に戻る。 */
+(function(){
+  'use strict';
+  /* ★長辺の目安（★機関室の便より。★短辺ではなく長辺で見る） */
+  var 目安 = { '512px':512, '1K':1024, '2K':2048, '4K':4096 };
+  /* ★選んだ比率の、長辺÷短辺（★note見出しは 16:9 で作るので 16:9 と同じ値） */
+  var 比の目安 = { '9:16':16/9, '16:9':16/9, '1:1':1, 'note_header':16/9 };
+
+  var img = document.getElementById('result');
+  var msg = document.getElementById('msg');
+  if(!img || !msg || !msg.parentNode){ return; }              /* ★安全弁 */
+  if(document.getElementById('forge-realsize')){ return; }     /* ★冪等：二重に作らない */
+
+  var box = document.createElement('div');
+  box.id = 'forge-realsize';
+  box.className = 'hidden mt-3 rounded-xl p-3 text-[11px] leading-relaxed border';
+  msg.parentNode.insertBefore(box, msg.nextSibling);
+
+  function 伝える(){
+    try{
+      var w = img.naturalWidth || 0, h = img.naturalHeight || 0;
+      if(!w || !h){ box.classList.add('hidden'); return; }
+
+      var 長辺 = (w > h) ? w : h;
+      var 短辺 = (w > h) ? h : w;
+      var szEl = document.getElementById('imgSize');
+      var 頼んだ大きさ = szEl ? szEl.value : '';
+      var 頼んだ比率   = (typeof currentAspect === 'function') ? currentAspect() : '';
+      var 出す = ['📏 いま出ている絵の実寸は <b>' + w + ' × ' + h + '</b> です（長いほうが ' + 長辺 + '）。'];
+      var 届いていない = false;
+
+      var 目安値 = 目安[頼んだ大きさ] || 0;
+      if(目安値){
+        if(長辺 >= 目安値 * 0.9){
+          出す.push('選ばれた <b>' + 頼んだ大きさ + '</b> は、そのとおり返ってきています。');
+        }else{
+          届いていない = true;
+          出す.push('🔴 選ばれたのは <b>' + 頼んだ大きさ + '</b>（長いほうが ' + 目安値 + 'ほど）ですが、'
+                  + '返ってきたのは ' + 長辺 + ' でした。<b>大きさの指定が、向こう側に届いていない可能性があります。</b>');
+        }
+      }
+
+      var 比の目安値 = 比の目安[頼んだ比率] || 0;
+      if(比の目安値 && 短辺){
+        var 実比 = 長辺 / 短辺;
+        var ずれ = Math.abs(実比 - 比の目安値) / 比の目安値;
+        if(ずれ > 0.05){
+          届いていない = true;
+          出す.push('🔴 比率も、選ばれた形と違います（返ってきた形は およそ <b>' + (Math.round(実比*100)/100) + ' : 1</b>）。');
+        }
+      }
+
+      if(届いていない){
+        出す.push('💡 このままでも絵は使えます。<b>画面の数字より、この実寸のほうが本当です。</b>'
+                + '大きさが要るときは、いったん保存してから引き伸ばすか、機関室（ゼロ）へ「実寸が届いていない」とお伝えください。');
+        box.className = 'mt-3 rounded-xl p-3 text-[11px] leading-relaxed border bg-amber-500/10 border-amber-500/30 text-amber-300';
+      }else{
+        box.className = 'mt-3 rounded-xl p-3 text-[11px] leading-relaxed border bg-emerald-500/10 border-emerald-500/30 text-emerald-300';
+      }
+      box.innerHTML = 出す.join('<br>');
+      box.classList.remove('hidden');
+    }catch(e){ /* ★既存の表示は絶対に壊さない */ }
+  }
+
+  img.addEventListener('load', 伝える);
+  /* ★既に絵が出ている状態で読み込まれたときも、1回だけ出す */
+  if(img.complete && img.getAttribute('src')){ 伝える(); }
+})();
+
 (function(){})();
 </script>
 </body>
