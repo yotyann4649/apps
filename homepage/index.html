@@ -538,7 +538,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <div class="wl-seal">鑑</div>
     <div class="wl-eyebrow">Priority List</div>
     <h2 class="wl-title">先行登録 ―― リリースを、<br>いちばん先にお知らせします。</h2>
-    <p class="wl-body">三星鑑は、一人ひとりに丁寧に向き合うため、いまは少人数で準備を進めています。先行登録された方には、リリース時の<strong>優先案内</strong>・<strong>先行特典</strong>、そして登録者向けの<strong>無料の分析コンテンツ</strong>を、順次お届けします。</p>
+    <p class="wl-body">三星鑑は、一人ひとりに丁寧に向き合うため、いまは少人数で準備を進めています。先行登録された方には、リリース時の<strong>優先案内</strong>と<strong>先行特典</strong>を、いちばん先にお届けします。</p>
 
     <!-- 先着30名 先行登録特典エリア（退職後の点火でアクティブになる。既定は準備中） -->
     <div id="senchaku-area" style="max-width:520px;margin:0 auto 30px">
@@ -561,11 +561,8 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
          設計：理子（舷門・初代「楯」）／実装：5代目ゼロ「礎」・2026-08-11
          ★上の senchaku-area（第2層・先着30名）には指一本触れていない。追加であって改修ではない。 -->
     <div id="notify-area" style="max-width:520px;margin:0 auto 30px;padding-top:26px;border-top:1px solid #3a3226">
-      <p style="color:#cdc2ac;font-size:14.5px;line-height:2;margin-bottom:10px">
-        三星鑑の統合レポートは、<strong style="color:var(--paper)">2031年4月の販売開始</strong>を予定しています。準備が整いましたら、ご登録いただいた方へ最初にお知らせします。
-      </p>
       <p style="color:#cdc2ac;font-size:14.5px;line-height:2;margin-bottom:22px">
-        お待ちいただく間も、<strong style="color:var(--paper)">登録者向けの無料の分析コンテンツ</strong>を順次お届けします。
+        三星鑑の統合レポートは、いま販売に向けて準備を進めています。販売を始める<strong style="color:var(--paper)">時期が決まりましたら</strong>、ご登録いただいた方へ最初にお知らせします。
       </p>
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="btn btn-gold">お知らせを受け取る（無料）</a>
       <p style="color:#8e8270;font-size:12.5px;line-height:1.9;margin-top:16px">
@@ -743,6 +740,17 @@ const TRINITY_CHECKOUT = {
 <!-- LP(homepage)アクセスカウント（GAS無料枠／個人情報なし／失敗しても本体は止まらない）-->
 <script>
 (function(){
+    // 🔴🔴 ★2026-09-25（ゼロ／機関室・35代目「埋火」）―― ★城主ご自身の訪問を数えない
+    //   ★2026-09-24 に同じものを【上げ場】へ入れたが、★★正本へ入れ忘れていた。
+    //   ★見つけたのは理子さん〔舷門・14代目「濾」〕（2026-09-25）。
+    //   🔴 ★正本は【上げ場の親】である。★ここに無いと、★次に写した瞬間に城主除外が消える。
+    //   ★使い方：URL の末尾に ?me=1 を付けて1度 開く → その端末は以後ずっと数えない
+    //   ★取り消し：?me=0 を付けて開く ／ ★4枚とも同じ置き場なので、1枚で開けば4枚とも効く
+    try{
+      if (/[?&]me=1(&|$)/i.test(location.search)) { localStorage.setItem("trinity_owner","1"); }
+      if (/[?&]me=0(&|$)/i.test(location.search)) { localStorage.removeItem("trinity_owner"); }
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // ★城主の端末。1件も数えない
+    }catch(e){}
   try{
     var u = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec?p=homepage";
     new Image().src = u + "&t=" + Date.now();
@@ -755,6 +763,31 @@ const TRINITY_CHECKOUT = {
     if(!localStorage.getItem(key)){
       localStorage.setItem(key, "1");
       new Image().src = base + "?p=homepage_uu&t=" + Date.now();
+
+      // ★★2026-09-06 追加：LPへ来た人が【どこから来たか】を数え分ける
+      //   ★依頼：理子〔舷門・14代目「濾」〕／★城主のご判断：A（入れる）
+      //   ★なぜ要るか … 実測で homepage(14) が free_uu(4) を上回っている。
+      //     ★だが LP に計器が0本なので「note から来たのか、外から来たのか」が分からない。
+      //     → 朔の提案（中盤の行き先を揃える）が、当たったか外れたかを後から確かめられない。
+      //
+      //   🔴 ★★列の名前は【LP用に分けてある】（★free_uu_* とは別）
+      //     ★理由：同じ列に入れると a（note→無料診断の遷移率）の定義が壊れる。
+      //            無料診断の紙 L739-740「★中盤のLP宛には付けない＝朔の決定」。
+      //            ★受ける側（この計器）と、送る側（リンクに ?src= を付けるか）は別の話。
+      //            ★付けなければ 0 のまま。★将来 付けたくなったとき、測れる形にしておく。
+      //
+      //   🔴 ★★この if の【中】であることが要である
+      //     ★円〔積荷室・2代目「錘」〕M-028 深化「分母を絞るときは、分子と同じ範囲に絞る」。
+      //     ★if の外（PV側）に置くと、1人が何度も数えられて homepage_uu と単位が揃わない。
+      //
+      //   ★上の3行は1文字も変えていない（Z-005）。保存キーも無料診断とは別のままである。
+      var ref = document.referrer || "";
+      if (/^https?:\/\/([a-z0-9-]+\.)?note\.com/i.test(ref)) {
+        new Image().src = base + "?p=homepage_uu_noteref&t=" + Date.now();
+      }
+      if (/[?&]src=/i.test(location.search)) {
+        new Image().src = base + "?p=homepage_uu_src&t=" + Date.now();
+      }
     }
   }catch(e){}
 })();
