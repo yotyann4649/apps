@@ -257,7 +257,13 @@ if(APPS.length === 0){
   grid.innerHTML = '<div class="empty">まだアプリがありません。</div>';
 }else{
   grid.innerHTML = APPS.map(function(a){
-    return '<a class="app" href="'+a.url+'">'+
+    /* 🔴🔴 ★2026-09-27（ゼロ／機関室・36代目「岩盤」）―― ★★リンクが1階層 深い所を指していた
+       ★この画面は /apps/tools/ に在り、★アプリの実体は /apps/shisan/ などに在る。
+       ★href="shisan/" と書くと /apps/tools/shisan/ になり、★★全部 404 になっていた。
+       ★城主のご報告（2026-09-27）「工房内のアプリを開こうとするとエラーが出た」の原因である。
+       ✅ ★外のサイトでなければ '../' を前に付ける（★リポジトリ名に頼らない形）。 */
+    var 行き先 = /^(https?:)?\/\//.test(a.url) ? a.url : '../' + a.url;
+    return '<a class="app" href="'+行き先+'">'+
       '<span class="accent" style="background:'+a.color+'"></span>'+
       '<span class="cat">'+a.cat+'</span>'+
       '<div class="name">'+a.name+'</div>'+
