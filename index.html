@@ -324,6 +324,30 @@ if(APPS.length === 0){
     if(!localStorage.getItem(key)){                                    // ② 重複除外（1ブラウザ1日1回）
       localStorage.setItem(key, "1");
       new Image().src = base + "?p=genkan_uu&t=" + Date.now();
+
+      /* ══════════════════════════════════════════════════════════════════
+         ★2026-10-02（ゼロ／機関室・36代目「岩盤」）―― ★城主の裁定「③で進めて良いよ」
+         ★なぜ要るか …… ★note の記事 57本のうち【30本】が、この玄関へ送っている（★理子さんの実測）。
+            ★ところが玄関は、★訪問数は数えていたが【来た道を1つも数えていなかった】。
+            ★★だから「どの記事が人を運んだか」が、玄関については永久に分からなかった。
+         ★この if の【中】に置くことが要 ―― ★外（PV側）に置くと1人が何度も数えられ、
+            ★genkan_uu と単位が揃わなくなる（★無料診断・LP と同じ作法）。
+         ★件数だけ。★個人情報は1つも送らない（DNA-343 / DNA-326）。
+         🔴 ★受け側（GAS）に O列・P列を足してある。★GAS を貼り替えるまでは、この2本は捨てられる
+         ══════════════════════════════════════════════════════════════════ */
+      var ref = document.referrer || "";
+      if (/^https?:\/\/([a-z0-9-]+\.)?note\.com/i.test(ref)) {
+        new Image().src = base + "?p=genkan_uu_noteref&t=" + Date.now();   // O列
+      }
+      if (/[?&]src=note(&|$)/i.test(location.search)) {
+        new Image().src = base + "?p=genkan_uu_note&t=" + Date.now();      // P列
+      }
+      /* ★記事ごとの数 ―― ?a=<記事番号> が付いていたら、別シート『記事ごと』へ1件
+         ★英数字と - _ だけ、16字まで。★それ以外は送らない（★受け側でも同じ検査をしている） */
+      var am = location.search.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
+      if (am) {
+        new Image().src = base + "?p=art&f=genkan&a=" + encodeURIComponent(am[1]) + "&t=" + Date.now();
+      }
     }
   }catch(e){}
 })();
