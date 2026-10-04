@@ -1402,7 +1402,7 @@ function detectPatterns(lons, houses) {
       if (c === a || c === b) continue;
       if (合致(lons[a], lons[c], 150, ORB.quincunx) && 合致(lons[b], lons[c], 150, ORB.quincunx)) {
         const s = 並び([a, b, c]);
-        // ★planets は [セクスタイルの2天体, アペックス] の順（★1992-09-15 の現物で確認）
+        // ★planets は [セクスタイルの2天体, アペックス] の順（★1990-01-01 の現物で確認）
         出.push({ 種: 'yod', key: 'yod_' + s.join('_'), name: 'ヨッド (Yod / 神の指)', planets: [a, b, c], apex: c });
       }
     }
@@ -3236,7 +3236,7 @@ document.addEventListener('keydown', e => {
 //    ★2026-08-28・ゼロ（機関室・23代目「地脈」）
 //
 //  🔴 ★新しい入力欄は1つも足していない。★既存の3欄をそのまま読む
-//       ・生年月日（BIRTH）  … 例「1992-09-15 14:00」（★時刻が無くても計算する）
+//       ・生年月日（BIRTH）  … 例「1990-01-01 14:00」（★時刻が無くても計算する）
 //       ・生まれた場所（BIRTHPLACE）… 例「滋賀県」
 //       ・性別（GENDER）    … 「男性」「女性」
 //  🔴 ★convertSenjutsu() は1文字も変えていない。★同じ形のデータを渡すだけである
@@ -3250,7 +3250,7 @@ function 自動計算する(){
        ★ハイフン区切りだけでなく、★年月日・時分の書き方も読めるようにした。
        ★プルダウンで入れた場合は必ず「YYYY-MM-DD HH:MM」になるが、★手で直す道も残してある。 */
     const m = bd.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})(?:\D+(\d{1,2})\s*[:時]?\s*(\d{1,2})?)?/);
-    if(!m){ showErr('生年月日を入れてください。','例：1992-09-15 14:00（時刻は無くても計算します）'); setTimeout(()=>hide(toastErr),5000); return; }
+    if(!m){ showErr('生年月日を入れてください。','例：1990-01-01 14:00（時刻は無くても計算します）'); setTimeout(()=>hide(toastErr),5000); return; }
     const 日付 = m[1]+'-'+String(m[2]).padStart(2,'0')+'-'+String(m[3]).padStart(2,'0');
     const 時刻 = m[4]!=null ? (String(m[4]).padStart(2,'0')+':'+m[5]) : '';
     const 場所名 = (d.BIRTHPLACE||'').trim();
