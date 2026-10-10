@@ -483,17 +483,9 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
       <p class="refund-b">お届けしたデータが開けない、ご記入いただいた生年月日と異なる内容で作成されている、といった場合は、上記とは別のお取り扱いになります。お届けのメールに、そのままご返信ください。確認のうえ、ご連絡いたします。</p>
     </div>
 
-    <div class="founders reveal">
-      <div class="founders-mark">For Early<br>Supporters</div>
-      <div class="founders-body">
-        <div class="founders-h">はじまりを、一緒に。 ―― 先行登録特典</div>
-        <ul class="founders-list">
-          <li><span class="ic">i</span><span><strong>先行登録価格（先着30名）</strong><br>リリース後、最初の30名さまは全コース30%OFF（初回のご購入に適用）。三星鑑の出発を一緒に見届けてくださる方へのお礼です。</span></li>
-          <li><span class="ic">ii</span><span><strong>モニター価格</strong><br>受け取った感想を「お客様の声」として紹介させていただける方には、お礼としてモニター価格でご提供します。</span></li>
-        </ul>
-        <div class="founders-note">どちらも数に限りがあります。ご案内は先行登録された順にお送りします。</div>
-      </div>
-    </div>
+    <!-- 2026-10-08（理子・舷門 14代目「濾」）：「はじまりを、一緒に。 ―― 先行登録特典」の箱（先着30名・全コース30%OFF／モニター価格）を外した。
+         城主の判断 K-1007210201【A】（名簿の受け皿と同じ日に外す）。起票＝矩〔証書室・11代目「憲」〕。
+         CSS の .founders は残してある。元の箱は 三星鑑_人間分析システム\_退避\20261008_受け皿を入れてLPの先着30名を外す前_理子濾\ にある。 -->
   </div>
 </section>
 
@@ -516,7 +508,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
   <div class="wrap">
     <div class="sec-head reveal"><span class="eyebrow">Before Launch</span><h2 class="sec-title">まだ、実績はありません。</h2></div>
     <div class="wrap" style="max-width:560px;text-align:center;padding:0">
-      <p style="font-size:14.5px;color:var(--ink-2);line-height:2.1">三星鑑はまだリリース前です。正直にお伝えすると、今の時点で「お客様の声」と呼べるものはまだありません。先行登録された方への特典（下記）を通じて、これから一つずつ実績を積んでいきたいと考えています。</p>
+      <p style="font-size:14.5px;color:var(--ink-2);line-height:2.1">三星鑑はまだリリース前です。正直にお伝えすると、今の時点で「お客様の声」と呼べるものはまだありません。これから一つずつ、実績を積んでいきたいと考えています。</p>
     </div>
   </div>
 </section>
@@ -538,13 +530,17 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <div class="wl-seal">鑑</div>
     <div class="wl-eyebrow">Priority List</div>
     <h2 class="wl-title">先行登録 ―― リリースを、<br>いちばん先にお知らせします。</h2>
-    <p class="wl-body">三星鑑は、一人ひとりに丁寧に向き合うため、いまは少人数で準備を進めています。先行登録された方には、リリース時の<strong>優先案内</strong>と<strong>先行特典</strong>を、いちばん先にお届けします。</p>
+    <p class="wl-body">三星鑑は、一人ひとりに丁寧に向き合うため、いまは少人数で準備を進めています。先行登録された方には、販売を始めるときの<strong>お知らせ</strong>を、いちばん先にお届けします。</p>
 
     <!-- 先着30名 先行登録特典エリア（退職後の点火でアクティブになる。既定は準備中） -->
     <div id="senchaku-area" style="max-width:520px;margin:0 auto 30px">
       <!-- (1) 準備中：既定の表示。退職までここが出る -->
       <div id="senchaku-prep">
-        <p style="color:#cdc2ac;font-size:14.5px;line-height:2">先行登録特典（<strong style="color:var(--paper)">先着30名・全コース30%OFF</strong>／初回のご購入に適用）は、リリース準備が整い次第、この場所で受付を開始します。</p>
+        <!-- 2026-10-08（理子・舷門 14代目「濾」）：ここにあった「先行登録特典（先着30名・全コース30%OFF／初回のご購入に適用）は、
+             リリース準備が整い次第、この場所で受付を開始します。」の1段を外した（K-1007210201【A】）。
+             代わりの文は置いていない。すぐ下のフォームの箱が「お申し込み・お支払いはありません」を既に言っているため。
+             🔴 下の (2)(3) の箱と LAUNCH のスイッチ（「先着30名」の文が残っている）は、今は画面に出ないので触っていない。
+                LAUNCH を true にすると、外した約束が画面へ戻る。true にする前に、先着30名を出すかを決め直すこと。 -->
       </div>
       <!-- (2) 受付中：残り人数を自動表示（点火後） -->
       <div id="senchaku-open" style="display:none">
