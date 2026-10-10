@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>三星鑑のトリセツ</title>
+<!--
+  2026-10-07 第2版（結・便りの間 21代目「汲」）
+  城主のお言葉「何だか抽象的で答えになってそうでなっていない。結局何？」を受けて作り直した。
+  第1版（特典_三星鑑のトリセツ.html）は消していない。
+
+  第1版との違い：
+    1つの歩を「問い → 答え2行 → 見る欄 → すること → たとえば → わたしの話（短く）」の順に並べ替えた。
+    「見る欄」は、公開中の無料診断（apps/free）の画面に実際にある欄の名前だけを使っている。
+      ・一番上のカード「あなたの人物分析」の小さな行（◯◯座 ◯度 ／ ライフパス ◯ ／ 日干 ◯）
+      ・「気質タイプ」のカード（型の名前と、3本のメーター）
+      ・下に並ぶ4枚：太陽星座／ライフパスナンバー（本質）／四柱推命・日干／2026年 今年の流れ
+    「たとえば」の2人は作った例。生年月日を診断と同じ計算で出し直し、画面に出る値と合わせてある。
+      ・1990年5月3日 → 牡牛座13度／ライフパス9／日干 戊／サポーター型／メーター 33・73・42／今年 9「完了と手放しの年」
+      ・1988年4月10日 → 牡羊座21度／ライフパス4／日干 乙／クリエイター型／メーター 71・55・61
+  外に出るもの。個人情報は入れていない。お金・販売・時期の話は入れていない。
+  書き込み欄の中身は、このブラウザの中にだけ残す（どこにも送らない）。第1版とは別の保存先にしてある。
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+:root{
+  --paper:#f6efe1;--paper2:#fdfaf3;--panel:#fbf6ea;
+  --ink:#241c12;--ink2:#5d5141;--ink3:#8e7f66;
+  --gold:#9a7b2e;--gold-soft:#cbab74;--line:#e4d9c0;--line2:#efe6d2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Noto Serif JP',serif;font-size:16px;line-height:2;-webkit-font-smoothing:antialiased}
+a{color:var(--gold)}
+.book{max-width:640px;margin:0 auto;padding:0 20px 56px}
+
+/* 表紙 */
+.cover{text-align:center;padding:64px 0 40px;border-bottom:1px solid var(--line)}
+.cover-eyebrow{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.3em;color:var(--gold);margin-bottom:20px}
+.cover-title{font-size:clamp(26px,6vw,34px);font-weight:700;letter-spacing:.06em;line-height:1.5;margin-bottom:14px}
+.cover-sub{font-size:15px;color:var(--ink2);line-height:1.9}
+.cover-note{font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--ink3);margin-top:22px}
+
+/* はじめに・おわりに */
+.prose{padding:40px 0 8px}
+.prose h2{font-size:18px;font-weight:700;letter-spacing:.06em;margin-bottom:18px}
+p{margin-bottom:1.15em}
+
+/* 画面の見取り図 */
+.map{font-family:'Noto Sans JP',sans-serif;font-size:13.5px;line-height:1.85;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 1.2em}
+.map ol{padding-left:1.4em}
+.map li{margin-bottom:4px}
+.map b{color:var(--ink)}
+
+/* 1歩ずつ */
+.step{padding:48px 0 12px;border-top:1px solid var(--line)}
+.step-no{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.24em;color:var(--gold);margin-bottom:10px}
+.step h2{font-size:clamp(19px,4.6vw,22px);font-weight:700;line-height:1.6;letter-spacing:.02em;margin-bottom:18px}
+.answer{border-left:3px solid var(--gold);padding:4px 0 4px 14px;margin:0 0 22px;font-weight:700;line-height:1.9}
+.answer p{margin:0}
+.box{font-family:'Noto Sans JP',sans-serif;font-size:14.5px;line-height:1.85;margin:0 0 14px}
+.box-h{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.12em;color:var(--gold);border:1px solid var(--gold-soft);border-radius:4px;padding:0 7px;margin-bottom:6px}
+.box p{margin-bottom:.5em}
+.do{background:var(--paper2);border:1px solid var(--gold-soft);border-radius:10px;padding:12px 16px}
+.do p{font-weight:500;color:var(--ink)}
+.eg{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+.eg-note{font-size:11.5px;color:var(--ink3)}
+.story{margin-top:24px;padding-top:16px;border-top:1px dashed var(--line);font-size:15px;color:var(--ink2)}
+.story-h{font-family:'Noto Sans JP',sans-serif;font-size:11.5px;letter-spacing:.12em;color:var(--ink3);margin-bottom:6px}
+
+/* 書き込む控え */
+.card{margin:40px 0 8px;background:var(--paper2);border:1px solid var(--gold-soft);border-radius:14px;padding:30px 24px 24px;position:relative}
+.card::before{content:"";position:absolute;inset:7px;border:1px solid var(--line2);border-radius:9px;pointer-events:none}
+.card h2{font-size:18px;font-weight:700;letter-spacing:.06em;text-align:center;margin-bottom:6px}
+.card-lead{font-family:'Noto Sans JP',sans-serif;font-size:12.5px;color:var(--ink3);text-align:center;line-height:1.8;margin-bottom:22px}
+.row{margin-bottom:18px;position:relative}
+.row label{display:block;font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:2px}
+.row small{display:block;font-family:'Noto Sans JP',sans-serif;font-size:11.5px;color:var(--ink3);line-height:1.7;margin-bottom:4px}
+.row input{width:100%;font-family:'Noto Serif JP',serif;font-size:16px;color:var(--ink);background:transparent;border:none;border-bottom:1px solid var(--gold-soft);padding:6px 2px;border-radius:0}
+.row input:focus{outline:none;border-bottom:2px solid var(--gold)}
+.card-foot{font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--ink3);line-height:1.85;margin-top:22px;padding-top:14px;border-top:1px solid var(--line2)}
+.card-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.btn{font-family:'Noto Sans JP',sans-serif;font-size:13.5px;font-weight:700;padding:10px 20px;border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink2);cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--gold-soft);color:var(--gold)}
+
+/* もう少し読みたくなったら */
+.more{padding:36px 0 0}
+.more h2{font-size:16px;font-weight:700;margin-bottom:10px}
+.more p{font-size:14.5px}
+.more ul{list-style:none;font-family:'Noto Sans JP',sans-serif;font-size:13.5px;line-height:1.8}
+.more li{margin-bottom:12px;padding-left:1em;text-indent:-1em}
+.more li::before{content:"→ ";color:var(--gold)}
+
+footer{text-align:center;font-family:'Noto Sans JP',sans-serif;font-size:11px;color:var(--ink3);padding:40px 20px 32px;border-top:1px solid var(--line);margin-top:48px}
+
+/* 印刷すると PDF の冊子になる */
+@page{size:A4;margin:18mm 20mm}
+@media print{
+  body{background:#fff;font-size:11pt;line-height:1.85}
+  .book{max-width:none;padding:0}
+  .cover{padding:60mm 0 0;border:none;page-break-after:always}
+  .step{page-break-before:always;border-top:none;padding-top:0}
+  .card{page-break-before:always;page-break-inside:avoid;background:#fff}
+  .card-btns,.no-print{display:none}
+  .row input{border-bottom:1px solid #999}
+  .do,.eg,.map{background:#fff}
+  a{color:var(--ink);text-decoration:none}
+  .more a::after{content:"（" attr(href) "）";font-size:8.5pt;color:#777;word-break:break-all}
+  footer{border:none}
+}
+</style>
+</head>
+<body>
+<div class="book">
+
+<!-- 表紙 -->
+<section class="cover">
+  <div class="cover-eyebrow">診断のあとに読む</div>
+  <h1 class="cover-title">三星鑑のトリセツ</h1>
+  <p class="cover-sub">結果の画面の、どこを見て、<br>明日なにをするか。7つの問いに答えます</p>
+  <p class="cover-note">読み終わるまで10分ほど</p>
+</section>
+
+<!-- はじめに -->
+<section class="prose">
+  <h2>はじめに</h2>
+  <p>この冊子は、三星鑑の無料診断を受けたあとに読むものです。診断の結果を横に開いたまま読んでください。</p>
+  <p>結果の画面は、上から順にこう並んでいます。この冊子では、この名前で呼びます。</p>
+  <div class="map">
+    <ol>
+      <li><b>あなたの人物分析</b>（一番上のカード。小さな字で「◯◯座 ◯度 ／ ライフパス ◯ ／ 日干 ◯」と出ている行があります）</li>
+      <li><b>気質タイプ</b>（◯◯型という名前と、横に伸びる3本のメーター）</li>
+      <li><b>太陽星座</b>（開くと「強み」と「課題」が出ます）</li>
+      <li><b>ライフパスナンバー（本質）</b></li>
+      <li><b>四柱推命・日干</b></li>
+      <li><b>2026年 今年の流れ</b></li>
+    </ol>
+  </div>
+  <p>3〜6は、名前の行を押すと開きます。</p>
+  <p>結果を見たあと、手が止まるところは、だいたい決まっています。私が実際に止まったところを数えたら、7つありました。1つずつ、先に答えを書き、そのあとに「画面のどこを見るか」と「明日なにをするか」を書いています。</p>
+  <p>途中で出てくる「たとえば」の人は、説明のために作った例です。実在の人ではありません。生年月日だけ決めて、診断と同じ計算で結果を出してあります。</p>
+</section>
+
+<!-- 1つ目 -->
+<section class="step">
+  <div class="step-no">1つ目　／　7つのうち</div>
+  <h2>これは、占いなの？</h2>
+  <div class="answer">
+    <p>計算です。同じ生年月日を入れれば、誰がいつ入れても同じ結果が出ます。</p>
+    <p>当てるためではなく、「直さなくていい所」を見分けるために使ってください。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p>「太陽星座」を開いて、<b>「課題」</b>の1行。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>課題に書かれたくせで、自分を責めた場面を1つだけ思い出す。次に同じ場面が来たら、くせを直そうとせず、先に手を打つ。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人なら、太陽星座は牡牛座で、課題は「変化を嫌い頑固になりやすい」と出ます。この人は、急な予定変更を頼まれると、つい不機嫌な返事をしてしまう。そこで「頑固を直す」のはやめて、「変更の話は、その場で返事をせず、10分後に返す」と決めました。くせはそのままです。返事の出し方だけを変えています。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>私は長いこと、同じ相手に同じところで引っかかるたびに、自分の言い方を直してきました。何度やり直しても、収まらない相手が残りました。生年月日は、こちらが頑張っても動きません。動かないものを直そうとしていた、と分かってから、直すのをやめて、手を打つほうに力を回すようになりました。</p>
+  </div>
+</section>
+
+<!-- 2つ目 -->
+<section class="step">
+  <div class="step-no">2つ目　／　7つのうち</div>
+  <h2>次に受けたら、違う結果が出るんじゃないの？</h2>
+  <div class="answer">
+    <p>出ません。三星鑑は生年月日しか使わないので、1年後に受けても、気質タイプは同じです。</p>
+    <p>だから、自分を測る「動かない物差し」として控えておけます。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p>「気質タイプ」の<b>型の名前</b>と、その下の<b>3本のメーター</b>。それぞれ、色のついたバーがどこまで伸びているか。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>型の名前と、3本のバーの長さを上から順に「短い・半分くらい・長い」で、最後のページの控えに書き写す。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人は「サポーター型」。3本のバーは、上から「短い・長い・半分くらい」です。この人は控えに「サポーター型／短い・長い・半分」と1行で書きました。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>質問に答えるタイプの性格診断を、間をあけて3回やったら、3回とも違う型が出ました。診断が雑だったのではなく、私が毎回、違う気分で答えていただけでした。答えが動く物差しでは、去年と今年の自分を比べられません。</p>
+  </div>
+</section>
+
+<!-- 3つ目 -->
+<section class="step">
+  <div class="step-no">3つ目　／　7つのうち</div>
+  <h2>でも、運勢は変わるんでしょう？</h2>
+  <div class="answer">
+    <p>変わるのは「2026年 今年の流れ」の1枚だけです。ほかの欄は、一生 同じです。</p>
+    <p>今年のテーマは、待つ理由ではなく、今週やる1つに置き換えて使ってください。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p>「2026年 今年の流れ」を開いて、<b>「◯◯の年」</b>という言葉。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>その言葉を、「今週、自分の手でやること」1つに書き直す。日付が入るくらい小さくする。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人の2026年は「完了と手放しの年」。この人はこれを「今週の土曜、押し入れの段ボールを2箱だけ開けて、中身を決める」に書き直しました。「手放しの年だから、そのうち何かが終わるはず」と待つ読み方は、しないことにしています。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>ある年、「いい時期は秋から」と読んで、それまでは準備の期間だと決めました。決めたのではなく、動かなくていい理由を借りてきただけでした。秋が来て、何も起きませんでした。自分が半年 何もしていなかったことは、勘定に入れていませんでした。</p>
+  </div>
+</section>
+
+<!-- 4つ目 -->
+<section class="step">
+  <div class="step-no">4つ目　／　7つのうち</div>
+  <h2>星座の説明が、半分しか当てはまらない</h2>
+  <div class="answer">
+    <p>それで正しいです。星座は、生まれた日の空にある10個の星のうち、太陽1つしか見ていません。</p>
+    <p>だから1枚だけで読まず、3枚を重ねて、重なった所だけを信じてください。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p><b>「太陽星座」「ライフパスナンバー（本質）」「四柱推命・日干」</b>の3枚。1枚ずつ開いて読みます。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>3枚それぞれから「これは当たっている」と思う言葉を1つずつ選ぶ。2枚以上で似た言葉が出ていたら、それを控えに書く。外れていると思った文は、気にしなくていい。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人なら、太陽星座（牡牛座）は「忍耐力・着実さ」、ライフパス9は「より多くの人の幸せを願う」、日干の「戊」は「動じない安定感と包容力」。この人は「忍耐」と「動じない」が重なると見て、控えに「待てる人」と書きました。「人類全体への愛」は、正直ぴんと来なかったので、選んでいません。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>雑誌の12星座を読むたびに、半分は「そうかも」、半分は「違う」で、毎回同じところで少し腹を立てていました。当たらないのではなく、粗いだけでした。都道府県だけを指されて「ここに住んでいますね」と言われているようなものです。合ってはいます。ただ、家の前の道までは分かりません。</p>
+  </div>
+</section>
+
+<!-- 5つ目 -->
+<section class="step">
+  <div class="step-no">5つ目　／　7つのうち</div>
+  <h2>生まれた時間が、分からない</h2>
+  <div class="answer">
+    <p>無料診断は、時間が分からなくても全部の欄が出ます。生年月日しか聞いていないからです。</p>
+    <p>時間で変わることがあるのは「四柱推命・日干」の1枚だけで、それも日付が変わる前後に生まれた人だけです。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p>「四柱推命・日干」を開いた、いちばん下の<b>※の注意書き</b>。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>時間が分からないなら、控えの「生まれた時間」に<b>「不明」</b>と書く。12時などで埋めない。夜遅くや明け方近くに生まれたと聞いたことがある人は、日干の欄の言葉を「仮」として読み、ほかの欄を先に使う。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人は、生まれた時間を知りません。控えには「不明」と書き、日干の「戊」には（仮）と添えました。4つ目で選んだ「待てる人」は、日干がなくても、牡牛座の「忍耐力」だけで残ります。だから困りませんでした。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>前に別の診断で、時間が分からないまま「12時00分」と入れて先へ進みました。出てきた結果を、半年ほど本当のことだと思って持ち歩きました。半年後には、自分が12時と入れたことのほうを忘れていました。空欄は落ち着きませんが、埋めると、空欄だったことのほうが先に消えます。</p>
+  </div>
+</section>
+
+<!-- 6つ目 -->
+<section class="step">
+  <div class="step-no">6つ目　／　7つのうち</div>
+  <h2>星座は本当は1つ隣、と聞いた</h2>
+  <div class="answer">
+    <p>その話は、三星鑑の結果には関係ありません。ここで使っている星座は、空の星の並びではなく、1年を季節で12に区切った目盛りだからです。</p>
+    <p>気にするのは「度」の数字だけ。境目に生まれた人だけが、隣も読みます。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p>一番上の「あなたの人物分析」の小さな行、<b>「◯◯座 ◯度」</b>の数字（1〜30）。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>1か2、または29か30なら、境目の生まれ。隣の星座の「強み」の言葉も読んで、自分に近いほうを控えに書く。3〜28なら、何もしなくていい。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人は「牡牛座 13度」。まんなかなので、隣は読みません。もし画面に「牡羊座 30度」と出た人なら、牡羊座と牡牛座の両方の「強み」を読み比べて、近いほうを選びます。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>「星座は本当はずれているらしい」と飲みの席で聞いて、自分では確かめないまま、しばらく読まなくなりました。ずれているのは本当です。ただ、占いの12の区切りは、春が始まる日を起点に1年を30度ずつ切っただけの、季節の目盛りでした。はじめから、星のほうを見ていなかったんです。「13番目の星座」も、空に人が線を引いた星座の話で、この目盛りとは作りが違います。</p>
+  </div>
+</section>
+
+<!-- 7つ目 -->
+<section class="step">
+  <div class="step-no">7つ目　／　7つのうち</div>
+  <h2>「相性がいい」って、どういう意味？</h2>
+  <div class="answer">
+    <p>良い・悪いではなく、「楽か、ぶつかりやすいか」です。そして、ぶつかるのは関係の全部ではなく、たいてい1か所です。</p>
+    <p>無料診断に相性の欄はありませんが、二人ぶんのメーターを並べれば、その1か所が見えます。</p>
+  </div>
+  <div class="box">
+    <span class="box-h">見る欄</span>
+    <p>自分の「気質タイプ」の<b>3本のメーター</b>と、相手の生年月日で診断し直したときの<b>3本のメーター</b>。相手の生年月日は、本人から聞ける範囲で。</p>
+  </div>
+  <div class="box do">
+    <span class="box-h">すること</span>
+    <p>3本のうち、二人のバーの長さがいちばん離れている1本を探す。そこがぶつかりやすい場面。その場面でだけ、自分の出し方を1つ、相手の側へ寄せる。</p>
+  </div>
+  <div class="box eg">
+    <span class="box-h">たとえば</span>
+    <p>1990年5月3日生まれの人（内向寄り）と、1988年4月10日生まれの同僚（クリエイター型・外向寄り）。いちばん離れているのは「内向／外向」の1本でした。同僚はその場で話して決めたい。この人は、いったん持ち帰って考えたい。そこでこの人は、話し合いの最初に「今日は聞くだけにして、明日の朝いちばんに返事します」と先に言うことにしました。ほかの2本は近いので、そのままです。</p>
+    <p class="eg-note">（作った例です）</p>
+  </div>
+  <div class="story">
+    <div class="story-h">わたしの話</div>
+    <p>相性を調べるのは、いつも関係がこじれたあとでした。うまくいっているあいだは一度も調べず、切れてから「やっぱり合わないと書いてある」と一人で納得していました。調べていたのではなく、終わったことに理由を貼っていただけです。その癖は、正直まだ直っていません。だから、こじれる前に、1本だけ見ておくことにしています。</p>
+  </div>
+</section>
+
+<!-- おわりに -->
+<section class="prose step">
+  <h2>おわりに</h2>
+  <p>7つの「すること」を、1枚にまとめると、下の控えになります。書いてみて、埋まらない欄があっても大丈夫です。生まれた時間のように、空いたままのほうが正しい欄もあります。</p>
+  <p>1年後、同じ生年月日で診断を開いてください。気質タイプは同じものが出ます。並べてほしいのは、型よりも「直すのをやめたこと」と「相手に寄せること」の2行です。まだ同じことで消耗しているか、もう気にならなくなっているか。変わっていたら、変わったのは、あなたのいる場所のほうです。</p>
+</section>
+
+<!-- 手に残る1枚 -->
+<section class="card" id="hikae">
+  <h2>わたしの控え</h2>
+  <p class="card-lead">7つの「すること」を、1枚に。<br>書いたものは、どこにも送られません。この画面の中にだけ残ります。</p>
+
+  <div class="row">
+    <label for="g-date">書いた日 ／ 生年月日</label>
+    <input id="g-date" type="text" autocomplete="off" placeholder="例：2026年10月7日 ／ 1990年5月3日">
+  </div>
+  <div class="row">
+    <label for="g-type">気質タイプと、3本のメーター（2つ目）</label>
+    <small>型の名前と、3本のバーの長さ（短い・半分・長い）。1年後もここは同じです。</small>
+    <input id="g-type" type="text" autocomplete="off" placeholder="例：サポーター型／短い・長い・半分">
+  </div>
+  <div class="row">
+    <label for="g-star">星座と度（6つ目）</label>
+    <small>1・2・29・30度なら、隣の星座で近いほうも。</small>
+    <input id="g-star" type="text" autocomplete="off" placeholder="例：牡牛座 13度">
+  </div>
+  <div class="row">
+    <label for="g-time">生まれた時間（5つ目）</label>
+    <small>分からなければ「不明」と書いてください。埋めないでください。</small>
+    <input id="g-time" type="text" autocomplete="off" placeholder="例：不明（日干は仮）">
+  </div>
+  <div class="row">
+    <label for="g-core">3枚で重なった言葉（4つ目）</label>
+    <input id="g-core" type="text" autocomplete="off" placeholder="例：待てる人">
+  </div>
+  <div class="row">
+    <label for="g-stop">直すのをやめて、先に手を打つこと（1つ目）</label>
+    <input id="g-stop" type="text" autocomplete="off" placeholder="例：予定変更は、その場で返事せず10分後に返す">
+  </div>
+  <div class="row">
+    <label for="g-week">今年のテーマを、今週やる1つに（3つ目）</label>
+    <input id="g-week" type="text" autocomplete="off" placeholder="例：土曜に段ボールを2箱だけ開ける">
+  </div>
+  <div class="row">
+    <label for="g-pair">相手に寄せること（7つ目）</label>
+    <small>いちばん離れていた1本と、その場面でだけ変える出し方。</small>
+    <input id="g-pair" type="text" autocomplete="off" placeholder="例：内向／外向。最初に「明日の朝 返事します」と言う">
+  </div>
+
+  <p class="card-foot">
+    印刷して手帳に挟むか、この画面を写真に残しておいてください。<br>
+    1年後に見返すのは、下の3行（直すのをやめたこと・今週の1つ・相手に寄せること）です。
+  </p>
+  <div class="card-btns">
+    <button class="btn" type="button" onclick="window.print()">印刷する（PDFにもできます）</button>
+    <a class="btn" href="https://yotyann4649.github.io/apps/free/" target="_blank" rel="noopener">診断を開く</a>
+  </div>
+</section>
+
+<!-- もう少し読みたくなったら（無料の記事。売り込みではない） -->
+<section class="more">
+  <h2>もう少し長く読みたくなったら</h2>
+  <p>ここまでの話を、職場の場面でもう少し長く書いたものがあります。どれも無料で、登録も要りません。</p>
+  <ul>
+    <li><a href="https://note.com/grand_colt8044/n/n6fbb60f3f13e" target="_blank" rel="noopener">【HU.002】「体力が人よりない」と自分を責めていた私が、オフィスの雑音から耳を塞いで救われた話</a></li>
+    <li><a href="https://note.com/grand_colt8044/n/n19b72415f6a3" target="_blank" rel="noopener">【HU.006】「神経質だ」と笑われてきたあなたへ。他人の雑な仕事を、完璧な仕組みに調律する人の誇り</a></li>
+    <li><a href="https://note.com/grand_colt8044/n/n8bcbf0adc817" target="_blank" rel="noopener">【HU.007】職場で「いい人」「調整役」を押し付けられていませんか？他人の機嫌を取るのをやめ、心の境界線を敷いた話</a></li>
+  </ul>
+</section>
+
+</div>
+
+<footer>三星鑑のトリセツ　／　© 2026 三星鑑（さんせいかん）</footer>
+
+<script>
+// 書き込み欄の中身を、このブラウザの中にだけ残す。
+// どこへも送らない。保存できない環境（プライベートウィンドウ等）でも、欄はそのまま使える。
+// 第1版と欄が違うので、保存先の名前も分けている。
+(function(){
+  var KEY='sanseikan_torisetsu_hikae_v2';
+  var ids=['g-date','g-type','g-star','g-time','g-core','g-stop','g-week','g-pair'];
+  var saved={};
+  try{ saved=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; }catch(e){ saved={}; }
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    if(typeof saved[id]==='string') el.value=saved[id];
+    el.addEventListener('input',function(){
+      saved[id]=el.value;
+      try{ localStorage.setItem(KEY,JSON.stringify(saved)); }catch(e){}
+    });
+  });
+})();
+</script>
+</body>
+</html>
