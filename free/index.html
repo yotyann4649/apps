@@ -143,6 +143,21 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .free-cta-btn.sec{background:transparent;color:var(--gold-soft);border:1px solid #5a4d38}
 .free-cta-btn.sec:hover{background:rgba(203,171,116,.12)}
 
+/* 2026-10-08（理子・舷門 14代目「濾」）：名簿の受け皿 ━━━━━━━━━━━━━━━━━━━━━━
+   城主の判断 K-1007205440【A】（トリセツ7歩を登録と引き換えに渡す）／K-1007205458【A】（完了画面で渡す）。
+   10-07 の試作（04_運用ツール\確認画面\名簿の受け皿_試作\）から、試作の帯・知らせ・仮の文の印を外して入れた。
+   元の .free-cta-* は1行も変えていない。この塊と、下の HTML の「名簿の受け皿」の囲みを消せば、元の MORE に戻る。 */
+.free-cta-gift{font-size:13.5px;color:#e6dcc6;line-height:1.95;max-width:500px;margin:0 auto 16px}
+.free-cta-peek{list-style:none;max-width:400px;margin:0 auto 18px;padding:14px 18px;border:1px solid #4a3f2e;border-radius:12px;text-align:left}
+.free-cta-peek li{font-family:'Noto Serif JP',serif;font-size:13px;color:#f3ead6;line-height:1.8;padding:3px 0 3px 1.4em;position:relative}
+.free-cta-peek li::before{content:'問';position:absolute;left:0;top:5px;font-size:10px;color:var(--gold-soft)}
+.free-cta-peek .more{font-family:'Noto Sans JP',sans-serif;font-size:11.5px;color:#a89c84;padding-left:1.4em}
+.free-cta-peek .more::before{content:none}
+.free-cta-how{font-size:12.5px;color:#cbbfa6;line-height:1.9;max-width:500px;margin:0 auto 24px}
+.free-cta-fine{font-size:11.5px;color:#a89c84;line-height:1.85;max-width:500px;margin:20px auto 0}
+.free-cta-link{display:inline-block;margin-top:16px;font-size:12.5px;color:var(--gold-soft);border-bottom:1px solid #5a4d38;padding-bottom:1px}
+.free-cta-link:hover{color:#e0c97c}
+
 footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid var(--line);font-size:11px;color:var(--ink3);line-height:1.9}
 .footer-logo{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;color:var(--gold);letter-spacing:.1em;margin-bottom:8px}
 </style>
@@ -222,12 +237,15 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
       <div class="type-meter-label"><span>内向 ◀</span><span>▶ 外向</span></div>
       <div class="type-meter-track"><div class="type-meter-fill" id="meter-ie" style="width:0"></div></div>
     </div>
+    <!-- 2026-10-08（理子・舷門 14代目「濾」）：下2本のラベルの左右を入れ替えた（結さんの指摘・10-07）。
+         ef と ni は「感情・直感が高いほど大きい」値なので、バーが右へ伸びる側に 感情型／直感型 を置く。
+         値と計算は1文字も変えていない（バーの長さは前と同じ）。1本目（内向／外向）は元から合っている。 -->
     <div class="type-meter">
-      <div class="type-meter-label"><span>感情型 ◀</span><span>▶ 論理型</span></div>
+      <div class="type-meter-label"><span>論理型 ◀</span><span>▶ 感情型</span></div>
       <div class="type-meter-track"><div class="type-meter-fill" id="meter-ef" style="width:0"></div></div>
     </div>
     <div class="type-meter">
-      <div class="type-meter-label"><span>直感型 ◀</span><span>▶ 実践型</span></div>
+      <div class="type-meter-label"><span>実践型 ◀</span><span>▶ 直感型</span></div>
       <div class="type-meter-track"><div class="type-meter-fill" id="meter-ni" style="width:0"></div></div>
     </div>
     <div class="type-traits" id="type-traits"></div>
@@ -273,15 +291,35 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
   </div>
 </div>
 
+<!-- 名簿の受け皿（2026-10-08・理子・舷門 14代目「濾」）━━━━━━━━━━━━━━━━━━━━━━
+     変えたのはこの箱の中だけ。ひとことの箱（.ask-box）は、朔さんのお願いどおり別の箱のまま。
+     ① 1行目＝受け取れる物の名前。説明は結さんのトリセツ第2版の表紙の言葉に揃えた（10分ほど・7つの問い）
+     ② 7つの問いのうち3つを、冊子の見出しのまま見せる（何がもらえるかを、登録の前に分かるように）
+     ③ 登録を主ボタンへ上げた。LP へのリンクは文字リンクへ下げた（行き先は元のまま）
+     ④ 渡し方は「フォームの送信後の画面」。メールでは送らない（K-1007205458【A】）
+     ⑤「いまは販売していません…」は矩さんの文（10-07）。「退職後」は外した
+     フォームのリンクは元と同じ URL。登録ボタンには id="btn-free-cta" を付け、押された数を数える（free_cta）。 -->
 <div class="free-cta">
   <div class="free-cta-inner">
-    <div class="free-cta-eyebrow">MORE</div>
-    <div class="free-cta-title">これは、入り口の指標だけ。</div>
-    <p class="free-cta-desc">三星鑑の統合レポートは、10天体・四柱推命・五行を重ねて、あなたの才能・仕事・人間関係・今年のテーマまで立体的に読み解きます。いま販売に向けて準備を進めています。販売を始める時期が決まりましたら、ご登録いただいた方へ最初にお知らせします。</p>
+    <div class="free-cta-eyebrow">診断のあとに</div>
+    <div class="free-cta-title">『三星鑑のトリセツ』をお渡しします</div>
+    <p class="free-cta-gift">結果の画面の、どこを見て、明日なにをするか。診断のあとに手が止まりやすい7つの問いに、順番に答えた読み物です。読み終わるまで10分ほどです。</p>
+    <ul class="free-cta-peek">
+      <li>これは、占いなの？</li>
+      <li>次に受けたら、違う結果が出るんじゃないの？</li>
+      <li>生まれた時間が、分からない</li>
+      <li class="more">ほか4つ</li>
+    </ul>
+    <p class="free-cta-how">メールアドレスをご登録いただくと、送信が終わった画面にトリセツの入り口が出ます。トリセツはメールではなく、その画面でお渡しします。</p>
     <div class="free-cta-btns">
-      <a href="https://yotyann4649.github.io/apps/homepage/" class="free-cta-btn pri">三星鑑について見る</a>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="free-cta-btn sec">リリースのお知らせを受け取る</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="free-cta-btn pri" id="btn-free-cta">トリセツを受け取る</a>
     </div>
+    <p class="free-cta-fine">
+      ご登録いただいた方へは、販売を始めるときに最初にお知らせします。<br>
+      いまは販売していません。お申し込みもお支払いもありません。<br>
+      お知らせが要らなくなったら、届いたメールからいつでも解除できます。
+    </p>
+    <a href="https://yotyann4649.github.io/apps/homepage/" class="free-cta-link">三星鑑について見る →</a>
   </div>
 </div>
 
@@ -468,9 +506,12 @@ function calcPillarAuto(birth){
 function getLp(birth){
   return reduce([...birth.replace(/\D/g,'')].map(Number).reduce((a,b)=>a+b,0));
 }
+// 2026-10-08（理子・舷門 14代目「濾」）：年を 2026 固定から「開いた日の年」へ（結さんの指摘・10-07）。
+//   欄の名前「◯年 今年の流れ」と本文の「今年◯年は」も、同じ THIS_YEAR を使う。
+const THIS_YEAR=new Date().getFullYear();
 function getPY(birth){
   const bp=birth.split('-');
-  return reduce([...String(2026),...String(bp[1]),...String(bp[2])].map(Number).reduce((a,b)=>a+b,0));
+  return reduce([...String(THIS_YEAR),...String(bp[1]),...String(bp[2])].map(Number).reduce((a,b)=>a+b,0));
 }
 
 // ══════════════════════════════════════
@@ -666,10 +707,10 @@ function runAnalysis(){
         note:'※日柱は出生時刻により変わります。入力欄に正確な値を上書きすると、より正確な結果が得られます。',
       },
       {
-        icon:'📅',bg:'#f0f8f5',label:'2026年 今年の流れ',
+        icon:'📅',bg:'#f0f8f5',label:`${THIS_YEAR}年 今年の流れ`,
         num:String(py),kw:`パーソナルイヤー ${py}`,
         desc:'生年月日と今年の数字から導かれる、この1年のテーマです。',
-        story:`今年2026年は、あなたにとって<b>「${pyD.title}」</b>です。<br><br>${pyD.story}`,
+        story:`今年${THIS_YEAR}年は、あなたにとって<b>「${pyD.title}」</b>です。<br><br>${pyD.story}`,
         note:null,
       },
     ];
@@ -808,6 +849,31 @@ document.addEventListener('DOMContentLoaded',()=>{
       }
     }
   }catch(e){}
+})();
+</script>
+<!-- 登録ボタンが押された数（free_cta）：2026-10-08（理子・舷門 14代目「濾」）。10-07 の試作から、試作のしるしを外して入れた
+     来た人（free_uu）→ 押した人（free_cta）→ 登録した人、の3段で見るため。
+     【物差し】free_uu と同じ「1ブラウザ1日1回」。日付は日本時間。キーは別（cnt_free_cta_日付）。
+     【城主の端末】trinity_owner が "1" の端末は数えない（上の除外と同じ置き場を読む）。
+     【送るもの】件数だけ。名前もメールアドレスも生年月日も、1文字も通らない（DNA-329 / DNA-343）。
+     【止めない】try{}catch{} の中。数えるのに失敗しても、フォームはそのまま開く。
+     【受け側】GAS の Q列 free_cta（機関室が 10-07 に足した）。城主が GAS を貼り直すまでは数えられない。
+     【数えないもの】マウスの中ボタン・長押しで「新しいタブで開く」を選んだ場合（click が起きない）。 -->
+<script>
+(function(){
+  var btn = document.getElementById("btn-free-cta");
+  if (!btn) { return; }
+  btn.addEventListener("click", function(){
+    try{
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。数えない
+      var d = new Date(Date.now() + 9*60*60*1000);                     // 日本時間（free_uu と同じ）
+      var key = "cnt_free_cta_" + d.toISOString().slice(0,10);
+      if (localStorage.getItem(key)) { return; }                       // 今日はもう数えた
+      localStorage.setItem(key, "1");
+      var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+      new Image().src = base + "?p=free_cta&t=" + Date.now();
+    }catch(e){}
+  });
 })();
 </script>
 </body>
