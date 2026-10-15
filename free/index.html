@@ -315,8 +315,8 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="free-cta-btn pri" id="btn-free-cta">トリセツを受け取る</a>
     </div>
     <p class="free-cta-fine">
-      ご登録いただいた方へは、販売を始めるときに最初にお知らせします。<br>
-      いまは販売していません。お申し込みもお支払いもありません。<br>
+      販売を始める時期が決まりましたら、ご登録いただいた方へ最初にお知らせします。<br>
+      いまは販売していません。この時点でのお申し込み・お支払いはありません。<br>
       お知らせが要らなくなったら、届いたメールからいつでも解除できます。
     </p>
     <a href="https://yotyann4649.github.io/apps/homepage/" class="free-cta-link">三星鑑について見る →</a>
@@ -485,11 +485,18 @@ function reduce(n,master=true){
   }
   return n;
 }
+// 太陽の見かけの黄経（Meeus『天文アルゴリズム』25章・誤差おおむね0.01度）。日付だけなので日本時間の正午で見る
+// 2026-10-11 直し：前は1年を12で均等に割っていて、星座が約18人に1人・度数が4人に3人ずれていた
+//   （1940〜2080年の51,501日を有料版と同じ天体計算と照らした。直したあとの差は最大0.0094度）
 function getSunSign(birth){
-  const d=new Date(birth);
-  const start=new Date(d.getFullYear(),0,0);
-  const doy=Math.floor((d-start)/86400000);
-  let lon=((doy-80)*360/365.25+360)%360;
+  const p=birth.split('-').map(Number);
+  const jd=Date.UTC(p[0],p[1]-1,p[2],3)/86400000+2440587.5;
+  const T=(jd-2451545.0)/36525, r=Math.PI/180;
+  const L0=280.46646+36000.76983*T+0.0003032*T*T;
+  const M=357.52911+35999.05029*T-0.0001537*T*T;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(M*r)+(0.019993-0.000101*T)*Math.sin(2*M*r)+0.000289*Math.sin(3*M*r);
+  const O=125.04-1934.136*T;
+  const lon=(((L0+C-0.00569-0.00478*Math.sin(O*r))%360)+360)%360;
   const si=Math.floor(lon/30);
   return{sign:SIGNS[si],icon:SIGN_ICON[si],deg:Math.floor(lon%30)+1,idx:si};
 }
@@ -831,6 +838,14 @@ document.addEventListener('DOMContentLoaded',()=>{
       if (/[?&]src=note(&|$)/i.test(location.search)) {
         new Image().src = base + "?p=free_uu_note&t=" + Date.now();      // I列
       }
+      // 2026-10-11（理子・舷門 14代目「濾」）：入口ごとの目印。朔さんの案のまま。note と同じく、この if の中に置く
+      // yt＝YouTube 長尺／sh＝ショート／pin＝Pinterest。受け側は GAS の S・T・U列（城主が貼り直すまでは捨てられるだけ）
+      if (/[?&]src=yt(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_yt&t="  + Date.now();   // S列
+      if (/[?&]src=sh(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_sh&t="  + Date.now();   // T列
+      if (/[?&]src=pin(&|$)/i.test(location.search)) new Image().src = base + "?p=free_uu_pin&t=" + Date.now();   // U列
+      // 2026-10-15（理子・舷門 14代目「濾」）：ig＝Instagram／tt＝TikTok。朔さんの頼みのまま。受け側の欄はゼロさんが GAS に足す（足すまでは捨てられるだけ）
+      if (/[?&]src=ig(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_ig&t="  + Date.now();
+      if (/[?&]src=tt(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_tt&t="  + Date.now();
 
       /* ══════════════════════════════════════════════════════════════════
          ★2026-10-02（ゼロ／機関室・36代目「岩盤」）―― ★記事ごとの数
