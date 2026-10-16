@@ -2576,7 +2576,9 @@ const SJ_PLANJA={Sun:'太陽',Moon:'月',Mercury:'水星',Venus:'金星',Mars:'�
 const SJ_T5={'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
 const SJ_C5={'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
 function sjSplit(lon){ const base=Math.floor(lon/30); const i=((base%12)+12)%12; const deg=lon-30*base; return {sign:SJ_SIGNS[i],deg:Math.floor(deg),sab:Math.floor(deg)+1}; }
-function sjPos(lon,house){ const s=sjSplit(lon); return s.sign+s.deg+'度'+(house?(' / '+house+'H'):''); }
+/* 2026-10-14（理子「濾」）：城主の裁定 K-1013192611【Ａ】「全部1から数える」。
+   天体・ASC・MC などの欄を、サビアンの欄（sjSab）・無料診断と同じ1始まりに揃えた（旧：s.deg＝0始まり。乙女座26度→27度）。 */
+function sjPos(lon,house){ const s=sjSplit(lon); return s.sign+s.sab+'度'+(house?(' / '+house+'H'):''); }
 function sjSab(lon){
   const s=sjSplit(lon);
   /* 🔴 ★2026-08-28（23代目「地脈」）：★城主のご指摘「サビアンシンボル名がなくなっている。絶対必要」により戻した。
@@ -3277,10 +3279,13 @@ function 自動計算する(){
     /* 🔴 ★2026-08-28：★入力欄のプレースホルダが「例：2000年4月1日 12時」なので、
        ★ハイフン区切りだけでなく、★年月日・時分の書き方も読めるようにした。
        ★プルダウンで入れた場合は必ず「YYYY-MM-DD HH:MM」になるが、★手で直す道も残してある。 */
-    const m = bd.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})(?:\D+(\d{1,2})\s*[:時]?\s*(\d{1,2})?)?/);
+    /* 2026-10-14（理子「濾」）：城主の裁定 K-1013192615【Ａ】。見本どおり「14時」と打つと分が無く「14:undefined」になり、
+       黙って12時で計算されていた。全角の数字・コロンを半角に直してから読み、分が無ければ :00 を補う（下の 時刻）。 */
+    const bdN = bd.replace(/[０-９：]/g, c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0));
+    const m = bdN.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})(?:\D+(\d{1,2})\s*[:時]?\s*(\d{1,2})?)?/);
     if(!m){ showErr('生年月日を入れてください。','例：1990-01-01 14:00（時刻は無くても計算します）'); setTimeout(()=>hide(toastErr),5000); return; }
     const 日付 = m[1]+'-'+String(m[2]).padStart(2,'0')+'-'+String(m[3]).padStart(2,'0');
-    const 時刻 = m[4]!=null ? (String(m[4]).padStart(2,'0')+':'+m[5]) : '';
+    const 時刻 = m[4]!=null ? (String(m[4]).padStart(2,'0')+':'+(m[5]!=null ? String(m[5]).padStart(2,'0') : '00')) : '';
     const 場所名 = (d.BIRTHPLACE||'').trim();
     const p = PREFS.find(x=>x.n===場所名) || PREFS.find(x=>場所名 && x.n.indexOf(場所名.replace(/[都道府県]$/,''))===0);
     if(!p){ showErr('生まれた場所が読めません。','都道府県で入れてください（例：滋賀県）'); setTimeout(()=>hide(toastErr),5000); return; }
