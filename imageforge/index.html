@@ -224,6 +224,26 @@ Check your Browserslist config to be sure that your targets are set up correctly
         <!-- ★B-5 の出し先（★押す前に、余白と字数が合っているかを静かに出す） -->
         <div id="thumbFitBox" class="hidden mt-2 rounded-lg p-2 text-[10px] leading-relaxed border"></div>
 
+        <!-- ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：見出しの人物を、5人から選ぶ欄
+             ★城主の決まり（10-17）「見出し画像には人物が必ず1人。30代女性は無し」
+             ★城主のお言葉（10-18）「10代学生10代女子学生を追加してほしい」
+             ★出どころ … 機関室〔39代目「楣」〕の頼み。★年齢の欄だけだと性別が決まらず、
+               「30代」で 30代の女性が出た（10-17 やってみた.008）。
+             ★選んだ人は、被写体の文の【頭】に入る（★単語の欄に書かなくても絵の指示に入る）。
+             🔴 ★ここで人を選んだときは、下の「年齢」は使わない（★組み合わせて 30代女性が出ないように）。
+             🔴 ★学生は制服でよい。★ただし校章・学校名・名札は描かせない（★外に出る絵なので、実在の学校に見せない）。 -->
+        <div class="mt-3">
+          <div class="text-[10px] text-slate-500 mb-1">見出しの人物（選ぶと、その人が1人だけ入ります）</div>
+          <select id="thumbWho" onchange="thumbWhoChanged()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+            <option value="free" selected>選ばない（下の「人物」「年齢」で決める・これまでどおり）</option>
+            <option value="teenM">10代の男子学生（制服・校章なし）</option>
+            <option value="teenF">10代の女子学生（制服・校章なし）</option>
+            <option value="m20">20代の男性</option>
+            <option value="f20">20代の女性</option>
+            <option value="m30">30代の男性</option>
+          </select>
+        </div>
+
         <div class="grid grid-cols-2 gap-2 mt-3">
           <div>
             <div class="text-[10px] text-slate-500 mb-1">文字を置く側</div>
@@ -241,8 +261,14 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <div class="text-[10px] text-slate-500 mb-1">余白の広さ</div>
             <!-- ★2026-09-20（濾）：B-5 ―― 余白を変えたら、字数との突き合わせも合わせて出す -->
             <select id="thumbWidth" onchange="thumbFit()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <!-- ★2026-10-18（濾）：言葉の長さで選ぶ「自動」を足し、既定にした。
+                   ★いちばん長い段が12字を超える、または4段ある → 6割／それ以外 → 4割（★言葉が空なら4割＝これまでと同じ）。
+                   ★出どころ … 10-17 気まぐれ.012。4割のまま長い言葉を載せ、字を34まで縮めて
+                     城主に「すごく小さい、不自然」と言われた（機関室〔39代目「楣」〕の頼み）。
+                   ★3割／4割／6割の選択は1つも消していない。 -->
+              <option value="auto" selected>自動（言葉の長さで4割か6割）</option>
               <option value="30">3割（人物が主役）</option>
-              <option value="40" selected>4割（ふだんの回）</option>
+              <option value="40">4割（ふだんの回）</option>
               <option value="60">6割（文言が主役・勝負回）</option>
             </select>
           </div>
@@ -268,7 +294,7 @@ Check your Browserslist config to be sure that your targets are set up correctly
                  「もっと若々しい18歳、15歳の年齢設定を追加してください」
                  ★未成年を選べるので、★入れる語は【年齢と healthy だけ】にしてある。
                  ★魅力・体つき・服装の語は1つも入れない（★入れない、と決めて作った）。 -->
-            <div class="text-[10px] text-slate-500 mb-1">年齢</div>
+            <div class="text-[10px] text-slate-500 mb-1">年齢（上で人物を選んだときは使いません）</div>
             <select id="thumbAge" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
               <option value="none">指定しない</option>
               <option value="15">15歳（中学生くらい）</option>
@@ -291,6 +317,41 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <option value="straight">まっすぐ見ている</option>
               <option value="think">考えこんでいる</option>
               <option value="tired">疲れている</option>
+              <!-- ★2026-10-18（濾）：城主のお言葉「表情の選ぶ欄は、さらにバリエーションを増やした方がいい」
+                   🔴 ★P-004 のまま、煽る顔（叫び・大げさな驚き）は置いていない。★「驚いて腑に落ちる」も静かな驚きに寄せた -->
+              <option value="relief">ほっとしている</option>
+              <option value="holdlaugh">笑いをこらえている</option>
+              <option value="aha">驚いて、腑に落ちた顔</option>
+              <option value="shy">少し照れている</option>
+              <option value="faraway">遠くを見ている</option>
+              <option value="serious">真剣な顔</option>
+            </select>
+          </div>
+          <!-- ★2026-10-18（濾）：髪型。★城主のお言葉「髪型とか…さらにバリエーションを増やした方がいい」
+               ★上の「見出しの人物」で男性を選ぶと男性向けだけ、女性を選ぶと女性向けだけが選べる。
+               ★「おまかせ」は何も足さない（★これまでと同じ）。 -->
+          <div class="col-span-2">
+            <div class="text-[10px] text-slate-500 mb-1">髪型（人を入れるときだけ効きます）</div>
+            <select id="thumbHair" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+              <option value="none" selected>おまかせ</option>
+              <optgroup label="男性向け" data-sex="m">
+                <option value="m_short">短髪（さっぱり）</option>
+                <option value="m_twoblock">ツーブロック</option>
+                <option value="m_perm">ゆるいパーマ</option>
+                <option value="m_center">センター分け</option>
+                <option value="m_mash">マッシュ（前髪あり）</option>
+                <option value="m_messy">無造作ヘア</option>
+              </optgroup>
+              <optgroup label="女性向け" data-sex="f">
+                <option value="f_bob">ボブ</option>
+                <option value="f_short">ショート</option>
+                <option value="f_long">ロング（おろす）</option>
+                <option value="f_low">ひとつ結び（低め）</option>
+                <option value="f_pony">ポニーテール</option>
+                <option value="f_bangs">前髪あり（ぱっつん）</option>
+                <option value="f_wavy">ゆるい巻き髪</option>
+                <option value="f_bun">おだんご</option>
+              </optgroup>
             </select>
           </div>
         </div>
@@ -401,6 +462,21 @@ Check your Browserslist config to be sure that your targets are set up correctly
           <button onclick="setStone('dark')" id="s-dark" class="p-3 rounded-xl text-left transition-all seg-off">
             <div class="text-xs font-bold">深淵の静寂</div><div class="text-[10px] opacity-70 mt-0.5">闇・ノワール</div>
           </button>
+        </div>
+        <!-- ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：水彩の「光」を選べるようにした
+             ★城主のお言葉（10-18 手記.026）「結構暗い気が多くないですか?」
+             ★原因 …「琥珀の温もり」の指示文に warm amber glow, soft orange and golden light が必ず付き、
+               サムネの「明るめ」や単語の「朝の明るい部屋」より強く効いて、毎回 夜のランプの絵になっていた。
+             ★既定の「夕方・夜のランプ」は、これまでの文と【1文字も違わない】（★機関室の道具の置き換えも、そのまま効く）。
+             ★光が効くのは「琥珀の温もり」のときだけ（★氷結・深淵は、光そのものがトーンの中身なので触らない）。 -->
+        <div class="mt-3">
+          <div class="text-[10px] text-slate-500 mb-1">光（琥珀の温もりのときだけ効きます）</div>
+          <select id="sketchLight" onchange="compile()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
+            <option value="lamp" selected>夕方・夜のランプ（これまでの形）</option>
+            <option value="morning">朝のやわらかい日差し</option>
+            <option value="noon">昼の明るい窓辺</option>
+          </select>
+          <p id="sketchLightNote" class="hidden text-[10px] text-slate-500 mt-1 leading-relaxed"></p>
         </div>
       </div>
 
@@ -534,7 +610,14 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <select id="genModelSel" class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-purple-500">
               <option value="gemini-3.1-flash-image">標準（速い・2K/4K対応）</option>
               <option value="gemini-3-pro-image">高品質（複雑な構図・人物が複数）</option>
-              <option value="gemini-2.5-flash-image">旧版（うまくいかない時の逃げ道）</option>
+              <!-- ★2026-10-18（理子・舷門 14代目「濾」）：★Google の画像の型を確かめた（ai.google.dev の画像生成と料金のページ）
+                   ★新しい型 … Nano Banana 2.1（gemini-nano-banana-2.1）。★2026-10-06 に一般提供。★Google は新しく作るならこれを勧めている
+                     ★値段（1枚）… 1K 約0.034ドル／2K 約0.050ドル／4K 約0.113ドル ―― ★いまの「標準」（1K 0.067／2K 0.101／4K 0.151）の約半分〜3/4
+                     🔴 ★512px は出せない
+                   ★既定（いちばん上の「標準」）は変えていない。★変えるかどうかは城主のご判断（★円さんへも1行 回した）
+                   🔴 ★旧版（gemini-2.5-flash-image）は 2026-10-02 に Google が止めた。★選べないようにし、名前は残した -->
+              <option value="gemini-nano-banana-2.1">新型 2.1（2026-10 の最新・標準より安い・512px不可）</option>
+              <option value="gemini-2.5-flash-image" disabled>旧版（2026-10-02 に Google が停止・選べません）</option>
               <!-- ★2026-09-20（35代目「埋火」）：★城主の裁定 K-09201702【A】「安いモデルを足す（試し撃ち用）」
                    🔴 ★このモデルは 1K しか出せない。★下の sizeHint が、押す前に1行 伝える -->
               <option value="gemini-3.1-flash-lite-image">試し撃ち（いちばん速くて安い・1Kのみ）</option>
@@ -724,6 +807,13 @@ const STONES = {
   cool:{core:"soft hand-drawn sketch style, colored pencil and cold watercolor wash, frosty silver and icy blue light, cool mist, clean serene aesthetic"},
   dark:{core:"hand-drawn sketch style, heavy charcoal sketch and ink wash, dramatic dark atmosphere, deep shadows, high contrast, minimalist low-key lighting, noir aesthetic"}
 };
+/* ★2026-10-18（濾）：水彩の光。★lamp は STONES.warm の中の一句そのもの（★置き換えずに残す＝これまでと同じ） */
+const SKETCH_LAMP = "warm amber glow, soft orange and golden light";
+const SKETCH_LIGHT = {
+  lamp   : SKETCH_LAMP,
+  morning: "soft early morning sunlight, gentle pale golden daylight, fresh airy brightness",
+  noon   : "bright clear daylight from a window, soft white natural light, airy and luminous"
+};
 const SKETCH_TAIL = "extremely detailed, masterpiece, 4k resolution, soft textured paper feel, beautiful illustration";
 const NEG_SKETCH = "photo, photorealistic, 3d render, harsh digital lines, ugly, low quality, watermark, signature, jpeg artifacts, distorted text, cluttered";
 
@@ -792,7 +882,10 @@ function updateSizeGuide(){
       ★v2.6 は退避した v2.4 から作り直し、★変更は「呼び先」と「受け取り」だけに絞ってある。 */
 var GEN_MODEL = "gemini-3.1-flash-image";
 /* ★2026-09-20 埋火：★控えには lite を入れない（★1K しか出せないので、★落ちた先で画質が黙って下がる） */
-var GEN_FALLBACKS = ["gemini-3.1-flash-image","gemini-2.5-flash-image","gemini-3-pro-image"];
+/* 🔴 ★2026-10-18（理子・舷門 14代目「濾」）：★2つ目の控えだった gemini-2.5-flash-image は 2026-10-02 に Google が止めた。
+   ★落ちた先が止まった型だと、★1回ぶん必ず失敗して待たせる。★新型 2.1（★標準より安い）へ差し替えた。
+   ★直す前 … ["gemini-3.1-flash-image","gemini-2.5-flash-image","gemini-3-pro-image"] */
+var GEN_FALLBACKS = ["gemini-3.1-flash-image","gemini-nano-banana-2.1","gemini-3-pro-image"];
 function currentAspect(){
   return use==='photo'
     ? document.getElementById('aspectPhoto').value
@@ -896,6 +989,100 @@ function sideOf(key, pct){
 
 /* ★v3.1：下に置くときは3割が収まりやすいので、そちらへ寄せる。★叱らずに、静かに寄せて、1行だけ伝える。
    ★6割を選んでおられたら、下以外へ戻したときも6割のまま残す（★選択を奪わない）。 */
+/* ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：見出しの人物・髪型 ━━━━━━━━━━━━━━━━━
+   ★城主の決まり（10-17）「人物は必ず1人。30代女性は無し」／（10-18）「10代学生・10代女子学生を追加」
+   ★選んだ人は、被写体の文の【頭】に入れる（★下の thumbBuild）。
+   🔴 ★人を選んだら「年齢」の欄は使わない ―― 年齢だけでは性別が決まらず、30代女性が出た（10-17 やってみた.008）。
+   🔴 ★10代は未成年。★既存の年齢の欄と同じく、★入れる語は「年齢・学生・制服・healthy」だけにしてある。
+      ★魅力・体つきの語は1つも入れない（★9-20 埋火さんの決めごとと揃えた）。
+   ★学生の制服は「無地のありふれた制服」と書き、★校章・名札は避けたい側へ回す（★外に出る絵）。
+   ★関数宣言にしてあるのは、★起動のときの compile() より前に読まれても落ちないため。 */
+function thumbWhoTable(){
+  return {
+    free : { ja:'', en:'', sex:'' },
+    teenM: { ja:'10代の日本人の男子学生が1人（無地のありふれた制服。校章・学校名・名札は描かない）',
+             en:'one Japanese teenage boy, high school student, healthy clear skin, plain generic dark school uniform', sex:'m' },
+    teenF: { ja:'10代の日本人の女子学生が1人（無地のありふれた制服。校章・学校名・名札は描かない）',
+             en:'one Japanese teenage girl, high school student, healthy clear skin, plain generic dark school uniform', sex:'f' },
+    m20  : { ja:'20代の日本人男性が1人', en:'one Japanese man in his twenties', sex:'m' },
+    f20  : { ja:'20代の日本人女性が1人', en:'one Japanese woman in her twenties', sex:'f' },
+    m30  : { ja:'30代の日本人男性が1人', en:'one Japanese man in his thirties', sex:'m' }
+  };
+}
+function thumbHairTable(){
+  return {
+    none      : { ja:'', en:'' },
+    m_short   : { ja:'さっぱりした短髪', en:'short neat haircut' },
+    m_twoblock: { ja:'ツーブロック', en:'two-block haircut with short sides' },
+    m_perm    : { ja:'ゆるいパーマ', en:'soft loose permed wavy hair' },
+    m_center  : { ja:'センター分け', en:'center-parted hair' },
+    m_mash    : { ja:'前髪のあるマッシュ', en:'mushroom cut with soft bangs' },
+    m_messy   : { ja:'無造作ヘア', en:'naturally tousled short hair' },
+    f_bob     : { ja:'ボブ', en:'bob haircut' },
+    f_short   : { ja:'ショートヘア', en:'short haircut' },
+    f_long    : { ja:'おろしたロングヘア', en:'long straight hair worn down' },
+    f_low     : { ja:'低めのひとつ結び', en:'hair tied back in a low ponytail' },
+    f_pony    : { ja:'ポニーテール', en:'high ponytail' },
+    f_bangs   : { ja:'ぱっつん前髪', en:'straight blunt bangs' },
+    f_wavy    : { ja:'ゆるい巻き髪', en:'long soft wavy hair' },
+    f_bun     : { ja:'おだんごヘア', en:'hair in a bun' }
+  };
+}
+function thumbIsStudent(s){ return /男子学生|女子学生|high school student/i.test(String(s || '')); }
+function thumbNegSchool(){ return 'school emblem, school crest, school logo, name tag, badge'; }
+
+/* ★人を選んだら、年齢の欄を休ませ、髪型を男女で絞る。★叱らず、何をしたかを1行だけ出す */
+function thumbWhoChanged(){
+  var who = document.getElementById('thumbWho');
+  var age = document.getElementById('thumbAge');
+  var hair = document.getElementById('thumbHair');
+  var ppl = document.getElementById('thumbPeople');
+  var n = document.getElementById('thumbNote');
+  if (!who) { return; }
+  var w = thumbWhoTable()[who.value] || thumbWhoTable().free;
+  var 伝える = [];
+  if (age) {
+    age.disabled = (w.sex !== '');
+    age.classList.toggle('opacity-40', w.sex !== '');
+  }
+  if (w.sex !== '' && ppl && ppl.value !== 'one') {
+    ppl.value = 'one';
+    伝える.push('人物を「1人」にしました（見出しには1人だけ入れる決まりです）。');
+  }
+  if (hair) {
+    var gs = hair.getElementsByTagName('optgroup'), i;
+    for (i = 0; i < gs.length; i++) {
+      var 合う = (w.sex === '') || (gs[i].getAttribute('data-sex') === w.sex);
+      gs[i].disabled = !合う;
+      gs[i].hidden = !合う;
+    }
+    var 選んだ = hair.options[hair.selectedIndex];
+    if (選んだ && 選んだ.parentNode && 選んだ.parentNode.disabled) {
+      hair.value = 'none';
+      伝える.push('髪型は、選んだ人に合わないので「おまかせ」に戻しました。');
+    }
+  }
+  if (n && 伝える.length) { n.innerHTML = 伝える.join('<br>'); }
+}
+
+/* ★2026-10-18（濾）：余白の「自動」を、いまの言葉から 40 か 60 に決める。★自動でなければ選んだ値をそのまま返す
+   ★いちばん長い段が12字を超える、または4段以上 → 60／それ以外（言葉が空のときも）→ 40 */
+function thumbWidthResolve(){
+  var wEl = document.getElementById('thumbWidth');
+  var v = wEl ? wEl.value : '40';
+  if (v !== 'auto') { return v || '40'; }
+  var ta = document.getElementById('thumbText');
+  var 行 = String((ta && ta.value) || '').split(/\r\n|\r|\n/);
+  var 段数 = 0, 最長 = 0, i, s;
+  for (i = 0; i < 行.length; i++) {
+    s = 行[i].replace(/^[\s　]+/, '').replace(/[\s　]+$/, '');
+    if (s === '') { continue; }
+    段数++;
+    if (s.length > 最長) { 最長 = s.length; }
+  }
+  return (最長 > 12 || 段数 >= 4) ? '60' : '40';
+}
+
 function thumbSideChanged(){
   var s = document.getElementById('thumbSide');
   var w = document.getElementById('thumbWidth');
@@ -972,12 +1159,14 @@ function thumbFit(){
     if (!総字数) { box.className = 'hidden mt-2 rounded-lg p-2 text-[10px] leading-relaxed border'; box.innerHTML = ''; return; }
 
     var wEl = document.getElementById('thumbWidth');
-    var w   = wEl ? wEl.value : '40';
+    /* ★2026-10-18（濾）：「自動」のときは、言葉の長さから 40 か 60 を決める。★直す前は wEl.value をそのまま使っていた */
+    var 自動 = !!(wEl && wEl.value === 'auto');
+    var w   = (typeof thumbWidthResolve === 'function') ? thumbWidthResolve() : (wEl ? wEl.value : '40');
     var 入る   = { '30':4, '40':6, '60':9 };
     var 言い方 = { '30':'4文字ほど', '40':'5〜6文字', '60':'8〜9文字' };
     var 上限 = 入る[w] || 6;
 
-    var 出す = ['いまの余白は' + (Number(w) / 10) + '割。1段に入るのは' + (言い方[w] || 'ー')
+    var 出す = ['いまの余白は' + (Number(w) / 10) + '割' + (自動 ? '（自動：言葉の長さで決めました）' : '') + '。1段に入るのは' + (言い方[w] || 'ー')
               + 'です（信号所の実測）。いちばん長い段は <b>' + 最長 + '字</b> です。'];
 
     if (最長 > 上限) {
@@ -1019,7 +1208,14 @@ function thumbBuild(){
     calm    : { ja:'おだやかな笑顔。',         en:'calm gentle smile, relaxed natural expression' },
     straight: { ja:'まっすぐこちらを見ている。', en:'looking straight at the camera, calm steady gaze' },
     think   : { ja:'考えこんでいる表情。',      en:'thoughtful expression, eyes cast slightly downward' },
-    tired   : { ja:'疲れた表情。',             en:'tired weary expression, subdued mood' }
+    tired   : { ja:'疲れた表情。',             en:'tired weary expression, subdued mood' },
+    /* ★2026-10-18（濾）：城主「表情の選ぶ欄は、さらにバリエーションを増やした方がいい」。★煽る顔は今回も置かない */
+    relief   : { ja:'ほっとした表情。',            en:'relieved expression, shoulders relaxed, soft exhale' },
+    holdlaugh: { ja:'笑いをこらえている表情。',     en:'trying to hold back a laugh, lips pressed together, amused eyes' },
+    aha      : { ja:'少し驚いて、腑に落ちた表情。', en:'eyes slightly widened in quiet realization, a moment of understanding' },
+    shy      : { ja:'少し照れた表情。',            en:'slightly shy expression, small bashful smile' },
+    faraway  : { ja:'遠くを見ている表情。',         en:'gazing into the distance, wistful expression' },
+    serious  : { ja:'真剣な表情。',                en:'serious focused expression, determined eyes' }
   };
 
   var noteEl = document.getElementById('thumbNote');
@@ -1041,6 +1237,9 @@ function thumbBuild(){
   var lightKey = document.getElementById('thumbLight').value;
   /* ★v3.1：余白の広さ。★見つからなければ4割（＝v3.0 と同じ挙動）へ静かに落とす */
   var widthKey = (document.getElementById('thumbWidth') || {}).value || '40';
+  /* ★2026-10-18（濾）：「自動」なら、いまの言葉の長さから 40 か 60 に決める */
+  var 余白は自動 = (widthKey === 'auto');
+  if (余白は自動) { widthKey = thumbWidthResolve(); }
   var side  = sideOf(sideKey, widthKey);
   var light = LIGHT[lightKey] || LIGHT.none;
   var pplKey = document.getElementById('thumbPeople').value;
@@ -1055,8 +1254,35 @@ function thumbBuild(){
   var face    = FACE[faceKey] || FACE.none;
   var 表情を足す = (pplKey !== 'none') && (face.ja !== '');
 
-  var ja = list.join('、');
-  if (ppl) { ja += '。' + ppl; }
+  /* ★2026-10-18（濾）：見出しの人物と髪型。★選んだ人は、文の【頭】に入れる。
+     🔴 ★「人は入れない」を選んでおられるときだけは、人を入れない（★選択を奪わない。下で1行 伝える）。
+     🔴 ★人を選んだら「年齢」は使わない（★30代女性が出ないように）。「2人」「単語のまま」も1人として組む。 */
+  var whoKey = (document.getElementById('thumbWho') || {}).value || 'free';
+  var who    = thumbWhoTable()[whoKey] || thumbWhoTable().free;
+  var 人を選んだ = (who.sex !== '') && (pplKey !== 'none');
+  var 人を選んだが入れない = (who.sex !== '') && (pplKey === 'none');
+  var 二人を一人に = 人を選んだ && (pplKey === 'two');
+  var 年齢を外した = 人を選んだ && (ageKey !== 'none');
+  /* ★年齢だけで 30代 を選び、性別が決まっていないときは、男性として組む（★10-17 城主「30代女性は無し」） */
+  var 三十代を男性に = (!人を選んだ) && (ageKey === '30') && (pplKey === 'one' || pplKey === 'two');
+  if (人を選んだ) {
+    ppl = '';                  /* ★人の言い方は、頭の1文に任せる（★二重に書かない） */
+    age = AGE.none;
+  } else if (三十代を男性に) {
+    ppl = (pplKey === 'two') ? '30代の日本人男性が2人' : '30代の日本人男性が1人';
+    age = { ja:'', en: (pplKey === 'two') ? 'two Japanese men in their thirties' : 'one Japanese man in his thirties' };
+  }
+  var hairKey = (document.getElementById('thumbHair') || {}).value || 'none';
+  var hair    = thumbHairTable()[hairKey] || thumbHairTable().none;
+  /* ★髪型は、人を入れるときだけ。★選んだ人と男女が合わないときは足さない（★あとで1行 伝える） */
+  var 髪が合わない = 人を選んだ && hair.ja !== '' && hairKey.charAt(0) !== who.sex;
+  var 髪を足す = (pplKey !== 'none') && hair.ja !== '' && !髪が合わない;
+
+  var ja = '';
+  if (人を選んだ) { ja = who.ja + '。' + (髪を足す ? '髪型は' + hair.ja + '。' : ''); }
+  ja += list.join('、');
+  if (ppl) { ja += '。' + ppl + ((!人を選んだ && 髪を足す) ? '（' + hair.ja + '）' : ''); }
+  else if (!人を選んだ && 髪を足す) { ja += '。髪型は' + hair.ja; }
   ja += '。';
   if (表情を足す) { ja += face.ja; }
   if (side.ja)  { ja += side.ja; }
@@ -1064,7 +1290,9 @@ function thumbBuild(){
   ja += '余白には文字・ロゴ・小物を置かない。';
 
   var en = [];
+  if (人を選んだ) { en.push(who.en); }    /* ★2026-10-18（濾）：見出しの人物を、英語側でも先頭に */
   if (age.en)   { en.push(age.en); }     /* ★2026-09-20（埋火）：★年齢（★城主のご指示） */
+  if (髪を足す)  { en.push(hair.en); }    /* ★2026-10-18（濾）：髪型 */
   if (表情を足す) { en.push(face.en); }   /* ★2026-09-20（濾）：B-4 表情 */
   if (side.en)  { en.push(side.en); }
   if (light.en) { en.push(light.en); }
@@ -1086,8 +1314,19 @@ function thumbBuild(){
   } else {
     /* ★v3.1：選んだ余白で、1段に何文字 入るか。★節さん（信号所）の実測に拠る */
     var FIT = { '30':'4文字ほど', '40':'5〜6文字', '60':'8〜9文字' };
-    msg.push('余白は' + String(Number(widthKey)/10) + '割です。この広さだと、1段に入るのは' + (FIT[widthKey] || '—') + 'です（信号所の実測）。');
+    msg.push('余白は' + String(Number(widthKey)/10) + '割' + (余白は自動 ? '（自動：載せる言葉の長さで決めました）' : '') + 'です。この広さだと、1段に入るのは' + (FIT[widthKey] || '—') + 'です（信号所の実測）。');
   }
+  /* ★2026-10-18（濾）：人物・髪型について、こちらで決めたことを1行ずつ返す（★黙って変えない） */
+  if (人を選んだ) {
+    var 誰の名 = document.getElementById('thumbWho');
+    msg.push('人物は「' + 誰の名.options[誰の名.selectedIndex].text + '」を、文の頭に入れました。');
+    if (二人を一人に) { msg.push('見出しの人物は1人の決まりなので、「2人」ではなく1人で組みました。'); }
+    if (年齢を外した) { msg.push('年齢の欄は使っていません（人物の欄で年齢まで決まっているためです）。'); }
+    if (thumbIsStudent(who.ja)) { msg.push('学生なので、下の「避けたいもの」に校章・名札を足しました（実在の学校に見せないため）。'); }
+  }
+  if (人を選んだが入れない) { msg.push('人物を選んでいただいていますが、「人は入れない」になっているので、人は入れていません。'); }
+  if (三十代を男性に) { msg.push('年齢が30代で性別が決まっていなかったので、男性で組みました（30代の女性は使わない決まりです）。'); }
+  if (髪が合わない) { msg.push('髪型が選んだ人に合わないので、髪型は足していません。'); }
   if (pplKey === 'none') {
     /* ★v3.1：人を消す語をネガティブへ足したことを、静かに伝える（★叱らない・事前エスコート） */
     msg.push('人を入れない指定なので、下の「避けたいもの」に人物を消す語を足し、肌の質感の指示も外しました。');
@@ -1147,6 +1386,8 @@ function compile(){
     const oL=document.getElementById('opt-lipsync');
     /* ★2026-09-20 埋火：★人を入れるときは、肌荒れの語も避けたい側へ回す（★城主のご指摘） */
     neg = NEG_BASE + ((oF && !noPpl) ? ", "+NEG_FACE : "") + (noPpl ? ", "+NEG_NOPEOPLE : ", "+NEG_SKIN) + ((oL && oL.checked && !noPpl) ? ", "+NEG_LIPSYNC : "");
+    /* ★2026-10-18（濾）：学生を描くときは、校章・名札を避けたい側へ（★外に出る絵。実在の学校に見せない） */
+    if (!noPpl && thumbIsStudent(subj)) { neg += ", " + thumbNegSchool(); }
     // 事前エスコート：note見出し選択時のみヒント表示（叱らない）
     const ph=document.getElementById('photoHeaderHint');
     if(ph) ph.classList.toggle('hidden', aspect!=='note_header');
@@ -1154,7 +1395,22 @@ function compile(){
     const aspect = document.getElementById('aspectSketch').value;
     const s = STONES[stone];
     const oNT = document.getElementById('opt-notext').checked;
-    let parts=[subj, s.core];
+    /* ★2026-10-18（理子・舷門 14代目「濾」）：光を選べるようにした（★城主「結構暗い気が多くないですか?」）。
+       ★STONES の文は1文字も変えていない。★「琥珀の温もり」の光の一句だけを、選んだ光に差し替えて使う。
+       ★既定の lamp は、差し替えない（＝これまでと同じ文）。 */
+    let core = s.core;
+    const slEl = document.getElementById('sketchLight');
+    const slKey = slEl ? slEl.value : 'lamp';
+    const slNote = document.getElementById('sketchLightNote');
+    if (stone === 'warm' && SKETCH_LIGHT[slKey]) {
+      core = core.replace(SKETCH_LAMP, SKETCH_LIGHT[slKey]);
+    }
+    if (slNote) {
+      const 効かない = (stone !== 'warm' && slKey !== 'lamp');
+      slNote.classList.toggle('hidden', !効かない);
+      slNote.textContent = 効かない ? 'いまのトーンでは、光の選択は効きません（光そのものがトーンの中身なので）。「琥珀の温もり」に戻すと効きます。' : '';
+    }
+    let parts=[subj, core];
     const aspMap={"note_header":"wide web banner header, aspect ratio 1.91:1, widescreen blog header illustration","16:9":"widescreen landscape illustration","1:1":"square illustration"};
     parts.push(aspMap[aspect]);
     /* ★2026-08-27（理子・舷門 9代目「衾」／★城主の裁定）：水彩側も、実写側と同じ形に揃えた。
@@ -1170,6 +1426,7 @@ function compile(){
     parts.push(SKETCH_TAIL);
     pos = parts.join(", ");
     neg = NEG_SKETCH + (oNT ? ", text, letters, words, typography, caption" : "");
+    if (thumbIsStudent(subj)) { neg += ", " + thumbNegSchool(); }   /* ★2026-10-18（濾）：上の実写側と同じ */
   }
 
   // 【ゼロ・v2.2】連続カンマを1回では潰しきれなかったため、まとめて正規化する
@@ -1288,6 +1545,8 @@ async function generate(){
       /* 【要・v2.7】🔴 ★lite は 1K しか出せない。★落ちたときに表示だけ 2K のままにしない
          ★（★本日この部屋は「ラベルが実態と違う」を3回 踏んでいる。★実際に送る値を、そのまま記録する） */
       usedSize = (mdl.indexOf('lite') >= 0) ? '1K' : sizeWanted;
+      /* ★2026-10-18（濾）：★新型 2.1 は 512px を出せない（★公式）。★控えとして落ちた先でも、1K で送る */
+      if (mdl === 'gemini-nano-banana-2.1' && usedSize === '512px') { usedSize = '1K'; }
       const url="https://generativelanguage.googleapis.com/v1beta/models/"+mdl+":generateContent?key="+key;
       const reqBody={
         contents:[{ parts:[{ text: prompt }] }],
@@ -1519,6 +1778,10 @@ setUse('photo'); setMode('A'); compile();
     }
     if(m === 'gemini-3-pro-image' && s === '512px'){
       out.push('🔴 <b>高品質モデルは、512px を出せません。</b>試し撃ちで軽くしたいときは、モデルを「標準」に戻してください。');
+    }
+    /* ★2026-10-18（濾）：新型 2.1 は 512px を出せない。★選択は奪わず、1行だけ出す */
+    if(m === 'gemini-nano-banana-2.1' && s === '512px'){
+      out.push('🔴 <b>新型 2.1 は、512px を出せません。</b>1K で作ります。軽く試すなら「試し撃ち」のモデルもあります。');
     }
     if(m === 'gemini-2.5-flash-image' && (s === '2K' || s === '4K')){
       out.push('\uD83D\uDD34 <b>旧版は 2K・4K に対応していません。</b>1K で返ってくることがあります。');
