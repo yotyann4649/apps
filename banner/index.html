@@ -387,6 +387,40 @@
         </div>
       </div>
 
+      <!-- ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：言葉を手で打つ ━━━━━━━━━━━━━━━
+           ★出どころ … 機関室〔39代目「楣」〕の頼み（10-18 手記.030）。
+             ★入口の言葉（朔さん）がまだ無い記事で、機関室が t0_text などの欄へ1段ずつ直接入れていた。
+           ★2〜4段を1つの箱に打って、ボタン1つで段へ流し込む。
+           ★「何も無い面に寄せる」を入れておくと、背景の絵で【模様の少ない縦の帯】（暗い壁・白い壁）を右端・左端から探し、
+             ★その幅に合わせて横位置・余白・字の大きさを決める。
+           🔴 ★探し方は「明るさの変わり目の少なさ」だけで見ている。★顔か壁かは分からない ―― だから必ず絵を見て確かめる。
+           ★上の「入口の言葉から作る」「記事タイトルから段組をつくる」は1文字も触っていない。★足したものである。 -->
+      <div class="control-section">
+        <span class="section-title">⌨️ 言葉を手で打つ</span>
+        <div class="title-src">
+          <div class="input-field">
+            <label>載せる言葉（改行で段が分かれます・2〜4段）</label>
+            <textarea id="teText" rows="4" placeholder="例：&#10;やめた日から&#10;朝が&#10;少し長くなった"></textarea>
+          </div>
+          <div class="input-field">
+            <label>強調する段（マーカーを引く段）</label>
+            <select id="teEm">
+              <option value="0" selected>強調しない（全部 同じ色）</option>
+              <option value="1">1段目</option>
+              <option value="2">2段目</option>
+              <option value="3">3段目</option>
+              <option value="4">4段目</option>
+            </select>
+          </div>
+          <div class="igu-chks">
+            <label class="igu-chk"><input type="checkbox" id="teFit" checked> 絵の何も無い面を探して、そこへ寄せる</label>
+          </div>
+          <button class="split-btn" id="teBtn">この言葉を、段へ流し込む</button>
+          <div class="split-note" id="teNote">言葉を打って、ボタンを押すと、下の各段へ流し込みます。
+押したあと、下の段は手でいくらでも直せます。</div>
+        </div>
+      </div>
+
       <!-- ★2026-08-20（理子・舷門 6代目「欄」）：記事タイトルから段組をつくる ━━━━━━━━
            ★城主のカケラ「記事タイトルを入れたら素人感まる出しのデザインになってしまう」
            ★実測（52本の実タイトル）… ★38本（73%）が、そのままでは1段10文字を超える
@@ -2374,6 +2408,194 @@ var TITLE_SPLIT = (function () {
           + (r.抜いた.length > 0 ? ('\n通さなかった行が ' + r.抜いた.length + '行 あります（すぐ下に出しています）。') : '');
       };
 
+      /* ══════════════════════════════════════════════════════════
+         ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：言葉を手で打って流し込む
+         ★出どころ … 機関室〔39代目「楣」〕の頼み⑥（10-18 手記.030）。
+         ★段・大きさの決め方は、上の igu流し込む と同じ（★強調を先に測り、他の段はそれより下に置く）。
+            ★igu流し込む そのものは1文字も触っていない。★同じ道具（igu横位置・igu収まる大きさ）を借りている。
+         ══════════════════════════════════════════════════════════ */
+
+      /* ★背景の絵から「模様の少ない縦の帯」を、右端と左端から探す。
+         ★やり方 … 絵を 128×67 に縮め、隣どうしの明るさの差（＝模様の多さ）を縦の列ごとに平均する。
+            ★いちばん静かな列と、いちばんにぎやかな列のあいだの 35% を境にし、端から境の下が続くところまでを「空き面」とする。
+            ★全体がほぼ同じ静かさなら（差が4未満）、全部を空き面とみなす。
+         🔴 ★分かるのは「模様が少ない」ことだけである。★のっぺりした顔や空も、空き面に見えることがある。
+         🔴 ★絵が読めないとき（★外から来た絵で読み取りを止められたとき等）は null を返す。★責めずに、長さだけで決める。 */
+      const te空き面を探す = () => {
+        if (!bgImage) { return null; }
+        try {
+          const W = 128, H = 67;
+          const c2 = document.createElement('canvas');
+          c2.width = W; c2.height = H;
+          const x2 = c2.getContext('2d');
+          if (!x2) { return null; }
+          /* ★drawCover と同じ切り方で縮める（★見えている絵と同じところを測るため） */
+          const iw = bgImage.naturalWidth || bgImage.width, ih = bgImage.naturalHeight || bgImage.height;
+          const cr = canvas.width / canvas.height;
+          let sw = iw, sh = ih, sx = 0, sy = 0;
+          if (iw && ih) {
+            if (iw / ih > cr) { sh = ih; sw = ih * cr; sx = (iw - sw) / 2; }
+            else { sw = iw; sh = iw / cr; sy = (ih - sh) / 2; }
+            x2.drawImage(bgImage, sx, sy, sw, sh, 0, 0, W, H);
+          } else {
+            x2.drawImage(bgImage, 0, 0, W, H);
+          }
+          const d = x2.getImageData(0, 0, W, H).data;
+          const L = new Float32Array(W * H);
+          for (let i = 0; i < W * H; i++) { L[i] = (d[i * 4] * 299 + d[i * 4 + 1] * 587 + d[i * 4 + 2] * 114) / 1000; }
+          const 模様 = (x, y) => {
+            const i = y * W + x;
+            const r = (x < W - 1) ? Math.abs(L[i] - L[i + 1]) : 0;
+            const b = (y < H - 1) ? Math.abs(L[i] - L[i + W]) : 0;
+            return r + b;
+          };
+          /* 列ごとの模様の多さ（★7列でならす） */
+          const 列 = [];
+          for (let x = 0; x < W; x++) { let s = 0; for (let y = 0; y < H; y++) { s += 模様(x, y); } 列.push(s / H); }
+          const 列なら = 列.map((v, x) => { let s = 0, n = 0; for (let k = x - 3; k <= x + 3; k++) { if (k >= 0 && k < W) { s += 列[k]; n++; } } return s / n; });
+          const lo = Math.min(...列なら), hi = Math.max(...列なら);
+          const 全部静か = (hi - lo) < 4;
+          const 境 = lo + (hi - lo) * 0.35;
+          let 右 = 0; while (右 < W && (全部静か || 列なら[W - 1 - 右] <= 境)) { 右++; }
+          let 左 = 0; while (左 < W && (全部静か || 列なら[左] <= 境)) { 左++; }
+          const 側 = (右 >= 左) ? 'right' : 'left';
+          const 幅 = Math.max(右, 左) / W;
+          const x0 = (側 === 'right') ? W - Math.max(右, 1) : 0;
+          const x1 = (側 === 'right') ? W : Math.max(左, 1);
+
+          /* その帯の中で、縦にいちばん静かな続きを探す（★縦位置の微調整に使う） */
+          const 行 = [];
+          let 明るさ = 0;
+          for (let y = 0; y < H; y++) {
+            let s = 0;
+            for (let x = x0; x < x1; x++) { s += 模様(x, y); 明るさ += L[y * W + x]; }
+            行.push(s / (x1 - x0));
+          }
+          明るさ = Math.round(明るさ / ((x1 - x0) * H));
+          const rlo = Math.min(...行), rhi = Math.max(...行);
+          let 縦 = 0;
+          if ((rhi - rlo) >= 4) {
+            const r境 = rlo + (rhi - rlo) * 0.35;
+            let best = 0, bestS = 0, cur = 0, curS = 0;
+            for (let y = 0; y < H; y++) {
+              if (行[y] <= r境) { if (cur === 0) { curS = y; } cur++; if (cur > best) { best = cur; bestS = curS; } }
+              else { cur = 0; }
+            }
+            /* ★静かな続きが縦の半分以上あるときだけ動かす。★それより短いなら真ん中のまま */
+            if (best >= H * 0.5) {
+              const 中 = (bestS + best / 2) / H * canvas.height;
+              縦 = Math.max(-150, Math.min(150, Math.round(中 - canvas.height / 2)));
+            }
+          }
+          return { 側, 幅, 割: Math.max(0, Math.min(6, Math.floor(幅 * 10 + 0.3))),   /* ★+0.3 … 7列でならすと境目が2〜3%ほど内側へ寄るぶん（★合成画像で、42%の壁が39.8%と出た） */ 縦, 明るさ, 全部静か };
+        } catch (e) {
+          return null;
+        }
+      };
+
+      /* ★左へ寄せるときの横位置（★igu横位置 の左右反対。★中央揃えなので、使える幅の半分が横位置になる） */
+      const te左の位置 = (余白) => {
+        const w = canvas.width * (余白 / 10);
+        let x = Math.round(w / 2);
+        const lo = parseInt(posX.min, 10), hi = parseInt(posX.max, 10);
+        if (x < lo) { x = lo; }
+        if (x > hi) { x = hi; }
+        return x;
+      };
+
+      const te流し込む = () => {
+        const note = document.getElementById('teNote');
+        const 生 = String(document.getElementById('teText').value || '');
+        /* ★入力の仕方で叱らない。★前後の空白・空の行は、静かに落とす */
+        const 全段 = 生.split(/\r\n|\r|\n/).map((s) => s.replace(/^[\s　]+/, '').replace(/[\s　]+$/, '')).filter((s) => s !== '');
+        if (全段.length === 0) {
+          note.textContent = '言葉を1段以上 打ってから、もう一度 押してください（改行で段が分かれます）。';
+          return;
+        }
+        const 段 = 全段.slice(0, 4);
+        const 切った = 全段.length - 段.length;
+        let 最長 = 0;
+        段.forEach((s) => { if (s.length > 最長) { 最長 = s.length; } });
+        /* ★ImageForge の「余白：自動」と同じ物差し（★12字を超える段がある、または4段 → 6割／それ以外 → 4割） */
+        const 長さの割 = (最長 > 12 || 段.length >= 4) ? 6 : 4;
+
+        const 文 = [];
+        const 寄せる = document.getElementById('teFit').checked;
+        let 割 = 長さの割;
+        if (寄せる) {
+          const 面 = te空き面を探す();
+          if (!面) {
+            posX.value = igu横位置(長さの割);
+            posY.value = 0;
+            文.push('・絵を読めなかったので、言葉の長さだけで決めました（右へ余白' + 長さの割 + '割）');
+          } else if (面.割 < 3) {
+            /* ★空き面が3割に足りない。★無理に寄せず、長さで決めて、逃げ道を言う */
+            posX.value = igu横位置(長さの割);
+            posY.value = 0;
+            文.push('・🔴 絵の中に、何も無い面が見つかりませんでした（端から ' + Math.round(面.幅 * 100) + '% しかありません）。'
+              + '言葉の長さだけで決めています（右へ余白' + 長さの割 + '割）。上の「文字の後ろに帯」を敷くと読みやすくなります');
+          } else {
+            割 = 面.割;
+            posX.value = (面.側 === 'right') ? igu横位置(割) : te左の位置(割);
+            posY.value = 面.縦;
+            文.push('・' + (面.側 === 'right' ? '右' : '左') + '側に、何も無い面が画面の ' + Math.round(面.幅 * 100) + '% ありました'
+              + (面.全部静か ? '（絵全体が静かなので、いちばん広い6割まで使えます）' : '')
+              + '。余白' + 割 + '割として、横位置を ' + posX.value + ' にしました');
+            if (面.縦 !== 0) { 文.push('・その面の中で静かなところへ、縦を ' + 面.縦 + ' ずらしました'); }
+            if (割 < 長さの割) { 文.push('・言葉の長さからは6割ほしいところですが、空き面が' + 割 + '割なので、そのぶん字を小さくしています'); }
+            文.push('・その面の明るさは ' + 面.明るさ + '（' + (面.明るさ < 110 ? '暗い ―― 白い字の配色が映えます' : (面.明るさ >= 170 ? '明るい ―― 濃い字の配色が映えます' : '中間 ―― 帯を敷くと読みやすくなります')) + '）');
+            文.push('・探し方は「模様の少なさ」だけです。顔や空を空き面と見ることがあるので、絵で確かめてください');
+          }
+          document.getElementById('posXVal').textContent = posX.value;
+          document.getElementById('posYVal').textContent = posY.value;
+        } else {
+          文.push('・横位置は動かしていません（いまのまま ' + posX.value + '）');
+        }
+
+        const bx = parseInt(posX.value, 10);
+        const 使える幅 = Math.min(bx, canvas.width - bx) * 2;
+        const em = parseInt(document.getElementById('teEm').value, 10) - 1;
+        const 強調あり = (em >= 0 && em < 段.length);
+        if (em >= 段.length) { 文.push('・強調の段（' + (em + 1) + '段目）がないので、強調はしていません'); }
+
+        /* ★強調があるときは、強調を先に測り、他の段をそれより小さく置く（★igu流し込む と同じ順番）。
+           ★強調が無いときは、全段を同じ大きさにそろえる（★いちばん長い段に合わせる）。 */
+        let s強調 = 0, 他上限 = 76, 揃え = 0;
+        if (強調あり) {
+          s強調 = igu収まる大きさ([段[em]], 92, 使える幅, 16);
+          他上限 = Math.max(30, Math.min(76, Math.floor(s強調 * 0.85)));
+        } else {
+          揃え = 80;
+          段.forEach((s) => { 揃え = Math.min(揃え, igu収まる大きさ([s], 80, 使える幅, 0)); });
+        }
+        const 大きさ表 = [];
+        for (let k = 0; k < 4; k++) {
+          const on = (k < 段.length);
+          document.getElementById('t' + k + '_enable').checked = on;
+          document.getElementById('t' + k + '_text').value = on ? 段[k] : '';
+          if (!on) { continue; }
+          const これが強調 = 強調あり && (k === em);
+          const 大きさ = !強調あり ? 揃え : (これが強調 ? s強調 : igu収まる大きさ([段[k]], 他上限, 使える幅, 0));
+          document.getElementById('t' + k + '_type').value = これが強調 ? 'marker' : 'plain';
+          document.getElementById('t' + k + '_size').value = 大きさ;
+          document.getElementById('t' + k + '_stroke').value = これが強調 ? 22 : 20;
+          document.getElementById('t' + k + '_mthick').value = これが強調 ? 32 : 0;
+          document.getElementById('t' + k + '_mpos').value = これが強調 ? 16 : 15;
+          大きさ表.push('第' + (k + 1) + '段 ' + 大きさ + 'px');
+        }
+        文.unshift('・' + 段.length + '段／いちばん長い段 ' + 最長 + '字' + (強調あり ? '／強調は' + (em + 1) + '段目' : '／強調なし'));
+        文.push('・大きさ：' + 大きさ表.join('／') + '（横に収まる大きさへ、こちらで合わせました）');
+        if (切った > 0) { 文.push('・この画面は4段までなので、5段目から先（' + 切った + '段）は通していません'); }
+        文.push('・ここから下の段は、手でいくらでも直せます');
+        note.textContent = 文.join('\n');
+
+        /* ★強調なしのときは 99 を入れる ―― ★どの段とも一致しないので、全段が同じ色（style1）になる。
+           ★-1 にすると「段の順で色が付く」元の形に戻り、★2段目だけ色が変わってしまう。 */
+        IGU強調段 = 強調あり ? em : 99;
+        render();
+        saveState();
+      };
+
       /* ★起動時 —— ★外の紙があればそちら、無ければ同梱の写し。★どちらを使ったかは必ず出す */
       (() => {
         const 外 = igu外の紙();
@@ -2407,6 +2629,9 @@ var TITLE_SPLIT = (function () {
         const b2 = document.getElementById('iguRead');
         if (b1) { b1.addEventListener('click', igu流し込む); }
         if (b2) { b2.addEventListener('click', igu読み取る); }
+        /* ★2026-10-18（濾）：言葉を手で打つ欄のボタン */
+        const b3 = document.getElementById('teBtn');
+        if (b3) { b3.addEventListener('click', te流し込む); }
         /* ★「もう出た回も、棚に出す」を押したら、棚を並べ直す（★読み込みはしない） */
         const s1 = document.getElementById('iguSumi');
         if (s1) { s1.addEventListener('change', igu棚を描く); }
