@@ -608,15 +608,17 @@ Check your Browserslist config to be sure that your targets are set up correctly
           <div>
             <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">モデル（★人物が多い絵は高品質へ）</label>
             <select id="genModelSel" class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-purple-500">
+              <!-- ★2026-10-18（濾）：★城主の裁定 K-1018121501【A】「新型 2.1 に替える」（2枚を並べて見て決められた）
+                   ★既定を新型 2.1 にした。★いちばん上へ移し selected を付けた（★他の選択肢は1つも消していない） -->
+              <option value="gemini-nano-banana-2.1" selected>新型 2.1（既定・2026-10 の最新・標準より安い・512px不可）</option>
               <option value="gemini-3.1-flash-image">標準（速い・2K/4K対応）</option>
               <option value="gemini-3-pro-image">高品質（複雑な構図・人物が複数）</option>
               <!-- ★2026-10-18（理子・舷門 14代目「濾」）：★Google の画像の型を確かめた（ai.google.dev の画像生成と料金のページ）
                    ★新しい型 … Nano Banana 2.1（gemini-nano-banana-2.1）。★2026-10-06 に一般提供。★Google は新しく作るならこれを勧めている
                      ★値段（1枚）… 1K 約0.034ドル／2K 約0.050ドル／4K 約0.113ドル ―― ★いまの「標準」（1K 0.067／2K 0.101／4K 0.151）の約半分〜3/4
                      🔴 ★512px は出せない
-                   ★既定（いちばん上の「標準」）は変えていない。★変えるかどうかは城主のご判断（★円さんへも1行 回した）
+                   ★（この時点では既定を変えず、城主のご判断へ上げた → 同日 K-1018121501【A】で既定にした）
                    🔴 ★旧版（gemini-2.5-flash-image）は 2026-10-02 に Google が止めた。★選べないようにし、名前は残した -->
-              <option value="gemini-nano-banana-2.1">新型 2.1（2026-10 の最新・標準より安い・512px不可）</option>
               <option value="gemini-2.5-flash-image" disabled>旧版（2026-10-02 に Google が停止・選べません）</option>
               <!-- ★2026-09-20（35代目「埋火」）：★城主の裁定 K-09201702【A】「安いモデルを足す（試し撃ち用）」
                    🔴 ★このモデルは 1K しか出せない。★下の sizeHint が、押す前に1行 伝える -->
@@ -880,12 +882,15 @@ function updateSizeGuide(){
    ★v2.6 では、枯れている generateContent 形式で Gemini の画像生成モデルを呼ぶ。
    🔴 ★v2.5 でこちらが凝った作りにして、★JSごと止めてしまった（★城主：何も選択できない）。
       ★v2.6 は退避した v2.4 から作り直し、★変更は「呼び先」と「受け取り」だけに絞ってある。 */
-var GEN_MODEL = "gemini-3.1-flash-image";
+/* ★2026-10-18（濾）：★城主の裁定 K-1018121501【A】で既定を新型 2.1 に。★直す前 … "gemini-3.1-flash-image" */
+var GEN_MODEL = "gemini-nano-banana-2.1";
 /* ★2026-09-20 埋火：★控えには lite を入れない（★1K しか出せないので、★落ちた先で画質が黙って下がる） */
 /* 🔴 ★2026-10-18（理子・舷門 14代目「濾」）：★2つ目の控えだった gemini-2.5-flash-image は 2026-10-02 に Google が止めた。
    ★落ちた先が止まった型だと、★1回ぶん必ず失敗して待たせる。★新型 2.1（★標準より安い）へ差し替えた。
    ★直す前 … ["gemini-3.1-flash-image","gemini-2.5-flash-image","gemini-3-pro-image"] */
-var GEN_FALLBACKS = ["gemini-3.1-flash-image","gemini-nano-banana-2.1","gemini-3-pro-image"];
+/* ★2026-10-18（濾）：★既定が 2.1 になったので、控えの順も 2.1 → 標準 → 高品質 に。
+   ★2.1 が落ちたら標準（★2K/4K を出せる・lite と違って画質は黙って下がらない）。★直す前 … ["gemini-3.1-flash-image","gemini-nano-banana-2.1","gemini-3-pro-image"] */
+var GEN_FALLBACKS = ["gemini-nano-banana-2.1","gemini-3.1-flash-image","gemini-3-pro-image"];
 function currentAspect(){
   return use==='photo'
     ? document.getElementById('aspectPhoto').value
