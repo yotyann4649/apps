@@ -2057,7 +2057,7 @@ const template = `【三星鑑 人間分析編：固定ベースプロンプト�
 [次回] 【第14回】{{NAME}}さんの今の運気と、これから進む道
 ＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
 【第14回】{{NAME}}さんの今の運気と、これから進む道
-[今回] ・現在の運気の流れと、これから進むと良い方向を語る回。四柱推命から空亡・大運{{KUBO}}・流年{{RYUNEN}}、数秘術から現在のパーソナルイヤー（生年月日{{BIRTH}}から計算される、今年のテーマを示す数字）、占星術からノード{{SAB_OTHER}}・木星{{JUPITER}}を統合する。
+[今回] ・現在の運気の流れと、これから進むと良い方向を語る回。四柱推命から空亡と大運（{{KUBO}}）・流年{{RYUNEN}}、数秘術から現在のパーソナルイヤー（生年月日{{BIRTH}}から計算される、今年のテーマを示す数字）、占星術からノード{{SAB_OTHER}}・木星{{JUPITER}}を統合する。
 ・まず専門用語をかみ砕いて紹介する：大運は「四柱推命における10年ごとの運気の大きな流れ」、空亡は「頑張っても結果が出にくい充電期間」、流年は「その年ごとに巡ってくる、1年単位の運気の流れ」を示す四柱推命の考え方。パーソナルイヤーは「生まれた月日の数字と今年の西暦を足して割り出す、1年ごとのテーマ」を示す数秘術の考え方（1〜9の9年サイクル）。ノース・ノードは「この人生で向かうべき成長の方向」を示す占星術の感受点。木星は「拡大・幸運・成長の方向」を示す天体。
 ・数秘術のパーソナルイヤーと、四柱推命の流年は、どちらも「今年」を扱うが切り口が違う。両方あれば、二つの視点が重なる部分・食い違う部分を面白がりながら統合してください（片方しかなければそちらだけで進める）。
 ・四柱の{{KUBO}}があれば、今が「守りの時期」か「攻めの時期」かを読み、それに合った過ごし方を提案してください。
@@ -2619,9 +2619,13 @@ function convertSenjutsu(j){
     const cnt={'木':0,'火':0,'土':0,'金':0,'水':0};
     [o.YEAR_P,o.MONTH_P,o.DAY_P,o.HOUR_P].forEach(gz=>{ if(gz&&gz.length>=2){ const a=SJ_T5[gz[0]],b=SJ_C5[gz[1]]; if(a)cnt[a]++; if(b)cnt[b]++; }});
     o.GOGYO=['木','火','土','金','水'].map(k=>k+cnt[k]).join(' ');
-    let ku='空亡'+((bz.kubou||[]).join(''));
+    // 2026-10-21 楣：城主の判断 K-1021221501【Ａ】。型の「空亡と大運（{{KUBO}}）」に「空亡辰巳…」がつながり「大運空亡辰巳」という別の語になり、
+    //   今年が空亡の中か外かも書いていなかったので、AI が台本ごとに逆の読みをした（千尋さんの当て）→ 型を「空亡と大運（…）」にし、今年の中／外を機械で書く
+    const KB=bz.kubou||[]; let ku='空亡は'+KB.join('')+'（天中殺）';
+    if(KB.length){ const ZS='子丑寅卯辰巳午未申酉戌亥'; const zb=y=>ZS[(((y-4)%12)+12)%12]; const ny=new Date().getFullYear(); const ys=[]; for(let y=ny-3;y<=ny+12;y++){ if(KB.includes(zb(y))) ys.push(y); }
+      ku+='。今年'+ny+'年（'+zb(ny)+'年）は空亡の'+(KB.includes(zb(ny))?'中':'外')+'（空亡の年：'+ys.join('・')+'年）'; }
     const by=(j.input&&j.input.date)?parseInt(j.input.date.slice(0,4)):null;
-    if(by&&bz.daiun&&Array.isArray(bz.daiun.daiuns)){ const age=new Date().getFullYear()-by; const cur=bz.daiun.daiuns.find(du=>du.ageStart<=age&&age<du.ageEnd); if(cur) ku+='／現在の大運 '+cur.gzStr+'（'+cur.tsuu+'）'+Math.floor(cur.ageStart)+'〜'+Math.floor(cur.ageEnd)+'歳'; }
+    if(by&&bz.daiun&&Array.isArray(bz.daiun.daiuns)){ const age=new Date().getFullYear()-by; const cur=bz.daiun.daiuns.find(du=>du.ageStart<=age&&age<du.ageEnd); if(cur) ku+='／いまの大運は '+cur.gzStr+'（'+cur.tsuu+'）'+Math.floor(cur.ageStart)+'〜'+Math.floor(cur.ageEnd)+'歳'; }
     o.KUBO=ku;
     // 日支蔵干（パートナーへの願い等に関連）
     const zk=bz.zoukanAll||{};
