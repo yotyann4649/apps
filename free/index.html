@@ -132,6 +132,9 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .ask-btn{display:inline-block;font-size:13.5px;font-weight:700;padding:11px 24px;border-radius:9px;background:var(--paper2);color:var(--ink2);border:1px solid var(--line);transition:.18s}
 .ask-btn:hover{border-color:var(--gold-soft);color:var(--gold)}
 .free-cta{max-width:680px;margin:34px auto 0;padding:0 22px}
+.to-cta{text-align:center;margin:-4px 0 20px;font-size:13px;line-height:1.7}
+.to-cta a{color:var(--ink2);border-bottom:1px solid var(--gold-soft);padding-bottom:1px}
+#free-cta{scroll-margin-top:76px}
 .free-cta-inner{background:var(--ink);color:#f3ead6;border-radius:18px;padding:40px 32px;text-align:center;box-shadow:0 18px 44px -22px rgba(36,28,18,.7)}
 .free-cta-eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold-soft);font-weight:700;margin-bottom:12px}
 .free-cta-title{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;color:#fdfaf3;margin-bottom:12px;letter-spacing:.03em}
@@ -223,6 +226,11 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
     <div class="id-copy" id="id-copy">—</div>
   </div>
 
+  <!-- 2026-10-22（理子・舷門 14代目「濾」）：結果のすぐ下に文字のリンクを1行（城主の判断 K-1021194003【A】伏せない）。
+       結果は1つも伏せない。下の受け取りの箱（#free-cta）へ飛ぶだけ。言葉は仮（結さんに見ていただく前）。
+       この囲みから p の閉じタグまでと、CSS の .to-cta の2行と #free-cta の1行、.free-cta の id を消せば元に戻る。 -->
+  <p class="to-cta"><a href="#free-cta">この結果の読み方は『三星鑑のトリセツ』に。<br>受け取り方は、この下にあります ↓</a></p>
+
   <!-- 気質タイプカード -->
   <div class="type-card" id="type-card">
     <div class="type-header">
@@ -299,7 +307,7 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
      ④ 渡し方は「フォームの送信後の画面」。メールでは送らない（K-1007205458【A】）
      ⑤「いまは販売していません…」は矩さんの文（10-07）。「退職後」は外した
      フォームのリンクは元と同じ URL。登録ボタンには id="btn-free-cta" を付け、押された数を数える（free_cta）。 -->
-<div class="free-cta">
+<div class="free-cta" id="free-cta">
   <div class="free-cta-inner">
     <div class="free-cta-eyebrow">診断のあとに</div>
     <div class="free-cta-title">『三星鑑のトリセツ』をお渡しします</div>
@@ -425,39 +433,39 @@ const PILLAR={
 const TYPES=[
   {id:'creator',   name:'クリエイター型',  icon:'🎨',
    color:'#b07030', bg:'#fff8ee', border:'#d4a84a',
-   tagline:'感性で世界を塗り替える、表現の人',
+   tagline:'作っている間は、時間を忘れる人',
    meters:{ie:70,ef:55,ni:72},
    traits:['表現力が高い','独創的','感性豊か','芸術的','自由を愛する'],
    traitColor:'#b07030', traitBg:'#fff4e0',
-   desc:'あなたは、何かを作り・表現することで最も輝く人です。言葉・音楽・デザイン・料理・どんな形でも、あなたが生み出すものには独特の「あなたらしさ」が宿ります。ルーティンよりも創造の自由を愛し、感性に従って動くとき最大のパフォーマンスを発揮します。'},
+   desc:'何かを作っているときが、いちばん自分らしくいられる人です。文章でも、料理でも、部屋の並べ方でも、手を動かしている間は時間を忘れます。ただ、決められた手順をそのまま繰り返す日が続くと、急に息が詰まる。怠けたいのとは、たぶん違います。手順より先に「こうしたら」が浮かんでしまうので。作ったものを人に見せる直前に、少し怖くなるのも、同じところから来ているのかもしれません。'},
   {id:'caregiver', name:'サポーター型',   icon:'🤝',
    color:'#3d7a6a', bg:'#e8f5f2', border:'#5aa898',
-   tagline:'人を支え、場を温める、共感の人',
+   tagline:'人の気持ちを、先に受け取ってしまう人',
    meters:{ie:32,ef:82,ni:50},
    traits:['共感力が高い','気配り上手','思いやりがある','チームを支える','聞き上手'],
    traitColor:'#3d7a6a', traitBg:'#e4f3ef',
-   desc:'あなたは、誰かのそばにいて支えるとき、最も自分らしくいられます。相手の気持ちを察する力が誰よりも高く、その温かさが周囲の人に安心感を与えます。縁の下の力持ちとして、あなたがいるだけでチームや家族の空気が変わります。'},
+   desc:'相手が言う前に、なんとなく気持ちが分かってしまう人です。場が少し重くなると、自分から話を振って、笑って、うなずいて。その場では平気なのに、家に帰って一人になってから、どっと疲れが来ます。気が弱いからではないかもしれません。人の気持ちを先に受け取るぶん、その重さも一緒に持って帰っているので。断れなかった頼みごとを、夜になって思い返していることもあると思います。'},
   {id:'pioneer',   name:'パイオニア型',   icon:'🚀',
    color:'#8a3a2a', bg:'#fdf0ee', border:'#c07060',
-   tagline:'誰よりも先へ、道なき道を行く人',
+   tagline:'考えるより先に、足が出てしまう人',
    meters:{ie:80,ef:42,ni:55},
    traits:['行動力がある','リーダーシップ','決断が速い','挑戦を好む','意志が強い'],
    traitColor:'#8a3a2a', traitBg:'#fde8e4',
-   desc:'あなたは、誰も踏み入れていない場所に自ら踏み込んでいく人です。リスクを恐れず、直感と行動力で道を切り開きます。スピード感があり、チームを引っ張るリーダーとして自然と前に立ちます。時に独断的に見えることもありますが、それがあなたの推進力の源です。'},
+   desc:'迷っている時間がもったいなくて、先に動いてしまう人です。0から5まで段があるとしたら、1つ2つ飛ばして先へ行く。決めるのは早いです。ただ、気づいたら後ろに誰もいない、ということがあります。相手が追いつく前に話を進めて、あとから「聞いてない」と言われる。悪気はないのに、強い人だと思われてしまう。走るのをやめなくていいと思います。振り返る回数を、一つ増やすくらいで。'},
   {id:'thinker',   name:'シンカー型',     icon:'🔬',
    color:'#3a5a8a', bg:'#eef2f8', border:'#6a8abf',
-   tagline:'深く考え、本質を見抜く、知の人',
+   tagline:'納得するまで、ひとりで考え続ける人',
    meters:{ie:28,ef:35,ni:82},
    traits:['論理的思考','分析力が高い','深掘りが得意','客観的','研究熱心'],
    traitColor:'#3a5a8a', traitBg:'#e4ecf8',
-   desc:'あなたは、物事の表面ではなく、その奥にある本質を見抜く力を持っています。一人で静かに考える時間が好きで、深く掘り下げることで他の人が気づかないような答えを見つけます。感情より論理を重視する傾向があり、信頼できる専門家として周囲に頼られます。'},
+   desc:'自分が納得するまで考えないと、前に進めない人です。一人で静かに考える時間があると落ち着きます。何年も同じことを考え続けて、ふとした時に、自分なりの答えが出ることがあります。その代わり、考えが止まらない夜もある。布団に入ってからも、昼間の会話を頭の中で何度も組み立て直している。人に話すと「考えすぎ」と言われて、それ以上は話さなくなる。考えすぎなのではなく、考えないと動けない作りなのかもしれません。'},
   {id:'connector', name:'コネクター型',   icon:'🌐',
    color:'#5a3a8a', bg:'#f3f0f8', border:'#9080c8',
-   tagline:'人と人をつなぎ、世界を広げる人',
+   tagline:'人と人のあいだに、気づくと立っている人',
    meters:{ie:65,ef:68,ni:62},
    traits:['人脈が広い','調和を大切にする','社交的','柔軟性がある','橋渡しが得意'],
    traitColor:'#5a3a8a', traitBg:'#ece8f5',
-   desc:'あなたは、人と人の間に立ち、つなぎ合わせることが自然とできる人です。さまざまな立場の人と関係を築き、その縁を通じて場や組織に新しい風を吹き込みます。外向きと内向きの両方の顔を持ち、どんな人とも共鳴できる稀有なバランス感覚の持ち主です。'},
+   desc:'気がつくと、人と人のあいだに立っている人です。こっちの人の話を、あっちの人に分かる言葉で渡す。初めての集まりでも、いつのまにか誰かと誰かを引き合わせています。そのぶん、相手ごとに話し方を変えているので、「で、あなたはどう思うの」と聞かれると、すぐには答えが出ないことがあります。みんなの話は分かるのに、自分の話だけ、どこにも置き場所がない。'},
 ];
 
 // パーソナルイヤーデータ
