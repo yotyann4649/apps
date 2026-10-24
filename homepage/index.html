@@ -22,11 +22,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
+/* 2026-10-23（理子・舷門 14代目「濾」）：三星鑑の色を2組に寄せた（城主の判断 K-1021194004【A】）。
+   読む画面の「紙の面」へ、紙・墨・金の3つだけを揃えた。元は 紙#f4efe6／墨#211b14／金#8a6e2f。
+   下の .nav の地（rgba）も、紙に合わせて同じ値へ。ほかの色と部品の形は変えていない（最終確認画面と同じ形）。 */
 :root{
-  --paper:#f4efe6; --paper-soft:#faf6ee; --paper-deep:#ece4d4;
-  --ink:#211b14; --ink-2:#574d40; --ink-3:#9a8f7c;
+  --paper:#f6efe1; --paper-soft:#faf6ee; --paper-deep:#ece4d4;
+  --ink:#241c12; --ink-2:#574d40; --ink-3:#9a8f7c;
   --rule:#d9cfbd; --rule-soft:#e6ddcc;
-  --gold:#8a6e2f; --gold-soft:#b29355;
+  --gold:#9a7b2e; --gold-soft:#b29355;
   --maxw:720px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -51,7 +54,7 @@ section{scroll-margin-top:88px}
 .shot img{width:100%;height:auto;display:block;border:1px solid var(--rule)}
 .shot figcaption{margin:14px 2px 0;text-align:center;font-size:12.5px;color:var(--ink-3);line-height:1.95}
 
-.nav{position:sticky;top:0;z-index:60;background:rgba(244,239,230,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--rule)}
+.nav{position:sticky;top:0;z-index:60;background:rgba(246,239,225,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--rule)}
 .nav-in{max-width:1040px;margin:0 auto;padding:15px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px}
 .mark{display:flex;align-items:center;gap:12px}
 .seal{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;flex-shrink:0}
@@ -139,7 +142,7 @@ section{scroll-margin-top:88px}
 .sample-foot .lbl{font-size:12.5px;color:var(--ink-3);margin-bottom:18px}
 @media(max-width:680px){.sample-doc{padding:28px 24px 0}.sample-foot{padding:6px 24px 28px}}
 
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.tiers{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
 .tier{padding:34px 26px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);display:flex;flex-direction:column}
 .tier.feat{background:var(--paper-soft)}
 .tier-mark{font-family:'EB Garamond',serif;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);height:18px;margin-bottom:10px}
@@ -150,6 +153,7 @@ section{scroll-margin-top:88px}
 .tier-link{font-family:'Zen Kaku Gothic New',sans-serif;font-size:13.5px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:7px;border-bottom:1px solid var(--gold-soft);padding-bottom:3px;align-self:flex-start;transition:.2s}
 .tier-link:hover{gap:11px;border-color:var(--gold)}
 .tier-link .ar{font-family:'EB Garamond',serif}
+.tier-buy{margin-top:18px;align-self:flex-start;padding:12px 22px;font-size:14px}
 .price-cap{text-align:center;margin-top:18px;font-size:12px;color:var(--ink-3)}
 @media(max-width:680px){.tiers{grid-template-columns:1fr;border-left:none}.tier{border-right:none}}
 
@@ -201,7 +205,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 
 /* === 音声セット === */
-.audio-split{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin-bottom:0}
+.audio-split{display:grid;grid-template-columns:1fr;border-top:1px solid var(--rule);border-left:1px solid var(--rule);margin-bottom:0}
 .audio-col{padding:30px 26px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
 .audio-k{font-family:'EB Garamond',serif;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
 .audio-n{font-family:'EB Garamond',serif;font-size:48px;font-weight:500;color:var(--ink);line-height:1;margin-bottom:14px}
@@ -250,6 +254,15 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
 .refund-h{font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;margin-bottom:12px}
 .refund-b{font-size:16px;line-height:2.0;color:var(--ink)}
 .refund-b + .refund-b{margin-top:14px}
+/* 2026-10-18 お知らせ登録（メール1欄）。理子・舷門 14代目「濾」 */
+.nf-form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:520px;margin:0 auto}
+.nf-form input{flex:1 1 260px;min-width:0;font-size:16px;padding:14px 16px;border-radius:2px;border:1px solid #5a4e3c;background:#2b241b;color:var(--paper);font-family:inherit}
+.nf-form input:focus{outline:2px solid var(--gold-soft);outline-offset:1px;border-color:var(--gold-soft)}
+.nf-form .btn[disabled]{opacity:.6;cursor:wait}
+.nf-msg{min-height:1.9em;margin-top:12px;font-size:14px;color:#cdc2ac}
+.nf-msg.is-soft{color:#e2c98f}
+.nf-done{display:none;padding:18px 0 4px;color:var(--paper);font-size:15px;line-height:2}
+.nf-done.show{display:block}
 </style>
 </head>
 <body>
@@ -335,7 +348,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
         <div class="diag-num garamond" id="diag-num">—</div>
         <div class="diag-kw" id="diag-kw">—</div>
         <div class="diag-desc" id="diag-desc">—</div>
-        <a href="#waitlist" class="btn btn-line">続きの指標を、先行登録で受け取る <span class="btn-arrow">→</span></a>
+        <a href="#waitlist" class="btn btn-line">続きの指標の案内を、先行登録で受け取る <span class="btn-arrow">→</span></a>
         <div style="margin-top:14px"><a href="https://yotyann4649.github.io/apps/free/" target="_blank" rel="noopener" class="btn btn-fill">もっと詳しく診断する（無料版アプリ） <span class="btn-arrow">→</span></a></div>
         <div class="diag-note">これは数秘術の1指標のみ。三星鑑の統合分析は、占星術10天体・四柱推命・五行を重ねて立体的に読み解きます。</div>
       </div>
@@ -380,12 +393,11 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
       <p class="sec-lead">レポートに、聴きたい回の<strong>音声解説</strong>を組み合わせられます。あなたの分析を、二人のパーソナリティ（分析役と聞き手）が語り合う番組として ―― 通勤中でも、家事をしながらでも、自分という人を"聴いて"理解できます。</p>
     </div>
 
+    <!-- 2026-10-16（理子・舷門 14代目「濾」）：基本シリーズ31回の列を外した。
+         城主の裁定 K-1014034142【Ａ】「31回は売り出しの日には出さない（作った物は消さない）」による。
+         列が1つになったので、上の .audio-split も1列にしてある。戻すときは、退避
+         _退避\20261016_LPの値札と購入ボタンを入れる前_理子濾\ からこの列と CSS の1行を戻す。 -->
     <div class="audio-split reveal">
-      <div class="audio-col">
-        <div class="audio-k">Series</div>
-        <div class="audio-n garamond">31<span>回</span></div>
-        <div class="audio-d">あなたという人を、核・恋愛・仕事・才能・幼少期から今に至るまで、通しで読み解く基本シリーズ。まず全体像をつかみたい方へ。</div>
-      </div>
       <div class="audio-col">
         <div class="audio-k">Single</div>
         <div class="audio-n garamond">181<span>回</span></div>
@@ -429,8 +441,8 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
       <div class="audio-cat"><span class="ac-en">+</span><span class="ac-t">ほか4カテゴリ</span><span class="ac-n">全27回</span><span class="ac-sub">ステータスカード／隠れた指標／恋愛深掘り／総合診断</span></div>
     </div>
 
-    <p class="audio-foot reveal">PDFレポートに、お好きな本数の音声を組み合わせた<strong>音声セット</strong>もご用意予定です。基本シリーズで全体像を、完結回でテーマを深掘り ―― 読む／聴くの二段で、自分という人をより立体的に。</p>
-    <div class="audio-cta reveal"><a href="#waitlist" class="btn btn-line">音声セットの案内を、先行登録で受け取る <span class="btn-arrow">→</span></a></div>
+    <p class="audio-foot reveal">PDFレポートに<strong>解説音声</strong>をつけたコースも、お選びいただけます。全体像はレポートで、気になるテーマは完結回で深掘り ―― 読む／聴くの二段で、自分という人をより立体的に。</p>
+    <div class="audio-cta reveal"><a href="#waitlist" class="btn btn-line">音声の案内を、先行登録で受け取る <span class="btn-arrow">→</span></a></div>
   </div>
 </section>
 
@@ -439,33 +451,36 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <div class="sec-head reveal">
       <span class="eyebrow">Analysis Menu</span>
       <h2 class="sec-title">分析メニュー。</h2>
-      <p class="sec-lead">「読む」PDFレポートを軸に、聴きたい音声の本数で選べます（リリース時の予定価格）。安易な簡易版は作らず、どのコースも一人ひとり固有の分析をお届けします。</p>
+      <p class="sec-lead">「読む」PDFレポートを軸に、解説音声をつけるかどうかで選べます（リリース時の予定価格）。安易な簡易版は作らず、どのコースも一人ひとり固有の分析をお届けします。</p>
     </div>
+    <!-- 2026-10-16（理子・舷門 14代目「濾」）：値札を城主の裁定 K-1014034142【Ａ】（円さんの表）のとおりに直した。
+           ¥9,800 … 据え置き（札の中身も変えていない）
+           ¥14,800（音声2本） … 下げて、¥9,800＋解説音声 +¥3,000＝¥12,800 の札に替えた
+           ¥21,800（音声5本） … 棚から下げた（札ごと外した）。札が2枚になったので .tiers も2列にしてある
+           「人気」の印 … ¥12,800 の札は新しい札で、売った記録が無いので付けていない
+         2026-10-24（理子・舷門 14代目「濾」）：城主の裁定 K-1023101803【Ａ】で、¥9,800 の札から音声ガイド全6回を外し、
+           ¥12,800 の札の中身にした（円さんの字のまま）。「音声は本数の追加も可能です」は、本数で選ぶ札が無くなったので完結回の案内に替えた。
+           完結回の箱に id="single" を足した（凛さんの薦め文が ?ep=番号#single で飛ぶ先。K-1015173127【Ａ】の約束③）。
+         data-checkout の印は、購入ボタンの仕掛け（K-1015173127【Ａ】）がボタンを描く場所の目印。
+         TRINITY_CHECKOUT.enabled が false のあいだは、印があっても画面は何も変わらない。 -->
     <div class="tiers reveal">
-      <div class="tier">
+      <div class="tier" data-checkout="standard">
         <div class="tier-mark">Report</div>
         <div class="tier-name">レポート</div>
         <div class="tier-price garamond">¥9,800</div>
-        <div class="tier-desc">約25,000字・全5章のPDF統合レポート（読む）に加えて、<strong style="color:var(--ink)">音声解説・レポート音声ガイド全6回（聴く）</strong>が付いてきます。PDFの内容を、耳でも聴いて理解できる構成です。あなたという人の設計図を、まずじっくり手元に。</div>
+        <div class="tier-desc">約25,000字・全5章のPDF統合レポート（読む）。あなたという人の設計図を、まずじっくり手元に。</div>
         <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
       </div>
-      <div class="tier feat">
-        <div class="tier-mark">Report + Audio · 人気</div>
-        <div class="tier-name">レポート＋音声2本</div>
-        <div class="tier-price garamond">¥14,800</div>
-        <div class="tier-desc">PDFレポート＋レポート音声ガイド全6回に、聴きたい完結回を2本追加（読む＋聴く）。全体像と、気になるテーマを深掘りできる定番です。<br><span style="color:var(--gold);font-size:14px;font-weight:700">完結回を単品で買うより¥1,000お得です。</span></div>
-        <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
-      </div>
-      <div class="tier">
+      <div class="tier feat" data-checkout="plus">
         <div class="tier-mark">Report + Audio</div>
-        <div class="tier-name">レポート＋音声5本</div>
-        <div class="tier-price garamond">¥21,800</div>
-        <div class="tier-desc">PDFレポート＋レポート音声ガイド全6回に、完結回を5本追加。複数のテーマをじっくり聴き込み、自分という人と深く向き合いたい方へ。<br><span style="color:var(--gold);font-size:14px;font-weight:700">完結回を単品で買うより¥3,000お得です。</span></div>
+        <div class="tier-name">レポート＋解説音声</div>
+        <div class="tier-price garamond">¥12,800</div>
+        <div class="tier-desc">レポート（¥9,800）に、<strong style="color:var(--ink)">そのレポートを二人の声で読み解く音声ガイド全6回（1回15分ほど）</strong>を足したコースです。読んで終わりにせず、自分という人を、耳でももう一度たどりたい方へ。</div>
         <a href="#waitlist" class="tier-link">先行登録でリリースを待つ <span class="ar">→</span></a>
       </div>
     </div>
-    <div class="price-cap reveal">音声は本数の追加も可能です。</div>
-    <div class="reveal" style="margin-top:24px;padding:20px 24px;border:1px solid var(--rule);border-radius:2px;text-align:center">
+    <div class="price-cap reveal">気になるテーマは、完結回（1本 ¥3,000）で足せます。</div>
+    <div class="reveal" data-checkout="single" id="single" style="margin-top:24px;padding:20px 24px;border:1px solid var(--rule);border-radius:2px;text-align:center">
       <div style="font-size:14.5px;color:var(--ink)"><strong>完結回</strong>は、レポートなしで単品購入も可能です。全181本のカタログから、気になるテーマだけ自由にお選びいただけます。</div>
       <div class="garamond" style="font-size:26px;color:var(--ink);margin-top:8px">¥3,000<span style="font-size:14px;color:var(--ink-2)"> ／ 1本</span></div>
     </div>
@@ -560,10 +575,26 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
       <p style="color:#cdc2ac;font-size:14.5px;line-height:2;margin-bottom:22px">
         三星鑑の統合レポートは、いま販売に向けて準備を進めています。販売を始める<strong style="color:var(--paper)">時期が決まりましたら</strong>、ご登録いただいた方へ最初にお知らせします。
       </p>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="btn btn-gold">お知らせを受け取る（無料）</a>
+      <!-- 2026-10-18（理子・舷門 14代目「濾」）：ここにあった Google フォームへのボタン1行を、メール1欄に替えた（K-1008194446【Ａ】）。
+           元の1行は _退避\20261018_LPの登録をメール1欄へ替える前_理子濾\ にある。送り先は同じフォーム（メール欄 entry.1648627739 だけが必須）。
+           フォームの「送信後の画面」でお渡ししていたトリセツへの入り口は、ここでは画面が出ないので、受け付けの言葉の中へ移した。 -->
+      <form id="nf-form" class="nf-form" novalidate>
+        <label for="nf-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">メールアドレス</label>
+        <input id="nf-email" name="email" type="email" inputmode="email" autocomplete="email"
+               autocapitalize="off" spellcheck="false" placeholder="メールアドレス" required>
+        <button id="nf-btn" type="submit" class="btn btn-gold" data-cta="btn-homepage-cta">お知らせを受け取る（無料）</button>
+      </form>
+      <p id="nf-msg" class="nf-msg" role="status" aria-live="polite"></p>
+      <div id="nf-done" class="nf-done" role="status" aria-live="polite">
+        ありがとうございます。受け付けました。<br>
+        ご登録のお礼の『三星鑑のトリセツ』は、<a href="https://yotyann4649.github.io/apps/free/torisetsu/" target="_blank" rel="noopener" style="color:var(--gold-soft)">こちら</a>から開けます。メールでは届かないので、いま開いておいてください。<br>
+        販売を始める時期が決まりましたら、このアドレスへ最初にお知らせします。
+      </div>
+      <iframe name="nf-sink" id="nf-sink" title="送信用" style="display:none" tabindex="-1" aria-hidden="true"></iframe>
       <p style="color:#8e8270;font-size:12.5px;line-height:1.9;margin-top:16px">
         ※ この時点でのお申し込み・お支払いはありません。お知らせをお送りするだけです。<br>
-        ※ 配信はいつでも停止できます。
+        ※ 配信はいつでも停止できます。<br>
+        ※ ご登録のアドレスは、販売を始めるときのお知らせのためだけに使います。
       </p>
     </div>
     <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener" class="btn btn-gold">noteで記事を読む</a>
@@ -579,6 +610,297 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <p class="foot-note">© 2026 三星鑑（さんせいかん）— 性格分析 × 才能診断 × 行動特性 統合分析。<br>占星術・四柱推命・数秘術を、占いではなく客観データ分析の手法として用いています。</p>
   </div>
 </footer>
+
+<!-- 購入ボタンの仕掛け（部品2）。中身は 10_メンバーの部屋\trinity_riko\_作業\20261013_買った後の画面\部品2_購入ボタン.js と同じ。
+     2026-10-16 理子濾・K-1015173127【Ａ】。enabled が false のあいだは何もしない。 -->
+<script>/*TC_BEGIN*/
+/* ============================================================
+   部品2：LP の値札に購入ボタンを描く（試作・非公開）
+   作成：理子〔舷門・14代目「濾」〕2026-10-13
+   出どころ：04_運用ツール\夜の戦略会議\第20回_答え_理子.md「共通(1) 部品2」
+
+   ★2026-10-16 に LP の正本へ入れた（城主の裁定 K-1015173127【Ａ】・値札の直しと同じ1回）。
+     LP の中の写しと、この紙は同じ中身にしてある。直すときは両方を同時に直すこと。
+   ★LP 側の TRINITY_CHECKOUT を、そのまま読む。新しい箱は作らない。
+   ★2026-10-22：薦め文のリンク（…?ep=A-01）から来た方の番号を、完結回のボタンに持たせる所を足した
+     （凛さんの形2・配-077）。知っている番号は TRINITY_CHECKOUT.episodes から作る。
+
+   守ること（第20回で約束した3つ）
+     ① enabled が true 以外のあいだは、何もしない（画面は1ピクセルも変わらない）
+     ② URL が空の値札には、ボタンを出さない（空のボタンを押させない）
+     ③ 完結回は、選んだ回の番号を、買ったあとの入力画面まで運ぶ
+
+   ★決済の処理は1行も置かない。置くのはリンクだけ（円さんの条件②）。
+   ★ブラウザでも Node でも読めるように、最後で両方へ渡している。
+   ============================================================ */
+(function (root) {
+  'use strict';
+
+  // 値札の種類。LP の TRINITY_CHECKOUT.links の名前と同じにしてある
+  // 2026-10-16：値札の直し（K-1014034142【Ａ】）で ¥21,800（premium）の札が下がったので外した。
+  //            plus は ¥14,800（音声2本）から ¥12,800（レポート＋解説音声）に替わった。
+  var PLANS = {
+    standard: { label: 'レポートを申し込む',            eps: 0 },
+    plus:     { label: 'レポート＋解説音声を申し込む',  eps: 0 },
+    single:   { label: 'この回を申し込む',              eps: 1 }
+  };
+
+  // 選んだ回を、決済のあいだ預けておく場所の名前と、預かる長さ（24時間）
+  var INTENT_KEY = 'sanseikan_checkout_intent';
+  var INTENT_TTL = 24 * 60 * 60 * 1000;
+
+  /* ── URL を確かめる ─────────────────────────
+     https で始まるものだけ通す。空・空白だけ・javascript: は「無い」と同じに扱う。
+     （貼り間違いで押せないボタンや、危ないボタンが出るほうが、出ないより悪い） */
+  function isSafeUrl(u) {
+    if (typeof u !== 'string') return false;
+    var s = u.trim();
+    if (!s) return false;
+    if (!/^https:\/\//i.test(s)) return false;
+    if (/[\s<>"']/.test(s)) return false;
+    return true;
+  }
+
+  /* ── 回の番号を整える（Silent Sanitize）──────────
+     お客様が「ａ１」「a-1」「Ａ－０１」と書いても、黙って「A-01」に揃える。
+     責めない。ただし、知らない番号は通さない（known を渡したとき）。 */
+  function normalizeEpisodeId(s, known) {
+    if (s == null) return '';
+    var t = String(s)
+      // 全角の英数字を半角へ
+      .replace(/[Ａ-Ｚａ-ｚ０-９]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+      // いろいろな横棒を、ふつうのハイフンへ
+      .replace(/[‐‑‒–—―ー－−]/g, '-')
+      .replace(/\s+/g, '')
+      .toUpperCase();
+    var m = t.match(/^([A-Z])-?(\d{1,2})$/);
+    if (!m) return '';
+    var n = parseInt(m[2], 10);
+    if (n < 1) return '';
+    var id = m[1] + '-' + (n < 10 ? '0' + n : String(n));
+    if (known && !known[id]) return '';
+    return id;
+  }
+
+  /* 「A-01, b3、C-12」のような並びを、整えた番号の配列にする（重複は1つに、順番は保つ） */
+  function parseEpisodeList(s, known) {
+    if (s == null) return [];
+    var parts = String(s).split(/[,，、・\/\s]+/);
+    var out = [], seen = {};
+    for (var i = 0; i < parts.length; i++) {
+      var id = normalizeEpisodeId(parts[i], known);
+      if (id && !seen[id]) { seen[id] = true; out.push(id); }
+    }
+    return out;
+  }
+
+  /* ── 知っている番号の表を作る ──────────────────
+     「A23 B8」のような短い書き方を { 'A-01': true, … } にする。A23 は A-01〜A-23 のこと。
+     読めない書き方は飛ばす。空なら空の表になり、どの番号も通さない（知らないものは通さない側へ倒す）。 */
+  function knownFromSpec(spec) {
+    var known = {};
+    if (typeof spec !== 'string') return known;
+    var parts = spec.split(/\s+/);
+    for (var i = 0; i < parts.length; i++) {
+      var m = parts[i].match(/^([A-Z])(\d{1,2})$/);
+      if (!m) continue;
+      var n = parseInt(m[2], 10);
+      for (var k = 1; k <= n; k++) known[m[1] + '-' + (k < 10 ? '0' + k : String(k))] = true;
+    }
+    return known;
+  }
+
+  /* ── URL の ?ep= を読む（形2）─────────────────
+     薦め文のリンク「…?ep=A-01#single」から来た方の番号を読む。
+     「ａ１」「a-1」も A-01 に揃える。知らない番号・壊れた書き方は、黙って捨てる。
+     戻り値：整えた番号の配列（無ければ空） */
+  function episodesFromSearch(search, known) {
+    if (typeof search !== 'string' || !known) return [];
+    var m = search.match(/[?&]ep=([^&#]*)/i);
+    if (!m) return [];
+    var raw;
+    try { raw = decodeURIComponent(m[1].replace(/\+/g, ' ')); } catch (e) { return []; }   // 壊れた %xx は読まない
+    if (raw.length > 64) return [];
+    return parseEpisodeList(raw, known);
+  }
+
+  /* ── 預ける・受け取る ──────────────────────
+     決済の画面へ行って戻ってくるあいだ、選んだ回を localStorage に預ける。
+     ★印は「預けられたか」で返す（道具があるかではない。2026-08-22 の教訓）。 */
+  function saveIntent(storage, plan, eps, now) {
+    if (!storage || !PLANS[plan]) return false;
+    var data = { plan: plan, eps: (eps || []).slice(0, 20), t: now == null ? Date.now() : now };
+    try {
+      storage.setItem(INTENT_KEY, JSON.stringify(data));
+      return storage.getItem(INTENT_KEY) !== null;
+    } catch (e) {
+      return false;   // プライベートモードなど。預けられなくても購入は止めない
+    }
+  }
+
+  function readIntent(storage, now) {
+    if (!storage) return null;
+    try {
+      var raw = storage.getItem(INTENT_KEY);
+      if (!raw) return null;
+      var d = JSON.parse(raw);
+      var t = now == null ? Date.now() : now;
+      if (!d || !PLANS[d.plan] || typeof d.t !== 'number') return null;
+      if (t - d.t > INTENT_TTL || t < d.t) return null;   // 古い、または時計が逆
+      var eps = [];
+      for (var i = 0; i < (d.eps || []).length; i++) {
+        var id = normalizeEpisodeId(d.eps[i]);
+        if (id) eps.push(id);
+      }
+      return { plan: d.plan, eps: eps, t: d.t };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* ── 値札にボタンを描く ─────────────────────
+     LP の値札に data-checkout="standard" などの印を付けておき、それを探して描く。
+     search は location.search（無ければ空でよい）。
+     戻り値：描いたボタンの数（何もしなければ 0） */
+  function renderBuyButtons(doc, cfg, storage, search) {
+    // ① enabled が true 以外なら、何もしない。"true" という文字も通さない
+    if (!doc || !cfg || cfg.enabled !== true || !cfg.links) return 0;
+
+    var marks = doc.querySelectorAll('[data-checkout]');
+    var count = 0;
+    for (var i = 0; i < marks.length; i++) {
+      var box = marks[i];
+      var plan = box.getAttribute('data-checkout');
+      if (!PLANS[plan]) continue;
+      if (box.querySelector('.tier-buy')) { count++; continue; }   // 2回呼ばれても2本にしない
+
+      var url = cfg.links[plan];
+      if (!isSafeUrl(url)) continue;                                // ② URL が空なら出さない
+
+      var a = doc.createElement('a');
+      a.className = 'btn btn-line tier-buy';
+      a.setAttribute('href', url.trim());
+      a.setAttribute('rel', 'noopener');
+      a.setAttribute('data-plan', plan);
+      a.textContent = PLANS[plan].label;
+      // 完結回：薦め文のリンクから来た方なら、その回の番号をボタンに持たせる（押せば下の saveIntent が預ける）
+      if (plan === 'single') {
+        var eps = episodesFromSearch(search, knownFromSpec(cfg.episodes));
+        if (eps.length) a.setAttribute('data-eps', eps.join(','));
+      }
+      a.addEventListener('click', makeClick(plan, storage));
+
+      // 先行登録のリンクがあれば、その場所に置き換える（売り始めたら「待つ」は要らない）
+      var wait = box.querySelector('a[href="#waitlist"]');
+      if (wait && wait.parentNode) {
+        wait.parentNode.insertBefore(a, wait);
+        wait.style.display = 'none';
+      } else {
+        box.appendChild(a);
+      }
+      count++;
+    }
+    return count;
+  }
+
+  /* 押したとき：選んだ回を預けて、二度押しを止める */
+  function makeClick(plan, storage) {
+    return function (ev) {
+      var el = this;
+      if (el.getAttribute('aria-disabled') === 'true') {   // 二度押しロック（DNA-181/199）
+        if (ev && ev.preventDefault) ev.preventDefault();
+        return;
+      }
+      var eps = [];
+      var held = el.getAttribute('data-eps');               // 完結回なら、一覧で選んだ番号が入っている
+      if (held) eps = parseEpisodeList(held);
+      saveIntent(storage, plan, eps);
+      el.setAttribute('aria-disabled', 'true');
+      el.setAttribute('data-label', el.textContent);
+      el.textContent = '決済の画面を開いています…';
+    };
+  }
+
+  /* 戻るボタンで LP に帰ってきたとき、押せないボタンが残らないようにする */
+  function releaseLocks(doc) {
+    if (!doc) return 0;
+    var locked = doc.querySelectorAll('.tier-buy[aria-disabled="true"]');
+    for (var i = 0; i < locked.length; i++) {
+      locked[i].removeAttribute('aria-disabled');
+      var lab = locked[i].getAttribute('data-label');
+      if (lab) locked[i].textContent = lab;
+    }
+    return locked.length;
+  }
+
+  /* ── 完結回：一覧で選んだ回を、購入ボタンへ持たせる ─────
+     エピソード一覧で「この回にする」を押したら呼ぶ。
+     戻り値：決済へ進む URL（出せないときは空。空ならボタンを出さない） */
+  function singleCheckoutUrl(cfg, ids, known) {
+    if (!cfg || cfg.enabled !== true || !cfg.links) return '';
+    var list = parseEpisodeList((ids || []).join(','), known);
+    if (!list.length) return '';
+    return isSafeUrl(cfg.links.single) ? cfg.links.single.trim() : '';
+  }
+
+  /* ── 入力画面（Google フォーム）へ、分かっていることを事前入力する ─
+     entry の番号は、フォームを作った日にしか分からない。いまは map を空で持つ。
+     map = { plan:'entry.111', eps:'entry.222', email:'entry.333' } のように渡す */
+  function formPrefillUrl(base, map, data) {
+    if (!isSafeUrl(base)) return '';
+    var q = [];
+    map = map || {};
+    data = data || {};
+    var planName = { standard: 'レポート', plus: 'レポート＋解説音声', single: '完結回（単品）' };
+    if (map.plan && data.plan && planName[data.plan]) q.push(map.plan + '=' + encodeURIComponent(planName[data.plan]));
+    if (map.eps && data.eps && data.eps.length) q.push(map.eps + '=' + encodeURIComponent(data.eps.join(', ')));
+    if (map.email && data.email) q.push(map.email + '=' + encodeURIComponent(String(data.email).trim()));
+    if (!q.length) return base.trim();
+    var sep = base.indexOf('?') >= 0 ? '&' : '?';
+    return base.trim() + sep + 'usp=pp_url&' + q.join('&');
+  }
+
+  var api = {
+    PLANS: PLANS,
+    INTENT_KEY: INTENT_KEY,
+    isSafeUrl: isSafeUrl,
+    normalizeEpisodeId: normalizeEpisodeId,
+    parseEpisodeList: parseEpisodeList,
+    knownFromSpec: knownFromSpec,
+    episodesFromSearch: episodesFromSearch,
+    saveIntent: saveIntent,
+    readIntent: readIntent,
+    renderBuyButtons: renderBuyButtons,
+    releaseLocks: releaseLocks,
+    singleCheckoutUrl: singleCheckoutUrl,
+    formPrefillUrl: formPrefillUrl
+  };
+
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  root.TrinityCheckout = api;
+
+  /* ── ブラウザで読まれたときだけ、自分で動く ───────
+     LP の TRINITY_CHECKOUT は const なので window には載らない。
+     LP へ入れるときは、TRINITY_CHECKOUT を書いた同じ <script> の末尾に
+     「TrinityCheckout.start(TRINITY_CHECKOUT);」の1行を足す（差分の紙を参照）。 */
+  api.start = function (cfg) {
+    if (typeof document === 'undefined') return 0;
+    var store = null;
+    try { store = window.localStorage; } catch (e) { store = null; }
+    var search = '';
+    try { search = (window.location && window.location.search) || ''; } catch (e) { search = ''; }
+    var go = function () { return renderBuyButtons(document, cfg, store, search); };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('pageshow', function () { releaseLocks(document); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', go);
+      return 0;
+    }
+    return go();
+  };
+})(typeof window !== 'undefined' ? window : this);
+/*TC_END*/</script>
 
 <script>
 const LP_KB={
@@ -674,8 +996,8 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 //    enabled が false のあいだ、この値を読むコードは船に1つも無い。
 //  ─────────────────────────────────────────────
 //
-//  ★退職の日（2031年4月）にやること ―― これだけである。
-//     1. 決済の窓口を4つ作り、出てきたURLを links に貼る
+//  ★退職の日にやること ―― これだけである。
+//     1. 決済の窓口を3つ作り、出てきたURLを links に貼る（2026-10-16 に ¥21,800 の札が下がり、4つ→3つ）
 //     2. enabled を true に変える
 //     3. このファイルを上げ直す
 //  ★やめるときは enabled を false に戻すだけでよい（1行）。
@@ -689,18 +1011,31 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 //  ★決済の処理そのものは、このページに1行も置かない。置くのはリンクだけである。
 //    （★GitHub Pages 上でお金を扱わない、という円の条件②）
 //
-//  ★価格は、このファイルの中の表示（¥9,800 / ¥14,800 / ¥21,800 / ¥3,000）が正である。
+//  ★価格は、このファイルの中の表示（¥9,800 / ¥12,800 / ¥3,000）が正である。
 //    ★ここに書いてある金額のコメントは、その控えにすぎない。食い違ったら表示のほうを見ること。
+//    （2026-10-16 理子濾：K-1014034142【Ａ】で ¥14,800 → ¥12,800、¥21,800 の札は下げた）
+//
+//  ★購入ボタンの仕掛け（2026-10-16 理子濾・K-1015173127【Ａ】）
+//    この上の <script>（部品2）が、値札の data-checkout の印を見てボタンを描く。
+//    enabled が true で、かつ その値札の URL が https で始まるときだけ描く。どちらかが欠けたら何もしない。
+//    下の「TrinityCheckout.start(TRINITY_CHECKOUT);」の1行が、その呼び出しである。
+//    2026-10-22 理子濾：URL に ?ep=A-01 が付いて開かれたら、完結回のボタンにその番号を持たせる（凛さんの形2・配-077）。
+//    通す番号は下の episodes。enabled が false のあいだは、これも何もしない。
 // ============================================================
 const TRINITY_CHECKOUT = {
   enabled : false,        // ★退職の日に true
   links   : {
     standard : '',        // ¥9,800
-    plus     : '',        // ¥14,800（主力）
-    premium  : '',        // ¥21,800
+    plus     : '',        // ¥12,800（レポート＋解説音声）
     single   : ''         // ¥3,000／1本
-  }
+  },
+  // 完結回の番号として通すもの。A23 は A-01〜A-23。薦め文のリンク（…?ep=A-01）を読むときだけ使う
+  // 出どころ：エピソード一覧_選んで渡せる版（2026-08-30）の cats 16カテゴリ・202本（2026-10-22 理子濾）
+  // 空にすると、?ep= は読まない（ボタンは出るが、番号は運ばない）
+  episodes : 'A23 B8 C12 D24 E24 F13 G16 H12 J22 K1 L12 M6 N11 P3 T8 U7'
 };
+// 仕掛けが読めなかった・途中で落ちたときも、この下の1分診断などを道連れにしない
+try { if (window.TrinityCheckout) TrinityCheckout.start(TRINITY_CHECKOUT); } catch (e) {}
 (function(){
   const LAUNCH = false;   // ★退職後、募集を始めるときだけ true にする（今は準備中）
 
@@ -801,6 +1136,114 @@ const TRINITY_CHECKOUT = {
       }
     }
   }catch(e){}
+})();
+</script>
+<!-- お知らせ登録（メール1欄）の動き：2026-10-18（理子・舷門 14代目「濾」）。試作 _作業\20261008_メール1欄フォーム\ から移した -->
+<script>
+(function(){
+  // ---- 設定（ここだけを触る） ----------------------------------------
+  // いま LP にある「お知らせを受け取る」の Google フォーム（LP L563 と同じもの）
+  var FORM_VIEW = "https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform";
+  // メール欄の名前。フォームの設定で決まる（例："entry.123456789"、または "emailAddress"）。
+  // 空にすると、押したときに今までどおりフォームを別タブで開く。
+  var FIELD_NAME = "entry.1648627739";   // 2026-10-18 公開中のフォームから読んだ（必須はこの1欄だけ）
+  var WAIT_MS = 12000;   // これを過ぎても応答が無ければ、フォームを直接開く道を出す
+  // --------------------------------------------------------------------
+
+  var FORM_POST = FORM_VIEW.replace(/\/viewform.*$/, "/formResponse");
+
+  // 打ち間違いは責めない。こちらで静かに整える（Silent Sanitize）
+  //   全角→半角（ＮＦＫＣ）／前後と途中の空白を抜く／読点やカンマの打ち間違いを点に／末尾の点を外す
+  function tidyEmail(s){
+    s = String(s == null ? "" : s);
+    if (s.normalize) s = s.normalize("NFKC");          // ＠ → @、ｇｍａｉｌ → gmail
+    s = s.replace(/[\s　​-‍﻿]+/g, "");
+    s = s.replace(/[。、，]/g, ".");                    // 「gmail。com」などの変換ミス
+    s = s.replace(/^mailto:/i, "");
+    s = s.replace(/[.]+$/, "");
+    var at = s.lastIndexOf("@");
+    if (at > 0) s = s.slice(0, at) + "@" + s.slice(at + 1).toLowerCase(); // ドメイン側だけ小文字に
+    return s;
+  }
+  // 厳しく弾かない。「@の前後に字があり、後ろに点がある」だけを見る
+  function looksLikeEmail(s){
+    return /^[^@\s]+@[^@\s]+\.[^@\s.]{2,}$/.test(s);
+  }
+
+  var form = document.getElementById("nf-form");
+  if (!form) return;
+  var input = document.getElementById("nf-email");
+  var btn   = document.getElementById("nf-btn");
+  var msg   = document.getElementById("nf-msg");
+  var done  = document.getElementById("nf-done");
+  var sink  = document.getElementById("nf-sink");
+  var sending = false, timer = null;
+
+  function say(text, soft){ msg.textContent = text; msg.className = "nf-msg" + (soft ? " is-soft" : ""); }
+
+  input.addEventListener("blur", function(){ var t = tidyEmail(input.value); if (t !== input.value) input.value = t; });
+  input.addEventListener("input", function(){ if (msg.className.indexOf("is-soft") >= 0) say(""); });
+
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    if (sending) return;                               // 二度押しは受け付けない
+    var v = tidyEmail(input.value);
+    input.value = v;
+    if (!v){ say("メールアドレスを入れていただければ、お知らせをお送りします。", true); input.focus(); return; }
+    if (!looksLikeEmail(v)){ say("「@」のあとが途中で切れているかもしれません。もう一度だけ見ていただけますか。", true); input.focus(); return; }
+
+    if (!FIELD_NAME){                                  // 送り先の欄名が未設定：今までどおりフォームを開く
+      window.open(FORM_VIEW, "_blank", "noopener");
+      say("お知らせの登録画面を、別のタブで開きました。");
+      return;
+    }
+
+    sending = true; btn.disabled = true; btn.textContent = "送っています…";
+    var post = document.createElement("form");
+    post.method = "POST"; post.action = FORM_POST; post.target = "nf-sink"; post.style.display = "none";
+    var f = document.createElement("input"); f.type = "hidden"; f.name = FIELD_NAME; f.value = v;
+    post.appendChild(f); document.body.appendChild(post);
+
+    var answered = false;
+    sink.onload = function(){
+      if (answered) return; answered = true; clearTimeout(timer);
+      // 分かるのは「送り先が応答した」まで。記録できたかは、このページからは見えない
+      form.style.display = "none"; say(""); done.className = "nf-done show";
+      if (post.parentNode) post.parentNode.removeChild(post);
+    };
+    timer = setTimeout(function(){
+      if (answered) return; answered = true;
+      sending = false; btn.disabled = false; btn.textContent = "お知らせを受け取る（無料）";
+      msg.className = "nf-msg is-soft";
+      msg.innerHTML = "通信に時間がかかっています。お手数ですが、<a href=\"" + FORM_VIEW + "\" target=\"_blank\" rel=\"noopener\" style=\"color:inherit\">こちらの登録画面</a>からお願いできますか。";
+      if (post.parentNode) post.parentNode.removeChild(post);
+    }, WAIT_MS);
+    post.submit();
+  });
+
+})();
+</script>
+<!-- 登録ボタンが押された数（homepage_cta）：2026-10-15 試作／2026-10-18 メール1欄と同じ回に入れた（理子・舷門 14代目「濾」・案A）
+     LP に来た人（homepage_uu）→ 押した人（homepage_cta）→ 登録した人、の3段で見るため。無料診断の free_cta と同じ形。
+     【物差し】「1ブラウザ1日1回」。日付は日本時間。キーは cnt_homepage_cta_日付。メール欄が空や打ち間違いのまま押しても1回と数える。
+     【城主の端末】trinity_owner が "1" の端末は数えない。
+     【送るもの】件数だけ。メールアドレスは1文字も通らない（DNA-329 / DNA-343）。
+     【止めない】try{}catch{} の中。数えるのに失敗しても、登録はそのまま進む。 -->
+<script>
+(function(){
+  var btn = document.querySelector('[data-cta="btn-homepage-cta"]');
+  if (!btn) { return; }
+  btn.addEventListener("click", function(){
+    try{
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。数えない
+      var d = new Date(Date.now() + 9*60*60*1000);                     // 日本時間（free_cta と同じ）
+      var key = "cnt_homepage_cta_" + d.toISOString().slice(0,10);
+      if (localStorage.getItem(key)) { return; }                       // 今日はもう数えた
+      localStorage.setItem(key, "1");
+      var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+      new Image().src = base + "?p=homepage_cta&t=" + Date.now();
+    }catch(e){}
+  });
 })();
 </script>
 </body>
