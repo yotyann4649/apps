@@ -1034,10 +1034,13 @@ function buildPhaseReports() {
     return desc || '';
   }
 
+  // 2026-10-18 理子濾（千尋さんの便 §4-4・§4-5）：
+  //   ・素材の括弧が「壬（水（大きな海））」と三重になっていた → 「壬（水・大きな海）」へ（中身は1字も捨てない）
+  //   ・「心が疲れているサイン」の「サイン」が、下の言い換え（サイン→星座）にかかって「心が疲れている星座」になっていた → 「合図」へ
   phaseTexts[0] = `
 <h3>✦ ${S.name}さんを、ひと言で表すと</h3>
 <p>あなたは<strong>「${lp.kw||S.lp}」</strong>というテーマを生きるために生まれてきた存在です。${lp.desc||''}</p>
-<p>生まれ持った素材は、四柱推命でいう<strong>「${S.kanFinal}（${pd.el||''}）」</strong>。${(pd.desc||'').replace(/<b>/g,'<strong>').replace(/<\/b>/g,'</strong>')}</p>
+<p>生まれ持った素材は、四柱推命でいう<strong>「${S.kanFinal}${pd.el?'（'+pd.el.replace(/（(.+)）$/,'・$1')+'）':''}」</strong>。${(pd.desc||'').replace(/<b>/g,'<strong>').replace(/<\/b>/g,'</strong>')}</p>
 ${sun?`<p>占星術では太陽が<strong>${sun.sign} ${sun.deg}度</strong>に輝いています。このフェーズは「<em>${ph.title||''}</em>」。${ph.story||''}</p>`:''}
 ${moon?`<p>その内側では、月が<strong>${moon.sign}</strong>に位置し、素の自分・安心の基盤を形づくっています。人前での顔（太陽）とは別に、一人になったときのあなたは「${moonZod.core||''}」という感覚に還っていきます。</p>`:''}
 ${asc?`<p>そして、周囲があなたに最初に抱く印象（ASC）は<strong>${asc.sign}</strong>。${asc.sign&&sun&&asc.sign!==sun.sign?`内側の核（太陽=${sun.sign}）と第一印象（${asc.sign}）が違うため、「初対面の印象」と「深く知ったときの姿」にギャップがあるタイプです。この二面性は、付き合うほど印象が変わる面白さになります。`:`内側の核と第一印象がよく一致していて、見た目の印象と中身がぶれない、分かりやすく信頼されやすいタイプです。`}</p>`:''}
@@ -1058,7 +1061,7 @@ ${venus?`<p>愛と喜びの星・金星が<strong>${venus.sign} ${venus.deg}度<
 ${moon?`<p>感情の基盤である月は<strong>${moon.sign}</strong>にあり、親密な相手の前でこそ出る素の顔・安心したいときの距離感を示します。あなたが本当にくつろげるのは「${moonZod.core||''}」を分かち合える関係の中です。</p>`:''}
 <p>ソウルナンバー「<strong>${S.sn}番・${sn.kw||''}」</strong>が示すのは心の最も深い場所にある欲求です。${numMatchText('ソウル',S.sn,sn.kw,sn.desc,[{label:'ライフパス',value:S.lp},{label:'ディスティニー',value:S.dn}])}</p>
 <p>表向きの使命（ディスティニー：<strong>${S.dn}番</strong>）と内なる欲求（ソウル：<strong>${S.sn}番</strong>）の間には微妙なギャップがあります。社会では「${dn.kw||''}」として動きながら、心の奥では「${sn.kw||''}」を静かに渇望している。この揺れ動きがあなたの人間的な深みを生んでいます。</p>
-${(venusZod.shadow||zod.shadow)?`<p>ときに<strong>「${venusZod.shadow||zod.shadow}」</strong>というパターンが現れるときは、心が疲れているサインです。それは弱さではなく、深く愛したいからこそ生まれる、裏返しの個性です。</p>`:''}`;
+${(venusZod.shadow||zod.shadow)?`<p>ときに<strong>「${venusZod.shadow||zod.shadow}」</strong>というパターンが現れるときは、心が疲れている合図です。それは弱さではなく、深く愛したいからこそ生まれる、裏返しの個性です。</p>`:''}`;
 
   phaseTexts[3] = `
 <h3>✦ 人生の転換点と手にする果実</h3>
@@ -1472,11 +1475,23 @@ function renderGogyo(){
   const col={'木':'#3f7d6e','火':'#a85656','土':'#9a7b2e','金':'#8e7f66','水':'#4f7da6'};
   const max=Math.max(1,...order.map(k=>m[k]));
   bars.innerHTML=order.map(k=>`<div class="g-row"><span class="g-k">${k}</span><span class="g-track"><span class="g-fill" style="width:${Math.round(m[k]/max*100)}%;background:${col[k]}"></span></span><span class="g-v">${m[k]}</span></div>`).join('');
-  const sorted=order.slice().sort((a,b)=>m[b]-m[a]);
-  const strong=sorted[0], weak=sorted[sorted.length-1];
-  body.innerHTML=`<p>あなたの設計図でいちばん豊かなのは<strong>「${strong}」</strong>の気です。${GOGYO_KB[strong]}この力は、意識しなくても自然と発揮されるあなたの強みになります。</p>`+
-    `<p>反対に控えめなのは<strong>「${weak}」</strong>の気。${GOGYO_KB[weak]}ここは足りないのではなく「伸びしろ」。意識して補うと、人としての幅がぐっと広がります。</p>`+
-    `<p class="muted">※四柱8文字（年・月・日・時の干支）から集計：木${m['木']}・火${m['火']}・土${m['土']}・金${m['金']}・水${m['水']}</p>`;
+  // 2026-10-18 理子濾：同点のとき1つだけ挙げていた（火3＝土3 でも「火」だけ。並べ替えの順で決まっていた）。
+  //   千尋さんの物差し A9。いちばん多い気・少ない気が並んだら、並んだものを全部挙げる。
+  const hi=Math.max(...order.map(k=>m[k])), lo=Math.min(...order.map(k=>m[k]));
+  const strongs=order.filter(k=>m[k]===hi), weaks=order.filter(k=>m[k]===lo);
+  const names=ks=>ks.length===1?`「${ks[0]}」`:ks.slice(0,-1).map(k=>`「${k}」`).join('、')+`と「${ks[ks.length-1]}」`;
+  const kb=ks=>ks.length===1?GOGYO_KB[ks[0]]:ks.map(k=>`${k}は、${GOGYO_KB[k]}`).join('');
+  const both=ks=>ks.length===2?'どちらか一方ではなく、ふたつが同じだけ':'どれか1つではなく、'+ks.length+'つが同じだけ';
+  const strongText=strongs.length===1
+    ? `${kb(strongs)}この力は、意識しなくても自然と発揮されるあなたの強みになります。`
+    : `${both(strongs)}あなたの中に流れています。${kb(strongs)}${strongs.length===2?'どちらの力も':'どの力も'}、意識しなくても自然と発揮されるあなたの強みになります。`;
+  // 時刻が分からない方：時柱を12時で出しているので、五行の数はここで揺れる（判断室 K-1016214527【Ａ 書く】・言い回しは結さん 10-17 の短い形）
+  const hourEl=document.getElementById('inp-hour');
+  const noTime=!!hourEl && hourEl.value==='';
+  body.innerHTML=`<p>あなたの設計図でいちばん豊かなのは<strong>${names(strongs)}</strong>の気です。${strongText}</p>`+
+    `<p>反対に控えめなのは<strong>${names(weaks)}</strong>の気。${kb(weaks)}ここは足りないのではなく「伸びしろ」。意識して補うと、人としての幅がぐっと広がります。</p>`+
+    `<p class="muted">※四柱8文字（年・月・日・時の干支）から集計：木${m['木']}・火${m['火']}・土${m['土']}・金${m['金']}・水${m['水']}</p>`+
+    (noTime?`<p class="muted">※生まれた時刻が分からないため、1日のまん中の12時として計算しています。</p>`:'');
 }
 
 </script>
@@ -1711,7 +1726,8 @@ const TRINITY_DEEP = (function(){
       out += '</div>';
     } else if (text) {
       out += '<div class="deep-block deep-fix" style="margin-top:8px;padding:11px 13px">';
-      out += '<div class="deep-label">この度数が示していること</div>';
+      // 2026-10-18 理子濾：数秘は「度数」ではなく「数」（天体の欄の見出しが流れ込んでいた・千尋さんの物差し A10）
+      out += '<div class="deep-label">この数が示していること</div>';
       out += '<p class="deep-text" style="font-size:12.5px">' + esc(text) + '</p>';
       out += '</div>';
     }
