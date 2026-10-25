@@ -593,6 +593,37 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-[10px] text-blue-400 hover:underline self-center whitespace-nowrap px-2">無料発行↗</a>
           </div>
         </div>
+        <!-- ★2026-10-25（理子〔舷門〕）：元の絵を渡す口。
+             出どころ … 機関室〔39代目「楣」〕の頼み（2026-10-24）。城主「作成できるものは基本, りこが作ったアプリで作ってね.」
+             ★選んだ絵は、送るときに parts の先頭へ inlineData で入れる（generate() の中の forgeRefBuild）。
+             ★絵も鍵も、ブラウザの保存領域には置かない（JS の変数だけ。頁を閉じれば消える）。
+             ★道具から入れるときの口 … #refImage（ファイル）／#refPrompt（頼む文）／#refAspect／#refTips／#refName1〜14 -->
+        <div id="refBox" class="mb-3 rounded-xl p-3 bg-slate-900/40 border border-teal-500/30">
+          <label class="block text-xs font-semibold text-teal-300 mb-1.5">🖼️ 元の絵（同じ人のまま描き替えたいとき・14枚まで）</label>
+          <p class="text-[11px] text-slate-400 leading-relaxed mb-2">ここに絵を入れると、その絵を見せたうえで描いてもらいます。表情や手だけを変える、何人かの顔を並べて集合の絵にする、ができます。入れなければ、今までどおり文だけで作ります。</p>
+          <div class="flex flex-wrap gap-2 mb-2">
+            <label class="text-xs bg-teal-500/15 text-teal-200 px-3 py-1.5 rounded-lg border border-teal-500/30 hover:bg-teal-500/25 cursor-pointer">絵を選ぶ<input type="file" id="refImage" accept="image/*" multiple class="hidden"></label>
+            <label class="text-xs bg-teal-500/15 text-teal-200 px-3 py-1.5 rounded-lg border border-teal-500/30 hover:bg-teal-500/25 cursor-pointer">フォルダごと選ぶ（顔の棚など）<input type="file" id="refFolder" webkitdirectory multiple class="hidden"></label>
+            <button type="button" id="refClear" class="text-xs bg-slate-700/40 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-600/50 hover:bg-slate-700/70">全部はずす</button>
+          </div>
+          <div id="refList" class="grid grid-cols-2 gap-2"></div>
+          <label class="block text-[11px] font-semibold text-slate-400 mt-3 mb-1.5">頼む文（ここに書くと、上のプロンプトの代わりにこの文を送ります。空なら上のプロンプトを送ります）</label>
+          <textarea id="refPrompt" rows="5" placeholder="例：添付したイラストと完全に同じ人物・同じ絵柄で、1枚描いてください。変えるのは表情と手だけ：…" class="w-full p-3 bg-slate-900/60 border border-slate-700 rounded-lg text-xs text-slate-200 leading-relaxed focus:outline-none focus:border-teal-500"></textarea>
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">返す形（元の絵があるとき）</label>
+              <select id="refAspect" class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
+                <option value="ref" selected>1枚目の絵と同じ比率</option>
+                <option value="ui">左で選んだ比率</option>
+              </select>
+            </div>
+            <label class="flex items-start gap-2 cursor-pointer text-[11px] text-slate-300 leading-relaxed pt-5">
+              <input type="checkbox" id="refTips" class="w-4 h-4 mt-0.5 accent-teal-500">
+              <span>集合の絵のコツを添える（人数を数える・文字は1か所だけ・髪や眼鏡で見分ける）</span>
+            </label>
+          </div>
+          <div id="refNote" class="mt-2 text-[11px] leading-relaxed text-teal-200/90"></div>
+        </div>
         <!-- 【理子・v2.3】note見出し→16:9置換の事前エスコート（生成前に優しく先出し） -->
         <!-- 【要・v2.7／2026-08-20】★画質を上げる2つ。★既存のプルダウンと同じ形だけで足してある -->
         <div class="grid grid-cols-2 gap-3 mb-3">
@@ -1523,7 +1554,8 @@ async function generate(){
      ※拒否(400)されたら自動で外して即再試行し、その事実を negSupported に記憶する。
        以降は最初から送らないので、無駄な往復を毎回繰り返さない。 */
   const negText = document.getElementById('neg').value.trim();
-  const apiAspect = API_ASPECT[currentAspect()] || "1:1";
+  /* ★2026-10-25（理子〔舷門〕）：元の絵があるときは比率を1枚目に合わせることがあるので const → let。★直す前 … const apiAspect */
+  let apiAspect = API_ASPECT[currentAspect()] || "1:1";
   let useNeg = (negSupported !== false), negDropped = false;
 
   const genBtn=document.getElementById('genBtn'),loading=document.getElementById('loading'),ph=document.getElementById('ph'),result=document.getElementById('result'),dl=document.getElementById('dl');
@@ -1532,6 +1564,11 @@ async function generate(){
   ph.classList.add('hidden'); result.classList.add('hidden'); dl.classList.add('hidden');
   loading.classList.remove('hidden'); document.getElementById('msg').classList.add('hidden');
   const delays=[1000,2000,4000,8000,16000]; let ok=false,lastErr="",authErr=false; var usedModel="";
+  /* ★2026-10-25（理子〔舷門〕）：元の絵の口。★絵も頼む文も無ければ null が返り、今までと1文字も同じ形で送る */
+  var refSend = null;
+  try{ if(typeof forgeRefBuild === 'function'){ refSend = await forgeRefBuild(prompt); } }catch(eR){ refSend = null; }
+  if(refSend && refSend.aspect){ apiAspect = refSend.aspect; }
+  window.forgeRefAspectUsed = (refSend && refSend.aspect) ? refSend.aspect : null;
   /* 【要・v2.7】★解像度は画面の選択から読む（★既定は 2K） */
   var szEl = document.getElementById('imgSize');
   var sizeWanted = szEl ? szEl.value : '2K';
@@ -1554,7 +1591,8 @@ async function generate(){
       if (mdl === 'gemini-nano-banana-2.1' && usedSize === '512px') { usedSize = '1K'; }
       const url="https://generativelanguage.googleapis.com/v1beta/models/"+mdl+":generateContent?key="+key;
       const reqBody={
-        contents:[{ parts:[{ text: prompt }] }],
+        /* ★2026-10-25（理子〔舷門〕）：元の絵があれば [絵…, 文] の順。★直す前 … contents:[{ parts:[{ text: prompt }] }] */
+        contents:[{ parts: (refSend ? refSend.parts : [{ text: prompt }]) }],
         /* 【要・v2.7】🔴 ★imageSize を送っていなかったので、★これまで全部 既定の 1K だった。
            ★512px / 1K / 2K / 4K（★大文字のKでないと拒否される・公式明記）
            🔴 ★lite モデルは 1K しか出せないので、その時だけ落とす */
@@ -1600,7 +1638,10 @@ async function generate(){
        negSupported=false を記憶した2回目以降は negDropped が立たないため、
        negDropped で判定すると「適用済み」と誤表示されてしまう。実際に送ったかで判定する。 */
     const bits=[];
-    bits.push(currentAspect()==='note_header' ? "比率 16:9でお届け（note見出しに最も近い比率）" : "比率 "+apiAspect);
+    /* ★2026-10-25（理子〔舷門〕）：元の絵に合わせた比率なら、そう書く */
+    if(refSend && refSend.aspect){ bits.push("比率 "+apiAspect+"（1枚目の元の絵に合わせました）"); }
+    else bits.push(currentAspect()==='note_header' ? "比率 16:9でお届け（note見出しに最も近い比率）" : "比率 "+apiAspect);
+    if(refSend && refSend.count){ bits.push("元の絵 "+refSend.count+"枚"+(refSend.shrunk ? "（重いので縮めて送りました）" : "")); }
     bits.push("モデル "+usedModel);
     bits.push("解像度 "+usedSize);
     if(negText) bits.push("崩れ防止は新しい形に口が無いため未適用（道Aのコピペでは使えます）");
@@ -2049,6 +2090,12 @@ function jaErr(raw){
       var szEl = document.getElementById('imgSize');
       var 頼んだ大きさ = szEl ? szEl.value : '';
       var 頼んだ比率   = (typeof currentAspect === 'function') ? currentAspect() : '';
+      /* ★2026-10-25（理子〔舷門〕）：元の絵に合わせて送ったときは、その比率で測る（★左の選択で測ると、正しく返った絵に赤が出る） */
+      if(window.forgeRefAspectUsed){
+        頼んだ比率 = window.forgeRefAspectUsed;
+        var 分 = /^(\d+):(\d+)$/.exec(頼んだ比率);
+        if(分 && !比の目安[頼んだ比率]){ var p1 = +分[1], p2 = +分[2]; 比の目安[頼んだ比率] = (p1 > p2 ? p1 / p2 : p2 / p1); }
+      }
       var 出す = ['📏 いま出ている絵の実寸は <b>' + w + ' × ' + h + '</b> です（長いほうが ' + 長辺 + '）。'];
       var 届いていない = false;
 
@@ -2091,6 +2138,235 @@ function jaErr(raw){
 })();
 
 (function(){})();
+</script>
+<!-- ★2026-10-25（理子〔舷門〕）：元の絵を渡す口 ===========================================================
+     出どころ … 機関室〔39代目「楣」〕の頼み（2026-10-24）
+       城主「下手したら, 私たちが作ってる, 理子が作ったアプリでも作れるんじゃない?」
+       城主「基本は, 2K で作成という形で進めてくれ, ちなみに, 作成できるものは基本, りこが作ったアプリで作ってね.」
+
+     ★やること
+       ・#refImage／#refFolder で選んだ絵（14枚まで）を JS の配列に持つ（★ブラウザの保存領域は使わない）
+       ・generate() が forgeRefBuild(prompt) を呼ぶ → [絵1, 絵2, …, 文] を返す（★絵は parts の先頭）
+       ・比率は既定で「1枚目の絵にいちばん近い、向こう側が受け付ける比率」（★4:3 の絵なら 4:3）
+       ・絵が1枚も無く、頼む文も空なら null を返す → generate() は今までと同じ形で送る
+
+     ★重さ … 合わせて 15MB を超えたら、全部を JPEG にし直し、長いほうが 2048 を超える絵は 2048 へ縮める（★Gemini の1回の上限は 20MB ほど）
+     ★先々 … 呼び先に手元の炉（ComfyUI・http://127.0.0.1:8188）を選べるようにするときは、
+              forgeRefBuild が返す {parts, aspect} をそのまま炉の形へ組み替える（★絵の持ち方はここで共通にしてある）
+     ★外すときは、この囲みを丸ごと消し、generate() の中の「元の絵の口」の4か所を「直す前」へ戻す
+================================================================================================== -->
+<script>
+(function(){
+  'use strict';
+  var MAX = 14;
+  var refs = [];   /* {name, mime, b64, bytes, w, h, label} ★JS の変数だけ */
+  /* ★Gemini の画像の型が受け付ける比率（ai.google.dev の画像生成のページ） */
+  var 比率ら = ['1:1','2:3','3:2','3:4','4:3','4:5','5:4','9:16','16:9','21:9'];
+
+  function el(id){ return document.getElementById(id); }
+
+  function 近い比率(w, h){
+    if(!w || !h){ return null; }
+    var r = Math.log(w / h), best = null, d = 1e9;
+    for(var i = 0; i < 比率ら.length; i++){
+      var p = 比率ら[i].split(':'), x = Math.abs(Math.log((+p[0]) / (+p[1])) - r);
+      if(x < d){ d = x; best = 比率ら[i]; }
+    }
+    return best;
+  }
+
+  function 絵らしい(f){
+    if(!f){ return false; }
+    if(f.type && f.type.indexOf('image/') === 0){ return true; }
+    return /\.(png|jpe?g|webp|heic|heif)$/i.test(f.name || '');
+  }
+
+  function 読む(f){
+    return new Promise(function(ok){
+      try{
+        var fr = new FileReader();
+        fr.onload = function(){
+          var s = String(fr.result || ''), m = /^data:([^;]+);base64,(.*)$/.exec(s);
+          if(!m){ ok(null); return; }
+          var mime = (m[1] && m[1].indexOf('image/') === 0) ? m[1] : 'image/png';
+          var it = { name: f.name || '絵', mime: mime, b64: m[2], bytes: f.size || Math.round(m[2].length * 0.75), w: 0, h: 0, label: '' };
+          var im = new Image();
+          im.onload = function(){ it.w = im.naturalWidth || im.width || 0; it.h = im.naturalHeight || im.height || 0; ok(it); };
+          im.onerror = function(){ ok(it); };   /* ★大きさが読めなくても絵は送れる（比率は左の選択へ戻る） */
+          im.src = s;
+        };
+        fr.onerror = function(){ ok(null); };
+        fr.readAsDataURL(f);
+      }catch(e){ ok(null); }
+    });
+  }
+
+  async function 足す(list){
+    var fs = [], 外 = 0, 多 = 0;
+    for(var i = 0; i < (list ? list.length : 0); i++){ if(絵らしい(list[i])){ fs.push(list[i]); } else { 外++; } }
+    /* ★フォルダから選んだときだけ、名前の順に並べる（★順が OS まかせになるため）。
+       🔴 ★ファイルを選んだとき・道具が入れたときは、渡された順のまま（★並べ替えると城主の絵が1枚目からずれた・10-25 の試験） */
+    var 棚から = false;
+    for(var q = 0; q < fs.length; q++){ if(fs[q].webkitRelativePath){ 棚から = true; break; } }
+    if(棚から) fs.sort(function(a, b){ return String(a.webkitRelativePath || a.name).localeCompare(String(b.webkitRelativePath || b.name), 'ja'); });
+    for(var j = 0; j < fs.length; j++){
+      if(refs.length >= MAX){ 多 = fs.length - j; break; }
+      var it = await 読む(fs[j]);
+      if(it){ refs.push(it); }
+    }
+    描く();
+    var 言 = [];
+    if(外){ 言.push('絵ではないファイル ' + 外 + ' 個は入れませんでした。'); }
+    if(多){ 言.push('🔴 14枚を超えた ' + 多 + ' 枚は入れていません（向こう側が一度に見られるのは14枚までです）。'); }
+    if(言.length && typeof showToast === 'function'){ showToast(言.join(' '), 多 ? 'err' : 'ok'); }
+    if(言.length){ 添え書き(言.join('<br>')); }
+  }
+
+  var 追記 = '';
+  function 添え書き(s){ 追記 = s || ''; 案内(); }
+
+  function 案内(){
+    var n = el('refNote'); if(!n){ return; }
+    var out = [];
+    if(refs.length){
+      var 合計 = 0; for(var i = 0; i < refs.length; i++){ 合計 += refs[i].bytes || 0; }
+      out.push('いま <b>' + refs.length + '枚</b> 入っています（合わせて約 ' + (Math.round(合計 / 1048576 * 10) / 10) + 'MB）。送るときは、この順に1枚目・2枚目…として渡します。');
+      var a = el('refAspect');
+      if(a && a.value === 'ref'){
+        var r = 近い比率(refs[0].w, refs[0].h);
+        out.push(r ? ('1枚目は ' + refs[0].w + ' × ' + refs[0].h + ' なので、<b>' + r + '</b> で頼みます。') : '1枚目の大きさが読めなかったので、左で選んだ比率で頼みます。');
+      }
+      var md = el('genModelSel');
+      if(refs.length >= 3 && md && md.value !== 'gemini-3-pro-image'){
+        out.push('💡 3枚以上を渡すときは、モデルを「高品質」にすると顔が混ざりにくくなります（1枚の値段は上がります）。');
+      }
+      if(合計 > 15 * 1048576){ out.push('重いので、送るときは JPEG にし直し、長いほうが 2048 を超える絵は 2048 まで縮めて送ります（顔の見分けには十分な大きさです）。'); }
+      if(refs.length >= 2) out.push('💡 何枚も渡すときは、頼む文に「1枚目＝名前（男女・髪・眼鏡・服）」を1人ずつ書くと、2人が混ざりにくくなります。下の名前の欄に書けば、こちらで文の頭に足します。');
+    }
+    if(追記){ out.push(追記); }
+    n.innerHTML = out.join('<br>');
+  }
+
+  function 描く(){
+    var box = el('refList'); if(!box){ return; }
+    box.innerHTML = '';
+    refs.forEach(function(it, i){
+      var c = document.createElement('div');
+      c.className = 'flex gap-2 items-start bg-slate-900/50 border border-slate-700/60 rounded-lg p-2';
+      var im = document.createElement('img');
+      im.src = 'data:' + it.mime + ';base64,' + it.b64;
+      im.alt = it.name;
+      im.className = 'w-14 h-14 object-cover rounded flex-shrink-0';
+      var r = document.createElement('div');
+      r.className = 'flex-grow min-w-0';
+      var t = document.createElement('div');
+      t.className = 'text-[11px] text-teal-200 font-bold';
+      t.textContent = (i + 1) + '枚目';
+      var fnm = document.createElement('div');
+      fnm.className = 'text-[10px] text-slate-500 truncate';
+      fnm.textContent = it.name;
+      var nm = document.createElement('input');
+      nm.type = 'text';
+      nm.id = 'refName' + (i + 1);
+      nm.value = it.label || '';
+      nm.placeholder = '名前（例：城主・男性）';
+      nm.className = 'mt-1 w-full bg-slate-900/60 border border-slate-700 rounded px-2 py-1 text-[11px] text-slate-200 focus:outline-none focus:border-teal-500';
+      nm.addEventListener('input', function(){ it.label = nm.value; });
+      var bt = document.createElement('div');
+      bt.className = 'flex gap-1 mt-1';
+      var up = document.createElement('button');
+      up.type = 'button';
+      up.textContent = '← 前へ';
+      up.className = 'text-[10px] px-2 py-0.5 rounded border border-slate-600/60 text-slate-300 hover:bg-slate-700/60' + (i === 0 ? ' opacity-30' : '');
+      up.disabled = (i === 0);
+      up.addEventListener('click', function(){ if(i > 0){ var x = refs[i - 1]; refs[i - 1] = refs[i]; refs[i] = x; 描く(); } });
+      var rm = document.createElement('button');
+      rm.type = 'button';
+      rm.textContent = '× はずす';
+      rm.className = 'text-[10px] px-2 py-0.5 rounded border border-rose-500/40 text-rose-300 hover:bg-rose-500/15';
+      rm.addEventListener('click', function(){ refs.splice(i, 1); 描く(); });
+      bt.appendChild(up); bt.appendChild(rm);
+      r.appendChild(t); r.appendChild(fnm); r.appendChild(nm); r.appendChild(bt);
+      c.appendChild(im); c.appendChild(r);
+      box.appendChild(c);
+    });
+    案内();
+  }
+
+  /* ★重いときだけ縮める。★縮められない環境（canvas が無い）では、そのまま送る */
+  function 縮める(it){
+    return new Promise(function(ok){
+      try{
+        var im = new Image();
+        im.onload = function(){
+          try{
+            /* 🔴 ★2048 より小さい絵も JPEG にし直す（★顔の PNG 13枚は小さいまま 1.3MB ずつ残り、合わせて 21MB になった・10-25 の試験） */
+            var W = im.naturalWidth, H = im.naturalHeight, L = Math.max(W, H);
+            if(!W || !H){ ok(null); return; }
+            var k = (L > 2048) ? 2048 / L : 1, cv = document.createElement('canvas');
+            cv.width = Math.round(W * k); cv.height = Math.round(H * k);
+            var cx = cv.getContext('2d');
+            if('imageSmoothingQuality' in cx){ cx.imageSmoothingQuality = 'high'; }
+            cx.drawImage(im, 0, 0, cv.width, cv.height);
+            var s = cv.toDataURL('image/jpeg', 0.92), m = /^data:([^;]+);base64,(.*)$/.exec(s);
+            ok(m ? { mime: m[1], b64: m[2] } : null);
+          }catch(e){ ok(null); }
+        };
+        im.onerror = function(){ ok(null); };
+        im.src = 'data:' + it.mime + ';base64,' + it.b64;
+      }catch(e){ ok(null); }
+    });
+  }
+
+  /* ★generate() から呼ばれる。★返すもの … null（今までどおり）／{parts, aspect, count, shrunk} */
+  window.forgeRefBuild = async function(prompt){
+    var rp = el('refPrompt');
+    var 文 = (rp && rp.value.trim()) ? rp.value.trim() : String(prompt || '');
+    if(!refs.length && !(rp && rp.value.trim())){ return null; }
+
+    var 名ら = [];
+    for(var i = 0; i < refs.length; i++){
+      var lb = String(refs[i].label || '').trim();
+      if(lb){ 名ら.push((i + 1) + '枚目＝' + lb); }
+    }
+    if(名ら.length){ 文 = '渡した絵：' + 名ら.join('／') + '。\n' + 文; }
+    var tp = el('refTips');
+    if(tp && tp.checked && refs.length >= 2){
+      文 += '\n・描き終えたら人数を数え、ちょうど' + refs.length + '人であることを確かめる。人を足さない・減らさない。2人を1人に混ぜない。'
+          + '\n・服が同じでも、髪・眼鏡・ひげで1人ずつ見分けられるように描く。'
+          + '\n・文字は頼んだ1か所だけ。ほかの札・ポスター・2つ目の看板は描かない。';
+    }
+
+    var 合計 = 0; for(var j = 0; j < refs.length; j++){ 合計 += refs[j].bytes || 0; }
+    var 縮めた = false, parts = [];
+    for(var k = 0; k < refs.length; k++){
+      var mime = refs[k].mime, b64 = refs[k].b64;
+      if(合計 > 15 * 1048576){
+        var s = await 縮める(refs[k]);
+        if(s){ mime = s.mime; b64 = s.b64; 縮めた = true; }
+      }
+      parts.push({ inlineData: { mimeType: mime, data: b64 } });
+    }
+    parts.push({ text: 文 });
+
+    var a = el('refAspect'), asp = null;
+    if(refs.length && a && a.value === 'ref'){ asp = 近い比率(refs[0].w, refs[0].h); }
+    return { parts: parts, aspect: asp, count: refs.length, shrunk: 縮めた };
+  };
+
+  /* ★道具・試験から中身を見るための口（★読むだけ） */
+  window.forgeRefCount = function(){ return refs.length; };
+
+  function つなぐ(id){
+    var f = el(id); if(!f){ return; }
+    f.addEventListener('change', function(){ var l = f.files; 足す(l).then(function(){ try{ f.value = ''; }catch(e){} }); });
+  }
+  つなぐ('refImage'); つなぐ('refFolder');
+  var cl = el('refClear'); if(cl){ cl.addEventListener('click', function(){ refs = []; 追記 = ''; 描く(); }); }
+  var ra = el('refAspect'); if(ra){ ra.addEventListener('change', 案内); }
+  var gm = el('genModelSel'); if(gm){ gm.addEventListener('change', 案内); }
+  描く();
+})();
 </script>
 </body>
 </html>
