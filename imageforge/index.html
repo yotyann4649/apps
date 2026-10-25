@@ -622,6 +622,19 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <span>集合の絵のコツを添える（人数を数える・文字は1か所だけ・髪や眼鏡で見分ける）</span>
             </label>
           </div>
+          <!-- ★2026-10-25 夜（理子〔舷門〕）：note のヘッダーの型・写真らしさのコツ。★元の絵が無くても効く（文だけでも添える）
+               出どころ … 機関室〔39代目「楣」〕の頼み（10-25 19時台）。型は 10-24 に城主が「どちらもいい出来だ」と言われた2枚の形
+               ★道具からの口 … #refNoteHeader／#refPhoto（checked）・保存は #dlNote1920 か forgeSaveNoteHeader() -->
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <label class="flex items-start gap-2 cursor-pointer text-[11px] text-slate-300 leading-relaxed">
+              <input type="checkbox" id="refNoteHeader" class="w-4 h-4 mt-0.5 accent-teal-500">
+              <span>note のヘッダーの型（ロゴと文字は人の列の左・顔の高さを真ん中・人は少し小さく余白をとる。16:9 で描いて 1920 × 1006 で保存）</span>
+            </label>
+            <label class="flex items-start gap-2 cursor-pointer text-[11px] text-slate-300 leading-relaxed">
+              <input type="checkbox" id="refPhoto" class="w-4 h-4 mt-0.5 accent-teal-500">
+              <span>写真らしさのコツを添える（一眼レフ・50mm・自然光・CG の質感を出さない）</span>
+            </label>
+          </div>
           <div id="refNote" class="mt-2 text-[11px] leading-relaxed text-teal-200/90"></div>
         </div>
         <!-- 【理子・v2.3】note見出し→16:9置換の事前エスコート（生成前に優しく先出し） -->
@@ -1639,7 +1652,8 @@ async function generate(){
        negDropped で判定すると「適用済み」と誤表示されてしまう。実際に送ったかで判定する。 */
     const bits=[];
     /* ★2026-10-25（理子〔舷門〕）：元の絵に合わせた比率なら、そう書く */
-    if(refSend && refSend.aspect){ bits.push("比率 "+apiAspect+"（1枚目の元の絵に合わせました）"); }
+    /* ★2026-10-25 夜（理子〔舷門〕）：ヘッダーの型で 16:9 にしたときは、そう書く。★直す前 … "（1枚目の元の絵に合わせました）" 固定 */
+    if(refSend && refSend.aspect){ bits.push("比率 "+apiAspect+"（"+(refSend.aspectWhy || "1枚目の元の絵に合わせました")+"）"); }
     else bits.push(currentAspect()==='note_header' ? "比率 16:9でお届け（note見出しに最も近い比率）" : "比率 "+apiAspect);
     if(refSend && refSend.count){ bits.push("元の絵 "+refSend.count+"枚"+(refSend.shrunk ? "（重いので縮めて送りました）" : "")); }
     bits.push("モデル "+usedModel);
@@ -1654,7 +1668,10 @@ async function generate(){
 function downloadImg(){
   const img=document.getElementById('result'); if(!img.src) return;
   const a=document.createElement('a'); a.href=img.src;
-  a.download=(use==='photo'?"Photo":"Sketch")+"_"+new Date().toISOString().replace(/[:.]/g,'-')+".png";
+  /* ★2026-10-25 夜（理子〔舷門〕）：中身の頭を見て拡張子を決める（Gemini は JPEG で返す）。★直す前 … +".png" 固定 */
+  const b64head=(img.src.split(',')[1]||"").slice(0,8);
+  const ext=b64head.indexOf("/9j/")===0?".jpg":(b64head.indexOf("UklGR")===0?".webp":".png");
+  a.download=(use==='photo'?"Photo":"Sketch")+"_"+new Date().toISOString().replace(/[:.]/g,'-')+ext;
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 
@@ -2243,6 +2260,17 @@ function jaErr(raw){
       if(合計 > 15 * 1048576){ out.push('重いので、送るときは JPEG にし直し、長いほうが 2048 を超える絵は 2048 まで縮めて送ります（顔の見分けには十分な大きさです）。'); }
       if(refs.length >= 2) out.push('💡 何枚も渡すときは、頼む文に「1枚目＝名前（男女・髪・眼鏡・服）」を1人ずつ書くと、2人が混ざりにくくなります。下の名前の欄に書けば、こちらで文の頭に足します。');
     }
+    /* ★2026-10-25 夜：ヘッダーの型・写真らしさ。★押したことが、押す前に分かるように1行ずつ */
+    var 型 = el('refNoteHeader'), 写 = el('refPhoto');
+    if(型 && 型.checked){
+      out.push('📐 <b>note のヘッダーの型</b>で頼みます。比率は <b>16:9</b> に決めて送り、できた絵の右下「1920×1006」で、上下を真ん中から切ってぴったりの大きさで保存します。');
+      if(refs.length && el('refAspect') && el('refAspect').value === 'ref'){ out.push('（「1枚目の絵と同じ比率」より、ヘッダーの型の 16:9 を先にします）'); }
+    }
+    if(写 && 写.checked){
+      var 水彩 = false; try{ 水彩 = (use === 'sketch'); }catch(e){}
+      out.push(水彩 ? '📷 写真らしさのコツを添えます。🔴 <b>左が「水彩」のままです。</b>上のプロンプトの水彩の言葉と逆向きになるので、写真にしたいときは左を「実写」にするか、頼む文を自分で書いてください。'
+                   : '📷 写真らしさのコツ（一眼レフ・50mm・自然光・CG の質感を出さない）を文の末に添えます。');
+    }
     if(追記){ out.push(追記); }
     n.innerHTML = out.join('<br>');
   }
@@ -2322,7 +2350,10 @@ function jaErr(raw){
   window.forgeRefBuild = async function(prompt){
     var rp = el('refPrompt');
     var 文 = (rp && rp.value.trim()) ? rp.value.trim() : String(prompt || '');
-    if(!refs.length && !(rp && rp.value.trim())){ return null; }
+    /* ★2026-10-25 夜：ヘッダーの型・写真らしさにチェックがあれば、絵が無くても文に添えて送る。★直す前 … 型と写真の2つは条件に無かった */
+    var 型 = el('refNoteHeader'), 写 = el('refPhoto');
+    var 型あり = !!(型 && 型.checked), 写あり = !!(写 && 写.checked);
+    if(!refs.length && !(rp && rp.value.trim()) && !型あり && !写あり){ return null; }
 
     var 名ら = [];
     for(var i = 0; i < refs.length; i++){
@@ -2335,6 +2366,26 @@ function jaErr(raw){
       文 += '\n・描き終えたら人数を数え、ちょうど' + refs.length + '人であることを確かめる。人を足さない・減らさない。2人を1人に混ぜない。'
           + '\n・服が同じでも、髪・眼鏡・ひげで1人ずつ見分けられるように描く。'
           + '\n・文字は頼んだ1か所だけ。ほかの札・ポスター・2つ目の看板は描かない。';
+    }
+    /* ★note のヘッダーの型（10-24 の「ゆとり」2枚の頼み方から。城主「どちらもいい出来だ」）
+       note の帯は窓の広さで上下の切れ方が変わる（4:1〜6:1）。横は全部映る → 顔と文字を上下の真ん中に寄せる */
+    /* 🔴 1回目の試し（10-25 夜）は、この型を文の末に足したら効かなかった（人が端から端まで詰まり、ロゴは列の上）。
+       ★文の頭へ「いちばん大事」として置き、割合を数で書く形にした。末尾にも1行だけ念を押す */
+    if(型あり){
+      文 = '【構図（いちばん大事。横長の帯に切って使う絵です）】'
+          + '\n・人は小さめに描く。1人の背の高さ（頭から足元まで）は、画面の高さの4割ほど。頭の上にも足元にも、壁と床の余白をたっぷり残す（ゆとりを持たせ、圧迫感を出さない）。'
+          + '\n・人が何人もいるときは横一列に並べる（後ろの列は作らない）。列は画面の横幅の真ん中より少し右に寄せ、横幅の6〜7割に収める。左右の端には人を置かない。'
+          + '\n・全員の顔の高さが、画面の上下のちょうど真ん中に来る。'
+          + '\n・ロゴと文字を描くときは、列の左側の余白に、顔と同じ高さで置く（列の上には置かない）。文字はそこ1か所だけ。'
+          + '\n\n' + 文
+          + '\n・（構図は最初に書いたとおり：人は小さめ・左右と上下に余白・ロゴと文字は列の左で顔の高さ）';
+    }
+    /* ★写真らしさのコツ（城主 10-25 夕方「YouTubeに上げる動画は実写風がいい」） */
+    if(写あり){
+      文 += '\n・写真として撮ったように描く。一眼レフで、50mm の標準レンズ、人の目の高さから。'
+          + '\n・光は自然光（窓や外のやわらかい光）。強い縁取りの光や、作りものの照明にしない。'
+          + '\n・肌・髪・服・壁に本物の質感を。CG・3D・イラスト・つるつるの肌の質感は出さない（しわやしみを強めることもしない）。'
+          + '\n・ピントは顔に合わせ、背景はほんの少しぼける程度に。';
     }
 
     var 合計 = 0; for(var j = 0; j < refs.length; j++){ 合計 += refs[j].bytes || 0; }
@@ -2349,9 +2400,11 @@ function jaErr(raw){
     }
     parts.push({ text: 文 });
 
-    var a = el('refAspect'), asp = null;
+    var a = el('refAspect'), asp = null, 訳 = '';
     if(refs.length && a && a.value === 'ref'){ asp = 近い比率(refs[0].w, refs[0].h); }
-    return { parts: parts, aspect: asp, count: refs.length, shrunk: 縮めた };
+    /* ★ヘッダーの型は 16:9 で頼む（1.91:1 は向こう側に無い。16:9 から上下を切ると顔の帯が真ん中に残る） */
+    if(型あり){ asp = '16:9'; 訳 = 'note のヘッダーの型。1920 × 1006 で保存できます'; }
+    return { parts: parts, aspect: asp, aspectWhy: 訳, count: refs.length, shrunk: 縮めた };
   };
 
   /* ★道具・試験から中身を見るための口（★読むだけ） */
@@ -2365,7 +2418,113 @@ function jaErr(raw){
   var cl = el('refClear'); if(cl){ cl.addEventListener('click', function(){ refs = []; 追記 = ''; 描く(); }); }
   var ra = el('refAspect'); if(ra){ ra.addEventListener('change', 案内); }
   var gm = el('genModelSel'); if(gm){ gm.addEventListener('change', 案内); }
+  var nh = el('refNoteHeader'); if(nh){ nh.addEventListener('change', 案内); }
+  var ph = el('refPhoto'); if(ph){ ph.addEventListener('change', 案内); }
   描く();
+})();
+
+/* ★2026-10-25 夜（理子〔舷門〕）：note のヘッダーを 1920 × 1006 ぴったりで保存する
+   出どころ … 機関室〔39代目「楣」〕の頼み。10-24 に城主が「調整してみて貼ったがダメだ」と言われ、
+     機関室が 1.97:1 の絵を 1920 × 1006 に作り直して貼れた（noteの貼る用を1920x1006で作る.py）。
+   ★隣の「1.91:1」（マガジンの表紙 1280 × 670）は1文字も触っていない。こちらは note の記事の見出し用。
+   🔴 ★元の絵が 1920 より小さいとき（1K で作ったとき）は引き伸ばすことになる。note は大きさが合わないと調整が要るので、
+      ★大きさを優先して引き伸ばし、★そのことを画面に1行 出す（黙って水増ししない）。 */
+(function(){
+  'use strict';
+  var dl = document.getElementById('dl');
+  var img = document.getElementById('result');
+  if(!dl || !img || !dl.parentNode){ return; }
+  var 出W = 1920, 出H = 1006;
+
+  function 作る(){
+    return new Promise(function(ok){
+      if(!img.src){ ok(null); return; }
+      var im = new Image();
+      im.onload = function(){
+        try{
+          var W = im.naturalWidth || im.width, H = im.naturalHeight || im.height;
+          if(!W || !H){ ok(null); return; }
+          /* 1920:1006 の比で、真ん中から切る（横長なら上下を、縦長寄りなら左右を落とす） */
+          var r = 出W / 出H, cw = W, ch = Math.round(W / r);
+          if(ch > H){ ch = H; cw = Math.round(H * r); }
+          var sx = Math.round((W - cw) / 2), sy = Math.round((H - ch) / 2);
+          /* 大きく縮めるときは半分ずつ（隣の 1.91:1 と同じやり方） */
+          var 元 = im, ox = sx, oy = sy, ow = cw, oh = ch;
+          while(ow >= 出W * 2 && oh >= 出H * 2){
+            var t = document.createElement('canvas');
+            t.width = Math.round(ow / 2); t.height = Math.round(oh / 2);
+            var tc = t.getContext('2d');
+            if('imageSmoothingQuality' in tc){ tc.imageSmoothingQuality = 'high'; }
+            tc.drawImage(元, ox, oy, ow, oh, 0, 0, t.width, t.height);
+            元 = t; ox = 0; oy = 0; ow = t.width; oh = t.height;
+          }
+          var cv = document.createElement('canvas');
+          cv.width = 出W; cv.height = 出H;
+          var ctx = cv.getContext('2d');
+          if('imageSmoothingQuality' in ctx){ ctx.imageSmoothingQuality = 'high'; }
+          ctx.drawImage(元, ox, oy, ow, oh, 0, 0, 出W, 出H);
+          ok({ url: cv.toDataURL('image/jpeg', 0.93), W: W, H: H, cw: cw, ch: ch, 広げた: (cw < 出W) });
+        }catch(e){ ok(null); }
+      };
+      im.onerror = function(){ ok(null); };
+      im.src = img.src;
+    });
+  }
+
+  function 報せる(r, 名){
+    try{
+      var 板 = document.getElementById('note1920Note');
+      if(!板){
+        var msg = document.getElementById('msg');
+        if(!msg || !msg.parentNode){ return; }
+        板 = document.createElement('div');
+        板.id = 'note1920Note';
+        msg.parentNode.insertBefore(板, msg.nextSibling);
+      }
+      var s = '💾 <b>' + 名 + '</b> を保存しました。元の絵 ' + r.W + ' × ' + r.H + ' の真ん中から ' + r.cw + ' × ' + r.ch + ' を切り、<b>1920 × 1006</b> にしています。note の見出しへ、そのまま貼れます。';
+      if(r.広げた){
+        s += '<br>🔴 <b>元の絵が小さかったので、引き伸ばしています</b>（少しぼやけます）。くっきりさせたいときは、解像度を <b>2K</b> にして作り直してください。';
+        板.className = 'mt-3 rounded-xl p-3 text-[11px] leading-relaxed border bg-amber-500/10 border-amber-500/30 text-amber-300';
+      }else{
+        板.className = 'mt-3 rounded-xl p-3 text-[11px] leading-relaxed border border-sky-500/30 bg-sky-500/5 text-sky-200';
+      }
+      板.innerHTML = s;
+    }catch(e){ /* ★報せに失敗しても、保存は終わっている */ }
+  }
+
+  /* ★道具からも呼べる口。保存して {名前, 広げた} を返す（★保存せず中身だけ欲しいときは forgeNoteHeader1920() ） */
+  window.forgeNoteHeader1920 = 作る;
+  window.forgeSaveNoteHeader = async function(){
+    var r = await 作る();
+    if(!r){ if(typeof showToast === 'function'){ showToast('絵が読めませんでした', 'err'); } return null; }
+    var 名 = 'note_header_1920x1006_' + new Date().toISOString().replace(/[:.]/g, '-') + '.jpg';
+    var a = document.createElement('a');
+    a.download = 名; a.href = r.url;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    報せる(r, 名);
+    return { name: 名, from: r.W + 'x' + r.H, enlarged: r.広げた };
+  };
+
+  var b = document.createElement('button');
+  b.id = 'dlNote1920';
+  b.type = 'button';
+  b.className = dl.className.replace('right-3', 'right-32');
+  b.title = 'note の記事の見出し用に、真ん中から切って 1920 × 1006 ぴったりで保存します';
+  b.style.fontSize = '11px';
+  b.style.fontWeight = '700';
+  b.style.padding = '6px 10px';
+  b.textContent = '1920×1006';
+  b.onclick = function(){ window.forgeSaveNoteHeader(); };
+  dl.parentNode.insertBefore(b, dl.nextSibling);
+
+  /* 保存ボタンが出ていて、ヘッダーの型にチェックがあるときだけ出す */
+  var cb = document.getElementById('refNoteHeader');
+  function sync(){ b.classList.toggle('hidden', dl.classList.contains('hidden') || !(cb && cb.checked)); }
+  if(typeof MutationObserver !== 'undefined'){
+    new MutationObserver(sync).observe(dl, { attributes: true, attributeFilter: ['class'] });
+  }
+  if(cb){ cb.addEventListener('change', sync); }
+  sync();
 })();
 </script>
 </body>
