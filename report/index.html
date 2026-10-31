@@ -882,6 +882,7 @@ function buildPlanetReportHTML(planet) {
   <div class="planet-desc-box">
     <div class="planet-desc-label">この星が描く物語</div>
     <div class="planet-desc-text">${descHtml}</div>
+    ${(planet.id==='moon' && (document.getElementById('inp-hour')||{}).value==='')?`<p class="muted">※月は2日あまりで次の星座へ移るため、生まれた時刻によっては、ここが隣の星座になることがあります。ここも12時として計算しています。</p>`:''}
   </div>
 </div>`;
 }
@@ -1494,7 +1495,7 @@ function renderGogyo(){
   body.innerHTML=`<p>あなたの設計図でいちばん豊かなのは<strong>${names(strongs)}</strong>の気です。${strongText}</p>`+
     `<p>反対に控えめなのは<strong>${names(weaks)}</strong>の気。${kb(weaks)}ここは足りないのではなく「伸びしろ」。意識して補うと、人としての幅がぐっと広がります。</p>`+
     `<p class="muted">※四柱8文字（年・月・日・時の干支）から集計：木${m['木']}・火${m['火']}・土${m['土']}・金${m['金']}・水${m['水']}</p>`+
-    (noTime?`<p class="muted">※生まれた時刻が分からないため、1日のまん中の12時として計算しています。</p>`:'');
+    (noTime?`<p class="muted">※生まれた時刻が分からないため、1日のまん中の12時として計算しています。8文字のうち時の2文字は、実際の時刻によって変わることがあります。</p>`:'');
 }
 
 </script>
