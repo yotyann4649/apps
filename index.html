@@ -126,7 +126,10 @@
        JSが動けば APPS.length（現在10）で即座に上書きされるので、通常はこの数字は見えない。
        ★「0」に戻さないこと。カードが2枚あるのに「全0ページ」と出て、ページ内で矛盾する。
        （理子庫 U-022：合計だけ直すと内訳とズレる。過小表示は害にならないが、自己矛盾は信用を削る） -->
-  <div class="count">全 <b id="count">2</b> ページ</div>
+  <!-- ★2026-10-31（理子〔舷門〕／城主の判断 K-1031111317【Ａ】）：「全◯ページ」の字を消した。
+       来た人には要らない数のため。★id="count" は JS が書き込むので、hidden で残してある（消すと一覧が出なくなる）。
+       ★下の線（区切り）は .count の枠のまま残る。戻すときは退避 20261031_城主のを外す前_理子 の1行に戻す。 -->
+  <div class="count"><b id="count" hidden>2</b></div>
 
   <!-- ═══════════════════════════════════════════════════════════════
        ★このグリッドの中身は、通常すぐ下の script が innerHTML で上書きする。
@@ -163,7 +166,7 @@
 
 
   <div class="goto">
-    <a href="tools/" rel="nofollow"><span class="k">The Trinity 工房 →</span><span class="v">城主と The Trinity で作ってきた道具。家計・資産と、制作の道具。</span></a>
+    <a href="tools/" rel="nofollow"><span class="k">The Trinity 工房 →</span><span class="v">The Trinity で作ってきた道具。家計・資産と、制作の道具。</span></a>
     <a href="https://note.com/grand_colt8044" target="_blank" rel="noopener"><span class="k">note →</span><span class="v">先行案内と、つくっている過程を書いています。</span></a>
   </div>
   <div class="seal"></div>
