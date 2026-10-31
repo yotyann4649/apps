@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<meta name="description" content="城主と The Trinity で作ってきたWeb道具の置き場です。家計・資産の管理と、制作のための道具があります。">
+<meta name="description" content="The Trinity で作ってきたWeb道具の置き場です。家計・資産の管理と、制作のための道具があります。">
 <title>The Trinity 工房</title>
 
 <!-- ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：SNSに貼ったときの題と説明 ━━━━━━━━━
@@ -31,7 +31,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://yotyann4649.github.io/apps/tools/">
 <meta property="og:title" content="The Trinity 工房">
-<meta property="og:description" content="城主と The Trinity で作ってきたWeb道具の置き場です。">
+<meta property="og:description" content="The Trinity で作ってきたWeb道具の置き場です。">
 <meta property="og:site_name" content="The Trinity 工房">
     <!-- ★2026-08-29（26代目「貫」）：★絵ができたので og:image と twitter: を入れた。
          ★絵＝奏（信号所・10代目「唄」）が作成。★1200x630・費用0円・外部からの取り込み0件。
@@ -119,7 +119,7 @@
     <div class="crest">工</div>
     <div class="eyebrow">T H E &nbsp; T R I N I T Y</div>
     <h1>工　房</h1>
-    <p class="subtitle">The Trinity は、城主が道具をつくるために組み上げてきた仕組みです。<br>ここには、家計・資産を見る道具と、絵や看板をつくる道具を置いています。</p>
+    <p class="subtitle">The Trinity は、道具をつくるために組み上げてきた仕組みです。<br>ここには、家計・資産を見る道具と、絵や看板をつくる道具を置いています。</p>
   </header>
 
   <!-- ★下の「2」は、JSが動かなかったときに表示される数である。
@@ -127,7 +127,10 @@
        JSが動けば APPS.length（現在10）で即座に上書きされるので、通常はこの数字は見えない。
        ★「0」に戻さないこと。カードが2枚あるのに「所蔵0点」と出て、ページ内で矛盾する。
        （理子庫 U-022：合計だけ直すと内訳とズレる。過小表示は害にならないが、自己矛盾は信用を削る） -->
-  <div class="count">所蔵 <b id="count">2</b> 点</div>
+  <!-- ★2026-10-31（理子〔舷門〕／城主の判断 K-1031111317【Ａ】）：「所蔵◯点」の字を消した。
+       来た人には要らない数のため。★id="count" は JS が書き込むので、hidden で残してある（消すと一覧が出なくなる）。
+       ★下の線（区切り）は .count の枠のまま残る。戻すときは退避 20261031_城主のを外す前_理子 の1行に戻す。 -->
+  <div class="count"><b id="count" hidden>2</b></div>
 
   <!-- ═══════════════════════════════════════════════════════════════
        ★このグリッドの中身は、通常すぐ下の script が innerHTML で上書きする。
@@ -170,7 +173,7 @@
   <div class="seal">― 以上 ―</div>
 
   <footer>
-    築：城主 と The Trinity ／ すべて自作のWeb道具<br>
+    築：The Trinity ／ すべて自作のWeb道具<br>
     各アプリは概算・参考用です。
   </footer>
 
@@ -189,21 +192,21 @@ var T = {
 var APPS = [
 
   {
-    name:  "城主の資産要塞",
+    name:  "資産要塞",
     cat:   "家計・資産",
     desc:  "毎月の家計簿から、生涯の資産推移を試算する。月の変動・円グラフ・年代記を備えた、未来を見通すための道具。",
     url:   "shisan/",          // apps/ の中の部屋名。別リポジトリなら https:// から書く
     color: T.kin
   }
   ,{
-    name:  "城主の出納帳",
+    name:  "出納帳",
     cat:   "家計・資産",
     desc:  "毎月の収入・支出・投資を費目別に記録し、暮らしの移ろいを残す家計簿。推移・内訳・履歴で積み重ねが見える。",
     url:   "kakeibo/",
     color: T.beni
   }
   ,{
-    name:  "城主の歳計帳",
+    name:  "歳計帳",
     cat:   "家計・資産",
     desc:  "年額を入れると、ひと月あたりに自動換算。収支の比率・貯蓄率・家計の全体像を一枚で一望する。",
     url:   "saikei/",
@@ -221,14 +224,14 @@ var APPS = [
         ★玄関から押すと、いきなりキーの入力欄に当たる（★U-001 事前エスコートUX）。
      ★器は測ってある：★.desc に line-clamp も max-height も無く、★.grid は1列。★長くしても切れない。 */
   ,{
-    name:  "城主の絵札工房",
+    name:  "絵札工房",
     cat:   "制作の道具",
     desc:  "画像生成のための指示文（プロンプト）を組み立てる道具。単語を並べるだけで、実写向き・水彩スケッチ向きの指示文ができる。生成そのものは手元の道具でも、この場でもできる。この場で作るときだけ、Googleのキーを貼る（無料で取れる）。",
     url:   "imageforge/",
     color: T.murasaki
   }
   ,{
-    name:  "城主の看板工房",
+    name:  "看板工房",
     cat:   "制作の道具",
     desc:  "見出し画像やサムネイルを、文字と配色だけで組み立てる道具。文字を置いた側だけに下地を敷くので、背景がごちゃついていても字が読める。作ったものは、この端末の中だけに残る。",
     url:   "banner/",
