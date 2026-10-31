@@ -172,7 +172,7 @@
         <p id="dataMsg" style="font-size:10px; text-align:center; margin:8px 0 0; line-height:1.6; min-height:14px;"></p>
       </div>
     </div>
-    <p class="foot">概算試算です。税・インフレ・相場変動は含みません。<br>臨時の収入・出費は年額として将来試算に反映されます。退職後は給与・賞与を除きます。</p>
+    <p class="foot">最初に入っている額は見本です。自分の額に書き換えて使ってください。<br>概算試算です。税・インフレ・相場変動は含みません。<br>臨時の収入・出費は年額として将来試算に反映されます。退職後は給与・賞与を除きます。</p>
   </main>
 </div>
 <div id="tip"></div>
@@ -187,18 +187,18 @@ var T = {
 var MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
 var INCOME_CATS = [
   {key:"salary",  label:"給与（手取り）", icon:"🏯", def:25},
-  {key:"bonus",   label:"賞与（月割）",   icon:"🎁", def:8},
+  {key:"bonus",   label:"賞与（月割）",   icon:"🎁", def:0},
   {key:"pension", label:"年金",       icon:"🛡️", def:0},
   {key:"side",    label:"副収入・事業",   icon:"🌱", def:0}
 ];
 var EXPENSE_CATS = [
-  {key:"housing", label:"住宅ローン",     icon:"🏠", def:8},
-  {key:"food",    label:"食費",           icon:"🍚", def:4},
-  {key:"utility", label:"水道光熱・通信", icon:"💡", def:2},
-  {key:"daily",   label:"日用・雑費",     icon:"🧺", def:1.5},
-  {key:"insure",  label:"保険・医療",     icon:"⚕️", def:1},
-  {key:"leisure", label:"趣味・交際",     icon:"🍶", def:1},
-  {key:"other",   label:"その他",         icon:"—",  def:0}
+  {key:"housing", label:"住宅ローン",     icon:"🏠", def:6},
+  {key:"food",    label:"食費",           icon:"🍚", def:3},
+  {key:"utility", label:"水道光熱・通信", icon:"💡", def:1.5},
+  {key:"daily",   label:"日用・雑費",     icon:"🧺", def:1},
+  {key:"insure",  label:"保険・医療",     icon:"⚕️", def:0.5},
+  {key:"leisure", label:"趣味・交際",     icon:"🍶", def:2},
+  {key:"other",   label:"その他",         icon:"—",  def:2}
 ];
 function defaults(){
   var inc={},exp={};
