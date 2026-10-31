@@ -124,7 +124,7 @@
         <p id="dataMsg" style="font-size:10px; text-align:center; margin:8px 0 0; line-height:1.6; min-height:14px;"></p>
       </div>
     </div>
-    <p class="foot">年額を入れると、ひと月あたりに自動換算します。<br>※概算です。入力した値はどこにも送信されません。</p>
+    <p class="foot">年額を入れると、ひと月あたりに自動換算します。<br>最初に入っている額は見本です。自分の額に書き換えて使ってください。<br>※概算です。入力した値はどこにも送信されません。</p>
   </main>
 </div>
 <div id="tip"></div>
@@ -136,20 +136,21 @@ var T={sumi:"#13161c",konjo:"#1b2433",konjoLite:"#243047",ishi:"#2d3a4f",
 
 function defaults(){
   return {
-    assets:500,
+    // 最初に入っている額は、一人暮らしの見本（使う人が自分の額に書き換える）
+    assets:200,
     income:[
-      {id:1, label:"給与（手取り）", yr:322},
-      {id:2, label:"賞与", yr:120},
+      {id:1, label:"給与（手取り）", yr:300},
+      {id:2, label:"賞与", yr:0},
       {id:3, label:"その他収入", yr:0}
     ],
     expense:[
-      {id:1, label:"住居", yr:96},
-      {id:2, label:"食費", yr:48},
-      {id:3, label:"水道光熱・通信", yr:24},
-      {id:4, label:"保険・医療", yr:18},
-      {id:5, label:"交通・車", yr:24},
-      {id:6, label:"日用・雑費", yr:18},
-      {id:7, label:"趣味・交際", yr:18},
+      {id:1, label:"住居", yr:72},
+      {id:2, label:"食費", yr:36},
+      {id:3, label:"水道光熱・通信", yr:18},
+      {id:4, label:"保険・医療", yr:6},
+      {id:5, label:"交通・車", yr:12},
+      {id:6, label:"日用・雑費", yr:12},
+      {id:7, label:"趣味・交際", yr:24},
       {id:8, label:"税・年払い", yr:12}
     ]
   };
