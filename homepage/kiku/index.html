@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三星鑑｜作り手から、3つだけ</title>
+<!-- 検索には出さない（登録のあとの画面と、毎週の手紙の追伸からだけ来る頁） -->
+<meta name="robots" content="noindex">
+<!-- 2026-10-29（理子〔舷門〕）：円さんの「いくらなら払うか」の3問を置く頁（K-1028150002【Ｂ】）。
+     問いの字の正本 … 10_メンバーの部屋\trinity_madoka\いくらなら払うかの問い_確定稿_20261018.md §1（1文字も変えない）
+     線 ……………… 04_運用ツール\指示文\済\回答_円_矩より_いくらなら払うかの問いの線.md §1・§2
+     【集めないもの】お名前・メールアドレス・人ごとの印。送るのは、選んだ答えと「どこから来たか」（全員に同じ字）だけ。
+     【答えの受け手】登録の名簿とは別の Google フォーム。メールアドレスを集めない・Google への入室を求めない設定にする。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 色は LP と同じ2組（K-1021194004【A】）。紙・墨・金だけ */
+:root{
+  --paper:#f6efe1; --paper-soft:#faf6ee; --paper-deep:#ece4d4;
+  --ink:#241c12; --ink-2:#574d40; --ink-3:#9a8f7c;
+  --rule:#d9cfbd; --rule-soft:#e6ddcc;
+  --gold:#9a7b2e; --gold-soft:#b29355;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Zen Kaku Gothic New',system-ui,sans-serif;font-size:16px;line-height:1.95;-webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;padding:44px 22px 72px}
+.mark{display:flex;align-items:center;gap:10px;margin-bottom:30px;color:var(--ink-2);font-size:14px}
+.seal{display:inline-grid;place-items:center;width:30px;height:30px;border:1px solid var(--gold);color:var(--gold);font-family:'Shippori Mincho B1',serif;font-size:15px}
+h1{font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:22px;line-height:1.7;margin-bottom:18px}
+.lead{color:var(--ink-2);font-size:15px;line-height:2;margin-bottom:34px;padding:16px 18px;background:var(--paper-soft);border-left:2px solid var(--gold-soft)}
+fieldset{border:0;border-top:1px solid var(--rule);padding:26px 0 8px;margin:0}
+legend{float:left;width:100%;font-weight:700;font-size:16px;line-height:1.9;margin-bottom:14px}
+legend .no{font-family:'Shippori Mincho B1',serif;color:var(--gold);margin-right:.6em}
+.sub{clear:both;font-size:15px;color:var(--ink-2);margin:4px 0 10px}
+.sub b{color:var(--ink);font-weight:700}
+.opts{clear:both;display:grid;gap:8px;margin-bottom:18px}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:11px 14px;border:1px solid var(--rule-soft);border-radius:3px;background:var(--paper-soft);cursor:pointer;font-size:15.5px;line-height:1.7}
+.opt:hover{border-color:var(--gold-soft)}
+.opt input[type=radio]{flex:none;margin-top:5px;width:18px;height:18px;accent-color:var(--gold)}
+.opt:has(input[type=radio]:checked){border-color:var(--gold);background:#fffaf0}
+.opt:has(input[type=radio]:focus-visible){outline:2px solid var(--gold-soft);outline-offset:1px}
+.opt-other{flex:1;min-width:0}
+.other{display:block;width:100%;margin-top:8px;font:inherit;font-size:15px;padding:9px 12px;border:1px solid var(--rule);border-radius:2px;background:#fff;color:var(--ink)}
+.other:focus{outline:2px solid var(--gold-soft);outline-offset:1px}
+.note{font-size:13.5px;color:var(--ink-2);margin:-8px 0 18px 2px}
+.clear{background:none;border:0;color:var(--ink-3);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer;margin:-10px 0 14px 2px;padding:2px 0}
+.send{display:block;width:100%;margin-top:22px;padding:16px;font:inherit;font-size:16px;font-weight:700;letter-spacing:.06em;color:var(--paper);background:var(--ink);border:0;border-radius:2px;cursor:pointer}
+.send:hover{background:#3a2f22}
+.send[disabled]{opacity:.6;cursor:wait}
+.msg{min-height:1.9em;margin-top:12px;font-size:14px;color:#8a5a12}
+.done{display:none;padding:30px 0;font-family:'Shippori Mincho B1',serif;font-size:18px;line-height:2.1}
+.done.show{display:block}
+.done:focus{outline:none}
+.done small{display:block;margin-top:14px;font-family:'Zen Kaku Gothic New',sans-serif;font-size:13.5px;color:var(--ink-2)}
+.sample{display:none;margin-bottom:22px;padding:10px 14px;border:1px dashed var(--gold);font-size:13.5px;color:#7a5a12;background:#fffaf0}
+.sample.show{display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="mark"><span class="seal">鑑</span><span>三星鑑</span></div>
+
+  <p id="sample" class="sample" role="note">見本です。いまは答えをどこにも送りません（送り先のフォームがまだ在りません）。</p>
+
+  <!-- ↓ ここから問いの字（確定稿 §1 のまま） -->
+  <h1>作り手から、3つだけ教えてください（答えたいものだけで大丈夫です）</h1>
+  <p class="lead">いまは販売していません。この時点でのお申し込み・お支払いはありません。<br>
+  お名前やメールアドレスはうかがいません。いただいた答えは、値段と中身を決めるための参考にだけ使います。</p>
+
+  <form id="kk-form" novalidate>
+    <fieldset>
+      <legend><span class="no">問1</span>生年月日をもとに、あなたの考え方や動き方のくせをまとめた「取扱説明書」（読み上げの音声つき）があったとして、いくらまでなら出してもいいと思いますか。近いものを1つ選んでください。</legend>
+      <div class="opts" data-q="q1">
+        <label class="opt"><input type="radio" name="q1" value="お金を出してまでは要らない">お金を出してまでは要らない</label>
+        <label class="opt"><input type="radio" name="q1" value="1,000円まで">1,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="3,000円まで">3,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="5,000円まで">5,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="10,000円まで">10,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="15,000円まで">15,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="25,000円まで">25,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="40,000円まで">40,000円まで</label>
+        <label class="opt"><input type="radio" name="q1" value="40,000円より上でもいい">40,000円より上でもいい</label>
+      </div>
+      <button type="button" class="clear" data-clear="q1">選んだのを外す</button>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="no">問2</span>もし次の値段だったとして、いちばん近い気持ちを、それぞれ1つ選んでください。</legend>
+      <p class="sub" id="q2a-h"><b>・取扱説明書の短い版（要点だけ）　2,980円</b></p>
+      <div class="opts" data-q="q2a" role="radiogroup" aria-labelledby="q2a-h">
+        <label class="opt"><input type="radio" name="q2a" value="安すぎて、中身が心配">安すぎて、中身が心配</label>
+        <label class="opt"><input type="radio" name="q2a" value="手ごろ">手ごろ</label>
+        <label class="opt"><input type="radio" name="q2a" value="少し高い">少し高い</label>
+        <label class="opt"><input type="radio" name="q2a" value="高すぎて、手が出ない">高すぎて、手が出ない</label>
+      </div>
+      <button type="button" class="clear" data-clear="q2a">選んだのを外す</button>
+      <p class="sub" id="q2b-h"><b>・取扱説明書の完全版（音声つき）　12,800円</b></p>
+      <div class="opts" data-q="q2b" role="radiogroup" aria-labelledby="q2b-h">
+        <label class="opt"><input type="radio" name="q2b" value="安すぎて、中身が心配">安すぎて、中身が心配</label>
+        <label class="opt"><input type="radio" name="q2b" value="手ごろ">手ごろ</label>
+        <label class="opt"><input type="radio" name="q2b" value="少し高い">少し高い</label>
+        <label class="opt"><input type="radio" name="q2b" value="高すぎて、手が出ない">高すぎて、手が出ない</label>
+      </div>
+      <button type="button" class="clear" data-clear="q2b">選んだのを外す</button>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="no">問3</span>こういうものにお金を出すか迷うとしたら、いちばん近い理由はどれですか。</legend>
+      <div class="opts" data-q="q3">
+        <label class="opt"><input type="radio" name="q3" value="値段">値段</label>
+        <label class="opt"><input type="radio" name="q3" value="自分に当てはまるか、読む前に分からない">自分に当てはまるか、読む前に分からない</label>
+        <label class="opt"><input type="radio" name="q3" value="いまは、そういう時期ではない">いまは、そういう時期ではない</label>
+        <label class="opt"><input type="radio" name="q3" value="占いや性格診断にお金を使うこと自体、気が進まない">占いや性格診断にお金を使うこと自体、気が進まない</label>
+        <label class="opt"><input type="radio" name="q3" value="そもそも要らない">そもそも要らない</label>
+        <label class="opt"><input type="radio" name="q3" value="その他" id="q3-other-r"><span class="opt-other">その他<input type="text" id="q3-other" class="other" maxlength="200" aria-label="その他の理由" autocomplete="off"></span></label>
+      </div>
+      <p class="note">※お名前など、あなただと分かることは書かないでください。</p>
+      <button type="button" class="clear" data-clear="q3">選んだのを外す</button>
+    </fieldset>
+    <!-- ↑ ここまで問いの字 -->
+
+    <button id="kk-send" type="submit" class="send">この答えを送る</button>
+    <p id="kk-msg" class="msg" role="status" aria-live="polite"></p>
+  </form>
+
+  <div id="kk-done" class="done" role="status" aria-live="polite" tabindex="-1">
+    答えてくださって、ありがとうございました。
+    <small id="kk-done-note"></small>
+  </div>
+  <iframe name="kk-sink" id="kk-sink" title="送信用" style="display:none" tabindex="-1" aria-hidden="true"></iframe>
+</div>
+
+<script>
+(function(){
+  // ---- 設定（ここだけを触る） ----------------------------------------
+  // 答えの受け手の Google フォーム（登録の名簿とは別のもの）。空のあいだは見本として動き、どこにも送らない
+  var FORM_VIEW = "https://docs.google.com/forms/d/e/1FAIpQLSdiTJm67EN_ahDnCPh0-_oNtDgooTpThxx-BvwaRZjoEEsxMg/viewform";
+  // フォームの各欄の名前（"entry.123456789" の形）。フォームを作った人から受け取って入れる
+  var ENTRY = {
+    q1:      "entry.1199011328",   // 問1（9択）
+    q2a:     "entry.1688979228",   // 問2 短い版 2,980円（4択）
+    q2b:     "entry.1127268971",   // 問2 完全版 12,800円（4択）
+    q3:      "entry.1903297231",   // 問3（6択。「その他」もふつうの選択肢として置く）
+    q3other: "entry.322762426",   // 問3 その他の字（自由に書く欄）
+    from:    "entry.1212032006"    // どこから来たか（toroku / tegami。全員に同じ字。人は分からない）
+  };
+  var WAIT_MS = 12000;
+  // --------------------------------------------------------------------
+
+  var form = document.getElementById("kk-form");
+  var btn  = document.getElementById("kk-send");
+  var msg  = document.getElementById("kk-msg");
+  var done = document.getElementById("kk-done");
+  var doneNote = document.getElementById("kk-done-note");
+  var sink = document.getElementById("kk-sink");
+  var otherR = document.getElementById("q3-other-r");
+  var otherT = document.getElementById("q3-other");
+  var sending = false, timer = null;
+
+  var ready = !!FORM_VIEW && !!ENTRY.q1 && !!ENTRY.q2a && !!ENTRY.q2b && !!ENTRY.q3;
+  if (!ready) document.getElementById("sample").className = "sample show";
+
+  // どこから来たか：決まった2つの字だけを通す（それ以外は空。人ごとの印は受け取らない）
+  var from = "";
+  try {
+    var m = /[?&]from=([a-z]+)/.exec(location.search);
+    if (m && (m[1] === "toroku" || m[1] === "tegami")) from = m[1];
+  } catch(e) {}
+
+  function showDone(note){
+    form.style.display = "none";
+    done.className = "done show";
+    doneNote.textContent = note || "";
+    try { done.focus(); } catch(e) {}
+  }
+
+  // 同じ端末で一度答えた方には、もう一度は聞かない（端末の中に「答えた」の印を置くだけ。どこにも送らない）
+  try {
+    if (ready && localStorage.getItem("sanseikan_kiku_done") === "1") {
+      showDone("前に答えていただいています。");
+    }
+  } catch(e) {}
+
+  // 「その他」の欄に字を書いたら、その他を選んだことにする（選び忘れを責めない）
+  otherT.addEventListener("input", function(){ if (otherT.value.trim()) otherR.checked = true; });
+  otherT.addEventListener("click", function(){ otherR.checked = true; });
+
+  // 押した選択を外す道（全部任意なので、選び直しだけでなく「答えない」に戻せるように）
+  Array.prototype.forEach.call(document.querySelectorAll("[data-clear]"), function(b){
+    b.addEventListener("click", function(){
+      var name = b.getAttribute("data-clear");
+      Array.prototype.forEach.call(form.querySelectorAll('input[name="' + name + '"]'), function(r){ r.checked = false; });
+      if (name === "q3") otherT.value = "";
+    });
+  });
+
+  function picked(name){
+    var r = form.querySelector('input[name="' + name + '"]:checked');
+    return r ? r.value : "";
+  }
+  // 自由に書く欄は静かに整える：前後の空白を抜き、改行は空白に、長すぎる分は切る
+  function tidy(s){
+    s = String(s == null ? "" : s);
+    if (s.normalize) s = s.normalize("NFKC");
+    return s.replace(/\s+/g, " ").trim().slice(0, 200);
+  }
+
+  form.addEventListener("submit", function(ev){
+    ev.preventDefault();
+    if (sending) return;                                     // 二度押しは受け付けない
+    var a = { q1: picked("q1"), q2a: picked("q2a"), q2b: picked("q2b"), q3: picked("q3") };
+    var other = a.q3 === "その他" ? tidy(otherT.value) : "";
+    if (!a.q1 && !a.q2a && !a.q2b && !a.q3){
+      msg.textContent = "まだ1つも選ばれていないようです。答えたいものだけで大丈夫です。";
+      return;
+    }
+    msg.textContent = "";
+
+    if (!ready){                                             // 見本：送らずに、送ったあとの画面だけ見せる
+      showDone("（見本のため、答えはどこにも送っていません）");
+      return;
+    }
+
+    sending = true; btn.disabled = true; btn.textContent = "送っています…";
+    var post = document.createElement("form");
+    post.method = "POST"; post.target = "kk-sink"; post.style.display = "none";
+    post.action = FORM_VIEW.replace(/\/viewform.*$/, "/formResponse");
+    function put(name, val){
+      if (!name || !val) return;
+      var f = document.createElement("input"); f.type = "hidden"; f.name = name; f.value = val; post.appendChild(f);
+    }
+    put(ENTRY.q1, a.q1); put(ENTRY.q2a, a.q2a); put(ENTRY.q2b, a.q2b); put(ENTRY.q3, a.q3);
+    put(ENTRY.q3other, other); put(ENTRY.from, from);
+    document.body.appendChild(post);
+
+    var answered = false;
+    sink.onload = function(){
+      if (answered) return; answered = true; clearTimeout(timer);
+      // 分かるのは「送り先が応答した」まで。記録できたかは、この頁からは見えない
+      try { localStorage.setItem("sanseikan_kiku_done", "1"); } catch(e) {}
+      showDone("");
+      if (post.parentNode) post.parentNode.removeChild(post);
+    };
+    timer = setTimeout(function(){
+      if (answered) return; answered = true;
+      sending = false; btn.disabled = false; btn.textContent = "この答えを送る";
+      msg.textContent = "通信に時間がかかっています。少しおいて、もう一度だけ押していただけますか。";
+      if (post.parentNode) post.parentNode.removeChild(post);
+    }, WAIT_MS);
+    post.submit();
+  });
+})();
+</script>
+</body>
+</html>
