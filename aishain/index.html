@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 2026-10-25 公開の形：題・説明・og を決め直した。og:url と canonical は、公開の住所がゼロさんと決まってから入れる
+     画像（og:image）は持たない。外のフォント・画像・スクリプトの読み込みは0本のまま
+     2026-11-01 理子：住所が apps/aishain/ に決まった（URL正本表 679行・ゼロさん 10-31）ので og:url と canonical を入れた。
+     sankagami.com へ切り替える日は、この2行の頭だけ替える（URL正本表 684行） -->
+<title>AI社員の部屋で使っている紙を3枚｜びわこ</title>
+<meta name="description" content="コードを読めない私が、13人のAI社員に仕事を回すために決めた紙の形を3枚。判断表の形・頼みの紙の書式・「犯した誤り」の書き方。メールアドレス1つで、無料でお渡しします。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI社員の部屋で使っている紙を3枚">
+<meta property="og:description" content="判断表の形・頼みの紙の書式・「犯した誤り」の書き方。コードを読めない私が、AIに同じことを言う回数を減らした紙です。">
+<meta property="og:site_name" content="びわこ">
+<meta property="og:url" content="https://yotyann4649.github.io/apps/aishain/">
+<link rel="canonical" href="https://yotyann4649.github.io/apps/aishain/">
+<meta name="twitter:card" content="summary">
+<!--
+  AI社員の記録の受け皿・試作（2026-10-17・理子・舷門 14代目「濾」）
+  もとの約束：第24回の答え（04_運用ツール\夜の戦略会議\第24回_答え_理子.md 26〜30行）
+  頼みの紙：04_運用ツール\夜の戦略会議\_朝いちばん\頼み_理子_AI社員の記録の受け皿を試作する_開始20261017.md
+
+  この画面がやること：「AI社員の部屋の雛形3点を受け取る」ためにメールアドレスを残してもらう、それだけ。
+  この画面がやらないこと：
+    ・雛形の中身は1行も載せない（実名と住所を抜くのはゼロさんの畑。抜けるまで中身は外に出せない）
+    ・三星鑑（人間分析）の案内を載せない。三星鑑のフォームへもつながない（混ざらない分け方はゼロさん・朔さんへ提案中）
+    ・アクセスも押された数も、どこへも送らない（受け口が決まっていないため、数える仕掛けは入れていない）
+    ・外のフォント・画像・スクリプトを1本も読み込まない
+  点線と「仮の文」の札が付いた行は、結さん（言葉）・矩さん（在職中に配ってよいか／動作の約束）の当て待ち。
+  2026-10-22：結さんの6つ（回答_理子_結より_AI社員の記録の受け皿の言葉.md）と矩さんの線（回答_理子_矩より_AI社員の雛形を在職中に配ってよいか.md）を差し込んだ。
+    渡し方は矩さんの §2 に沿って「完了画面で渡す」形にした（在職中に送るメールを0通にするため）。
+    残る「仮の文」は、受け皿の箱の細字3つ目（アドレスの使い道）の1つ。お知らせをいつから送るかが、城主の判断①（勤め先へ聞くか…）と同じ根で決まっていないため。
+  公開中の玄関・無料診断・受け皿の試作（無料診断_受け皿の試作.html）は1文字も触っていない。
+  2026-10-25 公開の形（理子〔舷門〕）：受け口は案A（AI社員の3枚専用のフォームを別に1本・機関室が 10-25 に作った）。
+    試作の帯・試作のボタン・仮の文の印を外し、ボタンをフォームへの a に替え、数える仕掛けを足した。
+    受け皿の箱の細字は、フォームの説明欄（回答_ゼロ_矩より_AI社員のフォームの説明欄.md の6行）と同じ文にした。
+    🔴 上げ場へ写すのは、①機関室がフォームの受付を開けたあと ②1枚目の「18件のうち3件」を千尋さんが元の紙と照らしたあと（2026-10-26 済）
+       ③3枚から実名と住所を抜いた中身が在り、送信後の画面に3枚の住所が入ったあと ④城主に携帯で1度見ていただいたあと。
+  2026-10-31 約束に「販売を始めるときのお知らせ」を足した（城主の判断 K-1031170001【Ｂ】10-31 15:34）。
+    細字のアドレスの使い道と、Q&A「あとから売り込みのメールが続きませんか」の答えの2か所。文は凛さんの §4 の差し替えを1文字も変えずに当てた
+    （回答_ゼロ千里_凛より_本命の名簿の最初の1から3通.md 160〜168行）。
+    この日の文が登録の同意の「定型の文」になる（規則4条1項2号ハ。矩さん 10-30 §2-3）ので、差し替えた日をここに残す。
+    退避：_退避\20261031_販売のお知らせを約束に足す前_理子\（a68b3faf…）
+    フォームの説明欄（GAS の makeAishainForm_）の同じ1文は機関室の持ち物。受付を開ける前にそろえていただく。
+-->
+<style>
+  /* 色は玄関（城主の館_玄関_apps.html）と同じ組。note → 玄関 → ここ、と来た人が別の店に入ったと思わないように。
+     ただし三星鑑の印（鑑の丸）は使わない。三星鑑の名簿と混ざって見えないように。 */
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --line:#2a3547;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  body{
+    background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi);
+    font-family:'Hiragino Mincho ProN','Yu Mincho',YuMincho,serif;
+    line-height:1.95; font-size:15px;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:0 18px 48px;}
+
+  header{padding:40px 4px 26px; position:relative;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .eyebrow{font-size:11px; letter-spacing:4px; color:var(--kin); margin-bottom:14px;}
+  h1{font-size:clamp(21px,5.2vw,26px); font-weight:700; line-height:1.6; letter-spacing:1px; color:var(--kinLite);}
+  .lead{margin-top:18px; font-size:14.5px; color:var(--washi);}
+  .lead p + p{margin-top:12px;}
+
+  .sheets{margin-top:30px; display:grid; gap:14px;}
+  .sheet{background:var(--konjo); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px 18px 22px; position:relative; overflow:hidden;}
+  .sheet::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--kin); opacity:.7;}
+  .sheet .no{font-size:11px; letter-spacing:2px; color:var(--washiSub); margin-bottom:4px;}
+  .sheet .name{font-size:17px; font-weight:700; color:var(--kinLite); letter-spacing:.5px; margin-bottom:8px;}
+  .sheet .why{font-size:13.5px; color:var(--washi); line-height:1.95;}
+
+  .what{margin-top:22px; font-size:13px; color:var(--washiSub); line-height:1.9;
+    border-top:1px solid var(--line); padding-top:16px;}
+
+  .take{margin-top:34px; background:var(--konjoLite); border:1px solid var(--line);
+    border-radius:14px; padding:26px 22px; text-align:center;}
+  .take-title{font-size:16px; font-weight:700; color:var(--washi); margin-bottom:8px;}
+  .take-how{font-size:13px; color:var(--washiSub); line-height:1.9; margin-bottom:20px;}
+  .take-btn{display:inline-block; font-family:inherit; font-size:15px; font-weight:700; letter-spacing:.5px;
+    padding:13px 28px; border-radius:10px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,var(--kinLite),var(--kin)); color:var(--sumi); text-decoration:none;}
+  .take-btn:hover{filter:brightness(1.05);}
+  .take-btn:focus-visible{outline:2px solid var(--kinLite); outline-offset:3px;}
+  .fine{margin-top:20px; font-size:12px; color:var(--washiSub); line-height:1.95; text-align:left;}
+  .fine li{list-style:none; padding-left:1em; text-indent:-1em;}
+  .fine li::before{content:"・";}
+
+  /* 登録の前の不安3つ（凛さん 10-22）。問いは読む人の声、答えは2行まで */
+  .qa{margin-top:26px; display:grid; gap:12px;}
+  .qa .q{font-size:13.5px; font-weight:700; color:var(--washi);}
+  .qa .a{font-size:13px; color:var(--washiSub); line-height:1.9; margin-top:2px;}
+
+  .back{display:block; margin-top:26px; text-align:center; font-size:13px; color:var(--kin); text-decoration:none;}
+  .back:hover{color:var(--kinLite);}
+
+  footer{margin-top:36px; text-align:center; font-size:10.5px; color:#7d8798; line-height:1.8;}
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="goldline"></div>
+    <div class="eyebrow">AI社員の部屋の、紙の形</div>
+    <h1>AI社員の部屋で使っている紙を、3枚お渡しします</h1>
+    <div class="lead">
+      <p>私はコードを読めませんし、書けません。それでも、いまは13人のAI社員に仕事を分けて回しています。</p>
+      <p>最初のころは、AIに「できています」と言われるたびに、私が「実際にやってみて」と返していました。何度も同じことを言ううちに、口で言うのをやめて、紙の形を決めることにしました。AIが賢くなったのかどうかは、正直よく分かりません。ただ、同じことを言う回数は減りました。紙が代わりに言ってくれているんだと思います。</p>
+    </div>
+  </header>
+
+  <!-- 3枚の名前と「なぜ要ったか」だけを書く。中身（書式そのもの）は載せない
+       1枚目の「18件のうち3件」は、各部屋の CLAUDE.md に書き写された数（機関室 2026-08-13）。2026-10-26 千尋さんが元の便18通を数え直し、18／15／3 で合った（回答_理子_千尋より_AI社員の受け皿の18件のうち3件は元の便18通と合いました.md）
+       2026-10-27 文を「15件は中身が『ありません』でした」へ寄せた（千尋さん §3。3件のうち2件は決まった結果の報告で、「要った」と言い切る根が弱い）
+       3枚目の説明も 2026-10-27 に直した：引継ぎ書は 10-24 でやめた（K-1024093001）ので、いまも続いている「最後の報告に犯した誤りを書く」を主にし、引継ぎの紙は8〜10月の過去形にした（結さんの序章・台本と同じ） -->
+  <div class="sheets">
+    <div class="sheet">
+      <div class="no">1枚目</div>
+      <div class="name">判断表の形</div>
+      <div class="why">AIが私に何か決めてほしいとき、1行目に「判断が要るか、要らないか」を書かせる表です。AIに数えさせたら、私に判断を求める見出しが立っていた18件のうち、15件は中身が「ありません」でした。いまは1行目だけ見て、読むか後回しにするかを決めています。</div>
+    </div>
+    <div class="sheet">
+      <div class="no">2枚目</div>
+      <div class="name">頼みの紙の書式</div>
+      <div class="why">「次にやります」と書いたまま、何日たっても動いていない。それが何度もありました。いまは約束を書いたら、決まった箱に紙を1枚置かせています。開始の日の朝、その紙を見て、担当のAIが動き出します。</div>
+    </div>
+    <div class="sheet">
+      <div class="no">3枚目</div>
+      <div class="name">「犯した誤り」の書き方</div>
+      <div class="why">AIが仕事を終えて報告するとき、自分が犯した誤りを必ず書かせています。8月から10月までは、担当が入れ替わるときの引き継ぎの紙にも、同じ節を置いていました。書いた本人には何の得もない節です。それでも、ここだけは削らせていません。</div>
+    </div>
+  </div>
+
+  <p class="what">3枚とも、写して使える形にした紙です。私の部屋で動いているプログラムそのものではないので、お使いの環境でそのまま動くことはお約束できません。</p>
+
+  <!-- 登録の前の不安3つ（回答_理子_凛より_登録の前の不安3つへの答え.md）。3つは凛さんの推測で、来た人の声ではない。
+       答え2の後ろ半分は、送るメールの中に止める案内を入れる約束（特定電子メール法4条。矩さん 10-25 §3）なので、印を外して残した -->
+  <div class="qa">
+    <div><p class="q">あとから売り込みのメールが続きませんか</p>
+      <p class="a">いまは、私からメールを1通も送りません。3枚は、送信したあとの画面で、その場でお渡しします。販売を始めるときは、そのお知らせを1通お送りします。</p></div>
+    <div><p class="q">いつでも止められますか</p>
+      <p class="a">はい。お知らせを始めたあとも、届いたメールの中から、いつでも止められます。いまは、まだ1通も送っていません。</p></div>
+    <div><p class="q">名前は書かなくていいですか</p>
+      <p class="a">はい。書いていただくのは、メールアドレス1つだけです。お名前もご住所も伺いません。</p></div>
+  </div>
+
+  <!-- 受け皿の箱 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       受け口は「既存のフォーム（メール1欄）と同じ形」を前提にしている。
+       ただし三星鑑の受け皿のフォーム（…1FAIpQLSdc9dWD4…）へは、つながない。
+       同じフォームに入ると、三星鑑のトリセツを取りに来た人と、この3枚を取りに来た人が名簿の上で見分けられず、
+       「三星鑑のお知らせだけ」と約束した人へ AI社員の案内が届く形になる。
+       分け方（フォームを別に1本作るか、同じフォームに「どちらを受け取るか」の1問を足すか）は、
+       ゼロさん・朔さんへ提案として出している（回答_ゼロ朔_理子より_AI社員の記録の受け皿の試作.md）。
+       2026-10-22：朔さんは案A（フォームを別に1本）に賛成。
+       2026-10-25：機関室が案Aで決め、AI社員の3枚専用のフォームを作った（回答_理子朔_ゼロより_AI社員の受け口は案Aで.md）。
+         ボタンはそのフォームへの a。フォームは別タブで開くので、二重送信の心配はこの画面には生じない。
+         細字は、フォームの説明欄（矩さんが当てた6行）と同じ文。解除の1行は、お知らせを送り始める日に入れる（矩さん §3）。
+         2026-11-01：凛さんの任意の1問の使いみちの1文（凛さん 10-27 で決まり、計器 コード.js 449行に入った）を、説明欄と同じ位置（4行目の下）に足した。1問そのものは画面では言わない（凛さん §5・フォームの中だけ）。
+       渡し方は「完了画面で渡す」形（矩さん §2）。フォームの「回答のコピーを回答者に送信」は切る（フォームと完了画面の文.md 61行と同じ）。 -->
+  <div class="take">
+    <div class="take-title">メールアドレスを1つだけ、ご登録ください</div>
+    <p class="take-how">送信したあとの画面で、3枚を受け取れるリンクをお渡しします。</p>
+    <a class="take-btn" id="btn-ai-cta" href="https://docs.google.com/forms/d/e/1FAIpQLScFP52jsxDxp_VMku3wDnxPA5FkWyUUrMFwTmnXUTvWxloPiQ/viewform" target="_blank" rel="noopener">3枚を受け取る</a>
+    <ul class="fine">
+      <li>送り主は、びわこです。</li>
+      <li>3枚は無料です。送信したあとの画面でお渡しします。メールでは届きません。</li>
+      <li>いまは何も販売していません。この登録でのお申し込み・お支払いはありません。</li>
+      <li>ご登録のアドレスは、AI社員の部屋の記録を新しく出したときのお知らせと、販売を始めるときのお知らせだけに使います。三星鑑のお知らせには使いません。</li>
+      <li>1問の答えは、これからの記録を書くために読みます。そのまま外に出しません。</li>
+      <li>Google フォームを使い、ほかの人や会社には渡しません。</li>
+      <li>いまは、こちらからメールは届きません。</li>
+    </ul>
+  </div>
+
+  <a class="back" href="https://note.com/grand_colt8044" target="_blank" rel="noopener">先に、AI社員の記録を読む（note）→</a>
+
+  <footer>
+    &copy; 2026 びわこ
+  </footer>
+
+</div>
+
+<!-- 来た人と押した人を数える（2026-10-25・理子〔舷門〕）。無料診断の free_uu／free_cta と同じ物差し
+     来た人（aishain_uu）→ 押した人（aishain_cta）→ 登録した人（フォームの form_aishain_total・機関室）、の3段で見るため。
+     【物差し】1ブラウザ1日1回。日付は日本時間。キーは cnt_aishain_日付 と cnt_aishain_cta_日付。
+     【入口】?src=note／yt／sh と、note から来た（referrer）を、来た人の中で数え分ける。?a=<記事番号> は記事ごとのシートへ（f=aishain）。
+     【城主の端末】?me=1 で開いた端末（trinity_owner が "1"）は数えない。無料診断・LP・玄関と同じ置き場。
+     【送るもの】件数と記事番号だけ。メールアドレスはこの画面を通らない（フォームへ直に入る）。
+     【止めない】try{}catch{} の中。数えるのに失敗しても、フォームはそのまま開く。
+     【受け側】計器の GAS に aishain_* の欄と、記事ごとの f=aishain を足すのは機関室。足すまでは捨てられるだけ。 -->
+<script>
+(function(){
+  try{
+    if (/[?&]me=1(&|$)/i.test(location.search)) { localStorage.setItem("trinity_owner","1"); }
+    if (/[?&]me=0(&|$)/i.test(location.search)) { localStorage.removeItem("trinity_owner"); }
+    if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。1件も数えない
+    var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+    var d = new Date(Date.now() + 9*60*60*1000);                     // 日本時間
+    var key = "cnt_aishain_" + d.toISOString().slice(0,10);
+    if (localStorage.getItem(key)) { return; }                       // 今日はもう数えた
+    localStorage.setItem(key, "1");
+    new Image().src = base + "?p=aishain_uu&t=" + Date.now();
+    var q = location.search;
+    if (/^https?:\/\/([a-z0-9-]+\.)?note\.com/i.test(document.referrer || "")) { new Image().src = base + "?p=aishain_uu_noteref&t=" + Date.now(); }
+    if (/[?&]src=note(&|$)/i.test(q)) new Image().src = base + "?p=aishain_uu_note&t=" + Date.now();
+    if (/[?&]src=yt(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_yt&t="   + Date.now();
+    if (/[?&]src=sh(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_sh&t="   + Date.now();
+    var am = q.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
+    if (am) { new Image().src = base + "?p=art&f=aishain&a=" + encodeURIComponent(am[1]) + "&t=" + Date.now(); }
+  }catch(e){}
+})();
+(function(){
+  var btn = document.getElementById("btn-ai-cta");
+  if (!btn) { return; }
+  btn.addEventListener("click", function(){
+    try{
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。数えない
+      var d = new Date(Date.now() + 9*60*60*1000);
+      var key = "cnt_aishain_cta_" + d.toISOString().slice(0,10);
+      if (localStorage.getItem(key)) { return; }
+      localStorage.setItem(key, "1");
+      new Image().src = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec?p=aishain_cta&t=" + Date.now();
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
