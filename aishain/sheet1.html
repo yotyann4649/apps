@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 登録した人に送信後の画面で渡す紙なので、検索には出さない（受け皿を通らずに着く道を作らないため） -->
+<meta name="robots" content="noindex">
+<title>1枚目　判断表の形｜AI社員の部屋で使っている紙｜びわこ</title>
+<!--
+  AI社員の受け皿の3枚・1枚目（2026-11-01・理子〔舷門〕）
+  中身：04_運用ツール\確認画面\名簿の受け皿_試作\3枚の中身_ゼロ_20261031.md（ゼロさん）を、組む.py で1文字も変えずに写した
+  組む道具：10_メンバーの部屋\trinity_riko\_作業\20261101_受け皿の3枚\組む.py ＋ 型.html（中身を直したら、組み直す）
+  住所：apps/aishain/sheet1.html（URL正本表）。上げ場へ写すのは受付を開ける日（理子の【要承認】のあと）
+  色は受け皿（AI社員の記録_受け皿の試作.html）と同じ組。外のフォント・画像・スクリプトは0本。数える仕掛けは入れていない
+  「写す」ボタン：navigator.clipboard → だめなら execCommand。「写しました」は本当に写せたときだけ出す
+-->
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --line:#2a3547;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  body{
+    background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi);
+    font-family:'Hiragino Mincho ProN','Yu Mincho',YuMincho,serif;
+    line-height:1.95; font-size:15px;
+  }
+  .wrap{max-width:680px; margin:0 auto; padding:0 18px 48px;}
+
+  header{padding:40px 4px 22px; position:relative;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .eyebrow{font-size:11px; letter-spacing:4px; color:var(--kin); margin-bottom:12px;}
+  h1{font-size:clamp(22px,5.4vw,27px); font-weight:700; line-height:1.6; letter-spacing:1px; color:var(--kinLite);}
+
+  main h2{margin-top:30px; margin-bottom:10px; font-size:15.5px; font-weight:700; color:var(--kinLite);
+    letter-spacing:.5px; padding-left:12px; border-left:3px solid var(--kin);}
+  main p{font-size:14.5px; color:var(--washi);}
+  main p + p{margin-top:10px;}
+
+  /* 写す枠：中身はそのまま写せるように、表示で折り返しても写す字は変えない */
+  .copybox{position:relative; margin-top:6px; background:var(--konjo); border:1px solid var(--line); border-radius:12px;}
+  .copybox pre{margin:0; padding:16px 16px 54px; font-family:Menlo,Consolas,'BIZ UDGothic','MS Gothic',monospace;
+    font-size:13px; line-height:1.85; color:var(--washi); white-space:pre-wrap; word-break:break-word;
+    user-select:all; -webkit-user-select:all; outline:none;}
+  .copybox pre:focus-visible{box-shadow:0 0 0 2px var(--kinLite) inset; border-radius:12px;}
+  .copy{position:absolute; right:12px; bottom:12px; font-family:inherit; font-size:13.5px; font-weight:700;
+    padding:8px 18px; min-height:40px; border-radius:9px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,var(--kinLite),var(--kin)); color:var(--sumi);}
+  .copy:focus-visible{outline:2px solid var(--kinLite); outline-offset:3px;}
+  .copy[disabled]{opacity:.6; cursor:default;}
+  .done{position:absolute; left:16px; bottom:20px; font-size:12px; color:var(--kinLite);}
+
+  .learned{margin-top:4px; display:grid; gap:8px;}
+  .learned li{list-style:none; font-size:14px; color:var(--washi); padding-left:1em; text-indent:-1em;}
+  .learned li::before{content:"・"; color:var(--kin);}
+
+  .what{margin-top:34px; font-size:13px; color:var(--washiSub); line-height:1.9;
+    border-top:1px solid var(--line); padding-top:16px;}
+
+  nav{margin-top:26px; display:grid; gap:10px;}
+  nav a, nav .here{display:block; padding:12px 16px; border-radius:10px; font-size:14px; text-decoration:none;
+    border:1px solid var(--line);}
+  nav a{background:var(--konjoLite); color:var(--kinLite);}
+  nav a:hover{filter:brightness(1.08);}
+  nav a:focus-visible{outline:2px solid var(--kinLite); outline-offset:2px;}
+  nav .here{color:var(--washiSub); background:transparent;}
+
+  footer{margin-top:36px; text-align:center; font-size:10.5px; color:#7d8798; line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="goldline"></div>
+    <div class="eyebrow">AI社員の部屋で使っている紙　1枚目／3枚</div>
+    <h1>判断表の形</h1>
+  </header>
+
+  <main>
+<h2>この紙が止めること</h2>
+<p>AIの報告に「ご判断ください」と書いてあると、毎回ぜんぶ読まないと、本当に決めることがあるのか分かりません。<br>数えてみたら、私に判断を求める見出しが立っていた18件のうち、15件は中身が「ありません」でした。</p>
+<h2>決まり（AIに渡す文）</h2>
+<div class="copybox"><pre id="c1" tabindex="0">報告の1行目は、必ずこの形で始めてください。
+  判断：0件
+  判断：1件（〇〇を選んでほしい）
+
+判断が1件以上あるときは、報告の中に下の表を1つだけ置いてください。
+判断が0件なら、表は置かないでください。</pre><button type="button" class="copy" data-for="c1">写す</button><span class="done" aria-live="polite"></span></div>
+<h2>表の形（写して使ってください）</h2>
+<div class="copybox"><pre id="c2" tabindex="0">| 決めること | （1行で。何を選ぶのか） |
+|---|---|
+| なぜ今 | （決めないと何が止まるか。1〜2行） |
+| A | （選んだら、何が起きるか） |
+| B | （同じ） |
+| C | （3つまで。無ければ消す） |
+| AIの推し | （A/B/C のどれか）―― 推しは材料です。決めるのは私です |
+| 期限 | （いつまでに決めれば間に合うか。無ければ「なし」） |</pre><button type="button" class="copy" data-for="c2">写す</button><span class="done" aria-live="polite"></span></div>
+<h2>書いてもらった例（中身は置き換えてあります）</h2>
+<div class="copybox"><pre id="c3" tabindex="0">判断：1件（毎週の短い手紙に、アンケートの入口を置くか）
+
+| 決めること | 毎週の短い手紙の最後に、3問アンケートへの入口を置くか |
+|---|---|
+| なぜ今 | 置くと手紙が「広告のメール」の側に入るおそれがあり、送り主の表示の決まりが増える |
+| A | 手紙には置かない。入口は登録のあとの画面だけ |
+| B | 値段の数字を外して置く（広告に当たらないとは言い切れない） |
+| C | 送り主の表示を決める日まで待つ |
+| AIの推し | A ―― 推しは材料です。決めるのは私です |
+| 期限 | 次の月曜の送信まで |</pre><button type="button" class="copy" data-for="c3">写す</button><span class="done" aria-live="polite"></span></div>
+<h2>使ってみて分かったこと</h2>
+<ul class="learned"><li>1行目だけ見て「0件」なら後回しにできます。読む量が大きく減りました</li><li>選択肢は3つまでにしています。4つ以上あるときは、たいてい問いが2つ混ざっています</li><li>「推し」は書かせますが、必ず「材料です」と添えさせます。推しをそのまま押す癖がつかないように</li></ul>
+  </main>
+
+  <p class="what">3枚とも、写して使える形にした紙です。私の部屋で動いているプログラムそのものではないので、お使いの環境でそのまま動くことはお約束できません。</p>
+
+  <nav aria-label="3枚">
+    <span class="here">1枚目　判断表の形</span>
+    <a href="sheet2.html">2枚目　頼みの紙の書式</a>
+    <a href="sheet3.html">3枚目　「犯した誤り」の書き方</a>
+  </nav>
+
+  <footer>
+    &copy; 2026 びわこ
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // 古い写し方（execCommand）。写せたかどうかを返す
+  function oldCopy(s){
+    var ta = document.createElement("textarea");
+    ta.value = s; ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.top = "-1000px"; ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0, s.length);
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch(e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function show(btn, ok){
+    var msg = btn.parentNode.querySelector(".done");
+    msg.textContent = ok ? "写しました" : "写せませんでした。枠の中を長押しして選んでください";
+    btn.disabled = false;
+    setTimeout(function(){ msg.textContent = ""; }, ok ? 2500 : 6000);
+  }
+  var btns = document.querySelectorAll(".copy");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function(){
+      var btn = this;
+      if (btn.disabled) { return; }                       // 連打で二重に動かさない
+      btn.disabled = true;
+      var s = document.getElementById(btn.getAttribute("data-for")).textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+        navigator.clipboard.writeText(s).then(function(){ show(btn, true); },
+                                              function(){ show(btn, oldCopy(s)); });
+      } else {
+        show(btn, oldCopy(s));
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
