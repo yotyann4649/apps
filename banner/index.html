@@ -1465,7 +1465,24 @@
         const reader = new FileReader();
         reader.onload = (e) => {
           const img = new Image();
-          img.onload = () => { bgImage = img; render(); };
+          /* ★2026-11-01（理子・舷門）：大きい絵は、読み込んだその場で縮めてから使う（城主が手で読み込むときに落ちないように）
+             出す絵は 1280×670。覆う（cover）ので、縦長の絵も細らないよう「横1600・縦838 のどちらかを満たす」所までしか縮めない
+             （1600 は機関室の道具が渡している幅と同じ。1280 の1.25倍で、位置をずらす余白を残す）
+             縮めた絵は canvas のまま持つ（描く側は naturalWidth || width で読むので、そのまま通る。jpeg に焼き直さないので透けも残る） */
+          img.onload = () => {
+            const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+            const k = Math.min(1, Math.max(1600 / iw, 838 / ih));
+            if (!(k < 1)) { bgImage = img; render(); return; }
+            try {
+              const c = document.createElement('canvas');
+              c.width = Math.max(1, Math.round(iw * k)); c.height = Math.max(1, Math.round(ih * k));
+              const g = c.getContext('2d');
+              g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+              g.drawImage(img, 0, 0, c.width, c.height);
+              bgImage = c;
+            } catch (err) { bgImage = img; }   /* 縮められなくても、元の絵で続ける（止めない） */
+            render();
+          };
           img.src = e.target.result;
         };
         reader.readAsDataURL(file);
