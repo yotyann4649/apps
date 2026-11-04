@@ -403,7 +403,8 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     <div class="audio-split reveal">
       <div class="audio-col">
         <div class="audio-k">Single</div>
-        <div class="audio-n garamond">181<span>回</span></div>
+        <!-- 2026-11-04（理子〔舷門〕）：181 → 196（城主の判断 K-1104182901【Ａ】。09-09 に足した T8・U7 を載せた。M6 は事実反映版だけなので入れない） -->
+        <div class="audio-n garamond">196<span>回</span></div>
         <div class="audio-d">1本ずつ独立した、テーマ別の完結回。気になるところだけを、自由に選べます。</div>
       </div>
     </div>
@@ -440,8 +441,15 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
            【★増えたときにここを直す人へ】
              このタイルの「4カテゴリ」「全27回」と、下の名前は、必ず同時に直すこと。
              片方だけ直すとページの中で矛盾する（理子庫 U-022）。
-             ★9タイルの回数の合計＋27＝181 で、上の「181回」と一致している。この関係を壊さないこと。 -->
-      <div class="audio-cat"><span class="ac-en">+</span><span class="ac-t">ほか4カテゴリ</span><span class="ac-n">全27回</span><span class="ac-sub">ステータスカード／隠れた指標／恋愛深掘り／総合診断</span></div>
+             ★9タイルの回数の合計＋27＝181 で、上の「181回」と一致している。この関係を壊さないこと。
+
+           【2026-11-04（理子〔舷門〕）：4カテゴリ → 6カテゴリ】
+             城主の判断 K-1104182901【Ａ】「196本に直す」。09-09 に足した T 時の地図（8回）・U 配分（7回）を
+             タイルを増やさずにこの束へ入れた（10枚のまま＝案C を守る）。K1+L12+N11+P3+T8+U7＝42。
+             ★9タイルの合計 154＋42＝196 で、上の「196回」・下の「全196本」と一致している。
+             M 事実キーワード（6回）は事実反映版だけで、申し込みの画面では作れないので入れていない。
+             元の1行は _BACKUP\20261104_完結回を196本に直す前_理子\ にある。 -->
+      <div class="audio-cat"><span class="ac-en">+</span><span class="ac-t">ほか6カテゴリ</span><span class="ac-n">全42回</span><span class="ac-sub">ステータスカード／隠れた指標／恋愛深掘り／総合診断／時の地図／配分</span></div>
     </div>
 
     <p class="audio-foot reveal">PDFレポートに<strong>解説音声</strong>をつけたコースも、お選びいただけます。全体像はレポートで、気になるテーマは完結回で深掘り ―― 読む／聴くの二段で、自分という人をより立体的に。</p>
@@ -484,7 +492,7 @@ footer{border-top:1px solid var(--rule);padding:46px 26px}
     </div>
     <div class="price-cap reveal">気になるテーマは、完結回（1本 ¥3,000）で足せます。</div>
     <div class="reveal" data-checkout="single" id="single" style="margin-top:24px;padding:20px 24px;border:1px solid var(--rule);border-radius:2px;text-align:center">
-      <div style="font-size:14.5px;color:var(--ink)"><strong>完結回</strong>は、レポートなしで単品購入も可能です。全181本のカタログから、気になるテーマだけ自由にお選びいただけます。</div>
+      <div style="font-size:14.5px;color:var(--ink)"><strong>完結回</strong>は、レポートなしで単品購入も可能です。全196本のカタログから、気になるテーマだけ自由にお選びいただけます。</div>
       <div class="garamond" style="font-size:26px;color:var(--ink);margin-top:8px">¥3,000<span style="font-size:14px;color:var(--ink-2)"> ／ 1本</span></div>
     </div>
 
@@ -1039,8 +1047,10 @@ const TRINITY_CHECKOUT = {
   },
   // 完結回の番号として通すもの。A23 は A-01〜A-23。薦め文のリンク（…?ep=A-01）を読むときだけ使う
   // 出どころ：エピソード一覧_選んで渡せる版（2026-08-30）の cats 16カテゴリ・202本（2026-10-22 理子濾）
+  // 2026-11-04（理子〔舷門〕）：M6 を外して 15カテゴリ・196本（K-1104182901【Ａ】）。M は事実反映版だけで、
+  //   申し込みの画面では作れない。?ep=M-01 を通すと、作れない回の番号を運んでしまう（円さんの答え §3）
   // 空にすると、?ep= は読まない（ボタンは出るが、番号は運ばない）
-  episodes : 'A23 B8 C12 D24 E24 F13 G16 H12 J22 K1 L12 M6 N11 P3 T8 U7'
+  episodes : 'A23 B8 C12 D24 E24 F13 G16 H12 J22 K1 L12 N11 P3 T8 U7'
 };
 // 仕掛けが読めなかった・途中で落ちたときも、この下の1分診断などを道連れにしない
 try { if (window.TrinityCheckout) TrinityCheckout.start(TRINITY_CHECKOUT); } catch (e) {}
