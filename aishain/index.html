@@ -101,6 +101,14 @@
   .back{display:block; margin-top:26px; text-align:center; font-size:13px; color:var(--kin); text-decoration:none;}
   .back:hover{color:var(--kinLite);}
 
+  /* 登録を取り消す道（2026-11-04 理子）。目立たせないが、探せば必ず見つかる字の色と下線にする */
+  .fine-link{color:var(--washi); text-decoration:underline; text-underline-offset:3px;}
+  .fine-link:hover{color:var(--kinLite);}
+  .quit{display:block; width:max-content; margin:22px auto 0; padding:10px 6px; font-size:12.5px; color:var(--washiSub);
+    text-decoration:underline; text-underline-offset:3px;}
+  .quit:hover{color:var(--washi);}
+  .fine-link:focus-visible,.quit:focus-visible{outline:2px solid var(--kinLite); outline-offset:2px;}
+
   footer{margin-top:36px; text-align:center; font-size:10.5px; color:#7d8798; line-height:1.8;}
 
 </style>
@@ -149,7 +157,7 @@
     <div><p class="q">あとから売り込みのメールが続きませんか</p>
       <p class="a">いまは、私からメールを1通も送りません。3枚は、送信したあとの画面で、その場でお渡しします。販売を始めるときは、そのお知らせを1通お送りします。</p></div>
     <div><p class="q">いつでも止められますか</p>
-      <p class="a">はい。お知らせを始めたあとも、届いたメールの中から、いつでも止められます。いまは、まだ1通も送っていません。</p></div>
+      <p class="a">はい。このページの下の「登録を取り消す」から、いつでも止められます。お知らせを始めたあとは、届いたメールの中からも止められます。いまは、まだ1通も送っていません。</p></div>
     <div><p class="q">名前は書かなくていいですか</p>
       <p class="a">はい。書いていただくのは、メールアドレス1つだけです。お名前もご住所も伺いません。</p></div>
   </div>
@@ -165,6 +173,10 @@
        2026-10-25：機関室が案Aで決め、AI社員の3枚専用のフォームを作った（回答_理子朔_ゼロより_AI社員の受け口は案Aで.md）。
          ボタンはそのフォームへの a。フォームは別タブで開くので、二重送信の心配はこの画面には生じない。
          細字は、フォームの説明欄（矩さんが当てた6行）と同じ文。解除の1行は、お知らせを送り始める日に入れる（矩さん §3）。
+         2026-11-04：取り消しの受け口（別の小さなフォーム・機関室が作った）ができたので、送り始める前に入れた。
+           細字の最後に凛さんの文 A、問答の答えを凛さんの文 D に（回答_ゼロ理子_凛より_登録を取り消す道の文.md）。
+           D の「このページの下の『登録を取り消す』」が嘘にならないよう、note へ戻るリンクの下に同じ字のリンクを置いた。
+           取り消しのリンクは数えない（id を btn-ai-cta と分けてある）。退避：trinity_riko\_BACKUP\20261104_受け皿に取り消しのリンクを足す前_理子\
          2026-11-01：凛さんの任意の1問の使いみちの1文（凛さん 10-27 で決まり、計器 コード.js 449行に入った）を、説明欄と同じ位置（4行目の下）に足した。1問そのものは画面では言わない（凛さん §5・フォームの中だけ）。
        渡し方は「完了画面で渡す」形（矩さん §2）。フォームの「回答のコピーを回答者に送信」は切る（フォームと完了画面の文.md 61行と同じ）。 -->
   <div class="take">
@@ -179,10 +191,13 @@
       <li>1問の答えは、これからの記録を書くために読みます。そのまま外に出しません。</li>
       <li>Google フォームを使い、ほかの人や会社には渡しません。</li>
       <li>いまは、こちらからメールは届きません。</li>
+      <li>登録を取り消したいときは、<a class="fine-link" href="https://docs.google.com/forms/d/e/1FAIpQLSehkUsdnTM7IyiSwDsuCt9vqUTl2_YSmtXFqdssKR3JRtMmnQ/viewform" target="_blank" rel="noopener">こちらのフォーム</a>から、ご登録のアドレスを送ってください。</li>
     </ul>
   </div>
 
   <a class="back" href="https://note.com/grand_colt8044" target="_blank" rel="noopener">先に、AI社員の記録を読む（note）→</a>
+
+  <a class="quit" id="link-quit" href="https://docs.google.com/forms/d/e/1FAIpQLSehkUsdnTM7IyiSwDsuCt9vqUTl2_YSmtXFqdssKR3JRtMmnQ/viewform" target="_blank" rel="noopener">登録を取り消す</a>
 
   <footer>
     &copy; 2026 びわこ
