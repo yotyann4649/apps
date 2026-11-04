@@ -12,7 +12,7 @@
      ★消さないこと。消すと数週間かけて検索結果へ戻る。 -->
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>統合人間分析レポート｜性格分析 × 才能診断 × 行動特性</title>
+<title>データから読む、あなたの取扱説明書｜性格分析 × 才能診断 × 行動特性</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
@@ -263,7 +263,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
       <div class="fld"><label>ローマ字氏名（数秘用・自動入力）</label><input id="inp-alpha" class="fi" type="text" value="YAMADA HANAKO" placeholder="ふりがなを入力すると自動で入ります"></div>
       <div class="fld full"><label>生年月日</label><input id="inp-birth" class="fi" type="date" value="1990-09-10"></div>
     </div>
-    <p style="font-size:10px;color:var(--ink3);margin-top:4px">※レポート本文の呼びかけには「お名前（漢字）」、数秘術の計算には「ローマ字氏名」が使われます。ローマ字氏名は、ふりがなから自動で変換されます（手動で書き換えることもできます）。</p>
+    <p style="font-size:10px;color:var(--ink3);margin-top:4px">※取扱説明書の本文の呼びかけには「お名前（漢字）」、数秘術の計算には「ローマ字氏名」が使われます。ローマ字氏名は、ふりがなから自動で変換されます（手動で書き換えることもできます）。</p>
     <!-- ★2026-08-17（ゼロ・機関室 14代目「鎬」）：senjutsu.jp に依存せず自前で計算する入り口。
      ★城主の裁定（2026-08-16）／設計＝理子（舷門・3代目「帷」）2026-08-17。
      ★senjutsu取込より「前」に置く＝どれが本筋かを、並び順が黙って伝える（帷さんの §3）。
@@ -280,7 +280,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
 <button id="senjutsu-btn" class="senj-btn" type="button">✦ senjutsu取込（★JSONをお持ちのときだけ）</button>
     <input id="senjutsu-file" type="file" accept="application/json,.json" style="display:none">
     <div class="senj-note">senjutsu.jp で出力した鑑定JSONを選ぶと、10天体＋ASC・四柱・五行を推測なしで自動入力します。手入力は不要になります。</div>
-    <button class="run-btn" id="btn-run" onclick="runAnalysis()">統合分析レポートを生成する</button>
+    <button class="run-btn" id="btn-run" onclick="runAnalysis()">取扱説明書をつくる</button>
     <p style="font-size:11px;color:var(--ink3);text-align:center;line-height:1.9;margin-top:14px">入力いただいた情報は、サーバーに送信されません。<br>お使いのブラウザの中だけで計算しています。</p>
     <div class="preset-row">
       <button class="pre-btn" onclick="loadPreset('やまだ はなこ','YAMADA HANAKO','1990-09-10',14,0,SAMPLE_PLANETS)">サンプル：やまだ はなこ</button>
@@ -318,11 +318,11 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
     <div class="cover-seal">分</div>
     <div class="cover-mark">統 合 人 間 分 析</div>
     <div class="cover-rule"></div>
-    <h1 class="cover-title" id="cover-name">— 分析レポート</h1>
+    <h1 class="cover-title" id="cover-name">— の取扱説明書</h1>
     <div class="cover-tag">性格分析 × 才能診断 × 行動特性</div>
     <div class="cover-meta">占星術 × 四柱推命 × 数秘術 — 生年月日という客観データから読み解く、一人ひとり固有の統合分析。<span id="print-sub"></span></div>
   </div>
-  <div class="print-hdr" id="print-hdr" style="display:none"><h1>統合人間分析レポート</h1></div>
+  <div class="print-hdr" id="print-hdr" style="display:none"><h1>あなたの取扱説明書</h1></div>
   <span id="target-lbl" style="display:none">—</span>
   <span id="report-name" style="display:none">—</span>
 
@@ -334,7 +334,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
       <li>持って生まれた素材（四柱推命・日柱）</li>
       <li>五行バランス（木・火・土・金・水）</li>
       <li>10天体が示す特性分析</li>
-      <li>統合分析レポート（全5章）</li>
+      <li>取扱説明書（全5章）</li>
     </ol>
   </div>
 
@@ -385,7 +385,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
 
   <!-- 5. 5章レポート -->
   <div class="section sec-print-hide">
-    <div class="sec-head"><span class="sec-no">05</span><span class="sec-title">統合分析レポート</span><span class="sec-sub" id="report-name2">全5章</span></div>
+    <div class="sec-head"><span class="sec-no">05</span><span class="sec-title">あなたの取扱説明書</span><span class="sec-sub" id="report-name2">全5章</span></div>
     <div class="cross-summary" id="cross-summary"><p class="muted">分析を実行すると、3つの占術が一致する核と、食い違う立体構造をここに表示します。</p></div>
     <div class="report-card">
       <div class="tabs">
@@ -395,7 +395,7 @@ footer{text-align:center;margin-top:40px;padding-top:22px;border-top:1px solid v
         <button class="tab" onclick="showPhase(3,this)">④ 成長と課題</button>
         <button class="tab" onclick="showPhase(4,this)">⑤ 今年のテーマ</button>
       </div>
-      <div class="report-body" id="report-body"><p class="muted">「統合分析レポートを生成する」を押してください。</p></div>
+      <div class="report-body" id="report-body"><p class="muted">「取扱説明書をつくる」を押してください。</p></div>
     </div>
     <div class="params">
       <div class="section-label">精神パラメータ</div>
@@ -1320,7 +1320,7 @@ async function runAnalysis() {
   const signLabel = sun ? `${sun.sign} ${sun.deg}度` : '';
   document.getElementById('target-lbl').textContent = `TARGET: ${name}`;
   document.getElementById('report-name').textContent = `${name} | ${signLabel} | LP${nums.lp}`;
-  { const cn=document.getElementById('cover-name'); if(cn) cn.textContent=`${name}さん 統合分析レポート`; }
+  { const cn=document.getElementById('cover-name'); if(cn) cn.textContent=`${name}さんの取扱説明書`; }
   document.getElementById('print-hdr').querySelector('h1').textContent = `性格プロフィール — ${name}さん`;
   document.getElementById('print-sub').textContent = `${signLabel} / LP${nums.lp} / 日柱 ${pillarDisplay}`;
 
@@ -1353,7 +1353,7 @@ async function runAnalysis() {
 
   try{ renderGogyo(); }catch(e){}
   addLog('SYS','ok','分析完了。');
-  btn.disabled = false; btn.textContent = '統合分析レポートを生成する';   /* 🔴 ★2026-08-28（23代目「地脈」）：ここは '✦ 性格分析を開始する' だった。★1回 分析するとボタンの名前が変わり、二度と戻らなかった（★毎回・確実に起きる。★条件分岐の外）。★「性格分析」は無料診断のほうの言葉で、この道具は「統合人間分析レポート」である。★検出＝理子〔舷門・9代目「衾（ふすま）」〕2026-08-27。★L283 のボタンと同じ文字に揃えた（★U-001 事前エスコートUX ―― 押すものの名前は変えない）。 */
+  btn.disabled = false; btn.textContent = '取扱説明書をつくる';   /* 🔴 ★2026-08-28（23代目「地脈」）：ここは '✦ 性格分析を開始する' だった。★1回 分析するとボタンの名前が変わり、二度と戻らなかった（★毎回・確実に起きる。★条件分岐の外）。★「性格分析」は無料診断のほうの言葉で、この道具は「統合人間分析レポート」である。★検出＝理子〔舷門・9代目「衾（ふすま）」〕2026-08-27。★L283 のボタンと同じ文字に揃えた（★U-001 事前エスコートUX ―― 押すものの名前は変えない）。 */
 }
 /* ════════════════════════════════════════════════════════════
    ★2026-08-28（機関室・23代目「地脈」）：runAnalysis を包んだ
@@ -1387,7 +1387,7 @@ async function runAnalysis() {
       /* ★責めない文（Silent Sanitize）。★何が起きたかは上のログに残る */
       alert('分析の途中で止まりました。もう一度お試しください。\n（詳しくは画面下のログをご覧ください）');
     } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '統合分析レポートを生成する'; }
+      if (btn) { btn.disabled = false; btn.textContent = '取扱説明書をつくる'; }
     }
   };
 })();
@@ -1438,7 +1438,7 @@ function buildPrintAll(){
   out+='<div class="sec-head" style="margin-top:0"><span class="sec-no">04</span><span class="sec-title">10天体が示す特性分析</span></div>';
   (typeof allPlanetsCache!=='undefined'?allPlanetsCache:[]).forEach(p=>{ out+=`<section class="print-sec">${buildPlanetReportHTML(p)}</section>`; });
   out+='<section class="print-sec print-sec-break"></section>';
-  out+='<div class="sec-head"><span class="sec-no">05</span><span class="sec-title">統合分析レポート</span></div>';
+  out+='<div class="sec-head"><span class="sec-no">05</span><span class="sec-title">あなたの取扱説明書</span></div>';
   const cs=document.getElementById('cross-summary');
   if(cs && cs.innerHTML && !cs.querySelector('.muted')) out+=`<section class="print-sec">${cs.innerHTML}</section>`;
   (typeof phaseTexts!=='undefined'?phaseTexts:[]).forEach(t=>{ if(t) out+=`<section class="print-sec">${t}</section>`; });
