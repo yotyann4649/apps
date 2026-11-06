@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<!-- 通信を一切しない、をブラウザの決まりとして掛ける（外部の読み込み・送信・絵のすべてを禁じる） -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<link rel="icon" href="data:,">
+<title>保存データの取り込み</title>
+<style>
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#a8b0be;
+    --matsu:#8fbc88; --beni:#d68f8f; --line:#2a3547;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%); min-height:100vh;
+    color:var(--washi); font-family:'Hiragino Mincho ProN','Yu Mincho',serif; line-height:1.75;
+    word-break:auto-phrase;}
+  .wrap{max-width:620px; margin:0 auto; padding:0 16px 48px;}
+  header{padding:28px 0 18px; position:relative;}
+  .goldline{position:absolute; top:0; left:-16px; right:-16px; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  h1{margin:0; font-size:24px; font-weight:700; letter-spacing:2px; color:var(--kinLite); line-height:1.4;}
+  .lead{margin:10px 0 0; font-size:14px;}
+  .panel{background:var(--konjo); border:1px solid var(--line); border-radius:10px; padding:18px 16px; margin-top:14px;}
+  h2{margin:0 0 10px; font-size:15px; letter-spacing:1px; color:var(--kinLite); font-weight:700;}
+  .notes{margin:0; padding:0 0 0 1.2em; font-size:13px; color:var(--washiSub);}
+  .notes li+li{margin-top:6px;}
+
+  #drop{border:1px dashed var(--ishi); border-radius:8px; padding:20px 12px; text-align:center;}
+  #drop.over{border-color:var(--kin); background:rgba(201,164,76,0.08);}
+  .hint{margin:8px 0 0; font-size:12px; color:var(--washiSub);}
+  #fileName{margin:8px 0 0; font-size:13px; overflow-wrap:anywhere;}
+  input[type=file]{position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;}
+
+  button,.go{font-family:inherit; font-size:15px; letter-spacing:1px; border-radius:8px; min-height:46px;
+    padding:10px 20px; cursor:pointer;}
+  #pick{background:var(--konjoLite); color:var(--washi); border:1px solid var(--ishi);}
+  #run{display:block; width:100%; margin-top:14px; font-weight:700; color:var(--sumi);
+    background:linear-gradient(180deg,var(--kinLite),var(--kin)); border:1px solid var(--kin);}
+  #run:disabled{cursor:default; color:var(--washiSub); background:var(--konjoLite); border-color:var(--ishi);}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--kinLite); outline-offset:2px;}
+
+  .shelf{padding:11px 0; border-top:1px solid var(--line);}
+  .shelf:first-child{border-top:0; padding-top:0;}
+  .shelf .nm{font-weight:700; font-size:14px;}
+  .shelf .st{font-size:14px;}
+  .shelf .ct{font-size:12px; color:var(--washiSub);}
+  .st.in{color:var(--kinLite);} .st.ok{color:var(--matsu);} .st.no{color:var(--beni);} .st.keep{color:var(--washi);}
+  #say{margin:12px 0 0; font-size:14px;}
+  #say:empty{display:none;}
+  #say.bad{color:var(--beni);}
+
+  .links{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;}
+  .go{display:flex; align-items:center; justify-content:center; text-align:center; text-decoration:none;
+    color:var(--washi); background:var(--konjoLite); border:1px solid var(--ishi); font-size:14px; padding:10px 8px;}
+  [hidden]{display:none!important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="goldline"></div>
+    <h1>保存データの取り込み</h1>
+    <p class="lead">前の住所で入れた家計簿・歳計・資産・人物分析の記録を、いま開いているブラウザへ移します。ファイルの中身は、この画面から外へ出ません。</p>
+  </header>
+
+  <section class="panel">
+    <h2>押す前に</h2>
+    <ul class="notes">
+      <li>ふだん記録を入れているブラウザで、この画面を開いてください。ブラウザが違うと、保存先も別になります。</li>
+      <li>家計簿などの画面を別のタブで開いていたら、先に閉じてください。開いたままだと、その画面が古い内容を書き戻すことがあります。</li>
+    </ul>
+  </section>
+
+  <section class="panel">
+    <h2>1. ファイルを選ぶ</h2>
+    <div id="drop">
+      <button type="button" id="pick">ファイルを選ぶ</button>
+      <p class="hint">ここへ落としても読めます</p>
+      <p id="fileName" hidden></p>
+    </div>
+    <input type="file" id="file" accept=".json,application/json" tabindex="-1" aria-label="取り込むファイル">
+    <p id="say" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="panel" id="planBox" hidden>
+    <h2 id="planTitle">2. 中身を確かめる</h2>
+    <div id="plan"></div>
+    <button type="button" id="run">取り込む</button>
+  </section>
+
+  <section class="panel" id="doneBox" hidden>
+    <h2>記録が出ているか見る</h2>
+    <p id="doneSay" style="margin:0;font-size:14px" role="status" aria-live="polite"></p>
+    <div class="links">
+      <a class="go" href="/apps/kakeibo/">家計簿を開く</a>
+      <a class="go" href="/apps/saikei/">歳計を開く</a>
+      <a class="go" href="/apps/shisan/">資産を開く</a>
+      <a class="go" href="/apps/jinbutsu-bunseki/">人物分析を開く</a>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // 読む形：各頁の読み込み処理（loadAll／loadState／loadPeople）が受け取れる形だけを通す
+  function isObject(v){ return !!v && typeof v === "object" && !Array.isArray(v); }
+  function plainObject(d){ return isObject(d); }
+  function withP(d){ return isObject(d) && isObject(d.p); }
+
+  // 取り込むのはこの4つの名だけ。ほかの名は読まない
+  // first：saikei と shisan は、開いただけで見本の額を棚へ書く。入力の跡が無いその値の指紋
+  var SHELVES = [
+    {name:"shiro_suitocho_v1",     label:"家計簿",   ok:plainObject, first:null},
+    {name:"saikeicho_v1",          label:"歳計",     ok:withP,       first:"7dec854f57b20934113d6afcc13d6ce5d2dc4b1be35a7251838db423ed351c70"},
+    {name:"shisan_yousai_v1",      label:"資産",     ok:withP,       first:"220744cd7b14f3d855df17e092b1a81f66e666c662083b84053825f470ab15a7"},
+    {name:"sanshijutsu_people_v1", label:"人物分析", ok:plainObject, first:null}
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var incoming = null;   // 読んだファイルの「棚」
+  var busy = false;      // 二重押しの錠
+
+  function own(o,k){ return Object.prototype.hasOwnProperty.call(o,k); }
+  function n(s){ return s.length.toLocaleString("ja-JP") + "字"; }
+
+  function sha256(text){
+    if(!window.crypto || !crypto.subtle) return Promise.resolve("");
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){ return ("0"+b.toString(16)).slice(-2); }).join("");
+    }).catch(function(){ return ""; });
+  }
+
+  // 棚に入っている値が「中身なし」か。少しでも手が入った値は false（＝上書きしない）
+  function isBlank(shelf, cur){
+    var d;
+    if(cur === "") return Promise.resolve(true);
+    try{ d = JSON.parse(cur); }catch(e){ return Promise.resolve(false); }
+    if(!isObject(d)) return Promise.resolve(false);
+    if(!shelf.first) return Promise.resolve(Object.keys(d).length === 0);
+    if(!isObject(d.p)) return Promise.resolve(false);
+    // startMonth だけは開いた月で変わるので、指紋から外す
+    var p = own(d.p,"startMonth") ? Object.assign({}, d.p, {startMonth:0}) : d.p;
+    return sha256(JSON.stringify(p)).then(function(h){ return h === shelf.first; });
+  }
+
+  function judge(shelf){
+    var v;
+    if(!own(incoming, shelf.name)) return Promise.resolve({kind:"none"});
+    v = incoming[shelf.name];
+    if(typeof v !== "string") return Promise.resolve({kind:"bad"});
+    try{ if(!shelf.ok(JSON.parse(v))) return Promise.resolve({kind:"bad",len:v}); }
+    catch(e){ return Promise.resolve({kind:"bad",len:v}); }
+    var cur;
+    try{ cur = localStorage.getItem(shelf.name); }
+    catch(e){ return Promise.resolve({kind:"nostore"}); }
+    if(cur === null) return Promise.resolve({kind:"in",len:v,value:v});
+    if(cur === v) return Promise.resolve({kind:"same",len:v});
+    return isBlank(shelf,cur).then(function(blank){
+      return blank ? {kind:"in",len:v,value:v,sample:!!shelf.first && cur !== ""} : {kind:"keep",len:v,cur:cur};
+    });
+  }
+  function judgeAll(){ return Promise.all(SHELVES.map(judge)); }
+
+  function row(shelf, text, cls, count){
+    var box = document.createElement("div"); box.className = "shelf";
+    var a = document.createElement("div"); a.className = "nm"; a.textContent = shelf.label;
+    var b = document.createElement("div"); b.className = "st "+cls; b.textContent = text;
+    box.appendChild(a); box.appendChild(b);
+    if(count){ var c = document.createElement("div"); c.className = "ct"; c.textContent = count; box.appendChild(c); }
+    return box;
+  }
+
+  function planText(j){
+    switch(j.kind){
+      case "in":   return ["取り込む","in", (j.sample ? "ファイル "+n(j.len)+"（いま入っているのは、画面を開いたときの見本の額だけです）" : "ファイル "+n(j.len))];
+      case "keep": return ["新しい住所に既に入っているので上書きしない","keep","入っている "+n(j.cur)+"／ファイル "+n(j.len)];
+      case "same": return ["同じものが既に入っている","ok",n(j.len)];
+      case "bad":  return ["画面が読める形ではないので、入れない","no", j.len ? "ファイル "+n(j.len) : ""];
+      case "nostore": return ["このブラウザは保存を止めているので、入れられない","no",""];
+      default:     return ["ファイルに入っていない","keep",""];
+    }
+  }
+
+  function showPlan(){
+    return judgeAll().then(function(list){
+      var box = $("plan"); box.textContent = "";
+      var cnt = 0;
+      list.forEach(function(j,i){
+        var t = planText(j);
+        box.appendChild(row(SHELVES[i], t[0], t[1], t[2]));
+        if(j.kind === "in") cnt++;
+      });
+      $("planBox").hidden = false;
+      $("planTitle").textContent = "2. 中身を確かめる";
+      var run = $("run"); run.hidden = false;
+      run.disabled = cnt === 0;
+      run.textContent = cnt === 0 ? "取り込めるものはありません" : "取り込む";
+      $("doneBox").hidden = cnt !== 0;
+      if(cnt === 0) $("doneSay").textContent = "いま入っている内容は、そのままです。";
+    });
+  }
+
+  function say(text, bad){ var s = $("say"); s.textContent = text; s.className = bad ? "bad" : ""; }
+
+  function reset(){ incoming = null; $("planBox").hidden = true; $("doneBox").hidden = true; }
+
+  function readFile(file){
+    if(busy) return;
+    reset();
+    $("fileName").hidden = false;
+    $("fileName").textContent = file.name;
+    say("");
+    file.text().then(function(text){
+      var obj;
+      try{ obj = JSON.parse(text); }catch(e){ obj = null; }
+      if(!isObject(obj) || !isObject(obj["棚"])){
+        say("このファイルには取り込む記録が見当たりません。「保存データの引っ越し」のファイルをもう一度選んでください。", true);
+        return;
+      }
+      incoming = obj["棚"];
+      var hit = SHELVES.filter(function(s){ return own(incoming,s.name); }).length;
+      if(hit === 0){
+        incoming = null;
+        say("このファイルには取り込む記録が見当たりません。「保存データの引っ越し」のファイルをもう一度選んでください。", true);
+        return;
+      }
+      return showPlan();
+    }).catch(function(){
+      say("ファイルを読めませんでした。もう一度選んでください。", true);
+    });
+  }
+
+  function run(){
+    if(busy || !incoming) return;
+    busy = true;
+    var btn = $("run"); btn.disabled = true; btn.textContent = "取り込んでいます";
+    // 押した瞬間にもう一度当てる（選んだあとで棚が変わっていても壊さない）
+    judgeAll().then(function(list){
+      var box = $("plan"); box.textContent = "";
+      var done = 0, failed = 0, kept = 0;
+      list.forEach(function(j,i){
+        var s = SHELVES[i], t;
+        if(j.kind === "in"){
+          try{
+            localStorage.setItem(s.name, j.value);
+            if(localStorage.getItem(s.name) !== j.value) throw new Error("読み返しが合わない");
+            done++;
+            t = ["取り込みました","ok",n(j.value)];
+          }catch(e){
+            failed++;
+            t = ["入れられませんでした（ブラウザの保存の空きが足りないかもしれません）","no",""];
+          }
+        }else{
+          if(j.kind === "keep") kept++;
+          t = planText(j);
+        }
+        box.appendChild(row(s, t[0], t[1], t[2]));
+      });
+      $("planTitle").textContent = "2. 結果";
+      btn.hidden = true;
+      var msg = done ? done+"つ取り込みました。下の画面で、前の記録が出ているか見てください。" : "取り込んだものはありません。";
+      if(kept) msg += " 上書きしなかった棚は、今の内容のままです。";
+      if(failed) msg += " 入れられなかった棚が"+failed+"つあります。";
+      $("doneSay").textContent = msg;
+      $("doneBox").hidden = false;
+      incoming = null;
+      busy = false;
+    }).catch(function(){
+      busy = false;
+      btn.disabled = false; btn.textContent = "取り込む";
+      say("取り込めませんでした。もう一度押してください。", true);
+    });
+  }
+
+  $("pick").addEventListener("click", function(){ $("file").click(); });
+  $("file").addEventListener("change", function(e){
+    var f = e.target.files[0];
+    if(f) readFile(f);
+    e.target.value = "";   // 同じファイルをもう一度選べるように
+  });
+  $("run").addEventListener("click", run);
+
+  // 落とす：受け皿の外へ落としても、ブラウザがファイルの中身を開いて見せないようにする
+  window.addEventListener("dragover", function(e){ e.preventDefault(); $("drop").classList.add("over"); });
+  window.addEventListener("dragleave", function(e){ if(!e.relatedTarget) $("drop").classList.remove("over"); });
+  window.addEventListener("drop", function(e){
+    e.preventDefault();
+    $("drop").classList.remove("over");
+    var fs = e.dataTransfer && e.dataTransfer.files;
+    if(fs && fs.length) readFile(fs[0]);
+  });
+})();
+</script>
+</body>
+</html>
