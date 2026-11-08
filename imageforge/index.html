@@ -130,8 +130,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
       </div>
       <div>
         <h1 id="title" class="text-2xl md:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent transition-all">Trinity ImageForge</h1>
-        <!-- ★2026-09-20（理子・舷門 14代目「濾」）：ここは v2.4 のまま止まっていた。★下の footer は v3.2 だった。
-             ★同じ画面の上と下で、版の数字が違っていた。★今回の改修に合わせて、両方 v3.3 に揃える。 -->
         <p class="text-xs text-slate-400 mt-1 tracking-wide">実写 × 水彩スケッチ 統合錬成システム v3.3 ／ The Trinity</p>
       </div>
     </div>
@@ -165,14 +163,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
     <!-- 左 -->
     <div class="lg:col-span-5 flex flex-col gap-5">
 
-      <!-- ★2026-08-20（理子・舷門 6代目「欄（らん）」）：サムネの型 ━━━━━━━━━━━━
-           ★城主のカケラ「サムネに合う画像生成を迷わずに作成するためのテンプレート、形を追加できないか」
-           ★狙い … 単語を並べるだけで【文字を置く場所が空いた】絵が出るようにする。
-           ★裏づけ … 城主の実物2枚を見比べた。良いほうは片側が空いており、そうでないほうは空きが無かった。
-                       ★差は文言ではなく、構図だった。
-           ★下の結合エンジンには一切 手を入れていない。組み立てた文を「描きたい被写体」へ入れるだけ。
-           ★だからこの型を使わず、今までどおり自分で書くこともできる。
-           ★外すときは、この囲みと、下のスクリプトにある同じ日付の関数を消す -->
       <div class="bg-slate-800/40 backdrop-blur-xl border border-purple-500/40 rounded-2xl p-5">
         <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
           <span class="accent-photo">🖼️</span> サムネの型（単語を並べるだけ）
@@ -184,9 +174,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
           class="w-full p-3 bg-slate-900/60 border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all resize-none text-sm"
           placeholder="例：30代 男性、デスク、夜、疲れている"></textarea>
 
-        <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-2 どこに出すサムネかを選ぶと、比率を合わせる
-             ★狙い … 城主が「比率」という言葉で考えずに済むようにする。★出し先の名前だけで選べる。
-             ★選んだときだけ合わせる。★押したときには勝手に変えない（★選択を奪わない）。 -->
         <div class="mt-3">
           <div class="text-[10px] text-slate-500 mb-1">どこに出すサムネか（選ぶと、下の比率を合わせます）</div>
           <select id="thumbDest" onchange="thumbDestChanged()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
@@ -198,12 +185,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
           </select>
         </div>
 
-        <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-1 サムネに乗せる文言の欄
-             ★出どころ … 奏庫 P-004 深化（2026-09-18）①「文字数は少なく」。
-             🔴 ★原文に字数の上限はない（★庫に「具体的な上限も原文にありません」と書いてある）。
-                ★だから上限は決めない。★代わりに、信号所の実測（余白◯割に何文字 入るか）と突き合わせる。
-             🔴 ★この文言は、絵の指示文には入れない。★AIに文字を描かせると崩れるので、
-                ★この道具は逆に「文字を描くな」と言い続けている（NEG_BASE の letters / words / typography）。 -->
         <div class="mt-3">
           <div class="flex items-center justify-between mb-1">
             <div class="text-[10px] text-slate-500">サムネに乗せる文言（あとで絵の上に置く言葉）</div>
@@ -215,23 +196,13 @@ Check your Browserslist config to be sure that your targets are set up correctly
           <p class="text-[10px] text-slate-500 mt-1 leading-relaxed">
             この言葉は絵の中には描かせません。絵は余白のまま出して、あとから上に置いてください。改行すると段が分かれます。
           </p>
-          <!-- ★B-3（朔庫 S-104 と、その歯止め〔2026-09-13 深化〕）。★1行 添えるだけ。★何も強制しない -->
           <p class="text-[10px] text-slate-400 mt-1.5 leading-relaxed">
             💡 ここに置く言葉（入口）と、記事・動画の題（中身の名前）は、別の言葉にすると効きます。ただし中身から離さないこと。入口の言葉にも、金額や結果の約束は書きません。
           </p>
         </div>
 
-        <!-- ★B-5 の出し先（★押す前に、余白と字数が合っているかを静かに出す） -->
         <div id="thumbFitBox" class="hidden mt-2 rounded-lg p-2 text-[10px] leading-relaxed border"></div>
 
-        <!-- ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：見出しの人物を、5人から選ぶ欄
-             ★城主の決まり（10-17）「見出し画像には人物が必ず1人。30代女性は無し」
-             ★城主のお言葉（10-18）「10代学生10代女子学生を追加してほしい」
-             ★出どころ … 機関室〔39代目「楣」〕の頼み。★年齢の欄だけだと性別が決まらず、
-               「30代」で 30代の女性が出た（10-17 やってみた.008）。
-             ★選んだ人は、被写体の文の【頭】に入る（★単語の欄に書かなくても絵の指示に入る）。
-             🔴 ★ここで人を選んだときは、下の「年齢」は使わない（★組み合わせて 30代女性が出ないように）。
-             🔴 ★学生は制服でよい。★ただし校章・学校名・名札は描かせない（★外に出る絵なので、実在の学校に見せない）。 -->
         <div class="mt-3">
           <div class="text-[10px] text-slate-500 mb-1">見出しの人物（選ぶと、その人が1人だけ入ります）</div>
           <select id="thumbWho" onchange="thumbWhoChanged()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
@@ -255,17 +226,8 @@ Check your Browserslist config to be sure that your targets are set up correctly
             </select>
           </div>
           <div>
-            <!-- ★v3.1（理子・舷門 7代目「廂」／2026-08-22）：ここまで「4割」で固定だった。
-                 ★節さんの実測 ―― 余白4割なら1段5〜6文字、6割なら8〜9文字。
-                 ★文言が主役の回は6割が要る。★これまでは城主が手で書き換えることになっていた。 -->
             <div class="text-[10px] text-slate-500 mb-1">余白の広さ</div>
-            <!-- ★2026-09-20（濾）：B-5 ―― 余白を変えたら、字数との突き合わせも合わせて出す -->
             <select id="thumbWidth" onchange="thumbFit()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
-              <!-- ★2026-10-18（濾）：言葉の長さで選ぶ「自動」を足し、既定にした。
-                   ★いちばん長い段が12字を超える、または4段ある → 6割／それ以外 → 4割（★言葉が空なら4割＝これまでと同じ）。
-                   ★出どころ … 10-17 気まぐれ.012。4割のまま長い言葉を載せ、字を34まで縮めて
-                     城主に「すごく小さい、不自然」と言われた（機関室〔39代目「楣」〕の頼み）。
-                   ★3割／4割／6割の選択は1つも消していない。 -->
               <option value="auto" selected>自動（言葉の長さで4割か6割）</option>
               <option value="30">3割（人物が主役）</option>
               <option value="40">4割（ふだんの回）</option>
@@ -290,10 +252,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
             </select>
           </div>
           <div>
-            <!-- 🔴 ★2026-09-20（機関室・35代目「埋火」）：★城主のご指示
-                 「もっと若々しい18歳、15歳の年齢設定を追加してください」
-                 ★未成年を選べるので、★入れる語は【年齢と healthy だけ】にしてある。
-                 ★魅力・体つき・服装の語は1つも入れない（★入れない、と決めて作った）。 -->
             <div class="text-[10px] text-slate-500 mb-1">年齢（上で人物を選んだときは使いません）</div>
             <select id="thumbAge" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
               <option value="none">指定しない</option>
@@ -304,11 +262,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <option value="40">40代</option>
             </select>
           </div>
-          <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：B-4 表情
-               ★出どころ … 奏庫 P-004 深化（2026-09-18）③「タイトルと、映っている人の表情をリンクさせる」。
-               🔴 ★同じ庫が、②「気にならせるインパクトのあるワード」は【採らない】と決めている（★P-004 が先）。
-                  ★だから表情も、煽る側の顔（驚き・叫び・大げさな表情）は選択肢に置いていない。
-               ★③は「当船は人物を映さないので、アバターに限って移せる。★判定は奏と理子へ」と庫が書いている。 -->
           <div>
             <div class="text-[10px] text-slate-500 mb-1">表情（人を入れるときだけ効きます）</div>
             <select id="thumbFace" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
@@ -317,8 +270,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <option value="straight">まっすぐ見ている</option>
               <option value="think">考えこんでいる</option>
               <option value="tired">疲れている</option>
-              <!-- ★2026-10-18（濾）：城主のお言葉「表情の選ぶ欄は、さらにバリエーションを増やした方がいい」
-                   🔴 ★P-004 のまま、煽る顔（叫び・大げさな驚き）は置いていない。★「驚いて腑に落ちる」も静かな驚きに寄せた -->
               <option value="relief">ほっとしている</option>
               <option value="holdlaugh">笑いをこらえている</option>
               <option value="aha">驚いて、腑に落ちた顔</option>
@@ -327,9 +278,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <option value="serious">真剣な顔</option>
             </select>
           </div>
-          <!-- ★2026-10-18（濾）：髪型。★城主のお言葉「髪型とか…さらにバリエーションを増やした方がいい」
-               ★上の「見出しの人物」で男性を選ぶと男性向けだけ、女性を選ぶと女性向けだけが選べる。
-               ★「おまかせ」は何も足さない（★これまでと同じ）。 -->
           <div class="col-span-2">
             <div class="text-[10px] text-slate-500 mb-1">髪型（人を入れるときだけ効きます）</div>
             <select id="thumbHair" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
@@ -363,19 +311,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
         <p id="thumbNote" class="text-[11px] text-slate-400 mt-2 leading-relaxed"></p>
       </div>
 
-      <!-- ★2026-08-28（ゼロ・機関室 24代目「不動（ふどう）」）：リップシンク用アバターの型 ━━━━━━
-           ★城主のご依頼（原文）「またリップシンク用の画像生成のプロンプトが分からない／
-             ゼロが作成したHTML構造文のアプリに反映してほしい／依頼してほしい」
-           ★届けてくださったのは奏（信号所・9代目「譜（ふ）」）の便（2026-08-28 19時台）。
-           ★中身は、こちらで考えたものではない。★条文7本から そのまま持ってきている：
-             P-023（肌の質感・人形化を防ぐ）／P-024（年齢を数値で固定）／
-             P-025①（リップシンク用のカメラと光）／P-026（人物設定・理子/千里/結）
-             ＋ DNA-256（Close-up 強制ロック。★「ゼロ・理子」を名指しで、道具の側にロックせよと命じている）
-           ★上の「サムネの型」と同じ作法：★組み立てた文を「描きたい被写体」へ入れるだけ。
-             ★下の結合エンジンの既存の語は【1文字も変えていない】（Z-005）。
-           🔴 ★色は purple 系で揃えてある。★pink 系は、埋め込みTailwindに1件も無いので効かない（★実測）。
-             ★見た目の調整は舷門（理子）の畑。★ここは「動くこと」だけを揃えた。
-           ★外すときは、この囲みと、下のスクリプトにある同じ日付の関数・定数を消す -->
       <div class="bg-slate-800/40 backdrop-blur-xl border border-purple-500/40 rounded-2xl p-5">
         <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center gap-2">
           <span class="accent-photo">🗣️</span> リップシンク用アバターの型（喋らせる絵）
@@ -395,10 +330,7 @@ Check your Browserslist config to be sure that your targets are set up correctly
             </select>
           </div>
           <div>
-            <!-- ★P-024：年齢は【数値】で固定する。「20代半ば」のような曖昧な書き方はしない -->
             <div class="text-[10px] text-slate-500 mb-1">年齢（数値で固定）</div>
-            <!-- 🔴 ★2026-09-20（機関室・35代目「埋火」）：★城主のご指示「もっと若々しい18歳、15歳の年齢設定を追加してください」
-                 ★未成年を選べるので、★足す語は【年齢と healthy だけ】。★魅力・体つき・服装の語は1つも入れていない -->
             <select id="lsAge" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
               <option value="15">15歳</option>
               <option value="18">18歳</option>
@@ -463,12 +395,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <div class="text-xs font-bold">深淵の静寂</div><div class="text-[10px] opacity-70 mt-0.5">闇・ノワール</div>
           </button>
         </div>
-        <!-- ★2026-10-18（理子・舷門 14代目「濾（ろ）」）：水彩の「光」を選べるようにした
-             ★城主のお言葉（10-18 手記.026）「結構暗い気が多くないですか?」
-             ★原因 …「琥珀の温もり」の指示文に warm amber glow, soft orange and golden light が必ず付き、
-               サムネの「明るめ」や単語の「朝の明るい部屋」より強く効いて、毎回 夜のランプの絵になっていた。
-             ★既定の「夕方・夜のランプ」は、これまでの文と【1文字も違わない】（★機関室の道具の置き換えも、そのまま効く）。
-             ★光が効くのは「琥珀の温もり」のときだけ（★氷結・深淵は、光そのものがトーンの中身なので触らない）。 -->
         <div class="mt-3">
           <div class="text-[10px] text-slate-500 mb-1">光（琥珀の温もりのときだけ効きます）</div>
           <select id="sketchLight" onchange="compile()" class="w-full p-2 bg-slate-900/60 border border-slate-700/80 rounded-lg text-xs">
@@ -497,17 +423,12 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <option value="9:16">縦型 9:16（Reels/Shorts）― 768×1344</option>
             <option value="16:9">横型 16:9（YouTube）― 1344×768</option>
             <option value="1:1">正方形 1:1（Instagram）― 1024×1024</option>
-            <!-- ★2026-09-20（35代目「埋火」）：★城主の裁定 K-09201701【B】「4:5（Instagramの縦）だけ足す」
-                 ★出所＝ai.google.dev の画像生成のページ（★向こう側は10種類を受け付ける）。★足したのは1つだけ -->
             <option value="4:5">縦 4:5（Instagramの縦）― 1024×1280</option>
             <option value="note_header">🎉 note見出しヘッダー 1.91:1（1280×670）</option>
           </select>
         </div>
       </div>
 
-      <!-- v3.2（理子・舷門 8代目「甍（いらか）」／2026-08-22）：城主のご要望「縦長（1080×1920）に対応した画像サイズ」。
-           出所＝奏（信号所・6代目「旋」）が城主のお言葉をそのまま届けてくださった便（2026-08-22 17時台）。
-           数字は2つある。混ぜると絵が崩れるので、画面の上で分けて出す。 -->
       <div id="sizeGuide" class="bg-slate-800/40 backdrop-blur-xl border border-sky-500/30 rounded-2xl p-5 text-[11px] leading-relaxed text-sky-200"></div>
 
       <!-- 実写：DomoAI最適化 -->
@@ -527,9 +448,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
           <input type="checkbox" id="opt-closeup" onchange="compile()" class="w-4 h-4 accent-purple-500">
           <span class="text-xs text-slate-300">顔アップ寄せ（リップシンク用・DNA-256）</span>
         </label>
-        <!-- ★2026-08-28（ゼロ・機関室 24代目「不動」）：上の「顔アップ寄せ」は【描きたい側】に寄せる指示で、
-             ★こちらは【避けたい側】に足す指示である。★2つで1組になる。
-             🔴 ★常に足さない理由：★"full body / wide shot" を常時 禁じると、★風景や全身の絵が作れなくなる。 -->
         <label class="flex items-center gap-3 cursor-pointer mt-2.5">
           <input type="checkbox" id="opt-lipsync" onchange="compile()" class="w-4 h-4 accent-purple-500">
           <span class="text-xs text-slate-300">リップシンク用（引きの構図・年齢上がりを避ける）</span>
@@ -593,11 +511,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-[10px] text-blue-400 hover:underline self-center whitespace-nowrap px-2">無料発行↗</a>
           </div>
         </div>
-        <!-- ★2026-10-25（理子〔舷門〕）：元の絵を渡す口。
-             出どころ … 機関室〔39代目「楣」〕の頼み（2026-10-24）。城主「作成できるものは基本, りこが作ったアプリで作ってね.」
-             ★選んだ絵は、送るときに parts の先頭へ inlineData で入れる（generate() の中の forgeRefBuild）。
-             ★絵も鍵も、ブラウザの保存領域には置かない（JS の変数だけ。頁を閉じれば消える）。
-             ★道具から入れるときの口 … #refImage（ファイル）／#refPrompt（頼む文）／#refAspect／#refTips／#refName1〜14 -->
         <div id="refBox" class="mb-3 rounded-xl p-3 bg-slate-900/40 border border-teal-500/30">
           <label class="block text-xs font-semibold text-teal-300 mb-1.5">🖼️ 元の絵（同じ人のまま描き替えたいとき・14枚まで）</label>
           <p class="text-[11px] text-slate-400 leading-relaxed mb-2">ここに絵を入れると、その絵を見せたうえで描いてもらいます。表情や手だけを変える、何人かの顔を並べて集合の絵にする、ができます。入れなければ、今までどおり文だけで作ります。</p>
@@ -622,9 +535,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
               <span>集合の絵のコツを添える（人数を数える・文字は1か所だけ・髪や眼鏡で見分ける）</span>
             </label>
           </div>
-          <!-- ★2026-10-25 夜（理子〔舷門〕）：note のヘッダーの型・写真らしさのコツ。★元の絵が無くても効く（文だけでも添える）
-               出どころ … 機関室〔39代目「楣」〕の頼み（10-25 19時台）。型は 10-24 に城主が「どちらもいい出来だ」と言われた2枚の形
-               ★道具からの口 … #refNoteHeader／#refPhoto（checked）・保存は #dlNote1920 か forgeSaveNoteHeader() -->
           <div class="grid grid-cols-2 gap-3 mt-2">
             <label class="flex items-start gap-2 cursor-pointer text-[11px] text-slate-300 leading-relaxed">
               <input type="checkbox" id="refNoteHeader" class="w-4 h-4 mt-0.5 accent-teal-500">
@@ -637,8 +547,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
           </div>
           <div id="refNote" class="mt-2 text-[11px] leading-relaxed text-teal-200/90"></div>
         </div>
-        <!-- 【理子・v2.3】note見出し→16:9置換の事前エスコート（生成前に優しく先出し） -->
-        <!-- 【要・v2.7／2026-08-20】★画質を上げる2つ。★既存のプルダウンと同じ形だけで足してある -->
         <div class="grid grid-cols-2 gap-3 mb-3">
           <div>
             <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">解像度（★既定は1K。上げると細部が出ます）</label>
@@ -652,20 +560,10 @@ Check your Browserslist config to be sure that your targets are set up correctly
           <div>
             <label class="block text-[11px] font-semibold text-slate-400 mb-1.5">モデル（★人物が多い絵は高品質へ）</label>
             <select id="genModelSel" class="w-full bg-slate-900/60 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-purple-500">
-              <!-- ★2026-10-18（濾）：★城主の裁定 K-1018121501【A】「新型 2.1 に替える」（2枚を並べて見て決められた）
-                   ★既定を新型 2.1 にした。★いちばん上へ移し selected を付けた（★他の選択肢は1つも消していない） -->
               <option value="gemini-nano-banana-2.1" selected>新型 2.1（既定・2026-10 の最新・標準より安い・512px不可）</option>
               <option value="gemini-3.1-flash-image">標準（速い・2K/4K対応）</option>
               <option value="gemini-3-pro-image">高品質（複雑な構図・人物が複数）</option>
-              <!-- ★2026-10-18（理子・舷門 14代目「濾」）：★Google の画像の型を確かめた（ai.google.dev の画像生成と料金のページ）
-                   ★新しい型 … Nano Banana 2.1（gemini-nano-banana-2.1）。★2026-10-06 に一般提供。★Google は新しく作るならこれを勧めている
-                     ★値段（1枚）… 1K 約0.034ドル／2K 約0.050ドル／4K 約0.113ドル ―― ★いまの「標準」（1K 0.067／2K 0.101／4K 0.151）の約半分〜3/4
-                     🔴 ★512px は出せない
-                   ★（この時点では既定を変えず、城主のご判断へ上げた → 同日 K-1018121501【A】で既定にした）
-                   🔴 ★旧版（gemini-2.5-flash-image）は 2026-10-02 に Google が止めた。★選べないようにし、名前は残した -->
               <option value="gemini-2.5-flash-image" disabled>旧版（2026-10-02 に Google が停止・選べません）</option>
-              <!-- ★2026-09-20（35代目「埋火」）：★城主の裁定 K-09201702【A】「安いモデルを足す（試し撃ち用）」
-                   🔴 ★このモデルは 1K しか出せない。★下の sizeHint が、押す前に1行 伝える -->
               <option value="gemini-3.1-flash-lite-image">試し撃ち（いちばん速くて安い・1Kのみ）</option>
             </select>
           </div>
@@ -673,7 +571,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
         <div class="mb-3 rounded-xl p-3 text-[11px] leading-relaxed bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">
           💡 <b>これまでの絵は「1K」でした。</b>Gemini 3 系は指定しないと 1K で返ってくるためです。<b>2K で約4倍、4K で約16倍の画素数</b>になり、肌の質感・髪の毛・提灯の文字といった細部がはっきりします。<b>4K は生成に時間がかかり、失敗したときの待ち時間も長くなります。</b>
         </div>
-        <!-- ★2026-08-21（理子・舷門 6代目「欄（らん）」）：①解像度とモデルの組み合わせを、言葉で出す -->
         <div id="sizeHint" class="mb-3 rounded-xl p-3 text-[11px] leading-relaxed bg-slate-700/30 border border-slate-600/40 text-slate-300"></div>
         <div id="genAspectNote" class="hidden mb-3 rounded-xl p-3 text-[11px] leading-relaxed bg-amber-500/10 border border-amber-500/30 text-amber-300">
           💡 note見出し（1.91:1）はImagen APIが直接対応していないため、最も近い <b>16:9</b> で生成します。仕上げに上下をほんの少しトリミングすれば、そのまま1.91:1のヘッダーになります。
@@ -693,12 +590,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           </button>
         </div>
-        <!-- ★2026-09-20（理子・舷門 14代目「濾（ろ）」）：A-1 ボタンの名前を、実態に合わせた。
-             🔴 ★Imagen 4 は 2026-08-17 に Google が停止しており、★v2.6 以降このボタンは
-                【上で選んだ Gemini の画像生成モデル】を呼んでいる。★名前だけが1か月 残っていた。
-             ★どのモデルを呼ぶかは、すぐ上のプルダウンで城主が選ばれる。★だからボタンには
-               モデル名を書かず、「いま選んである設定で作る」とだけ書く（★ラベルが実態から
-               二度と離れない書き方にする）。★実際に呼んだモデル名は、生成後の案内に今までどおり出る。 -->
         <button id="genBtn" onclick="generate()" class="w-full py-3 px-6 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 transition-all shadow-lg shadow-purple-500/30">
           ⚡ この設定で画像を生成
         </button>
@@ -722,7 +613,6 @@ Check your Browserslist config to be sure that your targets are set up correctly
   <footer class="text-center text-[10px] text-slate-600 mt-8 tracking-wide">Trinity ImageForge v3.3 ／ 実写×水彩 統合エンジン ／ The Trinity 理子（UI）× ゼロ（錬成・API）</footer>
 </div>
 
-<!-- トースト格納（DNA-181 即時フィードバック・非破壊） -->
 <div id="toastWrap" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2"></div>
 
 <script>
@@ -1678,34 +1568,6 @@ function downloadImg(){
 /* 初期化 */
 setUse('photo'); setMode('A'); compile();
 </script>
-<!-- ★2026-08-20（理子・舷門 5代目「障（しょう）」）：生成した絵を並べて残す ==========================
-     ★城主のご指名（原文）：
-         「ゼロ＝相棒　先祖のゼロだよ／今の理子にも回して／より改良型にしてもいいいかも／そっちの方がおもしろい」
-
-     ★要さん（機関室・17代目）が置いてくださった材料6つのうち、★④「生成した絵の履歴」だけを実装しました。
-
-     ★なぜ④を選んだか
-       ・城主は DomoAI へ渡す素材として、★何枚か生成して選ばれます
-       ・いまは1枚しか残らないので、★良い絵が出ても、次を押した瞬間に消えます
-       ・①解像度の見せ方／②進捗／③崩れ防止の欄／⑤note見出し／⑥エラー文面 は ★今回 触っていません
-
-     🔴 ★一度に足さない理由（★先祖の理子の実装指示書に、そのまま書いてあります）
-         「★段階的に出力せよ（UI骨格→結合エンジン→生成ロジックの順）。★一括で全部書かない。」
-         「★ブラウザ側の保存領域は使うな（環境によって動かない）。★状態はJS変数で保持。」
-         🔴 ★原文にある語そのものは、ここには書きません ―― ★この語を機械で数える人が、
-           ★このコメントを「使っている」として拾うためです（★X-047：測る対象の中に、測った記録を書き込むな）
-         ★本日 v2.5 が壊れたのは、まさに前者を踏んだためでした（★要さんの自己申告）。
-         ★7週間前の指示書に書いてあったことが、そのまま起きています。
-
-     ★方針（U-020／元コードの完全保持）
-       ・既存の HTML・CSS・JS を ★1文字も書き換えていません
-       ・#result の src が変わったのを MutationObserver で見て、履歴へ積みます
-         → ★generate() にも downloadImg() にも触れていません
-       ・状態は JS の配列で保持（★ブラウザ側の保存領域は使いません：先祖の掟）
-
-     ★外すときは、このコメントから直後のスクリプト終端までを丸ごと消せば元に戻ります。
-     ★安全弁：目印が1つでも欠けていたら、何もせず静かに終わります（★既存の表示は絶対に壊さない）。
-================================================================================================== -->
 <script>
 (function(){
   'use strict';
@@ -2156,22 +2018,6 @@ function jaErr(raw){
 
 (function(){})();
 </script>
-<!-- ★2026-10-25（理子〔舷門〕）：元の絵を渡す口 ===========================================================
-     出どころ … 機関室〔39代目「楣」〕の頼み（2026-10-24）
-       城主「下手したら, 私たちが作ってる, 理子が作ったアプリでも作れるんじゃない?」
-       城主「基本は, 2K で作成という形で進めてくれ, ちなみに, 作成できるものは基本, りこが作ったアプリで作ってね.」
-
-     ★やること
-       ・#refImage／#refFolder で選んだ絵（14枚まで）を JS の配列に持つ（★ブラウザの保存領域は使わない）
-       ・generate() が forgeRefBuild(prompt) を呼ぶ → [絵1, 絵2, …, 文] を返す（★絵は parts の先頭）
-       ・比率は既定で「1枚目の絵にいちばん近い、向こう側が受け付ける比率」（★4:3 の絵なら 4:3）
-       ・絵が1枚も無く、頼む文も空なら null を返す → generate() は今までと同じ形で送る
-
-     ★重さ … 合わせて 15MB を超えたら、全部を JPEG にし直し、長いほうが 2048 を超える絵は 2048 へ縮める（★Gemini の1回の上限は 20MB ほど）
-     ★先々 … 呼び先に手元の炉（ComfyUI・http://127.0.0.1:8188）を選べるようにするときは、
-              forgeRefBuild が返す {parts, aspect} をそのまま炉の形へ組み替える（★絵の持ち方はここで共通にしてある）
-     ★外すときは、この囲みを丸ごと消し、generate() の中の「元の絵の口」の4か所を「直す前」へ戻す
-================================================================================================== -->
 <script>
 (function(){
   'use strict';
