@@ -1732,7 +1732,7 @@ function buildHoroscope(dateStr, timeStr, lat, lon, tz, gender, prefName) {
       //   🔴 ★小惑星（Ceres/Pallas/Juno/Vesta/Chiron）を含む配置は出せない。
       //      ★だが人間分析システムは、もともと小惑星入りを捨てている（★MAIN セット）ので、
       //      ★★この欄に出る分は、すべて再現できる。
-      aspectPatterns: detectPatterns(lons, houses)
+      aspectPatterns: detectPatterns(lons, timeKnown ? houses : null)
       // ★Chiron は lons に入れない（→ CHIRON の欄が空になる。★小惑星は持っていない）
       // 🔴🔴 ★★上の1行は【古い】。★2026-08-28 に解決した（★元の行は消していない）
       //   ✅ ★いまは lons.Chiron へ入れている（★このすぐ上の chironGeoLon を呼ぶ行を見よ）
@@ -2555,7 +2555,7 @@ function convertSenjutsu(j){
   o.SAB_OTHER=oth.join('／');
   if(Array.isArray(w.aspectPatterns)){
     const MAIN=new Set(['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn','Uranus','Neptune','Pluto','NorthNode','Lilith','ASC','MC']);
-    o.ASPECT_NOTE=w.aspectPatterns.filter(pt=>(pt.planets||[]).every(p=>MAIN.has(p))).slice(0,6).map(pt=>{ const m=(pt.key||'').match(/_(\d+)$/); const sg=m?SJ_SIGNS[+m[1]]:''; const pls=(pt.planets||[]).map(x=>SJ_PLANJA[x]||x).join('・'); return (pt.name||'特殊配置').replace(/\s*\(.*?\)/,'')+(sg?('（'+sg+'）'):'')+'：'+pls; }).join('／');
+    o.ASPECT_NOTE=w.aspectPatterns.filter(pt=>(pt.planets||[]).every(p=>MAIN.has(p))).slice(0,6).map(pt=>{ const m=(pt.key||'').match(/_(\d+)$/); const sg=!m?'':(/^stellium_house_/.test(pt.key)?('第'+(+m[1])+'ハウス'):SJ_SIGNS[+m[1]]); const pls=(pt.planets||[]).map(x=>SJ_PLANJA[x]||x).join('・'); return (pt.name||'特殊配置').replace(/\s*\(.*?\)/,'')+(sg?('（'+sg+'）'):'')+'：'+pls; }).join('／');
   }
   const bz=(j.sizhu_bazi||{}).dingqi||{};
   if(bz.year){
