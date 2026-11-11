@@ -7,35 +7,11 @@
 <meta name="description" content="The Trinity で作ってきたWeb道具の置き場です。家計・資産の管理と、制作のための道具があります。">
 <title>The Trinity 工房</title>
 
-<!-- ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：SNSに貼ったときの題と説明 ━━━━━━━━━
-     ★城主の裁定（2026-08-29）＝【入れてから上げる】。★押していただく前に入れたので、お手は1回のままです。
-     ★起票は朔さん（水先室・11代目「帆」）の実測 ―― ★玄関だけ og:title も og:description も0件でした。
-
-     ★og:title は、上の title タグと同じにしてあります（★別の名前を作らないため）。
-     ★og:description は上の meta description と【同じ文】です（★同じページに2つの説明を作らないため）。
-
-     ✅ ★og:image と twitter: は、2026-08-29 に入れた（★下の囲みを見よ）。★以下は、入れる前の理由の記録である。
-        ★og:image の点火条件は「note記事100本」（★城主のご判断・2026-08-10）で、
-        ★到達は 2026-10-19 頃の見込みです（★朔さんの実測・2026-08-29）。
-        ★絵が無い状態で twitter:card だけ入れても、絵は出ません。★同じ日に一緒に入れるのが素直です。
-        ★★絵を作るのは奏さん（信号所）の畑です。
-
-     🔴 ★★訂正（★同じ日の15時台に足しました）―― ★★絵づくりは【もう始まっています】。
-        ★城主の裁定（2026-08-29 14:53・栞さん経由）＝【★いま作り始める】。
-        ★上の「2026-10-19 頃」は【SNSに貼る日】であって、★★絵を作る日ではありません。
-        🔴 ★この囲みを最初に書いたとき、こちらは その裁定を知りませんでした
-           （★裁定を配った便の宛先に、舷門の名前がありませんでした＝★cc では届きません）。
-        ★★朔さん（水先室・11代目「帆」）が気づいて教えてくださいました。
-
-     ★戻すときは、この囲みから下の og: 5行までを消せば元に戻ります。 -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sankagami.com/apps/tools/">
 <meta property="og:title" content="The Trinity 工房">
 <meta property="og:description" content="The Trinity で作ってきたWeb道具の置き場です。">
 <meta property="og:site_name" content="The Trinity 工房">
-    <!-- ★2026-08-29（26代目「貫」）：★絵ができたので og:image と twitter: を入れた。
-         ★絵＝奏（信号所・10代目「唄」）が作成。★1200x630・費用0円・外部からの取り込み0件。
-         ★上の「わざと入れていません」は、★入れた日に食い違うので、同じ日に直してある。 -->
     <meta property="og:image" content="https://sankagami.com/apps/ogp.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -122,47 +98,8 @@
     <p class="subtitle">The Trinity は、道具をつくるために組み上げてきた仕組みです。<br>ここには、家計・資産を見る道具と、絵や看板をつくる道具を置いています。</p>
   </header>
 
-  <!-- ★下の「2」は、JSが動かなかったときに表示される数である。
-       すぐ下のグリッドに静的に置いてあるカードが2枚なので、2にしてある。
-       JSが動けば APPS.length（現在10）で即座に上書きされるので、通常はこの数字は見えない。
-       ★「0」に戻さないこと。カードが2枚あるのに「所蔵0点」と出て、ページ内で矛盾する。
-       （理子庫 U-022：合計だけ直すと内訳とズレる。過小表示は害にならないが、自己矛盾は信用を削る） -->
-  <!-- ★2026-10-31（理子〔舷門〕／城主の判断 K-1031111317【Ａ】）：「所蔵◯点」の字を消した。
-       来た人には要らない数のため。★id="count" は JS が書き込むので、hidden で残してある（消すと一覧が出なくなる）。
-       ★下の線（区切り）は .count の枠のまま残る。戻すときは退避 20261031_城主のを外す前_理子 の1行に戻す。 -->
   <div class="count"><b id="count" hidden>2</b></div>
 
-  <!-- ═══════════════════════════════════════════════════════════════
-       ★このグリッドの中身は、通常すぐ下の script が innerHTML で上書きする。
-       　 それでも空にしておかず、ここに2枚だけ静的に置いてある理由：
-
-       　【1】Googleがサイトへ入る道が、これ以外に1本も無いため
-       　      2026-08-13、ゼロ（9代目「鋼」）が実測。ルートも玄関も生HTMLの
-       　      <a href> が0本で、サイト全体がGoogleから見て孤島になっていた。
-       　      GoogleはJSも実行するが、それは「2回目の巡回」で遅く、
-       　      新規ドメインではそこまで手が回らない。
-       　      ★noscript は使わない（Googleが中を読まないことがある）。
-       　        常に生HTMLに在る形が確実である。
-
-       　【2】★8本ではなく2本だけにしてある（朔・2代目「辻」の判定／2026-08-14）
-       　      8本置くと、Googleがリンクを辿って
-       　        ・財務3部屋（shisan / kakeibo / saikei ＝城主個人の家計・資産）
-       　        ・apps/report/（2026-08-13に城主が「検索に出さない」と承認済み）
-       　      まで発見してインデックスする。
-       　      sitemap は「これを見てください」の案内であって、
-       　      「これ以外を見るな」ではない。塞ぐ働きは無い。
-       　      ★道を通すことと、どこへ通すかは別の判断である。
-       　      → 顧客向けの free/ と homepage/ だけを通す。残り6本はJSのままでよい。
-
-       　【3】文言は下の APPS の該当2件を1文字も変えずに複写している
-       　      ★別の文章を書かないこと。同じ文字列にしておけば、
-       　        APPS 側だけ直されたときに機械で突き合わせて検出できる。
-       　        別の文章にすると、ズレても誰にも分からなくなる。
-       　      （ズレ検出の道具はゼロが用意する）
-
-       　★アプリを増やしても、ここは触らなくてよい。JS側（APPS）に足すだけでよい。
-       　　ここを直すのは、顧客向けの商品が増えたときだけである。
-       ═══════════════════════════════════════════════════════════════ -->
   <div class="grid" id="grid"></div>
 
 
@@ -275,6 +212,35 @@ if(APPS.length === 0){
       '</a>';
   }).join('');
 }
+</script>
+<script>
+/* 2026-11-08 理子〔舷門〕― 工房の計器（朔さんの頼み・零さんの受け側 @33 に合わせた）
+   玄関（apps/）の末尾の文と同じ形。違いは3点だけ：
+     ・開いた回数の行（玄関の ?p=genkan）は送らない。受け側に列が無い
+     ・?p=art の行は送らない。受け側が工房の面を受けない
+     ・数える鍵の名は cnt_tools_
+   件数だけ。個人情報は1つも送らない（DNA-343 / DNA-326）。計測が壊れても頁は止めない（Z-071） */
+(function(){
+  try{
+    // 城主の端末を数えない（玄関と同じ。?me=1 で印、?me=0 で取り消し。同じ置き場なので玄関で付けた印も効く）
+    try{
+      if (/[?&]me=1(&|$)/i.test(location.search)) { localStorage.setItem("trinity_owner","1"); }
+      if (/[?&]me=0(&|$)/i.test(location.search)) { localStorage.removeItem("trinity_owner"); }
+      if (localStorage.getItem("trinity_owner") === "1") { return; }
+    }catch(e){}
+    var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+
+    var d = new Date(Date.now() + 9*60*60*1000);                       // UTC+9 ＝ 日本時間
+    var key = "cnt_tools_" + d.toISOString().slice(0,10);
+    if(!localStorage.getItem(key)){                                    // 1ブラウザ1日1回
+      localStorage.setItem(key, "1");
+      new Image().src = base + "?p=tools_uu&t=" + Date.now();          // AA列
+      var ref = document.referrer || "";
+      if (/^https?:\/\/([a-z0-9-]+\.)?note\.com/i.test(ref)) { new Image().src = base + "?p=tools_uu_noteref&t=" + Date.now(); }  // AB列
+      if (/[?&]src=note(&|$)/i.test(location.search))        { new Image().src = base + "?p=tools_uu_note&t=" + Date.now(); }     // AC列
+    }
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
