@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b2130">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="三星鑑の手紙">
+<title>しんどい時に開く1枚</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --地:#1b2130; --便箋:#222938;
+  --字:#cfc6b1; --薄:#8f8876; --金:#8c7748; --朱:#b25a45;
+  --明朝:"Noto Serif JP","Noto Serif CJK JP","Hiragino Mincho ProN","Yu Mincho","YuMincho",serif;
+  --ゴシック:"Hiragino Sans","Noto Sans JP","Noto Sans CJK JP","Yu Gothic UI","Yu Gothic",sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--地)}
+body{
+  color:var(--字);font-family:var(--明朝);font-size:16px;line-height:2;
+  -webkit-text-size-adjust:100%;
+}
+.画面{
+  display:none;min-height:100vh;min-height:100svh;
+  padding:max(24px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+  flex-direction:column;
+}
+.画面.いま{display:flex}
+.上{flex:1 1 auto}
+.下{flex:0 0 auto;padding-top:20px}
+
+.選ぶ{list-style:none;border-top:1px solid var(--金)}
+.選ぶ li{border-bottom:1px solid rgba(140,119,72,.45)}
+.選ぶ button,.選ぶ a{
+  display:block;width:100%;min-height:56px;padding:14px 4px;
+  background:none;border:0;color:var(--字);text-align:left;text-decoration:none;
+  font-family:var(--ゴシック);font-size:16px;line-height:1.6;letter-spacing:.02em;cursor:pointer;
+}
+.控え{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 16px;margin-top:22px}
+.控え button{
+  background:none;border:0;padding:10px 0;min-height:44px;
+  font-family:var(--ゴシック);font-size:13px;color:var(--薄);cursor:pointer;
+}
+button:focus-visible,a:focus-visible{outline:1px solid var(--金);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+
+.問い{font-size:17px;line-height:2;margin-bottom:6px}
+.添え{font-size:13px;color:var(--薄);font-family:var(--ゴシック);line-height:1.8}
+.はじめ{font-size:16px;line-height:2.2;margin:8vh 0 0}
+.文 p{margin:0}
+.文 .段{height:.9em}
+
+/* 手紙の改行は書いた人が決めている。1行は全角18字まで。幅の狭い端末でも行の途中で折れないよう、字の大きさを幅に合わせる */
+.便箋 .文{font-size:min(15.5px,calc((100vw - 82px) / 18.4));line-height:1.95;white-space:nowrap}
+
+.型の字{
+  width:52px;height:52px;border:1px solid var(--金);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;line-height:1;margin:0 0 28px;
+}
+.型の字:empty{visibility:hidden}
+
+.便箋{
+  background:var(--便箋);border-top:1px solid var(--金);
+  padding:22px 18px 18px;border-radius:2px;transform-origin:50% 0;
+}
+.便箋.開く{animation:開く .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes 開く{
+  from{transform:perspective(900px) rotateX(-78deg);opacity:0}
+  60%{opacity:1}
+  to{transform:none;opacity:1}
+}
+@media (prefers-reduced-motion:reduce){.便箋.開く{animation:none}}
+.署名{text-align:right;margin-top:18px;line-height:1.6}
+.署名 .名{color:var(--朱);font-size:15px;letter-spacing:.2em}
+.窓口{margin-top:22px;padding-top:14px;border-top:1px solid rgba(140,119,72,.45);font-size:14px;line-height:2}
+.窓口 a{color:var(--字);text-underline-offset:4px;text-decoration-color:var(--金)}
+/* 背の低い端末（375x667 など）では、いちばん長い手紙で窓口のリンクが画面の下で切れていた。
+   開いた直後に窓口の3行まで見えるよう、手紙の画面の余白だけを詰める（字の大きさと行の間は変えない）。理子 2026-11-12 */
+@media (max-height:700px){
+  #画面3{padding-top:max(12px,env(safe-area-inset-top))}
+  #画面3 .便箋{padding-top:16px}
+  #画面3 .署名{margin-top:12px}
+  #画面3 .窓口{margin-top:14px;padding-top:10px}
+}
+
+.手順{list-style:none;counter-reset:手}
+.手順 li{counter-increment:手;display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(140,119,72,.45);font-size:15px;line-height:1.9}
+.手順 li::before{content:counter(手);font-size:13px;color:var(--金);min-width:1em;padding-top:2px}
+.手順 svg{flex:0 0 auto;stroke:var(--字);fill:none;stroke-width:1.4;margin-top:4px}
+
+.問答{border-top:1px solid var(--金);margin-top:18px}
+.問答 details{border-bottom:1px solid rgba(140,119,72,.45)}
+.問答 summary{
+  list-style:none;cursor:pointer;padding:14px 4px;min-height:52px;
+  font-family:var(--ゴシック);font-size:15px;line-height:1.7;
+}
+.問答 summary::-webkit-details-marker{display:none}
+.問答 .答{padding:2px 4px 18px;font-size:14.5px;line-height:1.95;white-space:pre-line}
+</style>
+</head>
+<body>
+
+<section class="画面" id="画面1" aria-labelledby="見出し1">
+  <div class="上">
+    <div class="はじめ 文" id="入口の言葉"></div>
+  </div>
+  <div class="下">
+    <div id="受け取りあり" hidden>
+      <p class="問い" id="見出し1"><span id="受けた型"></span>として、受け取りました。</p>
+      <ul class="選ぶ">
+        <li><button type="button" data-行く="2" data-決める>このまま、はじめる</button></li>
+        <li><button type="button" data-行く="選ぶ">ちがう型を選ぶ</button></li>
+      </ul>
+    </div>
+    <div id="受け取りなし">
+      <p class="問い">無料診断の結果から、来ましたか？</p>
+      <ul class="選ぶ">
+        <li><a href="../free/">まだなら、無料診断へ</a></li>
+        <li><button type="button" data-行く="選ぶ">5つの型から、自分で選ぶ</button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="画面" id="画面選ぶ" aria-label="型を選ぶ">
+  <div class="上">
+    <p class="問い" style="margin-top:8vh">いちばん近い型を、1つ。</p>
+    <p class="添え">無料診断の結果に出た名前です。あとから選び直せます。</p>
+  </div>
+  <div class="下">
+    <ul class="選ぶ" id="型の一覧"></ul>
+  </div>
+</section>
+
+<section class="画面" id="画面2" aria-labelledby="見出し2">
+  <div class="上">
+    <div class="型の字" id="型の字" aria-hidden="true"></div>
+    <p class="問い" id="見出し2">いまの気持ちに、<br>近いものを1つ。</p>
+  </div>
+  <div class="下">
+    <ul class="選ぶ">
+      <li><button type="button" data-気持ち="疲れた">人に合わせて、疲れた</button></li>
+      <li><button type="button" data-気持ち="決められない">決められない</button></li>
+      <li><button type="button" data-気持ち="責めている">自分を責めている</button></li>
+    </ul>
+    <div class="控え">
+      <button type="button" data-行く="選ぶ">型を選び直す</button>
+      <button type="button" data-行く="問答">よくある質問</button>
+      <button type="button" id="消す">この端末から消す</button>
+    </div>
+  </div>
+</section>
+
+<section class="画面" id="画面3" aria-label="手紙">
+  <div class="上">
+    <article class="便箋" id="便箋">
+      <div class="文" id="手紙の文"></div>
+      <p class="署名"><span class="名">びわこ</span></p>
+      <p class="窓口" id="窓口" hidden>
+        ひとりで抱えきれない夜は、<br>
+        話を聞いてくれる所があります。<br>
+        <a href="https://www.mhlw.go.jp/mamorouyokokoro/" rel="noopener noreferrer" target="_blank">厚生労働省「まもろうよ こころ」</a>
+      </p>
+    </article>
+  </div>
+  <div class="下">
+    <ul class="選ぶ"><li><button type="button" data-行く="2">閉じる</button></li></ul>
+  </div>
+</section>
+
+<section class="画面" id="画面4" aria-labelledby="見出し4">
+  <div class="上">
+    <p class="問い" id="見出し4" style="margin-top:6vh">ホーム画面に、<br>置いておけます。</p>
+    <p class="添え" style="margin-bottom:18px">置いておくと、次からはここから開けます。<br>電波が無くても開けます。</p>
+    <ol class="手順">
+      <li>
+        <svg width="22" height="26" viewBox="0 0 22 26" aria-hidden="true"><path d="M7 9H3v15h16V9h-4"/><path d="M11 16V2M6.5 6.5 11 2l4.5 4.5"/></svg>
+        <span>画面の下（または上）にある、<br>四角から矢印が出ている印を押す</span>
+      </li>
+      <li>
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="2" y="2" width="18" height="18" rx="3"/><path d="M11 7v8M7 11h8"/></svg>
+        <span>「ホーム画面に追加」を押す<br><span class="添え">見えないときは、少し下へずらすと出てきます</span></span>
+      </li>
+      <li>
+        <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5 9 16l9-10"/></svg>
+        <span>右上の「追加」を押す</span>
+      </li>
+    </ol>
+  </div>
+  <div class="下">
+    <ul class="選ぶ"><li><button type="button" data-行く="2" id="置き方を閉じる">わかりました</button></li></ul>
+  </div>
+</section>
+
+<section class="画面" id="画面問答" aria-labelledby="見出し問答">
+  <div class="上">
+    <p class="問い" id="見出し問答" style="margin-top:4vh">よくある質問</p>
+    <div class="問答" id="問答"></div>
+  </div>
+  <div class="下">
+    <ul class="選ぶ"><li><button type="button" data-行く="2">もどる</button></li></ul>
+  </div>
+</section>
+
+<script>
+'use strict';
+const 中身 = {
+ "入口": [
+  "ここに出るのは、答えではなく",
+  "経験して学んだ、カケラです。",
+  "",
+  "本当の答えは、",
+  "自分自身にしかないので。",
+  "",
+  "良ければ、",
+  "勝手に持って帰ってください。"
+ ],
+ "手紙": {
+  "creator/疲れた": [
+   "人に合わせた日は、",
+   "帰ってから、何も作れなくなる。",
+   "",
+   "その場では、相手の好きなものに",
+   "「いいですね」と言っていた。",
+   "自分の「好き」は、",
+   "ポケットに入れたまま。",
+   "",
+   "帰ってノートを開いても、",
+   "白いまま。",
+   "",
+   "一日じゅう、感じる所を",
+   "閉じていたので。",
+   "",
+   "今日は、白いノートを閉じて、",
+   "そのまま寝てしまって",
+   "いいと思います。"
+  ],
+  "caregiver/疲れた": [
+   "帰ってから、どっと来る日があります。",
+   "",
+   "その場では、平気だった。",
+   "笑って、うなずいて、",
+   "相手の言いたいことを先に拾って。",
+   "疲れていると気づくのは、",
+   "玄関の鍵を閉めたあと。",
+   "",
+   "気が弱いからでは",
+   "ないかもしれません。",
+   "人の気持ちを先に受け取る人は、",
+   "受け取ったぶんだけ、重くなるので。",
+   "",
+   "今日はもう、誰の気持ちも",
+   "拾わなくていいです。"
+  ],
+  "pioneer/疲れた": [
+   "人の歩く速さに、",
+   "一日、合わせていた。",
+   "",
+   "本当は、先に行きたかった。",
+   "話の行き先も、もう見えていた。",
+   "でも、待った。",
+   "",
+   "帰り道、気づいたら",
+   "ひとりで早足になっていた。",
+   "",
+   "その疲れは、たぶん、",
+   "止まっていたぶんの疲れです。",
+   "",
+   "家の中くらいは、",
+   "自分の速さで。"
+  ],
+  "thinker/疲れた": [
+   "会話は、とっくに終わっているのに。",
+   "頭の中では、まだ続いている。",
+   "",
+   "あそこは、ああ言えばよかった。",
+   "あの一言は、",
+   "どういう意味だったんだろう。",
+   "布団に入ってから、また最初から。",
+   "",
+   "人に疲れたというより、",
+   "考えが止まらなくて疲れた。",
+   "そういう日もあります。",
+   "",
+   "答えは、たぶん今夜は出ません。",
+   "続きは、明日の自分に渡して。"
+  ],
+  "connector/疲れた": [
+   "あっちの人には、あっちの顔。",
+   "こっちの人には、こっちの顔。",
+   "",
+   "どちらも、嘘ではなかった。",
+   "話がつながるように、",
+   "間に立って、言葉を選んでいた。",
+   "",
+   "帰ってきて、ふと思う。",
+   "今日の自分は、どの顔だったっけ。",
+   "",
+   "しばらく、どの顔もしないで",
+   "ぼーっとする時間が要ります。",
+   "誰ともつながっていない時間が。"
+  ],
+  "creator/決められない": [
+   "理由を聞かれると、困る。",
+   "",
+   "なんとなく、こっちがいい。",
+   "それだけでは、通らない場面が多い。",
+   "説明できる理由を探しているうちに、",
+   "一日が終わっていた。",
+   "",
+   "「なんとなく」は、",
+   "言葉になるのが遅いだけで、",
+   "ときどき、先に答えを持っています。",
+   "",
+   "明日、もう一回だけ",
+   "その「なんとなく」に聞いてみる。",
+   "それで足りることもあります。"
+  ],
+  "caregiver/決められない": [
+   "「どっちでもいいよ」と言った。",
+   "",
+   "相手が選びやすいように。",
+   "本当に、どっちでもよかった気もする。",
+   "",
+   "でも夜になって、",
+   "自分が何を食べたかったのか、",
+   "思い出せないことに気づいた。",
+   "",
+   "決められないのは、",
+   "自分の分を後ろに回すのが",
+   "くせになっているから",
+   "かもしれません。",
+   "",
+   "明日の朝ごはんくらいは、",
+   "自分の食べたいもので。"
+  ],
+  "pioneer/決められない": [
+   "いつもなら、すぐ決めるのに。",
+   "",
+   "今日は、決められなかった。",
+   "動けないまま、時間だけ過ぎた。",
+   "止まっている自分が、",
+   "いちばん落ち着かない。",
+   "",
+   "決めるのが速い人ほど、",
+   "決められない日は、",
+   "自分がおかしくなったように感じます。",
+   "",
+   "足が止まる日は、",
+   "次に行く向きを",
+   "探している日なのかもしれません。",
+   "向きさえ決まれば、",
+   "たぶん、また速く動けます。"
+  ],
+  "thinker/決められない": [
+   "選ぶ前に、先のことを考えます。",
+   "",
+   "これを選んだら、5年後はどうなる。",
+   "10年後は。",
+   "頭の中で、勝手に先まで進めて、",
+   "結局、選ばなかった。",
+   "",
+   "私も、そうでした。",
+   "",
+   "考えすぎだと言われますが、",
+   "先が見えるぶん、",
+   "怖いものも先に見えてしまうので。",
+   "",
+   "今日は、決めなかった日。",
+   "それで終わっていいです。"
+  ],
+  "connector/決められない": [
+   "Aさんの話を聞くと、Aさんが正しい。",
+   "Bさんの話を聞くと、Bさんも正しい。",
+   "",
+   "どちらの気持ちも分かるので、",
+   "どちらにも決められなかった。",
+   "",
+   "人の話をちゃんと聞ける人ほど、",
+   "自分の声が、",
+   "いちばん小さく聞こえる。",
+   "",
+   "今夜は、誰の話でもなく。",
+   "自分はどっちが好きだったか、",
+   "それだけ思い出せたら、十分です。"
+  ],
+  "creator/責めている": [
+   "続けられなかった自分を、",
+   "また責めている夜。",
+   "",
+   "私も、上手くなろうと",
+   "必死だった時期があります。",
+   "でも、自分には合わなかった。",
+   "しんどくて、やめました。",
+   "",
+   "長いあいだ離れて、",
+   "ある日ふと、また始めました。",
+   "今度は、自分のやり方で。",
+   "",
+   "やめたのは、",
+   "終わりではなかったので。",
+   "合う形が、まだ",
+   "見つかっていなかっただけかも",
+   "しれません。"
+  ],
+  "caregiver/責めている": [
+   "誰かの機嫌が悪いと、",
+   "自分のせいかと思ってしまう。",
+   "",
+   "何か言ったかな。",
+   "あのとき、もっと気づけたかな。",
+   "一日を、頭の中で巻き戻す。",
+   "",
+   "人の気持ちに気づける人は、",
+   "気づけなかった一つを、",
+   "いちばん重く数えます。",
+   "",
+   "気づけたことも、",
+   "今日、たくさんあったはずです。",
+   "そっちは数えないまま、",
+   "寝ようとしている。"
+  ],
+  "pioneer/責めている": [
+   "また、言いすぎた。",
+   "",
+   "思ったことを、",
+   "そのまま口に出してしまう。",
+   "頭では分かっているのに、",
+   "先に口が動く。",
+   "",
+   "私も、昔からそうです。",
+   "誤解されたり、ケンカになったり、",
+   "相手を不安にさせたり。",
+   "（もちろん、いまも）",
+   "",
+   "直そうとして直らないのは、",
+   "そこが、いちばん先に動く所だから。",
+   "今夜くらいは、",
+   "責めるのを休んでいいです。"
+  ],
+  "thinker/責めている": [
+   "一人で全部わかってからでないと、",
+   "動けない。",
+   "",
+   "人に聞けば早いのは、分かっている。",
+   "でも、聞く前に自分で調べて、",
+   "考えて、また調べて。",
+   "気づいたら、周りはもう先にいた。",
+   "",
+   "遅い、と自分を責める夜。",
+   "",
+   "遅いのではなくて、",
+   "深い所まで",
+   "降りていたのかもしれません。",
+   "降りたぶんは、",
+   "ちゃんと手元に残っています。"
+  ],
+  "connector/責めている": [
+   "誰にでも、いい顔をしている。",
+   "そう言われた日。",
+   "",
+   "自分でも、少し思っていた。",
+   "自分には、中身が",
+   "無いんじゃないかと。",
+   "",
+   "人と人の間に立てる人は、",
+   "その場に合う自分を、",
+   "いくつも持っています。",
+   "",
+   "どれか一つを、本物に",
+   "決めなくていい。",
+   "そう言った人が見たのは、",
+   "そのうちの一つだけです。"
+  ]
+ },
+ "問答": [
+  {
+   "問": "ホーム画面に置けません",
+   "答": "iPhone の方\n\nLINE やメールの中から開いていると、\n「ホーム画面に追加」が出てきません。\nいったん、Safari で開き直してください。\n（LINE なら、右下か右上のメニューから\n「Safariで開く」を押します）\n\nSafari で開いたら、\n1. 四角から矢印が出ている印を押す\n2. 少し下へずらして、\n　 「ホーム画面に追加」を押す\n3. 右上の「追加」を押す\n\nAndroid の方\n\nChrome で開いて、右上の点3つから\n「ホーム画面に追加」を押してください。\n「アプリをインストール」と\n出ることもあります。"
+  },
+  {
+   "問": "前に読んだ手紙が、見つかりません",
+   "答": "手紙は、型と気持ちの組み合わせで\n1通ずつ決まっています。\n\n同じ型で、同じ気持ちを選べば、\n同じ手紙が出てきます。\n\nいまは、5つの型に3通ずつ、\nあわせて15通です。"
+  },
+  {
+   "問": "開いたら、最初の画面に戻っていました",
+   "答": "ホーム画面に置かずに開いていると、\nしばらく開かなかったあいだに、\n選んだ型を、端末が忘れることがあります。\n\nもう一度、5つの中から選んでください。\n手紙は、消えていません。\n\nホーム画面に置いておくと、\n忘れにくくなります。"
+  },
+  {
+   "問": "家族の分も読めますか",
+   "答": "読めます。\n2枚目の「型を選び直す」から、\n家族の方の型を選んでください。\n\nただ、その方の型は、\nその方ご自身が無料診断で確かめるのが\nいちばん確かです。\n\n読んだ手紙は、\n「あなたはこうだから」と\nその方に渡すためのものではありません。"
+  },
+  {
+   "問": "手紙を増やしてほしい／毎日読みたい",
+   "答": "ありがとうございます。\nいただいた声は、読んで預かっています。\n増やすかどうか、いつ増やすかは、\nまだ決まっていません。\n\n毎日ちがう手紙が届く形には、\nしていません。\nその日の気持ちで、選んで開くものです。\n何も選びたくない日は、\n開かなくてよいものです。"
+  },
+  {
+   "問": "星座が、自分の知っているものと違います",
+   "答": "雑誌などの星座の表は、\n毎年おなじ日付で区切られていることが\n多いのですが、\n太陽が星座の境目を越える日は、\n年によって1日ほど前後します。\n\n無料診断は、生まれた年の、\nその日の正午の太陽の位置から\n星座を出しています。\nそのため、境目の前後に生まれた方は、\n表と違う星座が出ることがあります。\n\n境目のちょうどその日に生まれた方は、\n生まれた時刻によって、\nどちらの星座にもなりえます。\n\n型がしっくりこないときは、\nいちばん近いと思う型を、\n選び直してください。"
+  },
+  {
+   "問": "生年月日は、どこかへ送られますか",
+   "答": "このアプリは、\nあなたの生年月日を受け取りません。\n受け取るのは、無料診断で出た\n5つの型のうち1つの番号だけです。\nその番号も、この端末の外へは送りません。\n\n番号を消したいときは、\n2枚目の「この端末から消す」を\n押してください。"
+  },
+  {
+   "問": "お金はかかりますか",
+   "答": "かかりません。\nアプリの中で、何かを買う所もありません。"
+  }
+ ]
+};
+
+const 型たち = [
+  { id: 'creator',   名: 'クリエイター型', 字: '' },
+  { id: 'caregiver', 名: 'サポーター型',   字: '' },
+  { id: 'pioneer',   名: 'パイオニア型',   字: '' },
+  { id: 'thinker',   名: 'シンカー型',     字: '' },
+  { id: 'connector', 名: 'コネクター型',   字: '' }
+];
+
+// この端末に置くのは「型の番号」と「置き方を見たか」だけ。生年月日は受け取らない・どこへも送らない
+const 鍵 = { 型: 'sanseikan_letter_type', 置き方: 'sanseikan_letter_howto_seen' };
+const 置き場 = {
+  読む(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  書く(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+  消す(k) { try { localStorage.removeItem(k); } catch (e) {} }
+};
+
+// 無料診断から型を受け取る口：アドレスの # のあとの type=<型の番号>（# の後ろはサーバーへ届かない）
+// 読んだらすぐアドレスから消す（履歴や共有に残さない）
+function 受け取った型を読む() {
+  const m = /(?:^#|&)type=([a-z]+)/.exec(location.hash || '');
+  if (location.hash) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  }
+  return m ? m[1] : null;
+}
+
+const 型を探す = id => 型たち.find(t => t.id === id) || null;
+let いまの型 = 型を探す(置き場.読む(鍵.型));
+const 受けた型 = 型を探す(受け取った型を読む());
+
+const iPhoneか = () => /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const ホーム画面からか = () =>
+  (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+
+function 行を並べる(入れ物, 行たち) {
+  入れ物.textContent = '';
+  行たち.forEach(行 => {
+    if (行 === '') { const d = document.createElement('div'); d.className = '段'; 入れ物.appendChild(d); return; }
+    const p = document.createElement('p'); p.textContent = 行; 入れ物.appendChild(p);
+  });
+}
+
+function 見せる(名) {
+  document.querySelectorAll('.画面').forEach(s => s.classList.remove('いま'));
+  const 画面 = document.getElementById('画面' + 名);
+  画面.classList.add('いま');
+  window.scrollTo(0, 0);
+  const 先 = 画面.querySelector('.問い, .便箋');
+  if (先) { 先.setAttribute('tabindex', '-1'); 先.focus({ preventScroll: true }); }
+}
+
+function 型を決める(型) {
+  いまの型 = 型;
+  置き場.書く(鍵.型, 型.id);
+  document.getElementById('型の字').textContent = 型.字;
+}
+
+function 二枚目へ() {
+  if (iPhoneか() && !ホーム画面からか() && !置き場.読む(鍵.置き方)) { 見せる('4'); return; }
+  見せる('2');
+}
+
+function 一枚目を整える(受け) {
+  document.getElementById('受け取りあり').hidden = !受け;
+  document.getElementById('受け取りなし').hidden = !!受け;
+  if (受け) document.getElementById('受けた型').textContent = 受け.名;
+}
+
+function 手紙を開く(気持ち) {
+  const 型 = いまの型 || 型たち[0];
+  const 手紙 = 中身.手紙[型.id + '/' + 気持ち];
+  行を並べる(document.getElementById('手紙の文'), 手紙 || []);
+  document.getElementById('窓口').hidden = 気持ち !== '責めている';
+  見せる('3');
+  const 便箋 = document.getElementById('便箋');
+  便箋.classList.remove('開く');
+  void 便箋.offsetWidth;
+  便箋.classList.add('開く');
+}
+
+// 入口の言葉・よくある質問・型の一覧
+行を並べる(document.getElementById('入口の言葉'), 中身.入口);
+const 問答 = document.getElementById('問答');
+中身.問答.forEach(q => {
+  const d = document.createElement('details');
+  const s = document.createElement('summary'); s.textContent = q.問;
+  const a = document.createElement('div'); a.className = '答'; a.textContent = q.答;
+  d.appendChild(s); d.appendChild(a); 問答.appendChild(d);
+});
+const 一覧 = document.getElementById('型の一覧');
+型たち.forEach(t => {
+  const li = document.createElement('li');
+  const b = document.createElement('button');
+  b.type = 'button'; b.textContent = t.名;
+  b.addEventListener('click', () => { 型を決める(t); 二枚目へ(); });
+  li.appendChild(b); 一覧.appendChild(li);
+});
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-行く]');
+  if (!b) return;
+  if (b.hasAttribute('data-決める') && 受けた型) { 型を決める(受けた型); 二枚目へ(); return; }
+  if (b.id === '置き方を閉じる') 置き場.書く(鍵.置き方, '1');
+  見せる(b.dataset.行く);
+});
+document.querySelectorAll('[data-気持ち]').forEach(b =>
+  b.addEventListener('click', () => 手紙を開く(b.dataset.気持ち)));
+
+document.getElementById('消す').addEventListener('click', () => {
+  if (!window.confirm('この端末に残っている「型」を消します。手紙は消えません。')) return;
+  置き場.消す(鍵.型); 置き場.消す(鍵.置き方);
+  いまの型 = null;
+  一枚目を整える(null); 見せる('1');
+});
+
+// 起きたとき：無料診断から型が届いていれば1枚目で確かめる。前に選んだ型があれば2枚目から
+if (受けた型 && (!いまの型 || いまの型.id !== 受けた型.id)) { 一枚目を整える(受けた型); 見せる('1'); }
+else if (いまの型) { 型を決める(いまの型); 見せる('2'); }
+else { 一枚目を整える(null); 見せる('1'); }
+
+// 電波が無くても開けるように（同じ場所の中だけを手元に置く。外へは何も送らない）
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
+</script>
+</body>
+</html>
