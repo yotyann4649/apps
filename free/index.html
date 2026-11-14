@@ -74,6 +74,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .id-eyebrow{font-size:11px;letter-spacing:.28em;color:var(--gold);font-weight:600;margin-bottom:14px}
 .id-title{font-family:'Noto Serif JP',serif;font-size:27px;font-weight:700;color:var(--ink);letter-spacing:.03em;line-height:1.4;margin-bottom:8px}
 .id-sub{font-size:13px;color:var(--ink2);margin-bottom:18px}
+.id-cusp{font-size:12px;color:var(--ink2);line-height:1.8;max-width:420px;margin:-8px auto 18px;text-align:left}
 .id-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:18px}
 .id-badge{font-size:12px;font-weight:600;color:var(--ink);background:var(--paper2);border:1px solid var(--gold-soft);border-radius:16px;padding:6px 14px}
 .id-copy{font-size:13px;color:var(--ink2);line-height:1.85;font-style:italic;max-width:480px;margin:0 auto}
@@ -131,6 +132,14 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .free-cta{max-width:680px;margin:34px auto 0;padding:0 22px}
 .to-cta{text-align:center;margin:-4px 0 20px;font-size:13px;line-height:1.7}
 .to-cta a{color:var(--ink2);border-bottom:1px solid var(--gold-soft);padding-bottom:1px}
+.to-cta-band{margin:-4px 0 22px;padding:18px 18px 14px;border:1px solid #5a4d38;border-radius:12px;text-align:center}
+.to-cta-lead{font-size:15px;font-weight:700;color:var(--ink2);margin:0 0 6px;line-height:1.6}
+.to-cta-how{font-size:13px;line-height:1.8;margin:0 0 14px}
+.to-cta-band .nb{display:inline-block}
+.to-cta-band .free-cta-btn{display:inline-block}
+.to-cta-more{font-size:12px;margin:12px 0 0}
+.to-cta-more a{border-bottom:1px solid var(--gold-soft)}
+.result-area .free-cta,.result-area .ask-box{padding:0}
 #free-cta{scroll-margin-top:76px}
 .free-cta-inner{background:var(--ink);color:#f3ead6;border-radius:18px;padding:40px 32px;text-align:center;box-shadow:0 18px 44px -22px rgba(36,28,18,.7)}
 .free-cta-eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gold-soft);font-weight:700;margin-bottom:12px}
@@ -219,11 +228,17 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
     <div class="id-eyebrow">あなたの人物分析</div>
     <div class="id-title" id="id-title">—</div>
     <div class="id-sub" id="id-sub">—</div>
+    <p class="id-cusp" id="id-cusp" style="display:none"></p>
     <div class="id-badges" id="id-badges"></div>
     <div class="id-copy" id="id-copy">—</div>
   </div>
 
-  <p class="to-cta"><a href="#free-cta">この結果の読み方は『三星鑑のトリセツ』に。<br>受け取り方は、この下にあります ↓</a></p>
+  <div class="to-cta-band">
+    <p class="to-cta-lead">この結果の、<span class="nb">どこを見て明日なにをするか。</span></p>
+    <p class="to-cta-how">7つの問いに答えた読み物を、<span class="nb">メールアドレスの登録と引き換えに</span>お渡しします<span class="nb">（10分で読めます）。</span></p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdc9dWD4JvDIR1-6Vlvu9VTxGhPQwsVsalv6CB2VEX4gDt0hA/viewform" target="_blank" rel="noopener" class="free-cta-btn pri" id="btn-free-cta-top">トリセツを受け取る</a>
+    <p class="to-cta-more"><a href="#free-cta">くわしくは、結果のいちばん下に ↓</a></p>
+  </div>
 
   <!-- 気質タイプカード -->
   <div class="type-card" id="type-card">
@@ -264,16 +279,6 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
     <div class="copy-toast" id="copy-toast">クリップボードにコピーしました ✓</div>
   </div>
 
-</div>
-
-<div class="ask-box">
-  <div class="ask-inner">
-    <div class="ask-title">この診断で、まだ分からなかったことがあれば、<br>ひとことだけ教えてください。</div>
-    <div class="ask-note">答えなくても大丈夫です。空欄のままでも送信できます。<br>お名前もメールアドレスも、いただきません。</div>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLScKe4xMjHEmXn5j9EvPptdVlalP-iIrrnp2Qm7dKZgpqzwFuw/viewform" target="_blank" rel="noopener" class="ask-btn">ひとこと送る</a>
-  </div>
-</div>
-
 <div class="free-cta" id="free-cta">
   <div class="free-cta-inner">
     <div class="free-cta-eyebrow">診断のあとに</div>
@@ -296,6 +301,16 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
     </p>
     <a href="https://sankagami.com/apps/homepage/" class="free-cta-link">三星鑑について見る →</a>
   </div>
+</div>
+
+<div class="ask-box">
+  <div class="ask-inner">
+    <div class="ask-title">この診断で、まだ分からなかったことがあれば、<br>ひとことだけ教えてください。</div>
+    <div class="ask-note">答えなくても大丈夫です。空欄のままでも送信できます。<br>お名前もメールアドレスも、いただきません。</div>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLScKe4xMjHEmXn5j9EvPptdVlalP-iIrrnp2Qm7dKZgpqzwFuw/viewform" target="_blank" rel="noopener" class="ask-btn">ひとこと送る</a>
+  </div>
+</div>
+
 </div>
 
 <footer>
@@ -737,6 +752,21 @@ function getSunSign(birth){
   const si=Math.floor(lon/30);
   return{sign:SIGNS[si],icon:SIGN_ICON[si],deg:Math.floor(lon%30)+1,idx:si};
 }
+// 2026-11-11 理子：その日のうちに太陽が星座をまたぐか（日本時間 0:00 と 23:59 の星座を見る）
+//   またぐなら隣の星座の名を返す。またがなければ null。画面の一言（id-cusp）に使う
+//   はじめ「境目から0.6度以内」で見たら、変わらない日にも368日出たので、端の時刻で直接見る形にした
+function sunCuspNeighbor(birth,sun){
+  const p=birth.split('-').map(Number);
+  const at=(ms)=>{
+    const v=Astronomy.GeoVector(Astronomy.Body.Sun,new Date(ms),true);
+    return Math.floor((((Astronomy.Ecliptic(v).elon%360)+360)%360)/30);
+  };
+  const t0=Date.UTC(p[0],p[1]-1,p[2],0)-9*3600000;   // 日本時間 0:00
+  const a=at(t0), b=at(t0+86400000-60000);           // 日本時間 23:59
+  if(a!==sun.idx) return SIGNS[a];
+  if(b!==sun.idx) return SIGNS[b];
+  return null;
+}
 // 前の式（使っていない・残してある）
 function getSunSign_旧(birth){
   const p=birth.split('-').map(Number);
@@ -887,7 +917,16 @@ function runAnalysis(){
 
     // ── アイデンティティカード ──
     document.getElementById('id-title').textContent=lpD.kw+'タイプ';
-    document.getElementById('id-sub').textContent=`${sun.sign} ${sun.deg}度 ／ ライフパス ${lp} ／ 日干 ${kanFinal}（${pilD.el||''}）`;
+    // 2026-11-11 理子：度数は出さない（生年月日だけなので正午で見ており、時刻で読む有料版と4人に1人は1度ずれるため）
+    document.getElementById('id-sub').textContent=`${sun.sign} ／ ライフパス ${lp} ／ 日干 ${kanFinal}（${pilD.el||''}）`;
+    const cuspNb=sunCuspNeighbor(birth,sun), cuspEl=document.getElementById('id-cusp');
+    if(cuspNb){
+      cuspEl.textContent=`お生まれの日は、太陽が${sun.sign}と${cuspNb}の境目にいた日です。ここでは生まれた日のお昼で見ています。生まれた時刻によっては、${cuspNb}になることがあります。`;
+      cuspEl.style.display='block';
+    }else{
+      cuspEl.textContent='';
+      cuspEl.style.display='none';
+    }
     document.getElementById('id-badges').innerHTML=[
       {i:sun.icon,l:sun.sign},
       {i:lpD.icon,l:`LP ${lp}`},
@@ -1083,7 +1122,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 <script>
 (function(){
-  var btn = document.getElementById("btn-free-cta");
+  ["btn-free-cta", "btn-free-cta-top"].forEach(function(id){
+  var btn = document.getElementById(id);
   if (!btn) { return; }
   btn.addEventListener("click", function(){
     try{
@@ -1094,6 +1134,27 @@ document.addEventListener('DOMContentLoaded',()=>{
       localStorage.setItem(key, "1");
       var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
       new Image().src = base + "?p=free_cta&t=" + Date.now();
+    }catch(e){}
+  });
+  });
+})();
+</script>
+<script>
+// 結果を見た人を数える（free_run）。生年月日が入っていて押されたときだけ。城主の端末は数えない。1端末1日1回
+// 受け側の列（AD列）は機関室の畑。列が無いあいだは GAS が ignored を返すだけで、ほかの数には混ざらない
+(function(){
+  var btn = document.getElementById("btn-run");
+  if (!btn) { return; }
+  btn.addEventListener("click", function(){
+    try{
+      if (!document.getElementById("inp-birth").value) { return; }   // 入っていなければ結果は出ない
+      if (localStorage.getItem("trinity_owner") === "1") { return; }
+      var d = new Date(Date.now() + 9*60*60*1000);
+      var key = "cnt_free_run_" + d.toISOString().slice(0,10);
+      if (localStorage.getItem(key)) { return; }
+      localStorage.setItem(key, "1");
+      var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+      new Image().src = base + "?p=free_run&t=" + Date.now();
     }catch(e){}
   });
 })();
