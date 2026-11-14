@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>記事に書かなかった話の続き｜びわこ</title>
+<!-- 11-14 04時台 理子：note の扉は埋め込みの札で出る（結さんの扉の字の「記事に書かなかった話の続き｜びわこ」はこの title）。
+     札の説明の字が空にならないよう og を足した。noindex のままでも札は出る。字は頁の lead と扉の2行目から取った（新しく作っていない） -->
+<meta name="description" content="記事には書かなかった、もう一つの話を1本にしました。メールアドレスを1つ書くと、送ったあとの画面で読めます。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="記事に書かなかった話の続き">
+<meta property="og:description" content="記事には書かなかった、もう一つの話を1本にしました。メールアドレスを1つ書くと、送ったあとの画面で読めます。">
+<meta property="og:site_name" content="びわこ">
+<meta property="og:url" content="https://sankagami.com/apps/aishain/hanashi.html">
+<meta name="twitter:card" content="summary">
+<style>
+  /* 見本（理子〔舷門〕2026-11-14）。受け皿の入口違い。置き場の予定：sankagami.com/apps/aishain/hanashi.html
+     来る道：はじめての方へ（?src=note&a=hajime）／手紙.025〜.027（?src=note&a=hu025・hu026・hu027）
+     フォーム・計器・約束の文は、受け皿（index.html 11-11 版）と同じものを使う（朔さんの段取り §2・§6「新しい計器を足さない」）。
+     違うのは、上の見出しと「何をお渡しするか」の字だけ。
+     noindex にした訳：入口は note の扉だけ。検索から来た人に「記事の続き」と言っても、何の記事か分からないため。
+     色は受け皿と同じ組。 */
+  :root{
+    --sumi:#13161c; --konjo:#1b2433; --konjoLite:#243047; --ishi:#2d3a4f;
+    --kin:#c9a44c; --kinLite:#e3c574; --washi:#ece4d3; --washiSub:#9aa3b2;
+    --line:#2a3547;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  body{
+    background:linear-gradient(180deg,var(--sumi) 0%,#0f1218 100%);
+    min-height:100vh; color:var(--washi);
+    font-family:'Hiragino Mincho ProN','Yu Mincho',YuMincho,serif;
+    line-height:1.95; font-size:15px;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:0 18px 48px;}
+
+  header{padding:40px 4px 26px; position:relative;}
+  .goldline{position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--kin),var(--kinLite),var(--kin),transparent);}
+  .eyebrow{font-size:11px; letter-spacing:4px; color:var(--kin); margin-bottom:14px;}
+  h1{font-size:clamp(21px,5.2vw,26px); font-weight:700; line-height:1.6; letter-spacing:1px; color:var(--kinLite);}
+  .nb{display:inline-block;}   /* 11-14 理子：見出しが言葉の途中で折れないよう、まとまりごとに囲む */
+  .lead{margin-top:18px; font-size:14.5px; color:var(--washi);}
+  .lead p + p{margin-top:12px;}
+
+  .sheet{margin-top:26px; background:var(--konjo); border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px 18px 22px; position:relative; overflow:hidden;}
+  .sheet::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--kin); opacity:.7;}
+  .sheet .no{font-size:11px; letter-spacing:2px; color:var(--washiSub); margin-bottom:4px;}
+  .sheet .name{font-size:17px; font-weight:700; color:var(--kinLite); letter-spacing:.5px; margin-bottom:8px;}
+  .sheet .why{font-size:13.5px; color:var(--washi); line-height:1.95;}
+
+  .take{margin-top:34px; background:var(--konjoLite); border:1px solid var(--line);
+    border-radius:14px; padding:26px 22px; text-align:center;}
+  .take-title{font-size:16px; font-weight:700; color:var(--washi); margin-bottom:8px;}
+  .take-how{font-size:13px; color:var(--washiSub); line-height:1.9; margin-bottom:20px;}
+  .take-btn{display:inline-block; font-family:inherit; font-size:15px; font-weight:700; letter-spacing:.5px;
+    padding:13px 28px; border-radius:10px; border:none; cursor:pointer;
+    background:linear-gradient(135deg,var(--kinLite),var(--kin)); color:var(--sumi); text-decoration:none;}
+  .take-btn:hover{filter:brightness(1.05);}
+  .take-btn:focus-visible{outline:2px solid var(--kinLite); outline-offset:3px;}
+  .fine{margin-top:20px; font-size:12px; color:var(--washiSub); line-height:1.95; text-align:left;}
+  .fine li{list-style:none; padding-left:1em; text-indent:-1em;}
+  .fine li::before{content:"・";}
+
+  .qa{margin-top:26px; display:grid; gap:12px;}
+  .qa .q{font-size:13.5px; font-weight:700; color:var(--washi);}
+  .qa .a{font-size:13px; color:var(--washiSub); line-height:1.9; margin-top:2px;}
+
+  .back{display:block; margin-top:26px; text-align:center; font-size:13px; color:var(--kin); text-decoration:none;}
+  .back:hover{color:var(--kinLite);}
+
+  .fine-link{color:var(--washi); text-decoration:underline; text-underline-offset:3px;}
+  .fine-link:hover{color:var(--kinLite);}
+  .quit{display:block; width:max-content; margin:22px auto 0; padding:10px 6px; font-size:12.5px; color:var(--washiSub);
+    text-decoration:underline; text-underline-offset:3px;}
+  .quit:hover{color:var(--washi);}
+  .fine-link:focus-visible,.quit:focus-visible{outline:2px solid var(--kinLite); outline-offset:2px;}
+
+  footer{margin-top:36px; text-align:center; font-size:10.5px; color:#7d8798; line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="goldline"></div>
+    <div class="eyebrow">記事に書かなかった話</div>
+    <h1>記事の続きを、1本お渡しします</h1>
+    <div class="lead">
+      <p>記事では、自分の取扱説明書を読んだら、私は友達を作るのがちょっと苦手だったらしい、と書きました。喋ると会話がすぐ終わる、とも。</p>
+      <p>それは本当です。ただ、記事には書かなかったことが、もう一つあります。その話を1本にしました。</p>
+    </div>
+  </header>
+
+  <div class="sheet">
+    <div class="no">記事の続き</div>
+    <div class="name"><span class="nb">会話はすぐ終わるのに、</span><span class="nb">したことのない話だけは、</span><span class="nb">口がうまくなる</span></div>
+    <div class="why">2026年11月に、私が声で話したことを、もとに書きました。どの記事にも出していない話です。</div>
+  </div>
+
+  <div class="qa">
+    <div><p class="q">あとから売り込みのメールが続きませんか</p>
+      <p class="a">いまは、私からメールを1通も送りません。記事の続きは、送信したあとの画面で、その場でお渡しします。販売を始めるときは、そのお知らせを1通お送りします。</p></div>
+    <div><p class="q">いつでも止められますか</p>
+      <p class="a">はい。このページの下の「登録を取り消す」から、いつでも止められます。お知らせを始めたあとは、届いたメールの中からも止められます。いまは、まだ1通も送っていません。</p></div>
+    <div><p class="q">名前は書かなくていいですか</p>
+      <p class="a">はい。書いていただくのは、メールアドレス1つだけです。お名前もご住所も伺いません。</p></div>
+  </div>
+
+  <div class="take">
+    <div class="take-title"><span class="nb">メールアドレスを1つだけ、</span><span class="nb">ご登録ください</span></div>
+    <p class="take-how">送信したあとの画面で、記事の続きを読めるリンクをお渡しします。<br>登録のフォームは、AI社員の部屋の紙3枚と同じものです。送ったあとの画面には、紙3枚のリンクも並びます。</p>
+    <a class="take-btn" id="btn-ai-cta" href="https://docs.google.com/forms/d/e/1FAIpQLScFP52jsxDxp_VMku3wDnxPA5FkWyUUrMFwTmnXUTvWxloPiQ/viewform" target="_blank" rel="noopener">記事の続きを受け取る</a>
+    <ul class="fine">
+      <li>送り主は、びわこです。</li>
+      <li>記事の続きは無料です。送信したあとの画面でお渡しします。メールでは届きません。</li>
+      <li>いまは何も販売していません。この登録でのお申し込み・お支払いはありません。</li>
+      <li>ご登録のアドレスは、AI社員の部屋の記録を新しく出したときのお知らせと、販売を始めるときのお知らせだけに使います。三星鑑のお知らせには使いません。</li>
+      <li>1問の答えは、これからの記録を書くために読みます。そのまま外に出しません。</li>
+      <li>Google フォームを使い、ほかの人や会社には渡しません。</li>
+      <li>いまは、こちらからメールは届きません。登録を取り消したときに、「消しました」のご連絡が1通届くだけです。</li>
+      <li>登録を取り消したいときは、<a class="fine-link" href="https://docs.google.com/forms/d/e/1FAIpQLSehkUsdnTM7IyiSwDsuCt9vqUTl2_YSmtXFqdssKR3JRtMmnQ/viewform" target="_blank" rel="noopener">こちらのフォーム</a>から、ご登録のアドレスを送ってください。</li>
+    </ul>
+  </div>
+
+  <a class="back" href="https://note.com/grand_colt8044" target="_blank" rel="noopener">先に、ほかの記事を読む（note）→</a>
+
+  <a class="quit" id="link-quit" href="https://docs.google.com/forms/d/e/1FAIpQLSehkUsdnTM7IyiSwDsuCt9vqUTl2_YSmtXFqdssKR3JRtMmnQ/viewform" target="_blank" rel="noopener">登録を取り消す</a>
+
+  <footer>
+    &copy; 2026 びわこ
+  </footer>
+
+</div>
+
+<script>
+/* 計器は受け皿（index.html）と1字も違わない。入口は a= で分ける（hajime／hu025／hu026／hu027）。
+   新しい計器は足していない。だから aishain_uu には、この頁に来た人も入る。 */
+(function(){
+  try{
+    if (/[?&]me=1(&|$)/i.test(location.search)) { localStorage.setItem("trinity_owner","1"); }
+    if (/[?&]me=0(&|$)/i.test(location.search)) { localStorage.removeItem("trinity_owner"); }
+    if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。1件も数えない
+    var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+    var d = new Date(Date.now() + 9*60*60*1000);                     // 日本時間
+    var key = "cnt_aishain_" + d.toISOString().slice(0,10);
+    if (localStorage.getItem(key)) { return; }                       // 今日はもう数えた
+    localStorage.setItem(key, "1");
+    new Image().src = base + "?p=aishain_uu&t=" + Date.now();
+    var q = location.search;
+    if (/^https?:\/\/([a-z0-9-]+\.)?note\.com/i.test(document.referrer || "")) { new Image().src = base + "?p=aishain_uu_noteref&t=" + Date.now(); }
+    if (/[?&]src=note(&|$)/i.test(q)) new Image().src = base + "?p=aishain_uu_note&t=" + Date.now();
+    if (/[?&]src=yt(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_yt&t="   + Date.now();
+    if (/[?&]src=sh(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_sh&t="   + Date.now();
+    var am = q.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
+    if (am) { new Image().src = base + "?p=art&f=aishain&a=" + encodeURIComponent(am[1]) + "&t=" + Date.now(); }
+  }catch(e){}
+})();
+/* 11-14 04時台 理子：入口（a=）をフォームの「どこで知りましたか」へ前もって入れる。
+   今のフォーム（form_aishain）には、その問いがまだ無い。零さんが短い記述の問いを1つ足したら、
+   その問いの entry 番号を下の ENTRY_DOKODE へ入れる（例 "entry.123456789"）。空のあいだは住所を1字も替えない。
+   a= は受け皿の計器と同じ物差し（英数字・_・- の16字まで）。合わない値は入れない。 */
+(function(){
+  var ENTRY_DOKODE = "entry.1040024709";
+  if (!ENTRY_DOKODE) { return; }
+  try{
+    var am = location.search.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
+    if (!am) { return; }
+    var btn = document.getElementById("btn-ai-cta");
+    if (!btn) { return; }
+    btn.href = btn.href.split("?")[0] + "?usp=pp_url&" + ENTRY_DOKODE + "=" + encodeURIComponent(am[1]);
+  }catch(e){}
+})();
+(function(){
+  var btn = document.getElementById("btn-ai-cta");
+  if (!btn) { return; }
+  btn.addEventListener("click", function(){
+    try{
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。数えない
+      var d = new Date(Date.now() + 9*60*60*1000);
+      var key = "cnt_aishain_cta_" + d.toISOString().slice(0,10);
+      if (localStorage.getItem(key)) { return; }
+      localStorage.setItem(key, "1");
+      new Image().src = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec?p=aishain_cta&t=" + Date.now();
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
