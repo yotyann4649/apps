@@ -116,13 +116,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .copy-toast{font-size:12px;color:var(--teal);margin-top:12px;opacity:0;transition:.3s;font-weight:600}
 .copy-toast.show{opacity:1}
 
-/* ★2026-08-29（理子・舷門 10代目「屏（びょう）」）：ひとことを伺う箱 ━━━━━━━━━━━━━━
-   ★城主の裁定（2026-08-29）＝【専用のフォームを1本 作る】。★城主がフォームを作られた。
-   ★設問の文＝朔さん（水先室・11代目「帆」）のA案。★1文字も変えていない。
-   ★帆さんのお願い「★先行登録の欄と同じ画面に並べないでほしい」に従い、
-     ★★売り込みの箱（.free-cta）の【手前】に、★別の箱として置いた。
-   ★見た目は控えめにしてある（★.share-area と同じ側）。★売り込みではないため。
-   ★この塊を丸ごと消せば、元に戻る。 */
+/* ひとことを伺う箱。受け取りの箱（.free-cta）の手前に、別の箱として置く */
 .ask-box{max-width:680px;margin:30px auto 0;padding:0 22px}
 .ask-inner{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;text-align:center}
 .ask-title{font-family:'Noto Serif JP',serif;font-size:14.5px;font-weight:700;color:var(--ink);line-height:1.85;margin-bottom:8px}
@@ -152,10 +146,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .free-cta-btn.sec{background:transparent;color:var(--gold-soft);border:1px solid #5a4d38}
 .free-cta-btn.sec:hover{background:rgba(203,171,116,.12)}
 
-/* 2026-10-08（理子・舷門 14代目「濾」）：名簿の受け皿 ━━━━━━━━━━━━━━━━━━━━━━
-   城主の判断 K-1007205440【A】（トリセツ7歩を登録と引き換えに渡す）／K-1007205458【A】（完了画面で渡す）。
-   10-07 の試作（04_運用ツール\確認画面\名簿の受け皿_試作\）から、試作の帯・知らせ・仮の文の印を外して入れた。
-   元の .free-cta-* は1行も変えていない。この塊と、下の HTML の「名簿の受け皿」の囲みを消せば、元の MORE に戻る。 */
+/* 受け取りの箱の中身（渡すものの一覧・受け取り方・注意書き） */
 .free-cta-gift{font-size:13.5px;color:#e6dcc6;line-height:1.95;max-width:500px;margin:0 auto 16px}
 .free-cta-peek{list-style:none;max-width:400px;margin:0 auto 18px;padding:14px 18px;border:1px solid #4a3f2e;border-radius:12px;text-align:left}
 .free-cta-peek li{font-family:'Noto Serif JP',serif;font-size:13px;color:#f3ead6;line-height:1.8;padding:3px 0 3px 1.4em;position:relative}
@@ -752,7 +743,7 @@ function getSunSign(birth){
   const si=Math.floor(lon/30);
   return{sign:SIGNS[si],icon:SIGN_ICON[si],deg:Math.floor(lon%30)+1,idx:si};
 }
-// 2026-11-11 理子：その日のうちに太陽が星座をまたぐか（日本時間 0:00 と 23:59 の星座を見る）
+// その日のうちに太陽が星座をまたぐか（日本時間 0:00 と 23:59 の星座を見る）
 //   またぐなら隣の星座の名を返す。またがなければ null。画面の一言（id-cusp）に使う
 //   はじめ「境目から0.6度以内」で見たら、変わらない日にも368日出たので、端の時刻で直接見る形にした
 function sunCuspNeighbor(birth,sun){
@@ -793,7 +784,7 @@ function calcPillarAuto(birth){
 function getLp(birth){
   return reduce([...birth.replace(/\D/g,'')].map(Number).reduce((a,b)=>a+b,0));
 }
-// 2026-10-08（理子・舷門 14代目「濾」）：年を 2026 固定から「開いた日の年」へ（結さんの指摘・10-07）。
+// 年は「開いた日の年」を使う。
 //   欄の名前「◯年 今年の流れ」と本文の「今年◯年は」も、同じ THIS_YEAR を使う。
 const THIS_YEAR=new Date().getFullYear();
 function getPY(birth){
@@ -917,7 +908,7 @@ function runAnalysis(){
 
     // ── アイデンティティカード ──
     document.getElementById('id-title').textContent=lpD.kw+'タイプ';
-    // 2026-11-11 理子：度数は出さない（生年月日だけなので正午で見ており、時刻で読む有料版と4人に1人は1度ずれるため）
+    // 度数は出さない（生年月日だけで正午として見ているため、生まれた時刻しだいで1度ずれる）
     document.getElementById('id-sub').textContent=`${sun.sign} ／ ライフパス ${lp} ／ 日干 ${kanFinal}（${pilD.el||''}）`;
     const cuspNb=sunCuspNeighbor(birth,sun), cuspEl=document.getElementById('id-cusp');
     if(cuspNb){
@@ -1061,16 +1052,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 <script>
 (function(){
-    // 🔴🔴 ★2026-09-25（ゼロ／機関室・35代目「埋火」）―― ★城主ご自身の訪問を数えない
-    //   ★2026-09-24 に同じものを【上げ場】へ入れたが、★★正本へ入れ忘れていた。
-    //   ★見つけたのは理子さん〔舷門・14代目「濾」〕（2026-09-25）。
-    //   🔴 ★正本は【上げ場の親】である。★ここに無いと、★次に写した瞬間に城主除外が消える。
-    //   ★使い方：URL の末尾に ?me=1 を付けて1度 開く → その端末は以後ずっと数えない
-    //   ★取り消し：?me=0 を付けて開く ／ ★4枚とも同じ置き場なので、1枚で開けば4枚とも効く
+    // 運用者の端末は数えない
+    //   ?me=1 を付けて1度開く → その端末は以後数えない／?me=0 を付けて開くと取り消し
     try{
       if (/[?&]me=1(&|$)/i.test(location.search)) { localStorage.setItem("trinity_owner","1"); }
       if (/[?&]me=0(&|$)/i.test(location.search)) { localStorage.removeItem("trinity_owner"); }
-      if (localStorage.getItem("trinity_owner") === "1") { return; }   // ★城主の端末。1件も数えない
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 運用者の端末は数えない
     }catch(e){}
   try{
     var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
@@ -1092,26 +1079,16 @@ document.addEventListener('DOMContentLoaded',()=>{
       if (/[?&]src=note(&|$)/i.test(location.search)) {
         new Image().src = base + "?p=free_uu_note&t=" + Date.now();      // I列
       }
-      // 2026-10-11（理子・舷門 14代目「濾」）：入口ごとの目印。朔さんの案のまま。note と同じく、この if の中に置く
-      // yt＝YouTube 長尺／sh＝ショート／pin＝Pinterest。受け側は GAS の S・T・U列（城主が貼り直すまでは捨てられるだけ）
+      // 入口ごとの目印（yt＝YouTube 長尺／sh＝ショート／pin＝Pinterest）。この if の中に置く
       if (/[?&]src=yt(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_yt&t="  + Date.now();   // S列
       if (/[?&]src=sh(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_sh&t="  + Date.now();   // T列
       if (/[?&]src=pin(&|$)/i.test(location.search)) new Image().src = base + "?p=free_uu_pin&t=" + Date.now();   // U列
-      // 2026-10-15（理子・舷門 14代目「濾」）：ig＝Instagram／tt＝TikTok。朔さんの頼みのまま。受け側の欄はゼロさんが GAS に足す（足すまでは捨てられるだけ）
+      // ig＝Instagram／tt＝TikTok
       if (/[?&]src=ig(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_ig&t="  + Date.now();
       if (/[?&]src=tt(&|$)/i.test(location.search))  new Image().src = base + "?p=free_uu_tt&t="  + Date.now();
 
-      /* ══════════════════════════════════════════════════════════════════
-         ★2026-10-02（ゼロ／機関室・36代目「岩盤」）―― ★記事ごとの数
-         ★城主の裁定（2026-10-02）「③で進めて良いよ」。★理子さんの順番の1番目（★10-31 まで）
-         ★いまは「note から来た」までしか分からない。★★どの記事からかが分からない。
-            → ★記事ごとに効いた・効かなかったが、永久に判定できない
-         ★?a=<記事番号> が付いていたら、別シート『記事ごと』へ1件 送る。
-         ★英数字と - _ だけ、16字まで。★それ以外は送らない（★受け側でも同じ検査をしている）
-         ★この if の【中】に置く ―― ★free_uu と同じ物差し（1ブラウザ1日1回）
-         ★件数と記事番号だけ。★個人情報は1文字も通らない（DNA-329 / DNA-343）
-         🔴 ★結さんが記事の末尾のリンクへ &a=<番号> を足すまでは、この行は1件も送らない
-         ══════════════════════════════════════════════════════════════════ */
+      /* 記事ごとの数：?a=<記事番号>（英数字と - _、16字まで）が付いていたら1件送る。
+         件数と記事番号だけで、個人の情報は送らない。この if の中に置く（1ブラウザ1日1回） */
       var am = location.search.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
       if (am) {
         new Image().src = base + "?p=art&f=free&a=" + encodeURIComponent(am[1]) + "&t=" + Date.now();
@@ -1127,7 +1104,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if (!btn) { return; }
   btn.addEventListener("click", function(){
     try{
-      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 城主の端末。数えない
+      if (localStorage.getItem("trinity_owner") === "1") { return; }   // 運用者の端末は数えない
       var d = new Date(Date.now() + 9*60*60*1000);                     // 日本時間（free_uu と同じ）
       var key = "cnt_free_cta_" + d.toISOString().slice(0,10);
       if (localStorage.getItem(key)) { return; }                       // 今日はもう数えた
@@ -1140,8 +1117,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 <script>
-// 結果を見た人を数える（free_run）。生年月日が入っていて押されたときだけ。城主の端末は数えない。1端末1日1回
-// 受け側の列（AD列）は機関室の畑。列が無いあいだは GAS が ignored を返すだけで、ほかの数には混ざらない
+// 結果を見た人を数える（free_run）。生年月日が入っていて押されたときだけ。運用者の端末は数えない。1端末1日1回
 (function(){
   var btn = document.getElementById("btn-run");
   if (!btn) { return; }
