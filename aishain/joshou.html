@@ -52,6 +52,17 @@
   nav a:focus-visible{outline:2px solid var(--kinLite); outline-offset:2px;}
 
   footer{margin-top:36px; text-align:center; font-size:10.5px; color:#7d8798; line-height:1.8;}
+  /* 一言の口（2026-11-14 理子）。一手2「紙3枚→7日→一言」。売り込みではないので控えめに。
+     この塊と下の .hitokoto の div を消せば元に戻る */
+  .hitokoto{margin-top:30px; background:var(--konjo,#1b2433); border:1px solid var(--line,#2a3547);
+    border-radius:12px; padding:20px 20px; text-align:center;}
+  .hitokoto-title{font-size:14.5px; font-weight:700; color:var(--washi,#ece4d3); margin-bottom:6px;}
+  .hitokoto-ask{font-size:13px; color:var(--washi,#ece4d3); line-height:1.9; margin-bottom:14px; text-align:left;}
+  .hitokoto-btn{display:inline-block; font-family:inherit; font-size:13.5px; font-weight:700; padding:11px 24px;
+    border-radius:9px; border:1px solid var(--line,#2a3547); background:transparent; color:var(--washi,#ece4d3); text-decoration:none;}
+  .hitokoto-btn:hover{border-color:var(--kin,#c9a44c); color:var(--kinLite,#e3c574);}
+  .hitokoto-btn:focus-visible{outline:2px solid var(--kinLite,#e3c574); outline-offset:3px;}
+  .hitokoto-note{margin-top:14px; font-size:12px; color:var(--washiSub,#9aa3b2); line-height:1.9; text-align:left;}
 </style>
 </head>
 <body>
@@ -225,6 +236,13 @@
 <p>ただ、明日の朝、AIから「できました」が1つ返ってきたら、その1つにだけ、上のどれかを聞いてみてください。<br>私の部屋で起きたことが、あなたの部屋でも起きているかどうかは、それで分かります。</p>
 <p>良ければ、勝手に持って帰ってください。</p>
   </main>
+
+  <div class="hitokoto">
+    <div class="hitokoto-title">7日ほど聞いてみたら</div>
+    <p class="hitokoto-ask">上のどれかを、7日ほどAIに聞いてみたら、ここから一言ください。</p>
+    <a class="hitokoto-btn" id="btn-hitokoto" href="https://docs.google.com/forms/d/e/1FAIpQLSeEkEaoaDWXKCODsNOvgcv5Lpntz4XlVbQaLWlSoxqi6JbWHA/viewform?usp=pp_url&amp;entry.1614995847=joshou" target="_blank" rel="noopener">一言を送る</a>
+    <p class="hitokoto-note">お返事はできません。名前もメールも伺っていないので。<br>いただいた一言は、これからの記録を書くために読みます。そのまま外には出しません。</p>
+  </div>
 
   <nav aria-label="3枚">
     <span class="label">一緒にお渡ししている紙</span>
