@@ -155,6 +155,7 @@
     if (/[?&]src=note(&|$)/i.test(q)) new Image().src = base + "?p=aishain_uu_note&t=" + Date.now();
     if (/[?&]src=yt(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_yt&t="   + Date.now();
     if (/[?&]src=sh(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_sh&t="   + Date.now();
+    if (/[?&]src=th(&|$)/i.test(q))   new Image().src = base + "?p=aishain_uu_th&t="   + Date.now();
     var am = q.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
     if (am) { new Image().src = base + "?p=art&f=aishain&a=" + encodeURIComponent(am[1]) + "&t=" + Date.now(); }
   }catch(e){}
