@@ -1111,6 +1111,12 @@ document.addEventListener('DOMContentLoaded',()=>{
       localStorage.setItem(key, "1");
       var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
       new Image().src = base + "?p=free_cta&t=" + Date.now();
+      /* 記事ごとの数：?a=<記事番号>（英数字と - _、16字まで）があれば、トリセツを押した数も記事ごとに1件送る。
+         件数と記事番号だけで、個人の情報は送らない。この if の中に置く（free_cta と同じ1端末1日1回） */
+      var am = location.search.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
+      if (am) {
+        new Image().src = base + "?p=art&f=free_cta&a=" + encodeURIComponent(am[1]) + "&t=" + Date.now();
+      }
     }catch(e){}
   });
   });
