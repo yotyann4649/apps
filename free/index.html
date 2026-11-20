@@ -1141,5 +1141,27 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
 })();
 </script>
+<script>
+// 生年月日の欄に値が入った人を数える（free_input）。結果を見たかは問わない。運用者の端末は数えない。1端末1日1回
+//   来た（free_uu）→ 欄に入れた（free_input）→ 結果を見た（free_run）。送るのは件数だけで、入れた日付は送らない
+(function(){
+  var inp = document.getElementById("inp-birth");
+  if (!inp) { return; }
+  function countInput(){
+    try{
+      if (!inp.value) { return; }                                       // 日付が最後まで入ったときだけ値が付く
+      if (localStorage.getItem("trinity_owner") === "1") { return; }
+      var d = new Date(Date.now() + 9*60*60*1000);
+      var key = "cnt_free_input_" + d.toISOString().slice(0,10);
+      if (localStorage.getItem(key)) { return; }
+      localStorage.setItem(key, "1");
+      var base = "https://script.google.com/macros/s/AKfycbzoGFgn50bRJi42wVAgfNXCSnRrrgDfIBS9REnS7qkR-r_f02KoGApsGdTejiNiOZEB/exec";
+      new Image().src = base + "?p=free_input&t=" + Date.now();
+    }catch(e){}
+  }
+  inp.addEventListener("change", countInput);
+  inp.addEventListener("input", countInput);
+})();
+</script>
 </body>
 </html>
