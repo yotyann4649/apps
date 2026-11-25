@@ -58,6 +58,13 @@ header{position:sticky;top:0;z-index:50;background:rgba(246,239,225,.9);backdrop
 .run-btn{width:100%;margin-top:18px;padding:15px;border:none;border-radius:11px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#fff;font-size:15px;font-weight:700;letter-spacing:.04em;cursor:pointer;font-family:'Noto Serif JP',serif;box-shadow:0 8px 20px -9px rgba(154,123,46,.6)}
 .run-btn:hover{filter:brightness(1.06)}.run-btn:disabled{opacity:.6;cursor:default}
 .ic-note{font-size:10.5px;color:var(--ink3);text-align:center;margin-top:12px}
+/* 日柱の欄をたたむ */
+.po-details{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
+.po-details>summary{font-size:11px;color:var(--ink3);cursor:pointer;text-align:center;list-style:none;padding:4px 0}
+.po-details>summary::-webkit-details-marker{display:none}
+.po-details>summary::before{content:'＋ ';color:var(--gold)}
+.po-details[open]>summary::before{content:'－ '}
+.po-details .pillar-override{margin-top:8px}
 
 .loading-overlay{display:none;flex-direction:column;align-items:center;gap:16px;padding:50px 0}
 .loading-overlay.show{display:flex}
@@ -186,7 +193,12 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
     <div class="ic-label">生年月日を入力してください</div>
     <input type="date" id="inp-birth" class="date-input">
 
-    <!-- 日柱上書き -->
+    <button class="run-btn" id="btn-run" onclick="runAnalysis()">✦ わたしの性格分析を見る</button>
+    <p class="ic-note">入力した情報はサーバーに送信されません。ブラウザ内のみで動作します。</p>
+
+    <!-- 日柱上書き（ボタンの下へ・閉じておく。中身と id は前のまま） -->
+    <details class="po-details">
+      <summary>生まれた時刻も分かる方へ（任意）</summary>
     <div class="pillar-override">
       <div class="po-head">
         <div class="po-title">四柱推命・日柱の正確な値（任意）</div>
@@ -201,9 +213,7 @@ footer{text-align:center;padding:36px 22px;margin-top:40px;border-top:1px solid 
         等で生年月日と出生時刻を入力して確認できます。
       </div>
     </div>
-
-    <button class="run-btn" id="btn-run" onclick="runAnalysis()">✦ わたしの性格分析を見る</button>
-    <p class="ic-note">入力した情報はサーバーに送信されません。ブラウザ内のみで動作します。</p>
+    </details>
   </div>
 </div>
 
