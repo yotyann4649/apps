@@ -179,6 +179,19 @@
   }catch(e){}
 })();
 (function(){
+  /* 記事から来た人の a= を、フォームの「どこで知りましたか」（entry.1040024709）へ前もって入れる。hanashi.html L167〜177 と同じ物差し。ボタンが2つでも両方へ */
+  var ENTRY_DOKODE = "entry.1040024709";
+  try{
+    var am = location.search.match(/[?&]a=([A-Za-z0-9_-]{1,16})(?:&|$)/);
+    if (!am) { return; }
+    ["btn-ai-cta-top","btn-ai-cta"].forEach(function(bid){
+      var btn = document.getElementById(bid);
+      if (!btn) { return; }
+      btn.href = btn.href.split("?")[0] + "?usp=pp_url&" + ENTRY_DOKODE + "=" + encodeURIComponent(am[1]);
+    });
+  }catch(e){}
+})();
+(function(){
   var btn = document.getElementById("btn-ai-cta");
   if (!btn) { return; }
   btn.addEventListener("click", function(){
